@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T23:17:31Z",
-    "totalSessionsCreated": 1
+    "lastModified": "2026-02-11T23:18:09Z",
+    "totalSessionsCreated": 2
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -52,6 +52,55 @@
         "max_tokens": 200000
       },
       "endedAt": "2026-02-11T23:17:31Z"
+    },
+    {
+      "id": "session_20260211_151736_5714cc",
+      "status": "active",
+      "name": "CAAMP v0.2.0 Work",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T021",
+        "computedTaskIds": [
+          "T021",
+          "T022",
+          "T023",
+          "T024",
+          "T025",
+          "T026",
+          "T027",
+          "T028"
+        ]
+      },
+      "focus": {
+        "currentTask": "T025",
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T025",
+            "timestamp": "2026-02-11T23:18:09Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-11T23:17:36Z",
+      "lastActivity": "2026-02-11T23:18:09Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_151736_5714cc",
+        "start_timestamp": "2026-02-11T23:17:36Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      }
     }
   ],
   "sessionHistory": []

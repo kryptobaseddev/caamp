@@ -60,20 +60,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-11T23:17:26Z",
+  "lastUpdated": "2026-02-11T23:23:25Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "21c31064fc6460b3",
+    "checksum": "f12cdee70e800632",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 44,
-    "lastModified": "2026-02-11T22:09:26Z",
+    "generation": 51,
+    "lastModified": "2026-02-11T23:18:09Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 1
+    "activeSessionCount": 2
   },
   "focus": {
-    "currentTask": null,
+    "currentTask": "T025",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -778,6 +778,165 @@
       "updatedAt": "2026-02-11T23:17:26Z",
       "size": "large",
       "position": 2,
+      "positionVersion": 0,
+      "phase": "setup"
+    },
+    {
+      "id": "T022",
+      "title": "Rewrite README.md with banner, install fixes, architecture, and doc links",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:43Z",
+      "updatedAt": "2026-02-11T23:18:01Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:01Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:01Z] README rewritten: banner, badges, proper install, library usage, architecture, doc links, contributing. 85→204 lines."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:01Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T023",
+      "title": "Modernize package.json deps and bump Node engine to >=20",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:44Z",
+      "updatedAt": "2026-02-11T23:18:02Z",
+      "size": "small",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:02Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:02Z] commander ^14, @clack/prompts ^1.0, Node >=20, tsup target node20. 74/74 tests pass."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:02Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T024",
+      "title": "Fix npx install - scoped package needs npx @cleocode/caamp",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:51Z",
+      "updatedAt": "2026-02-11T23:18:03Z",
+      "size": "small",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:03Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:03Z] Fixed npx caamp to npx @cleocode/caamp in README and PRD."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:03Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T025",
+      "title": "Fix skills update stub command - implement network version checking",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:51Z",
+      "updatedAt": "2026-02-11T23:23:25Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:23:25Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:23:25Z] Implemented network-based version checking in checkSkillUpdate using simple-git ls-remote. skills update now actually compares SHAs and reinstalls outdated skills."
+      ]
+    },
+    {
+      "id": "T026",
+      "title": "Fix skills check - add network-based version comparison",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:17:52Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup"
+    },
+    {
+      "id": "T027",
+      "title": "Add test coverage for marketplace/ and instructions/ modules",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:17:52Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup"
+    },
+    {
+      "id": "T028",
+      "title": "Expand provider registry from 28 to 40+ providers",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:17:52Z",
+      "size": "large",
+      "position": 7,
       "positionVersion": 0,
       "phase": "setup"
     }

@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 44,
+    "totalEntries": 50,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:17:31Z",
+    "lastEntry": "2026-02-11T23:18:09Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -839,6 +839,220 @@
       "details": {
         "note": "Switching to v0.2.0 epic"
       }
+    },
+    {
+      "id": "log_1d95004e657c",
+      "timestamp": "2026-02-11T23:17:36Z",
+      "sessionId": "session_20260211_151736_5714cc",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T021"
+      }
+    },
+    {
+      "id": "log-1770851863-04ee71",
+      "timestamp": "2026-02-11T23:17:43Z",
+      "action": "task_created",
+      "taskId": "T022",
+      "actor": "system",
+      "details": {
+        "title": "Rewrite README.md with banner, install fixes, architecture, and doc links",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Rewrite README.md with banner, install fixes, architecture, and doc links",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851864-b5b759",
+      "timestamp": "2026-02-11T23:17:44Z",
+      "action": "task_created",
+      "taskId": "T023",
+      "actor": "system",
+      "details": {
+        "title": "Modernize package.json deps and bump Node engine to >=20",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Modernize package.json deps and bump Node engine to >=20",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851871-a35b10",
+      "timestamp": "2026-02-11T23:17:51Z",
+      "action": "task_created",
+      "taskId": "T024",
+      "actor": "system",
+      "details": {
+        "title": "Fix npx install - scoped package needs npx @cleocode/caamp",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix npx install - scoped package needs npx @cleocode/caamp",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851871-e431c3",
+      "timestamp": "2026-02-11T23:17:51Z",
+      "action": "task_created",
+      "taskId": "T025",
+      "actor": "system",
+      "details": {
+        "title": "Fix skills update stub command - implement network version checking",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix skills update stub command - implement network version checking",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851872-ccd860",
+      "timestamp": "2026-02-11T23:17:52Z",
+      "action": "task_created",
+      "taskId": "T026",
+      "actor": "system",
+      "details": {
+        "title": "Fix skills check - add network-based version comparison",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix skills check - add network-based version comparison",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851872-54de9a",
+      "timestamp": "2026-02-11T23:17:52Z",
+      "action": "task_created",
+      "taskId": "T027",
+      "actor": "system",
+      "details": {
+        "title": "Add test coverage for marketplace/ and instructions/ modules",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add test coverage for marketplace/ and instructions/ modules",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770851873-4339dc",
+      "timestamp": "2026-02-11T23:17:53Z",
+      "action": "task_created",
+      "taskId": "T028",
+      "actor": "system",
+      "details": {
+        "title": "Expand provider registry from 28 to 40+ providers",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Expand provider registry from 28 to 40+ providers",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_a59de7aeb929",
+      "timestamp": "2026-02-11T23:18:02Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T022",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:18:01Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_08a47a4567ea",
+      "timestamp": "2026-02-11T23:18:03Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T023",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:18:02Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_603621f28548",
+      "timestamp": "2026-02-11T23:18:04Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T024",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:18:03Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_c4313ccf8391",
+      "timestamp": "2026-02-11T23:18:09Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": null,
+      "after": {
+        "currentTask": "T025"
+      },
+      "details": null
     }
   ]
 }
