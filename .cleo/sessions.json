@@ -1,0 +1,20 @@
+{
+  "$schema": "./schemas/sessions.schema.json",
+  "version": "1.0.0",
+  "project": "caamp",
+  "_meta": {
+    "schemaVersion": "1.0.0",
+    "checksum": "",
+    "lastModified": "2026-02-11T22:05:12Z",
+    "totalSessionsCreated": 0
+  },
+  "config": {
+    "maxConcurrentSessions": 5,
+    "maxActiveTasksPerScope": 1,
+    "scopeValidation": "strict",
+    "allowNestedScopes": true,
+    "allowScopeOverlap": false
+  },
+  "sessions": [],
+  "sessionHistory": []
+}
