@@ -4,11 +4,9 @@
 
 import { Command } from "commander";
 import pc from "picocolors";
-import { getInstalledProviders } from "../../core/registry/detection.js";
-import { readConfig } from "../../core/formats/index.js";
-import { getNestedValue } from "../../core/formats/utils.js";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { getInstalledProviders } from "../../core/registry/detection.js";
+import { resolveConfigPath, listMcpServers } from "../../core/mcp/reader.js";
 
 export function registerMcpDetect(parent: Command): void {
   parent
@@ -27,46 +25,19 @@ export function registerMcpDetect(parent: Command): void {
       }> = [];
 
       for (const provider of providers) {
-        const entry = {
+        const globalPath = resolveConfigPath(provider, "global");
+        const projectPath = resolveConfigPath(provider, "project");
+
+        const globalEntries = await listMcpServers(provider, "global");
+        const projectEntries = await listMcpServers(provider, "project");
+
+        detected.push({
           provider: provider.id,
-          hasGlobalConfig: false,
-          hasProjectConfig: false,
-          globalServers: [] as string[],
-          projectServers: [] as string[],
-        };
-
-        // Check global config
-        if (existsSync(provider.configPathGlobal)) {
-          entry.hasGlobalConfig = true;
-          try {
-            const config = await readConfig(provider.configPathGlobal, provider.configFormat);
-            const servers = getNestedValue(config, provider.configKey);
-            if (servers && typeof servers === "object") {
-              entry.globalServers = Object.keys(servers as Record<string, unknown>);
-            }
-          } catch {
-            // Ignore read errors
-          }
-        }
-
-        // Check project config
-        if (provider.configPathProject) {
-          const projectPath = join(process.cwd(), provider.configPathProject);
-          if (existsSync(projectPath)) {
-            entry.hasProjectConfig = true;
-            try {
-              const config = await readConfig(projectPath, provider.configFormat);
-              const servers = getNestedValue(config, provider.configKey);
-              if (servers && typeof servers === "object") {
-                entry.projectServers = Object.keys(servers as Record<string, unknown>);
-              }
-            } catch {
-              // Ignore read errors
-            }
-          }
-        }
-
-        detected.push(entry);
+          hasGlobalConfig: globalPath !== null && existsSync(globalPath),
+          hasProjectConfig: projectPath !== null && existsSync(projectPath),
+          globalServers: globalEntries.map(e => e.name),
+          projectServers: projectEntries.map(e => e.name),
+        });
       }
 
       if (opts.json) {

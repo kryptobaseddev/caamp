@@ -189,6 +189,17 @@ export interface InjectionCheckResult {
   fileExists: boolean;
 }
 
+// ── MCP Server Entry (list results) ─────────────────────────────────
+
+export interface McpServerEntry {
+  name: string;
+  providerId: string;
+  providerName: string;
+  scope: "project" | "global";
+  configPath: string;
+  config: Record<string, unknown>;
+}
+
 // ── CLI Options ─────────────────────────────────────────────────────
 
 export interface GlobalOptions {

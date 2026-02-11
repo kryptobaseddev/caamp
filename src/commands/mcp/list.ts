@@ -6,10 +6,8 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
-import { readConfig } from "../../core/formats/index.js";
-import { getNestedValue } from "../../core/formats/utils.js";
-import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { listMcpServers } from "../../core/mcp/reader.js";
+import type { McpServerEntry } from "../../types.js";
 
 export function registerMcpList(parent: Command): void {
   parent
@@ -23,52 +21,38 @@ export function registerMcpList(parent: Command): void {
         ? [getProvider(opts.agent)].filter((p): p is NonNullable<typeof p> => p !== undefined)
         : getInstalledProviders();
 
-      const allServers: Record<string, Record<string, unknown>> = {};
+      const allEntries: McpServerEntry[] = [];
 
       for (const provider of providers) {
-        const configPath = opts.global
-          ? provider.configPathGlobal
+        // With --global, use global. Otherwise use project if provider supports it, else global.
+        const scope: "project" | "global" = opts.global
+          ? "global"
           : provider.configPathProject
-            ? join(process.cwd(), provider.configPathProject)
-            : provider.configPathGlobal;
+            ? "project"
+            : "global";
 
-        if (!existsSync(configPath)) continue;
-
-        try {
-          const config = await readConfig(configPath, provider.configFormat);
-          const servers = getNestedValue(config, provider.configKey);
-
-          if (servers && typeof servers === "object") {
-            for (const [name, cfg] of Object.entries(servers as Record<string, unknown>)) {
-              allServers[`${provider.id}:${name}`] = {
-                provider: provider.id,
-                name,
-                config: cfg,
-              };
-            }
-          }
-        } catch {
-          // Skip unreadable configs
-        }
+        const entries = await listMcpServers(provider, scope);
+        allEntries.push(...entries);
       }
 
-      const entries = Object.values(allServers);
-
       if (opts.json) {
-        console.log(JSON.stringify(entries, null, 2));
+        console.log(JSON.stringify(allEntries.map(e => ({
+          provider: e.providerId,
+          name: e.name,
+          config: e.config,
+        })), null, 2));
         return;
       }
 
-      if (entries.length === 0) {
+      if (allEntries.length === 0) {
         console.log(pc.dim("No MCP servers configured."));
         return;
       }
 
-      console.log(pc.bold(`\n${entries.length} MCP server(s) configured:\n`));
+      console.log(pc.bold(`\n${allEntries.length} MCP server(s) configured:\n`));
 
-      for (const entry of entries) {
-        const e = entry as { provider: string; name: string; config: unknown };
-        console.log(`  ${pc.bold((e.name as string).padEnd(25))} ${pc.dim(e.provider as string)}`);
+      for (const entry of allEntries) {
+        console.log(`  ${pc.bold(entry.name.padEnd(25))} ${pc.dim(entry.providerId)}`);
       }
 
       console.log();

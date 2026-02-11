@@ -6,12 +6,8 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
-import { readConfig } from "../../core/formats/index.js";
-import { removeJsonConfig } from "../../core/formats/json.js";
-import { removeYamlConfig } from "../../core/formats/yaml.js";
-import { removeTomlConfig } from "../../core/formats/toml.js";
+import { removeMcpServer } from "../../core/mcp/reader.js";
 import { removeMcpFromLock } from "../../core/mcp/lock.js";
-import { join } from "node:path";
 import type { Provider } from "../../types.js";
 
 export function registerMcpRemove(parent: Command): void {
@@ -39,32 +35,11 @@ export function registerMcpRemove(parent: Command): void {
         providers = getInstalledProviders();
       }
 
+      const scope = opts.global ? "global" as const : "project" as const;
       let removed = 0;
 
       for (const provider of providers) {
-        const configPath = opts.global
-          ? provider.configPathGlobal
-          : provider.configPathProject
-            ? join(process.cwd(), provider.configPathProject)
-            : null;
-
-        if (!configPath) continue;
-
-        let success = false;
-
-        switch (provider.configFormat) {
-          case "json":
-          case "jsonc":
-            success = await removeJsonConfig(configPath, provider.configKey, name);
-            break;
-          case "yaml":
-            success = await removeYamlConfig(configPath, provider.configKey, name);
-            break;
-          case "toml":
-            success = await removeTomlConfig(configPath, provider.configKey, name);
-            break;
-        }
-
+        const success = await removeMcpServer(provider, name, scope);
         if (success) {
           console.log(`  ${pc.green("✓")} Removed from ${provider.toolName}`);
           removed++;

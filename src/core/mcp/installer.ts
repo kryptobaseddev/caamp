@@ -5,10 +5,10 @@
  * handling per-agent formats, keys, and transformations.
  */
 
-import { join } from "node:path";
 import type { Provider, McpServerConfig, GlobalOptions } from "../../types.js";
 import { writeConfig } from "../formats/index.js";
 import { getTransform } from "./transforms.js";
+import { resolveConfigPath } from "./reader.js";
 
 export interface InstallResult {
   provider: Provider;
@@ -25,15 +25,6 @@ function buildConfig(provider: Provider, serverName: string, config: McpServerCo
     return transform(serverName, config);
   }
   return config;
-}
-
-/** Resolve the config file path for a provider */
-function resolveConfigPath(provider: Provider, scope: "project" | "global", projectDir?: string): string | null {
-  if (scope === "project") {
-    if (!provider.configPathProject) return null;
-    return join(projectDir ?? process.cwd(), provider.configPathProject);
-  }
-  return provider.configPathGlobal;
 }
 
 /** Install an MCP server config for a single provider */

@@ -8,6 +8,7 @@
 export type {
   Provider,
   McpServerConfig,
+  McpServerEntry,
   ConfigFormat,
   TransportType,
   SourceType,
@@ -26,6 +27,12 @@ export type {
   InjectionCheckResult,
   GlobalOptions,
 } from "./types.js";
+
+// Result types from core modules
+export type { DetectionResult } from "./core/registry/detection.js";
+export type { InstallResult } from "./core/mcp/installer.js";
+export type { SkillInstallResult } from "./core/skills/installer.js";
+export type { ValidationResult, ValidationIssue } from "./core/skills/validator.js";
 
 // Registry
 export {
@@ -57,9 +64,30 @@ export { discoverSkills, discoverSkill, parseSkillFile } from "./core/skills/dis
 export { validateSkill } from "./core/skills/validator.js";
 export { scanFile, scanDirectory, toSarif } from "./core/skills/audit/scanner.js";
 
-// MCP
+// MCP install
 export { installMcpServer, installMcpServerToAll, buildServerConfig } from "./core/mcp/installer.js";
 export { getTransform } from "./core/mcp/transforms.js";
+
+// MCP read/list/remove
+export { resolveConfigPath, listMcpServers, listAllMcpServers, removeMcpServer } from "./core/mcp/reader.js";
+
+// MCP lock
+export {
+  readLockFile,
+  recordMcpInstall,
+  removeMcpFromLock,
+  getTrackedMcpServers,
+  saveLastSelectedAgents,
+  getLastSelectedAgents,
+} from "./core/mcp/lock.js";
+
+// Skills lock
+export {
+  recordSkillInstall,
+  removeSkillFromLock,
+  getTrackedSkills,
+  checkSkillUpdate,
+} from "./core/skills/lock.js";
 
 // Marketplace
 export { MarketplaceClient } from "./core/marketplace/client.js";
@@ -69,4 +97,5 @@ export { inject, checkInjection, removeInjection, checkAllInjections, injectAll 
 export { generateInjectionContent, groupByInstructFile } from "./core/instructions/templates.js";
 
 // Formats
-export { readConfig, writeConfig } from "./core/formats/index.js";
+export { readConfig, writeConfig, removeConfig } from "./core/formats/index.js";
+export { getNestedValue, deepMerge, ensureDir } from "./core/formats/utils.js";

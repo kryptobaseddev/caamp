@@ -3,11 +3,11 @@
  */
 
 import type { ConfigFormat } from "../../types.js";
-import { readJsonConfig, writeJsonConfig } from "./json.js";
-import { readYamlConfig, writeYamlConfig } from "./yaml.js";
-import { readTomlConfig, writeTomlConfig } from "./toml.js";
+import { readJsonConfig, writeJsonConfig, removeJsonConfig } from "./json.js";
+import { readYamlConfig, writeYamlConfig, removeYamlConfig } from "./yaml.js";
+import { readTomlConfig, writeTomlConfig, removeTomlConfig } from "./toml.js";
 
-export { deepMerge } from "./utils.js";
+export { deepMerge, getNestedValue, ensureDir } from "./utils.js";
 
 /** Read a config file in the specified format */
 export async function readConfig(filePath: string, format: ConfigFormat): Promise<Record<string, unknown>> {
@@ -40,6 +40,26 @@ export async function writeConfig(
       return writeYamlConfig(filePath, key, serverName, serverConfig);
     case "toml":
       return writeTomlConfig(filePath, key, serverName, serverConfig);
+    default:
+      throw new Error(`Unsupported config format: ${format as string}`);
+  }
+}
+
+/** Remove a server entry from a config file in the specified format */
+export async function removeConfig(
+  filePath: string,
+  format: ConfigFormat,
+  key: string,
+  serverName: string,
+): Promise<boolean> {
+  switch (format) {
+    case "json":
+    case "jsonc":
+      return removeJsonConfig(filePath, key, serverName);
+    case "yaml":
+      return removeYamlConfig(filePath, key, serverName);
+    case "toml":
+      return removeTomlConfig(filePath, key, serverName);
     default:
       throw new Error(`Unsupported config format: ${format as string}`);
   }
