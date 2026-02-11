@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 63,
+    "totalEntries": 64,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:24:50Z",
+    "lastEntry": "2026-02-11T23:42:43Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1165,6 +1165,21 @@
       "after": null,
       "details": {
         "note": "v0.2.0 complete. All 7 tasks done. 120 tests, 41 providers, full docs suite."
+      }
+    },
+    {
+      "id": "log_3fc3847cc2d6",
+      "timestamp": "2026-02-11T23:42:43Z",
+      "sessionId": "session_20260211_154243_3c2d99",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T021"
       }
     }
   ]
