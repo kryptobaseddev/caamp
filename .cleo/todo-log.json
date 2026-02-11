@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 23,
+    "totalEntries": 44,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T22:14:57Z",
+    "lastEntry": "2026-02-11T23:17:31Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -807,6 +807,37 @@
       "after": null,
       "details": {
         "note": "v0.1.0 released. Epic T001 complete with 19 child tasks. Published @cleocode/caamp to npm. CHANGELOG.md and git tag v0.1.0 pushed to GitHub."
+      }
+    },
+    {
+      "id": "log-1770851846-315a73",
+      "timestamp": "2026-02-11T23:17:26Z",
+      "action": "task_created",
+      "taskId": "T021",
+      "actor": "system",
+      "details": {
+        "title": "CAAMP v0.2.0 - Documentation, Modernization & Fixes",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "CAAMP v0.2.0 - Documentation, Modernization & Fixes",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log_1cb8a99980ca",
+      "timestamp": "2026-02-11T23:17:31Z",
+      "sessionId": "session_20260211_140926_2d3fe0",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Switching to v0.2.0 epic"
       }
     }
   ]

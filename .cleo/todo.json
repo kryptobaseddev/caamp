@@ -60,10 +60,10 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-11T22:14:33Z",
+  "lastUpdated": "2026-02-11T23:17:26Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "bf7326b14219adda",
+    "checksum": "21c31064fc6460b3",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
@@ -766,6 +766,20 @@
         "lastUpdated": "2026-02-11T22:13:14Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T021",
+      "title": "CAAMP v0.2.0 - Documentation, Modernization & Fixes",
+      "status": "pending",
+      "priority": "high",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-11T23:17:26Z",
+      "updatedAt": "2026-02-11T23:17:26Z",
+      "size": "large",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup"
     }
   ],
   "labels": {}

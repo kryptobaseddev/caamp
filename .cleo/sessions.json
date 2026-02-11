@@ -5,7 +5,7 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T22:14:57Z",
+    "lastModified": "2026-02-11T23:17:31Z",
     "totalSessionsCreated": 1
   },
   "config": {
@@ -32,18 +32,18 @@
         "currentTask": null,
         "currentPhase": null,
         "previousTask": null,
-        "sessionNote": "v0.1.0 released. Epic T001 complete with 19 child tasks. Published @cleocode/caamp to npm. CHANGELOG.md and git tag v0.1.0 pushed to GitHub.",
+        "sessionNote": "Switching to v0.2.0 epic",
         "nextAction": null,
         "focusHistory": []
       },
       "startedAt": "2026-02-11T22:09:26Z",
-      "lastActivity": "2026-02-11T22:14:57Z",
+      "lastActivity": "2026-02-11T23:17:31Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
         "focusChanges": 0,
         "suspendCount": 0,
-        "resumeCount": 0
+        "resumeCount": 1
       },
       "startMetrics": {
         "session_id": "session_20260211_140926_2d3fe0",
@@ -51,7 +51,7 @@
         "start_tokens": 0,
         "max_tokens": 200000
       },
-      "endedAt": "2026-02-11T22:14:57Z"
+      "endedAt": "2026-02-11T23:17:31Z"
     }
   ],
   "sessionHistory": []
