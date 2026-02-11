@@ -5,7 +5,7 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T22:09:26Z",
+    "lastModified": "2026-02-11T22:14:57Z",
     "totalSessionsCreated": 1
   },
   "config": {
@@ -18,7 +18,7 @@
   "sessions": [
     {
       "id": "session_20260211_140926_2d3fe0",
-      "status": "active",
+      "status": "ended",
       "name": "CAAMP v0.1.0 Release Tracking",
       "agentId": null,
       "scope": {
@@ -32,12 +32,12 @@
         "currentTask": null,
         "currentPhase": null,
         "previousTask": null,
-        "sessionNote": null,
+        "sessionNote": "v0.1.0 released. Epic T001 complete with 19 child tasks. Published @cleocode/caamp to npm. CHANGELOG.md and git tag v0.1.0 pushed to GitHub.",
         "nextAction": null,
         "focusHistory": []
       },
       "startedAt": "2026-02-11T22:09:26Z",
-      "lastActivity": "2026-02-11T22:09:26Z",
+      "lastActivity": "2026-02-11T22:14:57Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -50,7 +50,8 @@
         "start_timestamp": "2026-02-11T22:09:26Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-11T22:14:57Z"
     }
   ],
   "sessionHistory": []
