@@ -35,7 +35,7 @@
     "labels": []
   },
   "session": {
-    "requireSession": false,
+    "requireSession": true,
     "requireSessionNote": true,
     "requireNotesOnComplete": true,
     "warnOnNoFocus": true,

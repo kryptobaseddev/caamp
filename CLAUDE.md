@@ -1,3 +1,6 @@
+<!-- CLEO:START -->
+@.cleo/templates/AGENT-INJECTION.md
+<!-- CLEO:END -->
 # CAAMP - Central AI Agent Managed Packages
 
 ## Project Overview

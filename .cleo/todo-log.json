@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 1,
+    "totalEntries": 22,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T22:05:12Z",
+    "lastEntry": "2026-02-11T22:13:42Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -20,6 +20,781 @@
       "before": null,
       "after": null,
       "details": "CLEO system initialized for project: caamp"
+    },
+    {
+      "id": "log-1770847757-36f815",
+      "timestamp": "2026-02-11T22:09:17Z",
+      "action": "task_created",
+      "taskId": "T001",
+      "actor": "system",
+      "details": {
+        "title": "CAAMP v0.1.0 - Initial Release",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "CAAMP v0.1.0 - Initial Release",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e9978437d7d3",
+      "timestamp": "2026-02-11T22:09:26Z",
+      "sessionId": "session_20260211_140926_2d3fe0",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T001"
+      }
+    },
+    {
+      "id": "log-1770847823-acb2d9",
+      "timestamp": "2026-02-11T22:10:23Z",
+      "action": "task_created",
+      "taskId": "T002",
+      "actor": "system",
+      "details": {
+        "title": "Implement unified provider registry with 28 AI coding agent definitions",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement unified provider registry with 28 AI coding agent definitions",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e2d6dda2c9b9",
+      "timestamp": "2026-02-11T22:10:27Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T002",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:10:26Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847831-e9bd4d",
+      "timestamp": "2026-02-11T22:10:31Z",
+      "action": "task_created",
+      "taskId": "T003",
+      "actor": "system",
+      "details": {
+        "title": "Implement provider auto-detection engine",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement provider auto-detection engine",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_828b4b3b4a6d",
+      "timestamp": "2026-02-11T22:10:35Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T003",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:10:34Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847838-024a4c",
+      "timestamp": "2026-02-11T22:10:38Z",
+      "action": "task_created",
+      "taskId": "T004",
+      "actor": "system",
+      "details": {
+        "title": "Implement config format handlers (JSON/JSONC, YAML, TOML)",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement config format handlers (JSON/JSONC, YAML, TOML)",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_20aa536d0cb6",
+      "timestamp": "2026-02-11T22:10:43Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T004",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:10:42Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847846-5a355f",
+      "timestamp": "2026-02-11T22:10:46Z",
+      "action": "task_created",
+      "taskId": "T005",
+      "actor": "system",
+      "details": {
+        "title": "Implement MCP server config installer with format transforms",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement MCP server config installer with format transforms",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_42117a231c93",
+      "timestamp": "2026-02-11T22:10:50Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T005",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:10:50Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847855-55ebda",
+      "timestamp": "2026-02-11T22:10:55Z",
+      "action": "task_created",
+      "taskId": "T006",
+      "actor": "system",
+      "details": {
+        "title": "Implement lock file management for MCP servers and skills",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement lock file management for MCP servers and skills",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_ea0895358fcb",
+      "timestamp": "2026-02-11T22:10:59Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T006",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:10:59Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847864-5e7d30",
+      "timestamp": "2026-02-11T22:11:04Z",
+      "action": "task_created",
+      "taskId": "T007",
+      "actor": "system",
+      "details": {
+        "title": "Implement skills installer, discovery, validator, and audit scanner",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement skills installer, discovery, validator, and audit scanner",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_85ea7148aeb7",
+      "timestamp": "2026-02-11T22:11:09Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T007",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:08Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847874-27e206",
+      "timestamp": "2026-02-11T22:11:14Z",
+      "action": "task_created",
+      "taskId": "T008",
+      "actor": "system",
+      "details": {
+        "title": "Implement source parser for GitHub/npm/URL/local/command sources",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement source parser for GitHub/npm/URL/local/command sources",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_a248e0719148",
+      "timestamp": "2026-02-11T22:11:18Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T008",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:17Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847884-475915",
+      "timestamp": "2026-02-11T22:11:24Z",
+      "action": "task_created",
+      "taskId": "T009",
+      "actor": "system",
+      "details": {
+        "title": "Implement instructions injection system for agent config files",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement instructions injection system for agent config files",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_ee3cbb7b56cc",
+      "timestamp": "2026-02-11T22:11:28Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T009",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:28Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847893-510d47",
+      "timestamp": "2026-02-11T22:11:33Z",
+      "action": "task_created",
+      "taskId": "T010",
+      "actor": "system",
+      "details": {
+        "title": "Implement marketplace client for skill discovery",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement marketplace client for skill discovery",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_080c4d3229f3",
+      "timestamp": "2026-02-11T22:11:37Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T010",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:36Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847902-0340a2",
+      "timestamp": "2026-02-11T22:11:42Z",
+      "action": "task_created",
+      "taskId": "T011",
+      "actor": "system",
+      "details": {
+        "title": "Implement CLI with commander.js command structure",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement CLI with commander.js command structure",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_0a8397e1e1a2",
+      "timestamp": "2026-02-11T22:11:46Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T011",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:45Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847912-241b44",
+      "timestamp": "2026-02-11T22:11:52Z",
+      "action": "task_created",
+      "taskId": "T012",
+      "actor": "system",
+      "details": {
+        "title": "Create src/core/mcp/reader.ts with library API for MCP read/list/remove",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create src/core/mcp/reader.ts with library API for MCP read/list/remove",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_3eec92debc2b",
+      "timestamp": "2026-02-11T22:11:57Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T012",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:11:56Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847922-6cefff",
+      "timestamp": "2026-02-11T22:12:02Z",
+      "action": "task_created",
+      "taskId": "T013",
+      "actor": "system",
+      "details": {
+        "title": "Add removeConfig format router to src/core/formats/index.ts",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add removeConfig format router to src/core/formats/index.ts",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_0199d374733a",
+      "timestamp": "2026-02-11T22:12:06Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T013",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:05Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847931-60d800",
+      "timestamp": "2026-02-11T22:12:11Z",
+      "action": "task_created",
+      "taskId": "T014",
+      "actor": "system",
+      "details": {
+        "title": "Add McpServerEntry type to src/types.ts",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add McpServerEntry type to src/types.ts",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_de1b6cad914f",
+      "timestamp": "2026-02-11T22:12:15Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T014",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:15Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847941-cf58c1",
+      "timestamp": "2026-02-11T22:12:21Z",
+      "action": "task_created",
+      "taskId": "T015",
+      "actor": "system",
+      "details": {
+        "title": "Refactor mcp list/remove/detect commands to delegate to core reader",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Refactor mcp list/remove/detect commands to delegate to core reader",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_44f606fac51f",
+      "timestamp": "2026-02-11T22:12:25Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T015",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:24Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847951-77b38c",
+      "timestamp": "2026-02-11T22:12:31Z",
+      "action": "task_created",
+      "taskId": "T016",
+      "actor": "system",
+      "details": {
+        "title": "Export ~25 new symbols from src/index.ts for library API",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Export ~25 new symbols from src/index.ts for library API",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_1dfb45e1dcd3",
+      "timestamp": "2026-02-11T22:12:36Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T016",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:35Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847961-31c107",
+      "timestamp": "2026-02-11T22:12:41Z",
+      "action": "task_created",
+      "taskId": "T017",
+      "actor": "system",
+      "details": {
+        "title": "Move resolveConfigPath from installer to reader",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Move resolveConfigPath from installer to reader",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_b8b6a3c7602f",
+      "timestamp": "2026-02-11T22:12:45Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T017",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:44Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847970-ed984a",
+      "timestamp": "2026-02-11T22:12:50Z",
+      "action": "task_created",
+      "taskId": "T018",
+      "actor": "system",
+      "details": {
+        "title": "Update package.json name to @cleocode/caamp with publishConfig",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Update package.json name to @cleocode/caamp with publishConfig",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_0dd45d81ec1d",
+      "timestamp": "2026-02-11T22:12:55Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T018",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:12:54Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847980-6184da",
+      "timestamp": "2026-02-11T22:13:00Z",
+      "action": "task_created",
+      "taskId": "T019",
+      "actor": "system",
+      "details": {
+        "title": "Create GitHub repo kryptobaseddev/caamp and push code",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create GitHub repo kryptobaseddev/caamp and push code",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e1805304e671",
+      "timestamp": "2026-02-11T22:13:04Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T019",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:13:03Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770847989-9f6f1d",
+      "timestamp": "2026-02-11T22:13:09Z",
+      "action": "task_created",
+      "taskId": "T020",
+      "actor": "system",
+      "details": {
+        "title": "Publish @cleocode/caamp@0.1.0 to npm registry",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Publish @cleocode/caamp@0.1.0 to npm registry",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_6cbb1a299a56",
+      "timestamp": "2026-02-11T22:13:14Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T020",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:13:13Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_9978926111e2",
+      "timestamp": "2026-02-11T22:13:42Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T001",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T22:13:42Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
     }
   ]
 }
