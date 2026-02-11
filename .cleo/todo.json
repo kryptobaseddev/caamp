@@ -71,20 +71,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-11T23:47:48Z",
+  "lastUpdated": "2026-02-11T23:55:10Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "78bca85f12aa28fa",
+    "checksum": "30e4966ec6240ca5",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 69,
+    "generation": 76,
     "lastModified": "2026-02-11T23:46:11Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 3
   },
   "focus": {
-    "currentTask": "T030",
+    "currentTask": null,
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -1047,19 +1047,36 @@
     {
       "id": "T030",
       "title": "Audit API-REFERENCE.md against actual src/index.ts exports",
-      "status": "active",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T029",
       "createdAt": "2026-02-11T23:42:59Z",
-      "updatedAt": "2026-02-11T23:46:11Z",
+      "updatedAt": "2026-02-11T23:47:57Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-11 23:42:59 UTC: Compare every function/type/class documented in docs/API-REFERENCE.md against actual source code. Check: (1) All 82 exports are present and signatures match, (2) Parameter types/defaults are accurate, (3) Return types match implementation, (4) Examples are runnable, (5) Missing exports not documented, (6) Report discrepancies as findings"
-      ]
+        "2026-02-11 23:42:59 UTC: Compare every function/type/class documented in docs/API-REFERENCE.md against actual source code. Check: (1) All 82 exports are present and signatures match, (2) Parameter types/defaults are accurate, (3) Return types match implementation, (4) Examples are runnable, (5) Missing exports not documented, (6) Report discrepancies as findings",
+        "[COMPLETED 2026-02-11T23:47:57Z] API audit complete - 12 discrepancies found across 82 exports. 2 critical (checkSkillUpdate return type + outdated description), 1 high (MarketplaceClient return type mismatch). All 25 types verified exact match. Full report at claudedocs/agent-outputs/T030-api-audit.md"
+      ],
+      "completedAt": "2026-02-11T23:47:57Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:47:57Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T031",
@@ -1118,7 +1135,22 @@
         "2026-02-11 23:43:25 UTC: Three deferred v0.2.0 bugs from GAP-ANALYSIS.md Section 5.2: (1) providers detect uses Unix-only 'which' - needs 'where' fallback on win32 in src/core/registry/detection.ts, (2) skills install sourceType hardcoded to 'github' in src/commands/skills/install.ts:56 - should use parsed.type, (3) Deduplicate writeLockFile functions - duplicated in src/core/mcp/lock.ts and src/core/skills/lock.ts with no coordination",
         "[COMPLETED 2026-02-11T23:47:48Z] Fixed all 3 deferred v0.3.0 bugs: (1) Windows detection uses where instead of which on win32, (2) sourceType uses parsed.type instead of hardcoded github, (3) writeLockFile/readLockFile deduplicated into shared src/core/lock-utils.ts"
       ],
-      "completedAt": "2026-02-11T23:47:48Z"
+      "completedAt": "2026-02-11T23:47:48Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:47:48Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T034",
@@ -1174,12 +1206,12 @@
     {
       "id": "T036",
       "title": "Update GAP-ANALYSIS.md and file inventory for v0.3.0 state",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T029",
       "createdAt": "2026-02-11T23:43:48Z",
-      "updatedAt": "2026-02-11T23:43:48Z",
+      "updatedAt": "2026-02-11T23:55:10Z",
       "size": "medium",
       "position": 7,
       "positionVersion": 0,
@@ -1191,8 +1223,47 @@
         "T035"
       ],
       "notes": [
-        "2026-02-11 23:43:48 UTC: Update claudedocs/GAP-ANALYSIS.md to reflect v0.3.0 work: (1) Update Section 9 file inventory with actual file counts and line counts (currently shows v0.1.0 data), (2) Add v0.3.0 Results section paralleling v0.2.0 Results, (3) Update test count and coverage areas, (4) Reconcile Section 6 roadmap with what was actually completed, (5) Update Section 1 shipped inventory numbers"
-      ]
+        "2026-02-11 23:43:48 UTC: Update claudedocs/GAP-ANALYSIS.md to reflect v0.3.0 work: (1) Update Section 9 file inventory with actual file counts and line counts (currently shows v0.1.0 data), (2) Add v0.3.0 Results section paralleling v0.2.0 Results, (3) Update test count and coverage areas, (4) Reconcile Section 6 roadmap with what was actually completed, (5) Update Section 1 shipped inventory numbers",
+        "[COMPLETED 2026-02-11T23:55:10Z] Gap analysis updated for v0.3.0 state: Section 1 numbers updated (22 commands, 30 core files, 2953 core lines, 88 exports, 120 tests, Node>=20), Section 2 gaps updated with v0.3.0 fixes, Section 4 feature gaps marked as done, Section 5.2/5.4/5.5 deferred items resolved, Section 5.7 added with full v0.3.0 results, Section 6 retitled as remaining items, Section 9 file inventory rebuilt from actual counts"
+      ],
+      "completedAt": "2026-02-11T23:55:10Z"
+    },
+    {
+      "id": "T037",
+      "title": "Fix API-REFERENCE.md based on T030 audit findings",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T029",
+      "createdAt": "2026-02-11T23:49:06Z",
+      "updatedAt": "2026-02-11T23:52:17Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "depends": [
+        "T030"
+      ],
+      "notes": [
+        "2026-02-11 23:49:06 UTC: Apply critical and high findings from T030 audit: (1) Fix checkSkillUpdate return type - add status field, (2) Fix checkSkillUpdate description - remove 'not implemented' text, (3) Fix MarketplaceClient search/getSkill return types - either export MarketplaceResult or align types, (4) Add new logger exports (setVerbose, setQuiet, isVerbose, isQuiet) to docs, (5) Add ProviderPriority and ProviderStatus type docs. See claudedocs/agent-outputs/T030-api-audit.md for full details.",
+        "[COMPLETED 2026-02-11T23:52:17Z] API-REFERENCE.md updated with all 5 audit fixes: (1) checkSkillUpdate return type now includes status field and accurate behavior description, (2) MarketplaceClient methods now show MarketplaceResult return type with MarketplaceResult exported from index.ts, (3) Logger section added documenting setVerbose/setQuiet/isVerbose/isQuiet, (4) ProviderPriority and ProviderStatus union types documented and exported from index.ts, (5) Export count updated to 89 (28 types + 60 functions + 1 class)"
+      ],
+      "completedAt": "2026-02-11T23:52:17Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:52:18Z",
+        "failureLog": []
+      }
     }
   ],
   "labels": {}

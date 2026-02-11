@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 76,
+    "totalEntries": 79,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:47:29Z",
+    "lastEntry": "2026-02-11T23:52:18Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1383,6 +1383,84 @@
       "after": {
         "status": "done",
         "completedAt": "2026-02-11T23:47:28Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_1ddee468dbdf",
+      "timestamp": "2026-02-11T23:47:48Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T033",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:47:48Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_c4f75a29dcf5",
+      "timestamp": "2026-02-11T23:47:57Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T030",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:47:57Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770853746-278075",
+      "timestamp": "2026-02-11T23:49:06Z",
+      "action": "task_created",
+      "taskId": "T037",
+      "actor": "system",
+      "details": {
+        "title": "Fix API-REFERENCE.md based on T030 audit findings",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix API-REFERENCE.md based on T030 audit findings",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e25157cd492c",
+      "timestamp": "2026-02-11T23:52:18Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T037",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:52:17Z"
       },
       "details": {
         "field": "status",
