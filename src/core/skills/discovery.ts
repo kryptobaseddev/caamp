@@ -1,0 +1,95 @@
+/**
+ * Local skill discovery
+ *
+ * Scans directories for SKILL.md files and parses their frontmatter.
+ */
+
+import { readFile, readdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { join, dirname, basename } from "node:path";
+import matter from "gray-matter";
+import type { SkillEntry, SkillMetadata } from "../../types.js";
+
+/** Parse a SKILL.md file and extract metadata */
+export async function parseSkillFile(filePath: string): Promise<SkillMetadata | null> {
+  try {
+    const content = await readFile(filePath, "utf-8");
+    const { data } = matter(content);
+
+    if (!data["name"] || !data["description"]) {
+      return null;
+    }
+
+    const allowedTools = data["allowed-tools"] ?? data["allowedTools"];
+
+    return {
+      name: String(data["name"]),
+      description: String(data["description"]),
+      license: data["license"] ? String(data["license"]) : undefined,
+      compatibility: data["compatibility"] ? String(data["compatibility"]) : undefined,
+      metadata: data["metadata"] as Record<string, string> | undefined,
+      allowedTools: typeof allowedTools === "string"
+        ? allowedTools.split(/\s+/)
+        : Array.isArray(allowedTools)
+          ? allowedTools.map(String)
+          : undefined,
+      version: data["version"] ? String(data["version"]) : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Discover a skill at a given path (directory containing SKILL.md) */
+export async function discoverSkill(skillDir: string): Promise<SkillEntry | null> {
+  const skillFile = join(skillDir, "SKILL.md");
+  if (!existsSync(skillFile)) return null;
+
+  const metadata = await parseSkillFile(skillFile);
+  if (!metadata) return null;
+
+  return {
+    name: metadata.name,
+    scopedName: metadata.name,
+    path: skillDir,
+    metadata,
+  };
+}
+
+/** Scan a directory for skill directories (each containing SKILL.md) */
+export async function discoverSkills(rootDir: string): Promise<SkillEntry[]> {
+  if (!existsSync(rootDir)) return [];
+
+  const entries = await readdir(rootDir, { withFileTypes: true });
+  const skills: SkillEntry[] = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+
+    const skillDir = join(rootDir, entry.name);
+    const skill = await discoverSkill(skillDir);
+    if (skill) {
+      skills.push(skill);
+    }
+  }
+
+  return skills;
+}
+
+/** Discover skills across multiple directories */
+export async function discoverSkillsMulti(dirs: string[]): Promise<SkillEntry[]> {
+  const all: SkillEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const dir of dirs) {
+    const skills = await discoverSkills(dir);
+    for (const skill of skills) {
+      if (!seen.has(skill.name)) {
+        seen.add(skill.name);
+        all.push(skill);
+      }
+    }
+  }
+
+  return all;
+}
