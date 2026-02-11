@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 64,
+    "totalEntries": 76,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:42:43Z",
+    "lastEntry": "2026-02-11T23:47:29Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1180,6 +1180,213 @@
       "scope": {
         "type": "epic",
         "rootTaskId": "T021"
+      }
+    },
+    {
+      "id": "log-1770853371-44c44c",
+      "timestamp": "2026-02-11T23:42:51Z",
+      "action": "task_created",
+      "taskId": "T029",
+      "actor": "system",
+      "details": {
+        "title": "CAAMP v0.3.0 - API Documentation, Quality & Outstanding Gaps",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "CAAMP v0.3.0 - API Documentation, Quality & Outstanding Gaps",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853379-059909",
+      "timestamp": "2026-02-11T23:42:59Z",
+      "action": "task_created",
+      "taskId": "T030",
+      "actor": "system",
+      "details": {
+        "title": "Audit API-REFERENCE.md against actual src/index.ts exports",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Audit API-REFERENCE.md against actual src/index.ts exports",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853387-daf0d8",
+      "timestamp": "2026-02-11T23:43:07Z",
+      "action": "task_created",
+      "taskId": "T031",
+      "actor": "system",
+      "details": {
+        "title": "Add TSDoc annotations to all public API exports",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add TSDoc annotations to all public API exports",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853394-0791b4",
+      "timestamp": "2026-02-11T23:43:14Z",
+      "action": "task_created",
+      "taskId": "T032",
+      "actor": "system",
+      "details": {
+        "title": "Set up automated API doc generation with TypeDoc",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Set up automated API doc generation with TypeDoc",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853405-2435b1",
+      "timestamp": "2026-02-11T23:43:25Z",
+      "action": "task_created",
+      "taskId": "T033",
+      "actor": "system",
+      "details": {
+        "title": "Fix v0.3.0 deferred bugs: Windows detect, sourceType hardcode, lock file dedup",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix v0.3.0 deferred bugs: Windows detect, sourceType hardcode, lock file dedup",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853413-81cb9d",
+      "timestamp": "2026-02-11T23:43:33Z",
+      "action": "task_created",
+      "taskId": "T034",
+      "actor": "system",
+      "details": {
+        "title": "Implement caamp doctor command",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement caamp doctor command",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853420-a83dbe",
+      "timestamp": "2026-02-11T23:43:40Z",
+      "action": "task_created",
+      "taskId": "T035",
+      "actor": "system",
+      "details": {
+        "title": "Add --verbose and --quiet global flags",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add --verbose and --quiet global flags",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770853428-8605c4",
+      "timestamp": "2026-02-11T23:43:48Z",
+      "action": "task_created",
+      "taskId": "T036",
+      "actor": "system",
+      "details": {
+        "title": "Update GAP-ANALYSIS.md and file inventory for v0.3.0 state",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Update GAP-ANALYSIS.md and file inventory for v0.3.0 state",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_d8d0c6bea900",
+      "timestamp": "2026-02-11T23:44:41Z",
+      "sessionId": "session_20260211_154243_3c2d99",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Switching to v0.3.0 epic"
+      }
+    },
+    {
+      "id": "log_103e109e2209",
+      "timestamp": "2026-02-11T23:44:41Z",
+      "sessionId": "session_20260211_154441_2f0fec",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T030",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T029"
+      }
+    },
+    {
+      "id": "log_9dbfad7d478a",
+      "timestamp": "2026-02-11T23:46:12Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T030"
+      },
+      "after": {
+        "currentTask": "T030"
+      },
+      "details": null
+    },
+    {
+      "id": "log_b492ee2029c6",
+      "timestamp": "2026-02-11T23:47:29Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T034",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:47:28Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
       }
     }
   ]

@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T23:42:43Z",
-    "totalSessionsCreated": 3
+    "lastModified": "2026-02-11T23:46:11Z",
+    "totalSessionsCreated": 4
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -105,7 +105,7 @@
     },
     {
       "id": "session_20260211_154243_3c2d99",
-      "status": "active",
+      "status": "ended",
       "name": "CAAMP v0.3.0 API Docs & Quality",
       "agentId": null,
       "scope": {
@@ -126,12 +126,12 @@
         "currentTask": null,
         "currentPhase": null,
         "previousTask": null,
-        "sessionNote": null,
+        "sessionNote": "Switching to v0.3.0 epic",
         "nextAction": null,
         "focusHistory": []
       },
       "startedAt": "2026-02-11T23:42:43Z",
-      "lastActivity": "2026-02-11T23:42:43Z",
+      "lastActivity": "2026-02-11T23:44:41Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -142,6 +142,61 @@
       "startMetrics": {
         "session_id": "session_20260211_154243_3c2d99",
         "start_timestamp": "2026-02-11T23:42:43Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-11T23:44:41Z"
+    },
+    {
+      "id": "session_20260211_154441_2f0fec",
+      "status": "active",
+      "name": "CAAMP v0.3.0 Wave 1",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T029",
+        "computedTaskIds": [
+          "T029",
+          "T030",
+          "T031",
+          "T032",
+          "T033",
+          "T034",
+          "T035",
+          "T036"
+        ]
+      },
+      "focus": {
+        "currentTask": "T030",
+        "currentPhase": null,
+        "previousTask": "T030",
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T030",
+            "timestamp": "2026-02-11T23:44:41Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T030",
+            "timestamp": "2026-02-11T23:46:11Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-11T23:44:41Z",
+      "lastActivity": "2026-02-11T23:46:11Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 2,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_154441_2f0fec",
+        "start_timestamp": "2026-02-11T23:44:41Z",
         "start_tokens": 0,
         "max_tokens": 200000
       }
