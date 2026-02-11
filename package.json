@@ -1,6 +1,6 @@
 {
   "name": "@cleocode/caamp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Central AI Agent Managed Packages - unified provider registry and package manager for AI coding agents",
   "type": "module",
   "bin": {
@@ -44,25 +44,25 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "commander": "^13.0.0",
-    "@clack/prompts": "^0.10.0",
-    "picocolors": "^1.1.0",
+    "commander": "^14.0.0",
+    "@clack/prompts": "^1.0.0",
+    "picocolors": "^1.1.1",
     "gray-matter": "^4.0.3",
-    "simple-git": "^3.27.0",
+    "simple-git": "^3.30.0",
     "jsonc-parser": "^3.3.1",
     "js-yaml": "^4.1.0",
     "@iarna/toml": "^2.2.5"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "tsup": "^8.3.0",
-    "tsx": "^4.19.0",
-    "vitest": "^3.0.0",
+    "typescript": "^5.9.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.21.0",
+    "vitest": "^3.2.0",
     "@types/node": "^22.0.0",
     "@types/js-yaml": "^4.0.9"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public"

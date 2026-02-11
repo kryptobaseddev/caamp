@@ -5,7 +5,7 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T23:18:09Z",
+    "lastModified": "2026-02-11T23:24:50Z",
     "totalSessionsCreated": 2
   },
   "config": {
@@ -55,7 +55,7 @@
     },
     {
       "id": "session_20260211_151736_5714cc",
-      "status": "active",
+      "status": "ended",
       "name": "CAAMP v0.2.0 Work",
       "agentId": null,
       "scope": {
@@ -73,10 +73,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T025",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": null,
-        "sessionNote": null,
+        "previousTask": "T025",
+        "sessionNote": "v0.2.0 complete. All 7 tasks done. 120 tests, 41 providers, full docs suite.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -87,7 +87,7 @@
         ]
       },
       "startedAt": "2026-02-11T23:17:36Z",
-      "lastActivity": "2026-02-11T23:18:09Z",
+      "lastActivity": "2026-02-11T23:24:50Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -100,7 +100,8 @@
         "start_timestamp": "2026-02-11T23:17:36Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-11T23:24:50Z"
     }
   ],
   "sessionHistory": []

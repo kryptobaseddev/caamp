@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+## [0.2.0] - 2026-02-11
+
+### Added
+
+- Expanded provider registry from 28 to 46 AI coding agent providers (T028)
+  - New: Aider, Amazon Q Developer, Tabnine, Augment, Blackbox AI, Devin, Replit Agent, Mentat, Sourcery, Double, Codegen, JetBrains AI, Sweep, Supermaven, Copilot CLI, SWE-Agent, Forge, Gemini Code Assist
+- Network-based version checking for `skills check` command (T026)
+- Full `skills update` implementation with SHA comparison and reinstall (T025)
+- 46 new unit tests for marketplace and instructions modules (T027)
+  - 25 tests for instructions (injector + templates)
+  - 21 tests for marketplace (client + adapters)
+  - Total test count: 74 → 120
+- README rewrite with banner image, badges, proper install instructions, library usage, architecture diagram, and documentation links (T022)
+- API Reference document covering all 82 exported symbols (docs/API-REFERENCE.md)
+- Product Requirements Document (claudedocs/PRD.md)
+- Technical Specification with RFC 2119 language (claudedocs/specs/CAAMP-SPEC.md)
+- Vision & Architecture document (claudedocs/VISION.md)
+- Gap Analysis & Roadmap (claudedocs/GAP-ANALYSIS.md)
+- Research Brief (claudedocs/agent-outputs/research-brief.md)
+
+### Changed
+
+- Bumped Node.js engine requirement from >=18 to >=20 (T023)
+- Updated commander from ^13 to ^14 (T023)
+- Updated @clack/prompts from ^0.10 to ^1.0 (T023)
+- Updated tsup build target from node18 to node20 (T023)
+- Fixed `npx caamp` to `npx @cleocode/caamp` in all documentation (T024)
+
+### Fixed
+
+- `skills update` command was a non-functional stub - now implements actual version comparison (T025)
+- `skills check` command had no network checking - now uses git ls-remote for SHA comparison (T026)
+
+
+
 ## [0.1.0] - 2026-02-11
 
 ### Added

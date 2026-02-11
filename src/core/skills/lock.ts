@@ -6,6 +6,8 @@
 
 import type { CaampLockFile, LockEntry, SourceType } from "../../types.js";
 import { readLockFile } from "../mcp/lock.js";
+import { parseSource } from "../sources/parser.js";
+import { simpleGit } from "simple-git";
 import { writeFile, mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -68,22 +70,78 @@ export async function getTrackedSkills(): Promise<Record<string, LockEntry>> {
   return lock.skills;
 }
 
+/** Fetch the latest commit SHA for a GitHub/GitLab repo via ls-remote */
+async function fetchLatestSha(
+  repoUrl: string,
+  ref?: string,
+): Promise<string | null> {
+  try {
+    const git = simpleGit();
+    const target = ref ?? "HEAD";
+    // Use --refs only for named refs (branches/tags), not for HEAD
+    const args = target === "HEAD"
+      ? [repoUrl, "HEAD"]
+      : ["--refs", repoUrl, target];
+    const result = await git.listRemote(args);
+    const firstLine = result.trim().split("\n")[0];
+    if (!firstLine) return null;
+    const sha = firstLine.split("\t")[0];
+    return sha ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** Check if a skill has updates available (comparing version/hash) */
 export async function checkSkillUpdate(skillName: string): Promise<{
   hasUpdate: boolean;
   currentVersion?: string;
   latestVersion?: string;
+  status: "up-to-date" | "update-available" | "unknown";
 }> {
   const lock = await readLockFile();
   const entry = lock.skills[skillName];
   if (!entry) {
-    return { hasUpdate: false };
+    return { hasUpdate: false, status: "unknown" };
   }
 
-  // For git-based sources, we'd need to check remote HEAD
-  // For now, return no update (actual check requires network)
+  // Only GitHub and GitLab sources support remote checking
+  if (entry.sourceType !== "github" && entry.sourceType !== "gitlab") {
+    return {
+      hasUpdate: false,
+      currentVersion: entry.version,
+      status: "unknown",
+    };
+  }
+
+  const parsed = parseSource(entry.source);
+  if (!parsed.owner || !parsed.repo) {
+    return {
+      hasUpdate: false,
+      currentVersion: entry.version,
+      status: "unknown",
+    };
+  }
+
+  const host = parsed.type === "gitlab" ? "gitlab.com" : "github.com";
+  const repoUrl = `https://${host}/${parsed.owner}/${parsed.repo}.git`;
+  const latestSha = await fetchLatestSha(repoUrl, parsed.ref);
+
+  if (!latestSha) {
+    return {
+      hasUpdate: false,
+      currentVersion: entry.version,
+      status: "unknown",
+    };
+  }
+
+  const currentVersion = entry.version;
+  const hasUpdate = !currentVersion || !latestSha.startsWith(currentVersion.slice(0, 7));
+
   return {
-    hasUpdate: false,
-    currentVersion: entry.version,
+    hasUpdate,
+    currentVersion: currentVersion ?? "unknown",
+    latestVersion: latestSha.slice(0, 12),
+    status: hasUpdate ? "update-available" : "up-to-date",
   };
 }

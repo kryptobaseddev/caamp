@@ -20,6 +20,8 @@ export function registerSkillsCheck(parent: Command): void {
         return;
       }
 
+      console.log(pc.dim(`Checking ${entries.length} skill(s) for updates...\n`));
+
       const results = [];
       for (const [name, entry] of entries) {
         const update = await checkSkillUpdate(name);
@@ -31,17 +33,41 @@ export function registerSkillsCheck(parent: Command): void {
         return;
       }
 
-      console.log(pc.bold(`\n${entries.length} tracked skill(s):\n`));
+      let updatesAvailable = 0;
 
       for (const r of results) {
-        const status = r.hasUpdate
-          ? pc.yellow("update available")
-          : pc.green("up to date");
+        let statusLabel: string;
+        if (r.status === "update-available") {
+          statusLabel = pc.yellow("update available");
+          updatesAvailable++;
+        } else if (r.status === "up-to-date") {
+          statusLabel = pc.green("up to date");
+        } else {
+          statusLabel = pc.dim("unknown");
+        }
 
-        console.log(`  ${pc.bold(r.name.padEnd(30))} ${status}`);
+        console.log(`  ${pc.bold(r.name.padEnd(30))} ${statusLabel}`);
+
+        if (r.currentVersion || r.latestVersion) {
+          const current = r.currentVersion ? r.currentVersion.slice(0, 12) : "?";
+          const latest = r.latestVersion ?? "?";
+          if (r.hasUpdate) {
+            console.log(`  ${pc.dim("current:")} ${current}  ${pc.dim("->")}  ${pc.cyan(latest)}`);
+          } else {
+            console.log(`  ${pc.dim("version:")} ${current}`);
+          }
+        }
+
         console.log(`  ${pc.dim(`source: ${r.entry.source}`)}`);
         console.log(`  ${pc.dim(`agents: ${r.entry.agents.join(", ")}`)}`);
         console.log();
+      }
+
+      if (updatesAvailable > 0) {
+        console.log(pc.yellow(`${updatesAvailable} update(s) available.`));
+        console.log(pc.dim("Run `caamp skills update` to update all."));
+      } else {
+        console.log(pc.green("All skills are up to date."));
       }
     });
 }

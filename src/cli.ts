@@ -16,7 +16,7 @@ const program = new Command();
 program
   .name("caamp")
   .description("Central AI Agent Managed Packages - unified provider registry and package manager")
-  .version("0.1.0");
+  .version("0.2.0");
 
 // Register command groups
 registerProvidersCommand(program);
