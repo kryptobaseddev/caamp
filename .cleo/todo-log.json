@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 89,
+    "totalEntries": 103,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T00:39:53Z",
+    "lastEntry": "2026-02-12T00:45:23Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1621,6 +1621,1304 @@
       "scope": {
         "type": "epic",
         "rootTaskId": "T001"
+      }
+    },
+    {
+      "id": "log-1770856799-87a1c1",
+      "timestamp": "2026-02-12T00:39:59Z",
+      "action": "task_created",
+      "taskId": "T038",
+      "actor": "system",
+      "details": {
+        "title": "CAAMP v1.0.0 - Production Stability Release",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "CAAMP v1.0.0 - Production Stability Release",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_18272d2d563a",
+      "timestamp": "2026-02-12T00:40:07Z",
+      "sessionId": "session_20260211_163953_169520",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Created T038 master epic, spawning epic-architect for decomposition"
+      }
+    },
+    {
+      "id": "log_fc6f7500bc3c",
+      "timestamp": "2026-02-12T00:40:56Z",
+      "sessionId": "session_20260211_164055_2388fb",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log-1770856871-5c32ab",
+      "timestamp": "2026-02-12T00:41:11Z",
+      "action": "task_created",
+      "taskId": "T039",
+      "actor": "system",
+      "details": {
+        "title": "Critical Fixes - Error Handling & Documentation",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Critical Fixes - Error Handling & Documentation",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856876-2bfb87",
+      "timestamp": "2026-02-12T00:41:16Z",
+      "action": "task_created",
+      "taskId": "T040",
+      "actor": "system",
+      "details": {
+        "title": "Add global error handler to cli.ts",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add global error handler to cli.ts",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856888-e7a076",
+      "timestamp": "2026-02-12T00:41:28Z",
+      "action": "task_created",
+      "taskId": "T041",
+      "actor": "system",
+      "details": {
+        "title": "Fix README.md stale counts",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix README.md stale counts",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856889-034b03",
+      "timestamp": "2026-02-12T00:41:29Z",
+      "action": "task_created",
+      "taskId": "T042",
+      "actor": "system",
+      "details": {
+        "title": "Fix doctor command hardcoded version",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix doctor command hardcoded version",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856889-57c81f",
+      "timestamp": "2026-02-12T00:41:29Z",
+      "action": "task_created",
+      "taskId": "T043",
+      "actor": "system",
+      "details": {
+        "title": "Add network error UX messages",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add network error UX messages",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856889-2b36b2",
+      "timestamp": "2026-02-12T00:41:29Z",
+      "action": "task_created",
+      "taskId": "T044",
+      "actor": "system",
+      "details": {
+        "title": "Add fetch timeouts to all network calls",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add fetch timeouts to all network calls",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856901-7fa7ab",
+      "timestamp": "2026-02-12T00:41:41Z",
+      "action": "task_created",
+      "taskId": "T045",
+      "actor": "system",
+      "details": {
+        "title": "Remove invalid providers: supermaven and sweep",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Remove invalid providers: supermaven and sweep",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856902-00cf3b",
+      "timestamp": "2026-02-12T00:41:42Z",
+      "action": "task_created",
+      "taskId": "T046",
+      "actor": "system",
+      "details": {
+        "title": "Fix MarketplaceResult TSDoc comment",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix MarketplaceResult TSDoc comment",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856902-993137",
+      "timestamp": "2026-02-12T00:41:42Z",
+      "action": "task_created",
+      "taskId": "T047",
+      "actor": "system",
+      "details": {
+        "title": "Remove unused @clack/prompts dependency or implement",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Remove unused @clack/prompts dependency or implement",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856902-167882",
+      "timestamp": "2026-02-12T00:41:42Z",
+      "action": "task_created",
+      "taskId": "T048",
+      "actor": "system",
+      "details": {
+        "title": "Extract hardcoded ~/.agents path to shared constant",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Extract hardcoded ~/.agents path to shared constant",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856909-9a1b7d",
+      "timestamp": "2026-02-12T00:41:49Z",
+      "action": "task_created",
+      "taskId": "T049",
+      "actor": "system",
+      "details": {
+        "title": "Test Coverage to 80%+",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Test Coverage to 80%+",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_b5eebae87427",
+      "timestamp": "2026-02-12T00:41:53Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T049",
+      "before": {
+        "title": "Test Coverage to 80%+",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Test Coverage to 80%+",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770856925-fa9fb3",
+      "timestamp": "2026-02-12T00:42:05Z",
+      "action": "task_created",
+      "taskId": "T050",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for MCP installer",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for MCP installer",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856925-63b6d7",
+      "timestamp": "2026-02-12T00:42:05Z",
+      "action": "task_created",
+      "taskId": "T051",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for MCP transforms",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for MCP transforms",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856926-59697c",
+      "timestamp": "2026-02-12T00:42:06Z",
+      "action": "task_created",
+      "taskId": "T052",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for detection engine",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for detection engine",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856926-86ca31",
+      "timestamp": "2026-02-12T00:42:06Z",
+      "action": "task_created",
+      "taskId": "T053",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for GitHub/GitLab fetchers",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for GitHub/GitLab fetchers",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856936-894dfd",
+      "timestamp": "2026-02-12T00:42:16Z",
+      "action": "task_created",
+      "taskId": "T054",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for doctor command",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for doctor command",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856936-e29454",
+      "timestamp": "2026-02-12T00:42:16Z",
+      "action": "task_created",
+      "taskId": "T055",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for logger",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for logger",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856937-cd64c9",
+      "timestamp": "2026-02-12T00:42:17Z",
+      "action": "task_created",
+      "taskId": "T056",
+      "actor": "system",
+      "details": {
+        "title": "Add unit tests for lock-utils",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add unit tests for lock-utils",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856937-fba90c",
+      "timestamp": "2026-02-12T00:42:17Z",
+      "action": "task_created",
+      "taskId": "T057",
+      "actor": "system",
+      "details": {
+        "title": "Fix flaky installer.test.ts tmpdir race condition",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix flaky installer.test.ts tmpdir race condition",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856947-37350c",
+      "timestamp": "2026-02-12T00:42:27Z",
+      "action": "task_created",
+      "taskId": "T058",
+      "actor": "system",
+      "details": {
+        "title": "Add integration tests for full skill install flow",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add integration tests for full skill install flow",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856948-e70e2e",
+      "timestamp": "2026-02-12T00:42:28Z",
+      "action": "task_created",
+      "taskId": "T059",
+      "actor": "system",
+      "details": {
+        "title": "Add integration tests for full MCP install flow",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add integration tests for full MCP install flow",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856948-96679e",
+      "timestamp": "2026-02-12T00:42:28Z",
+      "action": "task_created",
+      "taskId": "T060",
+      "actor": "system",
+      "details": {
+        "title": "Add integration tests for CLI commands",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add integration tests for CLI commands",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856948-d59357",
+      "timestamp": "2026-02-12T00:42:28Z",
+      "action": "task_created",
+      "taskId": "T061",
+      "actor": "system",
+      "details": {
+        "title": "Set up coverage reporting with vitest",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Set up coverage reporting with vitest",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856954-d20a24",
+      "timestamp": "2026-02-12T00:42:34Z",
+      "action": "task_created",
+      "taskId": "T062",
+      "actor": "system",
+      "details": {
+        "title": "CI/CD Hardening",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "CI/CD Hardening",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_7139eea7caa5",
+      "timestamp": "2026-02-12T00:42:38Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T062",
+      "before": {
+        "title": "CI/CD Hardening",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "CI/CD Hardening",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770856967-ffadf1",
+      "timestamp": "2026-02-12T00:42:47Z",
+      "action": "task_created",
+      "taskId": "T063",
+      "actor": "system",
+      "details": {
+        "title": "Add ESLint or Biome linter with npm run lint",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add ESLint or Biome linter with npm run lint",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856967-4332eb",
+      "timestamp": "2026-02-12T00:42:47Z",
+      "action": "task_created",
+      "taskId": "T064",
+      "actor": "system",
+      "details": {
+        "title": "Add multi-OS CI matrix",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add multi-OS CI matrix",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856968-6ece7b",
+      "timestamp": "2026-02-12T00:42:48Z",
+      "action": "task_created",
+      "taskId": "T065",
+      "actor": "system",
+      "details": {
+        "title": "Add npm audit step to CI",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add npm audit step to CI",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856968-c1beea",
+      "timestamp": "2026-02-12T00:42:48Z",
+      "action": "task_created",
+      "taskId": "T066",
+      "actor": "system",
+      "details": {
+        "title": "Add Dependabot or Renovate for dependency updates",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add Dependabot or Renovate for dependency updates",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856976-6fd699",
+      "timestamp": "2026-02-12T00:42:56Z",
+      "action": "task_created",
+      "taskId": "T067",
+      "actor": "system",
+      "details": {
+        "title": "Add coverage reporting to CI",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add coverage reporting to CI",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856976-4ced8a",
+      "timestamp": "2026-02-12T00:42:56Z",
+      "action": "task_created",
+      "taskId": "T068",
+      "actor": "system",
+      "details": {
+        "title": "Set up branch protection rules on main",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Set up branch protection rules on main",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770856977-366a98",
+      "timestamp": "2026-02-12T00:42:57Z",
+      "action": "task_created",
+      "taskId": "T069",
+      "actor": "system",
+      "details": {
+        "title": "Add CodeQL or similar security scanning",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add CodeQL or similar security scanning",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_97188330cb81",
+      "timestamp": "2026-02-12T00:43:01Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T067",
+      "before": {
+        "title": "Add coverage reporting to CI",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Add coverage reporting to CI",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T061"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770856990-dc229a",
+      "timestamp": "2026-02-12T00:43:10Z",
+      "action": "task_created",
+      "taskId": "T070",
+      "actor": "system",
+      "details": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e5cf0d13edbf",
+      "timestamp": "2026-02-12T00:43:14Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T070",
+      "before": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5e165d64b81c",
+      "timestamp": "2026-02-12T00:43:15Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T070",
+      "before": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_2c5bff70a780",
+      "timestamp": "2026-02-12T00:43:15Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T070",
+      "before": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Documentation Completion",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770857007-e601d7",
+      "timestamp": "2026-02-12T00:43:27Z",
+      "action": "task_created",
+      "taskId": "T071",
+      "actor": "system",
+      "details": {
+        "title": "Create CONTRIBUTING.md",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create CONTRIBUTING.md",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857008-bf0d25",
+      "timestamp": "2026-02-12T00:43:28Z",
+      "action": "task_created",
+      "taskId": "T072",
+      "actor": "system",
+      "details": {
+        "title": "Create per-provider configuration guide",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create per-provider configuration guide",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857008-025616",
+      "timestamp": "2026-02-12T00:43:28Z",
+      "action": "task_created",
+      "taskId": "T073",
+      "actor": "system",
+      "details": {
+        "title": "Create SECURITY.md",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create SECURITY.md",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857009-a48966",
+      "timestamp": "2026-02-12T00:43:29Z",
+      "action": "task_created",
+      "taskId": "T074",
+      "actor": "system",
+      "details": {
+        "title": "Create migration guide",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create migration guide",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857017-d5b8da",
+      "timestamp": "2026-02-12T00:43:37Z",
+      "action": "task_created",
+      "taskId": "T075",
+      "actor": "system",
+      "details": {
+        "title": "Add --help examples to all CLI commands",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add --help examples to all CLI commands",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857017-1a0264",
+      "timestamp": "2026-02-12T00:43:37Z",
+      "action": "task_created",
+      "taskId": "T076",
+      "actor": "system",
+      "details": {
+        "title": "Create troubleshooting guide",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create troubleshooting guide",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857017-7a3168",
+      "timestamp": "2026-02-12T00:43:37Z",
+      "action": "task_created",
+      "taskId": "T077",
+      "actor": "system",
+      "details": {
+        "title": "Generate and publish TypeDoc API docs to GitHub Pages",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Generate and publish TypeDoc API docs to GitHub Pages",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857023-ca7c06",
+      "timestamp": "2026-02-12T00:43:43Z",
+      "action": "task_created",
+      "taskId": "T078",
+      "actor": "system",
+      "details": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_f4ab299d24bf",
+      "timestamp": "2026-02-12T00:43:48Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5676f92f64ea",
+      "timestamp": "2026-02-12T00:43:49Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_d8912dbf0e61",
+      "timestamp": "2026-02-12T00:43:49Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_ad8a5b565381",
+      "timestamp": "2026-02-12T00:43:50Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Preparation",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062",
+          "T070"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770857041-1f0a69",
+      "timestamp": "2026-02-12T00:44:01Z",
+      "action": "task_created",
+      "taskId": "T079",
+      "actor": "system",
+      "details": {
+        "title": "Final audit: run all 4 validation agents again",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Final audit: run all 4 validation agents again",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857041-05aabc",
+      "timestamp": "2026-02-12T00:44:01Z",
+      "action": "task_created",
+      "taskId": "T080",
+      "actor": "system",
+      "details": {
+        "title": "Version bump to 1.0.0",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Version bump to 1.0.0",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857042-7fbed6",
+      "timestamp": "2026-02-12T00:44:02Z",
+      "action": "task_created",
+      "taskId": "T081",
+      "actor": "system",
+      "details": {
+        "title": "Write CHANGELOG.md v1.0.0 entry",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Write CHANGELOG.md v1.0.0 entry",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857042-2d49d4",
+      "timestamp": "2026-02-12T00:44:02Z",
+      "action": "task_created",
+      "taskId": "T082",
+      "actor": "system",
+      "details": {
+        "title": "Create GitHub release v1.0.0",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Create GitHub release v1.0.0",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857050-71ff3d",
+      "timestamp": "2026-02-12T00:44:10Z",
+      "action": "task_created",
+      "taskId": "T083",
+      "actor": "system",
+      "details": {
+        "title": "Verify npm publish",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Verify npm publish",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857050-41adb1",
+      "timestamp": "2026-02-12T00:44:10Z",
+      "action": "task_created",
+      "taskId": "T084",
+      "actor": "system",
+      "details": {
+        "title": "Update GAP-ANALYSIS.md with v1.0.0 shipped status",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Update GAP-ANALYSIS.md with v1.0.0 shipped status",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770857051-164bea",
+      "timestamp": "2026-02-12T00:44:11Z",
+      "action": "task_created",
+      "taskId": "T085",
+      "actor": "system",
+      "details": {
+        "title": "Announce release",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Announce release",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_2f917404a425",
+      "timestamp": "2026-02-12T00:45:23Z",
+      "sessionId": "session_20260211_164055_2388fb",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "v1.0.0 decomposition complete: 5 sub-epics (T039, T049, T062, T070, T078) with 46 tasks total. Organized into 3 execution waves with dependency chains. Roadmap written to claudedocs/agent-outputs/v1-roadmap.md."
       }
     }
   ]

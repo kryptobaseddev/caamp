@@ -82,17 +82,17 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T00:05:08Z",
+  "lastUpdated": "2026-02-12T00:44:11Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "9b3dabb1bdaab05f",
+    "checksum": "5f2dda6c7869b50f",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 88,
-    "lastModified": "2026-02-12T00:39:53Z",
+    "generation": 98,
+    "lastModified": "2026-02-12T00:40:55Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 4
+    "activeSessionCount": 5
   },
   "focus": {
     "currentTask": null,
@@ -1343,6 +1343,842 @@
         "lastUpdated": "2026-02-11T23:52:18Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T038",
+      "title": "CAAMP v1.0.0 - Production Stability Release",
+      "status": "pending",
+      "priority": "medium",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-12T00:39:59Z",
+      "updatedAt": "2026-02-12T00:39:59Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:39:59 UTC: Master epic for v1.0.0 stable release. Based on 4 audit reports and GAP-ANALYSIS.md Section 7 criteria. Sub-epics: Critical Fixes, Test Coverage, CI/CD Hardening, Documentation, Code Quality."
+      ]
+    },
+    {
+      "id": "T039",
+      "title": "Critical Fixes - Error Handling & Documentation",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-12T00:41:10Z",
+      "updatedAt": "2026-02-12T00:41:10Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:10 UTC: Wave 0 (no dependencies). Foundation fixes before major work: global error handler, README updates, network error UX, timeouts, remove invalid providers, fix TSDoc, remove unused deps, extract hardcoded paths."
+      ]
+    },
+    {
+      "id": "T040",
+      "title": "Add global error handler to cli.ts",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:16Z",
+      "updatedAt": "2026-02-12T00:41:16Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:16 UTC: Add process.on('uncaughtException') and process.on('unhandledRejection') handlers. Show user-friendly messages. Suggest --verbose for stack trace. Prevent raw stack traces from reaching users. Location: src/cli.ts around program.parse() call."
+      ]
+    },
+    {
+      "id": "T041",
+      "title": "Fix README.md stale counts",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:28Z",
+      "updatedAt": "2026-02-12T00:41:28Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:28 UTC: Update README.md: 28+ -> 46 providers (lines 15, 9 badge, 55, 176). Update 82 -> 88 exports (lines 65, 186). Add doctor command to CLI commands list. File: README.md"
+      ]
+    },
+    {
+      "id": "T042",
+      "title": "Fix doctor command hardcoded version",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T00:41:29Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:29 UTC: Doctor reports version 0.2.0 but should read from package.json. Change from hardcoded string to dynamic import. File: src/commands/doctor.ts"
+      ]
+    },
+    {
+      "id": "T043",
+      "title": "Add network error UX messages",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T00:41:29Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:29 UTC: Add user-friendly messages when fetch/git operations fail. Locations: marketplace/client.ts:70 (log warnings), github.ts:35 (wrap clone), gitlab.ts:28 (wrap clone). Should guide user on network/auth failures."
+      ]
+    },
+    {
+      "id": "T044",
+      "title": "Add fetch timeouts to all network calls",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T00:41:29Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:29 UTC: Use AbortSignal.timeout(10_000) on all fetch() calls. Locations: marketplace/skillsmp.ts:59, skillssh.ts:50, github.ts:61,72, gitlab.ts:55, wellknown.ts:18. Prevents indefinite hanging."
+      ]
+    },
+    {
+      "id": "T045",
+      "title": "Remove invalid providers: supermaven and sweep",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:41Z",
+      "updatedAt": "2026-02-12T00:41:41Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:41 UTC: Remove from registry.json: supermaven (merged into Cursor Nov 2024) and sweep (discontinued, empty config paths). File: providers/registry.json. See code-quality-audit.md M7, M8."
+      ]
+    },
+    {
+      "id": "T046",
+      "title": "Fix MarketplaceResult TSDoc comment",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:41Z",
+      "updatedAt": "2026-02-12T00:41:41Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:41 UTC: Add TSDoc comment to MarketplaceResult interface. Currently has no /** */ block. File: src/core/marketplace/types.ts:11. See api-surface-audit.md finding."
+      ]
+    },
+    {
+      "id": "T047",
+      "title": "Remove unused @clack/prompts dependency or implement",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:42Z",
+      "updatedAt": "2026-02-12T00:41:42Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:42 UTC: Either remove @clack/prompts from package.json or implement interactive prompts for MCP agent selection. Currently declared but unused. See code-quality-audit.md L3."
+      ]
+    },
+    {
+      "id": "T048",
+      "title": "Extract hardcoded ~/.agents path to shared constant",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T039",
+      "createdAt": "2026-02-12T00:41:42Z",
+      "updatedAt": "2026-02-12T00:41:42Z",
+      "size": "medium",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:42 UTC: Path appears in 4+ places: lock-utils.ts:14-15, skills/installer.ts:15, doctor.ts:122. Extract to single constant, optionally make configurable via CAAMP_HOME env var. See code-quality-audit.md M5."
+      ]
+    },
+    {
+      "id": "T049",
+      "title": "Test Coverage to 80%+",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-12T00:41:48Z",
+      "updatedAt": "2026-02-12T00:41:52Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:41:49 UTC: Wave 1 (depends on Epic 1 critical fixes). Add unit and integration tests to reach 80% line coverage. Cover untested modules: MCP installer/transforms, detection engine, fetchers, doctor command, logger, lock-utils. Add full flow integration tests. Set up coverage reporting."
+      ],
+      "depends": [
+        "T039"
+      ]
+    },
+    {
+      "id": "T050",
+      "title": "Add unit tests for MCP installer",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:05Z",
+      "updatedAt": "2026-02-12T00:42:05Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:05 UTC: Test installMcpServer and installMcpServerToAll functions. Mock file system writes. Test dry-run mode, multi-agent installs, header support. File: tests/unit/mcp-installer.test.ts. Target: src/core/mcp/installer.ts (206 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T051",
+      "title": "Add unit tests for MCP transforms",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:05Z",
+      "updatedAt": "2026-02-12T00:42:05Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:05 UTC: Test all 5 transform functions: Goose, Zed, OpenCode, Codex, Cursor. Verify correct config shape for each agent. File: tests/unit/mcp-transforms.test.ts. Target: src/core/mcp/transforms.ts (142 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T052",
+      "title": "Add unit tests for detection engine",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:06Z",
+      "updatedAt": "2026-02-12T00:42:06Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:06 UTC: Test checkBinary, checkDirectory, checkAppBundle, checkFlatpak. Mock exec calls. Test Windows where vs Unix which. File: tests/unit/detection.test.ts. Target: src/core/registry/detection.ts (200 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T053",
+      "title": "Add unit tests for GitHub/GitLab fetchers",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:06Z",
+      "updatedAt": "2026-02-12T00:42:06Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:06 UTC: Test GitHub and GitLab fetch/clone logic. Mock git operations and fetch calls. Test error handling. Files: tests/unit/github.test.ts, tests/unit/gitlab.test.ts. Targets: github.ts (80 lines), gitlab.ts (62 lines)."
+      ]
+    },
+    {
+      "id": "T054",
+      "title": "Add unit tests for doctor command",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:16Z",
+      "updatedAt": "2026-02-12T00:42:16Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:16 UTC: Test config health checks, broken symlink detection, registry integrity validation. Mock file system. File: tests/unit/doctor.test.ts. Target: src/commands/doctor.ts (357 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T055",
+      "title": "Add unit tests for logger",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:16Z",
+      "updatedAt": "2026-02-12T00:42:16Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:16 UTC: Test verbose/quiet mode toggling, message suppression, isVerbose/isQuiet functions. File: tests/unit/logger.test.ts. Target: src/core/logger.ts (90 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T056",
+      "title": "Add unit tests for lock-utils",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:16Z",
+      "updatedAt": "2026-02-12T00:42:16Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:16 UTC: Test readLockFile, writeLockFile, corrupted lock file handling, backup creation. File: tests/unit/lock-utils.test.ts. Target: src/core/lock-utils.ts (35 lines, 0 tests)."
+      ]
+    },
+    {
+      "id": "T057",
+      "title": "Fix flaky installer.test.ts tmpdir race condition",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:17Z",
+      "updatedAt": "2026-02-12T00:42:17Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:17 UTC: Replace Date.now() with crypto.randomUUID() for temp directory names. Scope testDir inside describe blocks. File: tests/unit/installer.test.ts. See stability-validation.md finding."
+      ]
+    },
+    {
+      "id": "T058",
+      "title": "Add integration tests for full skill install flow",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:27Z",
+      "updatedAt": "2026-02-12T00:42:27Z",
+      "size": "medium",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:27 UTC: Test end-to-end: parse source -> fetch -> install to canonical -> symlink to agents. Test all source types (GitHub, GitLab, local, marketplace). File: tests/integration/skill-install.test.ts."
+      ]
+    },
+    {
+      "id": "T059",
+      "title": "Add integration tests for full MCP install flow",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:28Z",
+      "updatedAt": "2026-02-12T00:42:28Z",
+      "size": "medium",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:28 UTC: Test end-to-end: parse source -> build config -> transform -> write to all agents. Test all 5 transforms. File: tests/integration/mcp-install.test.ts."
+      ]
+    },
+    {
+      "id": "T060",
+      "title": "Add integration tests for CLI commands",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:28Z",
+      "updatedAt": "2026-02-12T00:42:28Z",
+      "size": "medium",
+      "position": 11,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:28 UTC: Test all CLI commands via child_process spawn. Test exit codes, JSON output, error messages. Cover: providers, mcp, skills, instructions, doctor. File: tests/integration/cli.test.ts."
+      ]
+    },
+    {
+      "id": "T061",
+      "title": "Set up coverage reporting with vitest",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T00:42:28Z",
+      "updatedAt": "2026-02-12T00:42:28Z",
+      "size": "medium",
+      "position": 12,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:28 UTC: Add npm run test:coverage script. Configure vitest --coverage flag. Set threshold enforcement (80% line coverage). Add coverage/ to .gitignore. Optional: upload to codecov."
+      ]
+    },
+    {
+      "id": "T062",
+      "title": "CI/CD Hardening",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-12T00:42:34Z",
+      "updatedAt": "2026-02-12T00:42:37Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:34 UTC: Wave 1 (parallel with Epic 2). Add linting, multi-OS CI matrix, security scanning, coverage reporting, branch protection. Current state: CI only runs on ubuntu-latest with basic build/test/typecheck."
+      ],
+      "depends": [
+        "T039"
+      ]
+    },
+    {
+      "id": "T063",
+      "title": "Add ESLint or Biome linter with npm run lint",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:47Z",
+      "updatedAt": "2026-02-12T00:42:47Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:47 UTC: Choose Biome for speed. Add config, npm run lint script. Replace duplicate typecheck in lint script. Update CI to run linter. See cicd-audit.md recommendation."
+      ]
+    },
+    {
+      "id": "T064",
+      "title": "Add multi-OS CI matrix",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:47Z",
+      "updatedAt": "2026-02-12T00:42:47Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:47 UTC: Update .github/workflows/ci.yml to test on ubuntu-latest, macos-latest, windows-latest. CAAMP has Windows-specific code (where command) and cross-platform path logic. See cicd-audit.md."
+      ]
+    },
+    {
+      "id": "T065",
+      "title": "Add npm audit step to CI",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:48Z",
+      "updatedAt": "2026-02-12T00:42:48Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:48 UTC: Add npm audit --audit-level=moderate to CI workflow. Fail build on moderate+ vulnerabilities. File: .github/workflows/ci.yml. See cicd-audit.md recommendation."
+      ]
+    },
+    {
+      "id": "T066",
+      "title": "Add Dependabot or Renovate for dependency updates",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:48Z",
+      "updatedAt": "2026-02-12T00:42:48Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:48 UTC: Add .github/dependabot.yml for automated dependency PRs. Configure weekly schedule for npm updates. See cicd-audit.md recommendation."
+      ]
+    },
+    {
+      "id": "T067",
+      "title": "Add coverage reporting to CI",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:56Z",
+      "updatedAt": "2026-02-12T00:43:00Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:56 UTC: Run npm test -- --coverage in CI. Upload to codecov or coveralls. Display coverage badge in README. Requires T061 (coverage setup) to be done first. File: .github/workflows/ci.yml."
+      ],
+      "depends": [
+        "T061"
+      ]
+    },
+    {
+      "id": "T068",
+      "title": "Set up branch protection rules on main",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:56Z",
+      "updatedAt": "2026-02-12T00:42:56Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:56 UTC: GitHub Settings > Branches > main: require PR reviews, require CI to pass, prevent force-push. See cicd-audit.md HIGH priority recommendation."
+      ]
+    },
+    {
+      "id": "T069",
+      "title": "Add CodeQL or similar security scanning",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T062",
+      "createdAt": "2026-02-12T00:42:56Z",
+      "updatedAt": "2026-02-12T00:42:56Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:42:56 UTC: Add .github/workflows/codeql.yml for security scanning. Run on push/PR to main. See cicd-audit.md recommendation."
+      ]
+    },
+    {
+      "id": "T070",
+      "title": "Documentation Completion",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-12T00:43:10Z",
+      "updatedAt": "2026-02-12T00:43:15Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:10 UTC: Wave 2 (depends on Epics 1-3). Create CONTRIBUTING.md, per-provider config guide, SECURITY.md, migration guide, add --help examples, troubleshooting guide, publish TypeDoc to GitHub Pages."
+      ],
+      "depends": [
+        "T039",
+        "T049",
+        "T062"
+      ]
+    },
+    {
+      "id": "T071",
+      "title": "Create CONTRIBUTING.md",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:27Z",
+      "updatedAt": "2026-02-12T00:43:27Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:27 UTC: Document: PR process, provider submission guidelines, coding standards, test requirements, commit message format, code review checklist. See GAP-ANALYSIS.md Section 7.4."
+      ]
+    },
+    {
+      "id": "T072",
+      "title": "Create per-provider configuration guide",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:28Z",
+      "updatedAt": "2026-02-12T00:43:28Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:28 UTC: Examples for top 10 providers: Claude Code, Cursor, Windsurf, Codex, Gemini CLI, GitHub Copilot, OpenCode, Cline, Kimi, Zed. Show config file locations, MCP server install examples, format-specific quirks. File: docs/PROVIDER-CONFIG-GUIDE.md."
+      ]
+    },
+    {
+      "id": "T073",
+      "title": "Create SECURITY.md",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:28Z",
+      "updatedAt": "2026-02-12T00:43:28Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:28 UTC: Vulnerability disclosure policy, security contact, supported versions, security best practices for MCP server configs. See GAP-ANALYSIS.md Section 7.4."
+      ]
+    },
+    {
+      "id": "T074",
+      "title": "Create migration guide",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:28Z",
+      "updatedAt": "2026-02-12T00:43:28Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:29 UTC: Version migration instructions: v0.1 -> v0.2 -> v0.3 -> v1.0. Breaking changes, deprecated APIs, config format updates. File: docs/MIGRATION-GUIDE.md."
+      ]
+    },
+    {
+      "id": "T075",
+      "title": "Add --help examples to all CLI commands",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:36Z",
+      "updatedAt": "2026-02-12T00:43:36Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:36 UTC: Extend command descriptions with example usage. Add .example() calls to commander commands. Show common use cases for each command. Update: src/commands/*.ts files."
+      ]
+    },
+    {
+      "id": "T076",
+      "title": "Create troubleshooting guide",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:37Z",
+      "updatedAt": "2026-02-12T00:43:37Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:37 UTC: Common issues and solutions: symlink failures on Windows, network timeouts, corrupted lock files, MCP config format errors, skill install failures. File: docs/TROUBLESHOOTING.md."
+      ]
+    },
+    {
+      "id": "T077",
+      "title": "Generate and publish TypeDoc API docs to GitHub Pages",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T070",
+      "createdAt": "2026-02-12T00:43:37Z",
+      "updatedAt": "2026-02-12T00:43:37Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:37 UTC: Set up GitHub Actions workflow to build and deploy docs/api/ to gh-pages branch. Enable GitHub Pages. Update README with API docs link. File: .github/workflows/docs.yml."
+      ]
+    },
+    {
+      "id": "T078",
+      "title": "Release Preparation",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-12T00:43:43Z",
+      "updatedAt": "2026-02-12T00:43:50Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:43:43 UTC: Wave 3 (depends on all above). Final audit, version bump, CHANGELOG, GitHub release, npm publish, update gap analysis, announce release."
+      ],
+      "depends": [
+        "T039",
+        "T049",
+        "T062",
+        "T070"
+      ]
+    },
+    {
+      "id": "T079",
+      "title": "Final audit: run all 4 validation agents again",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:01Z",
+      "updatedAt": "2026-02-12T00:44:01Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:01 UTC: Re-run stability-validation, code-quality-audit, api-surface-audit, cicd-audit. Verify all previous findings are resolved. Document any new findings. Output to claudedocs/agent-outputs/v1-final-audit.md."
+      ]
+    },
+    {
+      "id": "T080",
+      "title": "Version bump to 1.0.0",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:01Z",
+      "updatedAt": "2026-02-12T00:44:01Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:01 UTC: Update package.json version to 1.0.0. Update src/cli.ts .version() to 1.0.0 (or read from package.json). Files: package.json, src/cli.ts."
+      ]
+    },
+    {
+      "id": "T081",
+      "title": "Write CHANGELOG.md v1.0.0 entry",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:02Z",
+      "updatedAt": "2026-02-12T00:44:02Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:02 UTC: Document all features, fixes, breaking changes from v0.3.0 to v1.0.0. Include all 5 epic deliverables. Migration notes. File: CHANGELOG.md."
+      ]
+    },
+    {
+      "id": "T082",
+      "title": "Create GitHub release v1.0.0",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:02Z",
+      "updatedAt": "2026-02-12T00:44:02Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:02 UTC: Tag v1.0.0. Create GitHub release with CHANGELOG content. Mark as stable release (not prerelease). Attach assets if needed."
+      ]
+    },
+    {
+      "id": "T083",
+      "title": "Verify npm publish",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:10Z",
+      "updatedAt": "2026-02-12T00:44:10Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:10 UTC: Run npm publish --dry-run. Verify package.json files field includes all necessary files. Test npx @cleocode/caamp after publish. Ensure provenance is enabled."
+      ]
+    },
+    {
+      "id": "T084",
+      "title": "Update GAP-ANALYSIS.md with v1.0.0 shipped status",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:10Z",
+      "updatedAt": "2026-02-12T00:44:10Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:10 UTC: Update GAP-ANALYSIS.md Section 1 to reflect v1.0.0 as shipped. Document remaining deferred items for future versions. File: claudedocs/GAP-ANALYSIS.md."
+      ]
+    },
+    {
+      "id": "T085",
+      "title": "Announce release",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T00:44:11Z",
+      "updatedAt": "2026-02-12T00:44:11Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-12 00:44:11 UTC: Prepare release announcement for: GitHub Discussions, npm package description, CLAUDE.md update, community channels. Include highlights, migration guide link, breaking changes."
+      ]
     }
   ],
   "labels": {}

@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-12T00:39:53Z",
-    "totalSessionsCreated": 6
+    "lastModified": "2026-02-12T00:45:23Z",
+    "totalSessionsCreated": 7
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -249,7 +249,7 @@
     },
     {
       "id": "session_20260211_163953_169520",
-      "status": "active",
+      "status": "ended",
       "name": "CAAMP v1.0.0 Planning",
       "agentId": null,
       "scope": {
@@ -282,12 +282,12 @@
         "currentTask": null,
         "currentPhase": null,
         "previousTask": null,
-        "sessionNote": null,
+        "sessionNote": "Created T038 master epic, spawning epic-architect for decomposition",
         "nextAction": null,
         "focusHistory": []
       },
       "startedAt": "2026-02-12T00:39:53Z",
-      "lastActivity": "2026-02-12T00:39:53Z",
+      "lastActivity": "2026-02-12T00:40:07Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -300,7 +300,45 @@
         "start_timestamp": "2026-02-12T00:39:53Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-12T00:40:07Z"
+    },
+    {
+      "id": "session_20260211_164055_2388fb",
+      "status": "ended",
+      "name": "v1.0.0 Epic Decomposition",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038",
+        "computedTaskIds": [
+          "T038"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": "v1.0.0 decomposition complete: 5 sub-epics (T039, T049, T062, T070, T078) with 46 tasks total. Organized into 3 execution waves with dependency chains. Roadmap written to claudedocs/agent-outputs/v1-roadmap.md.",
+        "nextAction": null,
+        "focusHistory": []
+      },
+      "startedAt": "2026-02-12T00:40:55Z",
+      "lastActivity": "2026-02-12T00:45:23Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 0,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_164055_2388fb",
+        "start_timestamp": "2026-02-12T00:40:55Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-12T00:45:23Z"
     }
   ],
   "sessionHistory": []
