@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-12T02:00:23Z",
-    "totalSessionsCreated": 10
+    "lastModified": "2026-02-12T02:05:29Z",
+    "totalSessionsCreated": 11
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -507,9 +507,9 @@
         ]
       },
       "focus": {
-        "currentTask": "T053",
+        "currentTask": "T054",
         "currentPhase": null,
-        "previousTask": "T049",
+        "previousTask": "T053",
         "sessionNote": null,
         "nextAction": null,
         "focusHistory": [
@@ -522,11 +522,70 @@
             "taskId": "T053",
             "timestamp": "2026-02-12T02:00:23Z",
             "action": "focused"
+          },
+          {
+            "taskId": "T054",
+            "timestamp": "2026-02-12T02:01:35Z",
+            "action": "focused"
           }
         ]
       },
       "startedAt": "2026-02-12T01:58:45Z",
-      "lastActivity": "2026-02-12T02:00:23Z",
+      "lastActivity": "2026-02-12T02:01:35Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 3,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_175845_6f6edb",
+        "start_timestamp": "2026-02-12T01:58:45Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      }
+    },
+    {
+      "id": "session_20260211_180446_609180",
+      "status": "active",
+      "name": "v1.0.0 Wave 1 CI Hardening Track",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T062",
+        "computedTaskIds": [
+          "T062",
+          "T063",
+          "T064",
+          "T065",
+          "T066",
+          "T067",
+          "T068",
+          "T069"
+        ]
+      },
+      "focus": {
+        "currentTask": "T064",
+        "currentPhase": null,
+        "previousTask": "T062",
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T062",
+            "timestamp": "2026-02-12T02:04:46Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T064",
+            "timestamp": "2026-02-12T02:05:29Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-12T02:04:46Z",
+      "lastActivity": "2026-02-12T02:05:29Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -535,8 +594,8 @@
         "resumeCount": 0
       },
       "startMetrics": {
-        "session_id": "session_20260211_175845_6f6edb",
-        "start_timestamp": "2026-02-12T01:58:45Z",
+        "session_id": "session_20260211_180446_609180",
+        "start_timestamp": "2026-02-12T02:04:46Z",
         "start_tokens": 0,
         "max_tokens": 200000
       }
