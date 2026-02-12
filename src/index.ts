@@ -97,8 +97,9 @@ export {
   normalizeRecommendationCriteria,
   validateRecommendationCriteria,
   scoreSkillRecommendation,
-  recommendSkills,
+  rankSkills,
 } from "./core/skills/recommendation.js";
+export { searchSkills, recommendSkills, formatSkillRecommendations } from "./core/skills/recommendation-api.js";
 export { scanFile, scanDirectory, toSarif } from "./core/skills/audit/scanner.js";
 
 // MCP install

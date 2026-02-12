@@ -13,10 +13,14 @@ import { MarketplaceClient } from "../../core/marketplace/client.js";
 import { formatNetworkError } from "../../core/network/fetch.js";
 import type { MarketplaceResult } from "../../core/marketplace/types.js";
 import {
-  recommendSkills,
+  RECOMMENDATION_ERROR_CODES,
   tokenizeCriteriaValue,
   type RankedSkillRecommendation,
 } from "../../core/skills/recommendation.js";
+import {
+  formatSkillRecommendations,
+  recommendSkills as recommendSkillsByQuery,
+} from "../../core/skills/recommendation-api.js";
 
 interface SkillsFindOptions {
   json?: boolean;
@@ -69,7 +73,7 @@ export function registerSkillsFind(parent: Command): void {
     .description("Search marketplace for skills")
     .argument("[query]", "Search query")
     .option("--recommend", "Recommend skills from constraints")
-    .option("--top <n>", "Number of recommendation candidates", "5")
+    .option("--top <n>", "Number of recommendation candidates", "3")
     .option("--must-have <term>", "Required criteria term", (value, previous: string[]) => [...previous, value], [])
     .option("--prefer <term>", "Preferred criteria term", (value, previous: string[]) => [...previous, value], [])
     .option("--exclude <term>", "Excluded criteria term", (value, previous: string[]) => [...previous, value], [])
@@ -108,21 +112,11 @@ export function registerSkillsFind(parent: Command): void {
           const exclude = parseConstraintList(opts.exclude);
           validateCriteriaConflicts(mustHave, prefer, exclude);
           const selectedRanks = parseSelectList(opts.select);
-          if (format === "json" && selectedRanks.length > 0) {
-            throw new SkillsFindValidationError(
-              "E_SKILLS_FIND_VALIDATION_SELECT_MODE",
-              "--select is only supported in human output mode.",
-            );
-          }
           const seedQuery = buildSeedQuery(query, mustHave, prefer, exclude);
 
-          const client = new MarketplaceClient();
-          const searchLimit = Math.max(top * 5, 20);
-          const results = await client.search(seedQuery, searchLimit);
-          const recommendation = recommendSkills(
-            results,
+          const recommendation = await recommendSkillsByQuery(
+            seedQuery,
             {
-              query,
               mustHave,
               prefer,
               exclude,
@@ -139,27 +133,46 @@ export function registerSkillsFind(parent: Command): void {
             : [];
 
           if (format === "json") {
+            const result = formatSkillRecommendations(recommendation, { mode: "json", details }) as Record<string, unknown>;
+            const resultOptions = Array.isArray(result.options)
+              ? result.options as Array<Record<string, unknown>>
+              : [];
+            const selectedObjects = resultOptions.filter((option) =>
+              selectedRanks.includes(Number(option.rank ?? 0))
+            );
             const envelope = buildEnvelope(
               operation,
               mvi,
-              makeMachineResult(options, selected, details),
+              {
+                ...result,
+                selected: selectedObjects,
+              },
               null,
             );
             console.log(JSON.stringify(envelope, null, 2));
             return;
           }
 
-          renderHumanRecommendations(options);
+          const human = formatSkillRecommendations(recommendation, { mode: "human", details }) as string;
+          console.log(human);
+          if (selected.length > 0) {
+            console.log(`Selected: ${selected.map((option) => option.scopedName).join(", ")}`);
+          }
           return;
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           const errorCode =
-            error instanceof SkillsFindValidationError ? error.code : "E_RECOMMENDATION_FAILED";
-          const category: LAFSErrorCategory = error instanceof SkillsFindValidationError
-            ? error.code.includes("CONFLICT")
+            error instanceof SkillsFindValidationError
+              ? error.code
+              : (error as { code?: string }).code ?? RECOMMENDATION_ERROR_CODES.SOURCE_UNAVAILABLE;
+          const category: LAFSErrorCategory =
+            errorCode === RECOMMENDATION_ERROR_CODES.CRITERIA_CONFLICT
               ? "CONFLICT"
-              : "VALIDATION"
-            : "INTERNAL";
+              : errorCode === RECOMMENDATION_ERROR_CODES.NO_MATCHES
+                ? "NOT_FOUND"
+                : errorCode === RECOMMENDATION_ERROR_CODES.QUERY_INVALID
+                  ? "VALIDATION"
+                  : "INTERNAL";
           if (format === "json") {
             emitJsonError(operation, mvi, errorCode, message, category, {
               query: query ?? null,
@@ -223,54 +236,6 @@ function formatStars(n: number): string {
   return String(n);
 }
 
-function renderHumanRecommendations(options: RecommendationOption[]): void {
-  if (options.length === 0) {
-    console.log(pc.yellow("No recommendations found."));
-    return;
-  }
-
-  console.log(pc.bold("Recommended skills:\n"));
-  for (const option of options) {
-    const marker = option.rank === 1 ? ` ${pc.green("(Recommended)")}` : "";
-    console.log(`  ${pc.cyan(`${option.rank}.`)} ${pc.bold(option.scopedName)}${marker} ${pc.dim(`score ${option.score.toFixed(3)}`)}`);
-    if (option.why) {
-      console.log(`     ${pc.dim(option.why)}`);
-    }
-    if (option.description) {
-      console.log(`     ${pc.dim(option.description)}`);
-    }
-    console.log();
-  }
-
-  console.log(`CHOOSE: ${options.map((option) => option.rank).join(",")}`);
-}
-
-function makeMachineResult(
-  options: RecommendationOption[],
-  selected: RecommendationOption[],
-  details: boolean,
-): Record<string, unknown> {
-  const choose = options.map((option) => option.rank).join(",");
-  if (!details) {
-    return {
-      options: options.map((option) => ({
-        rank: option.rank,
-        scopedName: option.scopedName,
-        score: option.score,
-        why: option.why,
-      })),
-      choose,
-      selected: selected.map((option) => option.scopedName),
-    };
-  }
-
-  return {
-    options,
-    choose,
-    selected,
-  };
-}
-
 function parseConstraintList(values: string[]): string[] {
   const normalized = values.flatMap((value) => tokenizeCriteriaValue(value));
   return Array.from(new Set(normalized));
@@ -279,7 +244,7 @@ function parseConstraintList(values: string[]): string[] {
 function parseTop(value: string): number {
   const parsed = Number.parseInt(value, 10);
   if (!Number.isInteger(parsed) || parsed < 1 || parsed > 20) {
-    throw new SkillsFindValidationError("E_SKILLS_FIND_VALIDATION_TOP", "--top must be an integer between 1 and 20");
+    throw new SkillsFindValidationError(RECOMMENDATION_ERROR_CODES.QUERY_INVALID, "--top must be an integer between 1 and 20");
   }
   return parsed;
 }
@@ -304,7 +269,7 @@ function buildSeedQuery(query: string | undefined, mustHave: string[], prefer: s
   }
 
   throw new SkillsFindValidationError(
-    "E_SKILLS_FIND_VALIDATION_CRITERIA",
+    RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
     "Recommendation mode requires a query or at least one criteria flag.",
   );
 }
@@ -334,18 +299,18 @@ function normalizeRecommendationOptions(ranking: RankedSkillRecommendation[], de
 function validateCriteriaConflicts(mustHave: string[], prefer: string[], exclude: string[]): void {
   const overlap = mustHave.filter((term) => exclude.includes(term));
   if (overlap.length > 0) {
-    throw new SkillsFindValidationError(
-      "E_SKILLS_FIND_CONFLICT_CRITERIA",
-      "A criteria term cannot be both required and excluded.",
-    );
+      throw new SkillsFindValidationError(
+        RECOMMENDATION_ERROR_CODES.CRITERIA_CONFLICT,
+        "A criteria term cannot be both required and excluded.",
+      );
   }
 
   const preferOverlap = prefer.filter((term) => exclude.includes(term));
   if (preferOverlap.length > 0) {
-    throw new SkillsFindValidationError(
-      "E_SKILLS_FIND_CONFLICT_CRITERIA",
-      "A criteria term cannot be both preferred and excluded.",
-    );
+      throw new SkillsFindValidationError(
+        RECOMMENDATION_ERROR_CODES.CRITERIA_CONFLICT,
+        "A criteria term cannot be both preferred and excluded.",
+      );
   }
 }
 
@@ -353,7 +318,7 @@ function validateSelectedRanks(selectedRanks: number[], total: number): void {
   for (const rank of selectedRanks) {
     if (rank < 1 || rank > total) {
       throw new SkillsFindValidationError(
-        "E_SKILLS_FIND_VALIDATION_SELECT_RANGE",
+        RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
         `--select rank ${rank} is out of range (1-${total}).`,
       );
     }

@@ -3,6 +3,7 @@
  */
 
 import { Command } from "commander";
+import { existsSync } from "node:fs";
 import pc from "picocolors";
 import { parseSource, isMarketplaceScoped } from "../../core/sources/parser.js";
 import { installSkill } from "../../core/skills/installer.js";
@@ -12,7 +13,37 @@ import { getProvider } from "../../core/registry/providers.js";
 import { cloneRepo } from "../../core/sources/github.js";
 import { cloneGitLabRepo } from "../../core/sources/gitlab.js";
 import { MarketplaceClient } from "../../core/marketplace/client.js";
+import { formatNetworkError } from "../../core/network/fetch.js";
+import type { MarketplaceResult } from "../../core/marketplace/types.js";
 import type { Provider, SourceType } from "../../types.js";
+
+function normalizeSkillSubPath(path: string | undefined): string | undefined {
+  if (!path) return undefined;
+  const normalized = path.replace(/\\/g, "/").replace(/^\/+/, "").replace(/\/SKILL\.md$/i, "").trim();
+  return normalized.length > 0 ? normalized : undefined;
+}
+
+function marketplacePathCandidates(skillPath: string | undefined, parsedPath: string | undefined): (string | undefined)[] {
+  const candidates: (string | undefined)[] = [];
+  const base = normalizeSkillSubPath(skillPath);
+  const parsed = normalizeSkillSubPath(parsedPath);
+
+  if (base) candidates.push(base);
+  if (parsed) candidates.push(parsed);
+
+  if (base && base.startsWith("skills/") && !base.startsWith(".claude/")) {
+    candidates.push(`.claude/${base}`);
+  }
+  if (parsed && parsed.startsWith("skills/") && !parsed.startsWith(".claude/")) {
+    candidates.push(`.claude/${parsed}`);
+  }
+
+  if (candidates.length === 0) {
+    candidates.push(undefined);
+  }
+
+  return Array.from(new Set(candidates));
+}
 
 export function registerSkillsInstall(parent: Command): void {
   parent
@@ -49,7 +80,7 @@ export function registerSkillsInstall(parent: Command): void {
 
       console.log(pc.dim(`Installing to ${providers.length} provider(s)...`));
 
-      let localPath: string;
+      let localPath: string | undefined;
       let cleanup: (() => Promise<void>) | undefined;
       let skillName: string;
       let sourceValue: string;
@@ -59,7 +90,14 @@ export function registerSkillsInstall(parent: Command): void {
       if (isMarketplaceScoped(source)) {
         console.log(pc.dim(`Searching marketplace for ${source}...`));
         const client = new MarketplaceClient();
-        const skill = await client.getSkill(source);
+        let skill: MarketplaceResult | null;
+
+        try {
+          skill = await client.getSkill(source);
+        } catch (error) {
+          console.error(pc.red(`Marketplace lookup failed: ${formatNetworkError(error)}`));
+          process.exit(1);
+        }
 
         if (!skill) {
           console.error(pc.red(`Skill not found: ${source}`));
@@ -74,12 +112,38 @@ export function registerSkillsInstall(parent: Command): void {
           process.exit(1);
         }
 
-        const result = await cloneRepo(parsed.owner, parsed.repo, parsed.ref, skill.path ? skill.path.replace(/\/SKILL\.md$/, "") : undefined);
-        localPath = result.localPath;
-        cleanup = result.cleanup;
-        skillName = skill.name;
-        sourceValue = skill.githubUrl;
-        sourceType = parsed.type;
+        try {
+          const subPathCandidates = marketplacePathCandidates(skill.path, parsed.path);
+          let cloneError: unknown;
+          let cloned = false;
+
+          for (const subPath of subPathCandidates) {
+            try {
+              const result = await cloneRepo(parsed.owner, parsed.repo, parsed.ref, subPath);
+              if (subPath && !existsSync(result.localPath)) {
+                await result.cleanup();
+                continue;
+              }
+              localPath = result.localPath;
+              cleanup = result.cleanup;
+              cloned = true;
+              break;
+            } catch (error) {
+              cloneError = error;
+            }
+          }
+
+          if (!cloned) {
+            throw cloneError ?? new Error("Unable to resolve skill path from marketplace metadata");
+          }
+
+          skillName = skill.name;
+          sourceValue = skill.githubUrl;
+          sourceType = parsed.type;
+        } catch (error) {
+          console.error(pc.red(`Failed to fetch source repository: ${formatNetworkError(error)}`));
+          process.exit(1);
+        }
       } else {
         // Parse source
         const parsed = parseSource(source);
@@ -88,13 +152,23 @@ export function registerSkillsInstall(parent: Command): void {
         sourceType = parsed.type;
 
         if (parsed.type === "github" && parsed.owner && parsed.repo) {
-          const result = await cloneRepo(parsed.owner, parsed.repo, parsed.ref, parsed.path);
-          localPath = result.localPath;
-          cleanup = result.cleanup;
+          try {
+            const result = await cloneRepo(parsed.owner, parsed.repo, parsed.ref, parsed.path);
+            localPath = result.localPath;
+            cleanup = result.cleanup;
+          } catch (error) {
+            console.error(pc.red(`Failed to clone GitHub repository: ${formatNetworkError(error)}`));
+            process.exit(1);
+          }
         } else if (parsed.type === "gitlab" && parsed.owner && parsed.repo) {
-          const result = await cloneGitLabRepo(parsed.owner, parsed.repo, parsed.ref, parsed.path);
-          localPath = result.localPath;
-          cleanup = result.cleanup;
+          try {
+            const result = await cloneGitLabRepo(parsed.owner, parsed.repo, parsed.ref, parsed.path);
+            localPath = result.localPath;
+            cleanup = result.cleanup;
+          } catch (error) {
+            console.error(pc.red(`Failed to clone GitLab repository: ${formatNetworkError(error)}`));
+            process.exit(1);
+          }
         } else if (parsed.type === "local") {
           localPath = parsed.value;
         } else {
@@ -104,6 +178,10 @@ export function registerSkillsInstall(parent: Command): void {
       }
 
       try {
+        if (!localPath) {
+          throw new Error("No local skill path resolved for installation");
+        }
+
         const result = await installSkill(
           localPath,
           skillName,
