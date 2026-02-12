@@ -82,20 +82,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T02:01:25Z",
+  "lastUpdated": "2026-02-12T02:12:40Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "6d66c090b8436e23",
+    "checksum": "f86b0507cfc05319",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 125,
+    "generation": 135,
     "lastModified": "2026-02-12T02:05:29Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
   },
   "focus": {
-    "currentTask": "T064",
+    "currentTask": null,
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -1714,19 +1714,21 @@
     {
       "id": "T050",
       "title": "Add unit tests for MCP installer",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T049",
       "createdAt": "2026-02-12T00:42:05Z",
-      "updatedAt": "2026-02-12T00:42:05Z",
+      "updatedAt": "2026-02-12T02:12:40Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-12 00:42:05 UTC: Test installMcpServer and installMcpServerToAll functions. Mock file system writes. Test dry-run mode, multi-agent installs, header support. File: tests/unit/mcp-installer.test.ts. Target: src/core/mcp/installer.ts (206 lines, 0 tests)."
-      ]
+        "2026-02-12 00:42:05 UTC: Test installMcpServer and installMcpServerToAll functions. Mock file system writes. Test dry-run mode, multi-agent installs, header support. File: tests/unit/mcp-installer.test.ts. Target: src/core/mcp/installer.ts (206 lines, 0 tests).",
+        "[COMPLETED 2026-02-12T02:12:40Z] Added tests/unit/mcp-installer.test.ts covering scope unsupported failure, transformed writes, write failures, install-to-all behavior, and buildServerConfig variants. Validated with npm test."
+      ],
+      "completedAt": "2026-02-12T02:12:40Z"
     },
     {
       "id": "T051",
@@ -2006,53 +2008,104 @@
     {
       "id": "T064",
       "title": "Add multi-OS CI matrix",
-      "status": "active",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T062",
       "createdAt": "2026-02-12T00:42:47Z",
-      "updatedAt": "2026-02-12T02:05:29Z",
+      "updatedAt": "2026-02-12T02:05:30Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-12 00:42:47 UTC: Update .github/workflows/ci.yml to test on ubuntu-latest, macos-latest, windows-latest. CAAMP has Windows-specific code (where command) and cross-platform path logic. See cicd-audit.md."
-      ]
+        "2026-02-12 00:42:47 UTC: Update .github/workflows/ci.yml to test on ubuntu-latest, macos-latest, windows-latest. CAAMP has Windows-specific code (where command) and cross-platform path logic. See cicd-audit.md.",
+        "[COMPLETED 2026-02-12T02:05:30Z] Updated .github/workflows/ci.yml to run test job across ubuntu/macos/windows with Node 20/22 and fail-fast disabled."
+      ],
+      "completedAt": "2026-02-12T02:05:30Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T02:05:30Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T065",
       "title": "Add npm audit step to CI",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T062",
       "createdAt": "2026-02-12T00:42:48Z",
-      "updatedAt": "2026-02-12T00:42:48Z",
+      "updatedAt": "2026-02-12T02:05:31Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-12 00:42:48 UTC: Add npm audit --audit-level=moderate to CI workflow. Fail build on moderate+ vulnerabilities. File: .github/workflows/ci.yml. See cicd-audit.md recommendation."
-      ]
+        "2026-02-12 00:42:48 UTC: Add npm audit --audit-level=moderate to CI workflow. Fail build on moderate+ vulnerabilities. File: .github/workflows/ci.yml. See cicd-audit.md recommendation.",
+        "[COMPLETED 2026-02-12T02:05:31Z] Added dedicated CI audit job in .github/workflows/ci.yml running npm audit --audit-level=moderate on ubuntu Node 20."
+      ],
+      "completedAt": "2026-02-12T02:05:31Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T02:05:31Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T066",
       "title": "Add Dependabot or Renovate for dependency updates",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T062",
       "createdAt": "2026-02-12T00:42:48Z",
-      "updatedAt": "2026-02-12T00:42:48Z",
+      "updatedAt": "2026-02-12T02:05:32Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-12 00:42:48 UTC: Add .github/dependabot.yml for automated dependency PRs. Configure weekly schedule for npm updates. See cicd-audit.md recommendation."
-      ]
+        "2026-02-12 00:42:48 UTC: Add .github/dependabot.yml for automated dependency PRs. Configure weekly schedule for npm updates. See cicd-audit.md recommendation.",
+        "[COMPLETED 2026-02-12T02:05:32Z] Added .github/dependabot.yml for weekly npm and GitHub Actions dependency updates."
+      ],
+      "completedAt": "2026-02-12T02:05:32Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T02:05:32Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T067",
@@ -2094,19 +2147,36 @@
     {
       "id": "T069",
       "title": "Add CodeQL or similar security scanning",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T062",
       "createdAt": "2026-02-12T00:42:56Z",
-      "updatedAt": "2026-02-12T00:42:56Z",
+      "updatedAt": "2026-02-12T02:05:33Z",
       "size": "medium",
       "position": 7,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-12 00:42:56 UTC: Add .github/workflows/codeql.yml for security scanning. Run on push/PR to main. See cicd-audit.md recommendation."
-      ]
+        "2026-02-12 00:42:56 UTC: Add .github/workflows/codeql.yml for security scanning. Run on push/PR to main. See cicd-audit.md recommendation.",
+        "[COMPLETED 2026-02-12T02:05:33Z] Added .github/workflows/codeql.yml for push/PR/scheduled JavaScript/TypeScript security scanning."
+      ],
+      "completedAt": "2026-02-12T02:05:33Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T02:05:33Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T070",

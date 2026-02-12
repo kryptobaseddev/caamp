@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 172,
+    "totalEntries": 176,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T02:05:29Z",
+    "lastEntry": "2026-02-12T02:05:34Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -3311,6 +3311,86 @@
         "currentTask": "T064"
       },
       "details": null
+    },
+    {
+      "id": "log_0b42d10545fe",
+      "timestamp": "2026-02-12T02:05:30Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T064",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T02:05:30Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_b0af7b645bd8",
+      "timestamp": "2026-02-12T02:05:31Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T065",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T02:05:31Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_f1a830c3f67c",
+      "timestamp": "2026-02-12T02:05:33Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T066",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T02:05:32Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_12d7274189a1",
+      "timestamp": "2026-02-12T02:05:34Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T069",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T02:05:33Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
     }
   ]
 }
