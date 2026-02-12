@@ -62,7 +62,7 @@ const installed = getInstalledProviders();
 const servers = await listAllMcpServers(installed, "global");
 ```
 
-See [API Reference](docs/API-REFERENCE.md) for full documentation of all 82 exported symbols.
+See [API Reference](docs/API-REFERENCE.md) for full programmatic API documentation.
 
 ## CLI Commands
 
@@ -183,7 +183,8 @@ Each provider uses a different key name for MCP server configuration:
 
 | Document | Description |
 |----------|-------------|
-| [API Reference](docs/API-REFERENCE.md) | Full library API (82 exports with signatures and examples) |
+| [API Reference](docs/API-REFERENCE.md) | Full library API (signatures and examples) |
+| [Advanced Recipes](docs/ADVANCED-RECIPES.md) | Production TypeScript patterns for tier filtering, rollback, conflict handling, and dual-scope operations |
 | [Generated API Docs](docs/api/) | Auto-generated from TSDoc (run `npm run docs:api`) |
 | [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
 | [Product Requirements](claudedocs/PRD.md) | Full PRD with user stories and feature requirements |

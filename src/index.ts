@@ -35,6 +35,19 @@ export type { DetectionResult } from "./core/registry/detection.js";
 export type { InstallResult } from "./core/mcp/installer.js";
 export type { SkillInstallResult } from "./core/skills/installer.js";
 export type { ValidationResult, ValidationIssue } from "./core/skills/validator.js";
+export type {
+  McpBatchOperation,
+  SkillBatchOperation,
+  BatchInstallOptions,
+  BatchInstallResult,
+  ConflictPolicy,
+  McpConflictCode,
+  McpConflict,
+  McpPlanApplyResult,
+  InstructionUpdateSummary,
+  DualScopeConfigureOptions,
+  DualScopeConfigureResult,
+} from "./core/advanced/orchestration.js";
 
 // Registry
 export {
@@ -98,6 +111,16 @@ export type { MarketplaceResult } from "./core/marketplace/types.js";
 // Instructions
 export { inject, checkInjection, removeInjection, checkAllInjections, injectAll } from "./core/instructions/injector.js";
 export { generateInjectionContent, groupByInstructFile } from "./core/instructions/templates.js";
+
+// Advanced orchestration
+export {
+  selectProvidersByMinimumPriority,
+  installBatchWithRollback,
+  detectMcpConfigConflicts,
+  applyMcpInstallWithPolicy,
+  updateInstructionsSingleOperation,
+  configureProviderGlobalAndProject,
+} from "./core/advanced/orchestration.js";
 
 // Formats
 export { readConfig, writeConfig, removeConfig } from "./core/formats/index.js";

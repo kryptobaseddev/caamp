@@ -58,11 +58,18 @@ const servers = await listAllMcpServers(installed, "global");
 - [Skills -- Validation](#skills--validation)
 - [Skills -- Audit](#skills--audit)
 - [Skills -- Lock File](#skills--lock-file)
+- [Advanced orchestration](#advanced-orchestration)
 - [Formats](#formats)
 - [Instructions](#instructions)
 - [Marketplace](#marketplace)
 - [Logger](#logger)
 - [Complete Export List](#complete-export-list)
+
+---
+
+## Advanced Recipes
+
+For end-to-end orchestration patterns that combine multiple APIs, see [Advanced Recipes](ADVANCED-RECIPES.md).
 
 ---
 
@@ -1918,6 +1925,200 @@ console.log(`Status: ${status.status}`);
 
 ---
 
+## Advanced orchestration
+
+High-level orchestration helpers built on top of CAAMP's core primitives.
+
+### `selectProvidersByMinimumPriority()`
+
+Filters providers by a minimum priority tier and returns deterministic tier ordering.
+
+```typescript
+function selectProvidersByMinimumPriority(
+  providers: Provider[],
+  minimumPriority?: ProviderPriority
+): Provider[]
+```
+
+**Parameters**:
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `providers` | `Provider[]` | -- | Candidate providers |
+| `minimumPriority` | `ProviderPriority` | `"low"` | Include providers at or above this tier (`high <= medium <= low`) |
+
+**Returns**: `Provider[]` -- Filtered providers sorted by priority.
+
+```typescript
+import { getInstalledProviders, selectProvidersByMinimumPriority } from "@cleocode/caamp";
+
+const installed = getInstalledProviders();
+const target = selectProvidersByMinimumPriority(installed, "medium");
+// includes high + medium providers
+```
+
+---
+
+### `installBatchWithRollback()`
+
+Implements rollback-capable batch installs for multiple MCP servers and skills across tier-filtered providers.
+
+```typescript
+async function installBatchWithRollback(
+  options: BatchInstallOptions
+): Promise<BatchInstallResult>
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `options.providers` | `Provider[]` | Optional provider set (defaults to installed providers) |
+| `options.minimumPriority` | `ProviderPriority` | Optional tier filter |
+| `options.mcp` | `McpBatchOperation[]` | MCP operations to apply |
+| `options.skills` | `SkillBatchOperation[]` | Skill operations to apply |
+| `options.projectDir` | `string` | Project directory override |
+
+**Returns**: `Promise<BatchInstallResult>` -- Includes success flag, applied counts, rollback status, and rollback errors.
+
+```typescript
+import { installBatchWithRollback } from "@cleocode/caamp";
+
+const result = await installBatchWithRollback({
+  minimumPriority: "high",
+  mcp: [
+    {
+      serverName: "filesystem",
+      config: { command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem"] },
+      scope: "project",
+    },
+  ],
+  skills: [
+    {
+      sourcePath: "/tmp/my-skill",
+      skillName: "my-skill",
+      isGlobal: true,
+    },
+  ],
+});
+
+if (!result.success) {
+  console.error("batch failed:", result.error);
+  console.error("rollback errors:", result.rollbackErrors);
+}
+```
+
+---
+
+### `detectMcpConfigConflicts()`
+
+Preflight detection for configuration conflicts (unsupported transport/headers and existing config mismatch).
+
+```typescript
+async function detectMcpConfigConflicts(
+  providers: Provider[],
+  operations: McpBatchOperation[],
+  projectDir?: string
+): Promise<McpConflict[]>
+```
+
+**Returns**: `Promise<McpConflict[]>` -- Conflicts with provider, server, scope, code, and message.
+
+```typescript
+import { detectMcpConfigConflicts, getInstalledProviders } from "@cleocode/caamp";
+
+const conflicts = await detectMcpConfigConflicts(
+  getInstalledProviders(),
+  [{ serverName: "remote", config: { type: "http", url: "https://example.com" }, scope: "global" }],
+);
+```
+
+---
+
+### `applyMcpInstallWithPolicy()`
+
+Applies MCP install plan with conflict policy (`"fail"`, `"skip"`, or `"overwrite"`).
+
+```typescript
+async function applyMcpInstallWithPolicy(
+  providers: Provider[],
+  operations: McpBatchOperation[],
+  policy?: ConflictPolicy,
+  projectDir?: string
+): Promise<McpPlanApplyResult>
+```
+
+**Returns**: `Promise<McpPlanApplyResult>` -- Conflict list, applied results, and skipped operations.
+
+```typescript
+import { applyMcpInstallWithPolicy, getInstalledProviders } from "@cleocode/caamp";
+
+const result = await applyMcpInstallWithPolicy(
+  getInstalledProviders(),
+  [{ serverName: "github", config: { command: "npx", args: ["-y", "@modelcontextprotocol/server-github"] } }],
+  "skip",
+);
+```
+
+---
+
+### `updateInstructionsSingleOperation()`
+
+Single-operation wrapper for updating instruction files across multiple providers, regardless of each provider's config format (JSON, JSONC, YAML, TOML).
+
+```typescript
+async function updateInstructionsSingleOperation(
+  providers: Provider[],
+  content: string,
+  scope?: "project" | "global",
+  projectDir?: string
+): Promise<InstructionUpdateSummary>
+```
+
+**Returns**: `Promise<InstructionUpdateSummary>` -- File-level actions with provider IDs and config-format coverage.
+
+```typescript
+import { getInstalledProviders, updateInstructionsSingleOperation } from "@cleocode/caamp";
+
+const summary = await updateInstructionsSingleOperation(
+  getInstalledProviders(),
+  "## Managed by CAAMP\n",
+  "project",
+);
+console.log(summary.updatedFiles);
+```
+
+---
+
+### `configureProviderGlobalAndProject()`
+
+Configures both global and project-level settings for one provider in a single operation.
+
+```typescript
+async function configureProviderGlobalAndProject(
+  provider: Provider,
+  options: DualScopeConfigureOptions
+): Promise<DualScopeConfigureResult>
+```
+
+**Returns**: `Promise<DualScopeConfigureResult>` -- Global/project config paths, MCP write results, and optional instruction update actions.
+
+```typescript
+import { configureProviderGlobalAndProject, getProvider } from "@cleocode/caamp";
+
+const provider = getProvider("claude-code")!;
+const result = await configureProviderGlobalAndProject(provider, {
+  globalMcp: [{ serverName: "shared", config: { command: "npx", args: ["-y", "@example/server"] } }],
+  projectMcp: [{ serverName: "repo-local", config: { command: "npx", args: ["-y", "@example/server"] } }],
+  instructionContent: {
+    global: "Global instructions",
+    project: "Project instructions",
+  },
+});
+```
+
+---
+
 ## Formats
 
 Functions for reading and writing multi-format configuration files (JSON, JSONC, YAML, TOML).
@@ -2497,20 +2698,26 @@ if (!isQuiet()) {
 
 ## Complete Export List
 
-Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 60 functions + 1 class = 89 named exports).
+Alphabetical checklist of exported symbols from `src/index.ts`.
 
-### Types (28)
+### Types
 
 - [ ] `AuditFinding`
 - [ ] `AuditResult`
 - [ ] `AuditRule`
 - [ ] `AuditSeverity`
+- [ ] `BatchInstallOptions`
+- [ ] `BatchInstallResult`
 - [ ] `CaampLockFile`
 - [ ] `ConfigFormat`
+- [ ] `ConflictPolicy`
 - [ ] `DetectionResult`
+- [ ] `DualScopeConfigureOptions`
+- [ ] `DualScopeConfigureResult`
 - [ ] `GlobalOptions`
 - [ ] `InjectionCheckResult`
 - [ ] `InjectionStatus`
+- [ ] `InstructionUpdateSummary`
 - [ ] `InstallResult`
 - [ ] `LockEntry`
 - [ ] `MarketplaceResult`
@@ -2518,6 +2725,10 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 6
 - [ ] `MarketplaceSkill`
 - [ ] `McpServerConfig`
 - [ ] `McpServerEntry`
+- [ ] `McpBatchOperation`
+- [ ] `McpConflict`
+- [ ] `McpConflictCode`
+- [ ] `McpPlanApplyResult`
 - [ ] `ParsedSource`
 - [ ] `Provider`
 - [ ] `ProviderPriority`
@@ -2525,18 +2736,22 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 6
 - [ ] `SkillEntry`
 - [ ] `SkillInstallResult`
 - [ ] `SkillMetadata`
+- [ ] `SkillBatchOperation`
 - [ ] `SourceType`
 - [ ] `TransportType`
 - [ ] `ValidationIssue`
 - [ ] `ValidationResult`
 
-### Functions (60)
+### Functions
 
+- [ ] `applyMcpInstallWithPolicy`
 - [ ] `buildServerConfig`
 - [ ] `checkAllInjections`
 - [ ] `checkInjection`
 - [ ] `checkSkillUpdate`
+- [ ] `configureProviderGlobalAndProject`
 - [ ] `deepMerge`
+- [ ] `detectMcpConfigConflicts`
 - [ ] `detectAllProviders`
 - [ ] `detectProjectProviders`
 - [ ] `detectProvider`
@@ -2561,6 +2776,7 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 6
 - [ ] `groupByInstructFile`
 - [ ] `inject`
 - [ ] `injectAll`
+- [ ] `installBatchWithRollback`
 - [ ] `installMcpServer`
 - [ ] `installMcpServerToAll`
 - [ ] `installSkill`
@@ -2587,9 +2803,11 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 6
 - [ ] `saveLastSelectedAgents`
 - [ ] `scanDirectory`
 - [ ] `scanFile`
+- [ ] `selectProvidersByMinimumPriority`
 - [ ] `setQuiet`
 - [ ] `setVerbose`
 - [ ] `toSarif`
+- [ ] `updateInstructionsSingleOperation`
 - [ ] `validateSkill`
 - [ ] `writeConfig`
 
