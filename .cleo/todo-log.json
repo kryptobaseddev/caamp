@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 239,
+    "totalEntries": 241,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T17:52:02Z",
+    "lastEntry": "2026-02-12T18:11:07Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -5226,6 +5226,106 @@
         "title": "Prepare and execute release shipping workflow to main",
         "status": "pending",
         "priority": "high"
+      }
+    },
+    {
+      "id": "log_95d7b55e5248",
+      "timestamp": "2026-02-12T18:10:47Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T097",
+      "before": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "pending",
+        "priority": "high",
+        "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+        "phase": "setup",
+        "labels": [
+          "feature",
+          "lafs",
+          "release-v1",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "pending",
+        "priority": "high",
+        "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+        "phase": "setup",
+        "labels": [
+          "feature",
+          "lafs",
+          "release-v1",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": [
+          "Research evidence captured before scoring implementation",
+          "Specification approved before command/API implementation",
+          "All decomposition tasks complete before release ship"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_a3d3b7928d9b",
+      "timestamp": "2026-02-12T18:11:07Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T098",
+      "before": {
+        "title": "RCSD-R: Research and retrieval benchmark",
+        "status": "pending",
+        "priority": "high",
+        "description": "Research current skills search signals, marketplace metadata quality, user query intent patterns, and deterministic ranking criteria for recommendation output.",
+        "phase": "setup",
+        "labels": [
+          "lafs",
+          "research",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": [
+          "Top query intents documented with scoring signals",
+          "Legacy/modern markers cataloged for docs tooling domains",
+          "Evaluation dataset of at least 20 representative queries prepared"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "RCSD-R: Research and retrieval benchmark",
+        "status": "active",
+        "priority": "high",
+        "description": "Research current skills search signals, marketplace metadata quality, user query intent patterns, and deterministic ranking criteria for recommendation output.",
+        "phase": "setup",
+        "labels": [
+          "lafs",
+          "research",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": [
+          "Top query intents documented with scoring signals",
+          "Legacy/modern markers cataloged for docs tooling domains",
+          "Evaluation dataset of at least 20 representative queries prepared"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
       }
     }
   ]

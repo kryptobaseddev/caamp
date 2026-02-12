@@ -79,17 +79,41 @@
         "notes": null,
         "gitTag": "v0.3.0",
         "changelog": "## [0.3.0] - 2026-02-11"
+      },
+      {
+        "version": "v1.0.0",
+        "status": "planned",
+        "targetDate": null,
+        "releasedAt": null,
+        "createdAt": "2026-02-12T18:10:56Z",
+        "tasks": [
+          "T097",
+          "T098",
+          "T099",
+          "T100",
+          "T101",
+          "T102",
+          "T103",
+          "T104",
+          "T105",
+          "T106",
+          "T107",
+          "T108",
+          "T109",
+          "T110"
+        ],
+        "notes": "Production release track including skills recommendation intelligence and LAFS-compliant recommendation workflows."
       }
     ]
   },
-  "lastUpdated": "2026-02-12T18:10:47Z",
+  "lastUpdated": "2026-02-12T18:33:13Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "fdc6c058abbb5416",
+    "checksum": "ca9affaf3902ed82",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 209,
+    "generation": 213,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3344,12 +3368,12 @@
     {
       "id": "T098",
       "title": "RCSD-R: Research and retrieval benchmark",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:01Z",
-      "updatedAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:33:13Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
@@ -3364,7 +3388,12 @@
         "Top query intents documented with scoring signals",
         "Legacy/modern markers cataloged for docs tooling domains",
         "Evaluation dataset of at least 20 representative queries prepared"
-      ]
+      ],
+      "notes": [
+        "2026-02-12 18:11:07 UTC: Kickoff priority: establish benchmark query set and deterministic ranking signals before coding.",
+        "[COMPLETED 2026-02-12T18:33:13Z] Research benchmark completed via multi-agent packet: intent weights, modern/legacy markers, 22-query expected top3 set, deterministic metrics/tie-break policy."
+      ],
+      "completedAt": "2026-02-12T18:33:13Z"
     },
     {
       "id": "T099",
