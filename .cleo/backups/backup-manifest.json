@@ -1,0 +1,454 @@
+{
+  "$schema": "https://cleo-dev.com/schemas/v1/backup-manifest.schema.json",
+  "_meta": {
+    "version": "1.0.0",
+    "created": "2026-02-11T22:10:26Z",
+    "lastModified": "2026-02-12T00:02:05Z"
+  },
+  "backups": [
+    {
+      "id": "safety_20260211_141026_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:10:26Z",
+      "path": ".cleo/backups/safety/safety_20260211_141026_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "8ffb14748445e3743504e1bf810a6f4bdb997352c4ce32677851e40dc824d613",
+      "sizeBytes": 3108,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141034_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:10:34Z",
+      "path": ".cleo/backups/safety/safety_20260211_141034_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "76b1f5bf3763b31622c3ee75030acb35b305229fd045683cea6bde7f7429ec2a",
+      "sizeBytes": 4285,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141042_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:10:42Z",
+      "path": ".cleo/backups/safety/safety_20260211_141042_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "c220733de0cd063c8b11fc0f2fdb3f9f82894d81c5f06baac9f3d31e277eaee3",
+      "sizeBytes": 5486,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141049_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:10:49Z",
+      "path": ".cleo/backups/safety/safety_20260211_141049_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "a8810aa114c2178cd1d045ed676304464aa5a86cd9f9a8f53614dcf802a728c4",
+      "sizeBytes": 6680,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141059_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:10:59Z",
+      "path": ".cleo/backups/safety/safety_20260211_141059_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "c9a1cbad32f9709b3d22b7c719fd7ce7c752e662ef47d6ec60e81c514caa4c40",
+      "sizeBytes": 7785,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141108_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:08Z",
+      "path": ".cleo/backups/safety/safety_20260211_141108_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "2c5ec5864e60e9a0b25aa8f551ba5f13a3baeb3f6668dd824cd8458c347898ef",
+      "sizeBytes": 8981,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141117_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:17Z",
+      "path": ".cleo/backups/safety/safety_20260211_141117_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "035071bbb6e414629d07afb0ff48d9032cbdea29772d0bd6acc06eeeb49a5b85",
+      "sizeBytes": 10134,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141128_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:28Z",
+      "path": ".cleo/backups/safety/safety_20260211_141128_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "d2ab3f82e6cd8f8491598bb6a093705fc8116823e68732347d89ef0fce97e2c7",
+      "sizeBytes": 11278,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141136_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:36Z",
+      "path": ".cleo/backups/safety/safety_20260211_141136_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "2927313ede19a97dfdb2378da9b8843c0f3c689289419e3f699cbb220f419882",
+      "sizeBytes": 12411,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141145_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:45Z",
+      "path": ".cleo/backups/safety/safety_20260211_141145_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "1a44e1bbf6138ed24227c140c9742a1c3b6aba862ae2f781da8e56c7a9269d5d",
+      "sizeBytes": 13595,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141156_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:11:56Z",
+      "path": ".cleo/backups/safety/safety_20260211_141156_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "0d2202c83b8be6c9e2760a5e5f4cacc8e9fa397c127cabea058715cfe7b5c49a",
+      "sizeBytes": 14812,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141205_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:05Z",
+      "path": ".cleo/backups/safety/safety_20260211_141205_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "a42adbfbb64c53383966233c87be6b481acd8666e51bf1c0f4c274973efc58a0",
+      "sizeBytes": 16022,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141215_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:15Z",
+      "path": ".cleo/backups/safety/safety_20260211_141215_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "00e9f14c0b462e81e2b92613891862108444b571ac312957e3edb306f9014795",
+      "sizeBytes": 17110,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141224_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:24Z",
+      "path": ".cleo/backups/safety/safety_20260211_141224_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "410b2d74dbe6927a7faba347fa1142a0c32b14ae0b609dc38f5349ee4c850113",
+      "sizeBytes": 18329,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141235_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:35Z",
+      "path": ".cleo/backups/safety/safety_20260211_141235_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "8a7dad07aa9beb25b02388dece589599e7036d8632147d4c0cacda4f53d2da19",
+      "sizeBytes": 19658,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141244_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:44Z",
+      "path": ".cleo/backups/safety/safety_20260211_141244_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "42045eeb0ab8f08dd53d9073a118f6f2c34169f263a0537a7e6ea3209ca74e91",
+      "sizeBytes": 20900,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141254_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:12:54Z",
+      "path": ".cleo/backups/safety/safety_20260211_141254_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "b7a75c619a18e30034f3e1e450c3340767dd04f46ffb4864a0f4aeae2ef1c4f7",
+      "sizeBytes": 21995,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141303_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:13:03Z",
+      "path": ".cleo/backups/safety/safety_20260211_141303_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "70a89efa74b1a80773007b26f9136fb4d81baad00bddf0820551b4af673720d8",
+      "sizeBytes": 23055,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141313_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:13:13Z",
+      "path": ".cleo/backups/safety/safety_20260211_141313_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "bbb4a9661de95869878fbcc5cde50dfadc0be9c7d57f069642181c0f6a139af1",
+      "sizeBytes": 24196,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_141342_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T22:13:42Z",
+      "path": ".cleo/backups/safety/safety_20260211_141342_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "bffad03b23a82ce09692a0c4ae725961d436fc7badc5ae05583f1cc5964cc4ba",
+      "sizeBytes": 24803,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_151801_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:18:01Z",
+      "path": ".cleo/backups/safety/safety_20260211_151801_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "e7bdd4bff5d0fede898e9f8ceb963fb413478ddc96ee53343c2bb82deba9e6e7",
+      "sizeBytes": 28589,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_151802_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:18:02Z",
+      "path": ".cleo/backups/safety/safety_20260211_151802_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "da9b2cc1580161e9d2eff511628dd3fdccd4cc4df031de67f446210ff6a476d3",
+      "sizeBytes": 29213,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_151803_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:18:03Z",
+      "path": ".cleo/backups/safety/safety_20260211_151803_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "406ea41ca96ef653de0da1e6c69e1be9ebb0a538b7276203639451f13757cbad",
+      "sizeBytes": 29803,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_152325_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:23:25Z",
+      "path": ".cleo/backups/safety/safety_20260211_152325_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "437d834d28b2f55be925c89f5ff4d628e35c8b21c81565117d709bb981a22a5a",
+      "sizeBytes": 30368,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_152327_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:23:27Z",
+      "path": ".cleo/backups/safety/safety_20260211_152327_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "10da9196043acc43b77e1129ff5605b49074ba8bd1c62ae5699a4313a7a51dc8",
+      "sizeBytes": 31035,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_152328_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:23:28Z",
+      "path": ".cleo/backups/safety/safety_20260211_152328_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "a0759c592c589165156ebedf3bec26a946971db5561b95642aa244b2b3de8ff3",
+      "sizeBytes": 31630,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_152329_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:23:29Z",
+      "path": ".cleo/backups/safety/safety_20260211_152329_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "bec2bd768e91518a74542da46d8d8ddc39d0ebed1ff68964ca16b4c8628d1097",
+      "sizeBytes": 32260,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_152335_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:23:35Z",
+      "path": ".cleo/backups/safety/safety_20260211_152335_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "9f14aa22c0d0b113f05cb92aa1f84e0b0c16cd0276a3184fe699860163759dfc",
+      "sizeBytes": 32931,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_154728_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:47:28Z",
+      "path": ".cleo/backups/safety/safety_20260211_154728_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "7df305b6cfa844dbac32d0c290071c6f9dbf0f6c5ea25e1f6ece4603111ef3c0",
+      "sizeBytes": 40557,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_154748_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:47:48Z",
+      "path": ".cleo/backups/safety/safety_20260211_154748_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "5f7d99f46eafb05c53e26a30068b72adb3c45bd9a65197ea1e68ffc247d9ee75",
+      "sizeBytes": 41124,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_154756_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:47:56Z",
+      "path": ".cleo/backups/safety/safety_20260211_154756_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "8d2d29c0bef56520f968208d21c7192455c50fb05295929e85b38e46b836f359",
+      "sizeBytes": 41838,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_155217_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:52:17Z",
+      "path": ".cleo/backups/safety/safety_20260211_155217_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "67de1847ee2a719aa6bd778ebff06ec0a7b18a1a240fed28b936fa246fbdea15",
+      "sizeBytes": 43560,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_155510_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-11T23:55:10Z",
+      "path": ".cleo/backups/safety/safety_20260211_155510_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "b44771cd782005278ab71a4e847add698cb697d080441068d0c6618b5339ef05",
+      "sizeBytes": 44532,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_160113_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-12T00:01:13Z",
+      "path": ".cleo/backups/safety/safety_20260211_160113_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "32c87efe21c505e2e78695a77472d0960638338a93fc2bff0b7b9c7fcdd02d1b",
+      "sizeBytes": 45418,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_160156_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-12T00:01:56Z",
+      "path": ".cleo/backups/safety/safety_20260211_160156_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "84947421089ad89c50d0e0369b318fbf2601f03f7d2a835afb43a88552e1509b",
+      "sizeBytes": 46027,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_160157_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-12T00:01:57Z",
+      "path": ".cleo/backups/safety/safety_20260211_160157_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "82c68dee09ad11831eae7715d201e07bbde0b3524429ff2930833409e29ab926",
+      "sizeBytes": 46600,
+      "neverDelete": false
+    },
+    {
+      "id": "safety_20260211_160205_complete_todo.json",
+      "type": "safety",
+      "timestamp": "2026-02-12T00:02:05Z",
+      "path": ".cleo/backups/safety/safety_20260211_160205_complete_todo.json",
+      "files": [
+        "todo.json"
+      ],
+      "checksumSummary": "d1bc66e31885bca6737dbb40b731462c594386c6cc0ea9e0dea42901601c8807",
+      "sizeBytes": 47176,
+      "neverDelete": false
+    }
+  ]
+}

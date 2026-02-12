@@ -1,0 +1,272 @@
+{
+  "$schema": "./schemas/todo.schema.json",
+  "version": "2.10.0",
+  "project": {
+    "name": "caamp",
+    "currentPhase": "setup",
+    "phases": {
+      "setup": {
+        "order": 1,
+        "name": "Setup & Foundation",
+        "description": "Initial project setup, dependencies, and configuration",
+        "status": "active",
+        "startedAt": "2026-02-11T22:05:12Z",
+        "completedAt": null
+      },
+      "core": {
+        "order": 2,
+        "name": "Core Development",
+        "description": "Build core functionality and features",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "testing": {
+        "order": 3,
+        "name": "Testing & Validation",
+        "description": "Comprehensive testing, validation, and quality assurance",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "polish": {
+        "order": 4,
+        "name": "Polish & Refinement",
+        "description": "UX improvements, optimization, and release preparation",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "maintenance": {
+        "order": 5,
+        "name": "Maintenance",
+        "description": "Bug fixes, updates, and ongoing support",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      }
+    }
+  },
+  "lastUpdated": "2026-02-11T22:11:04Z",
+  "_meta": {
+    "schemaVersion": "2.10.0",
+    "checksum": "481db2f3e8dd2272",
+    "configVersion": "2.10.0",
+    "lastSessionId": null,
+    "activeSession": null,
+    "generation": 10,
+    "lastModified": "2026-02-11T22:09:26Z",
+    "multiSessionEnabled": true,
+    "activeSessionCount": 1
+  },
+  "focus": {
+    "currentTask": null,
+    "currentPhase": "setup",
+    "blockedUntil": null,
+    "sessionNote": null,
+    "nextAction": null
+  },
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "CAAMP v0.1.0 - Initial Release",
+      "status": "pending",
+      "priority": "medium",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-11T22:09:17Z",
+      "updatedAt": "2026-02-11T22:09:17Z",
+      "size": "large",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Initial release of CAAMP as @cleocode/caamp on npm. Includes unified provider registry (28 providers), MCP server management, skills management, instructions injection, and library API for programmatic usage."
+    },
+    {
+      "id": "T002",
+      "title": "Implement unified provider registry with 28 AI coding agent definitions",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:23Z",
+      "updatedAt": "2026-02-11T22:10:26Z",
+      "size": "large",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/registry/providers.ts with getAllProviders, getProvider, resolveAlias, getProvidersByPriority, and providers/ directory with 28 YAML provider definitions.",
+      "completedAt": "2026-02-11T22:10:26Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:26Z] 28 providers in registry. Tests in tests/unit/registry.test.ts (14 tests)."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:27Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T003",
+      "title": "Implement provider auto-detection engine",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:31Z",
+      "updatedAt": "2026-02-11T22:10:34Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/registry/detection.ts with detectProvider, detectAllProviders, getInstalledProviders, detectProjectProviders. Supports binary, directory, appBundle, and flatpak detection methods.",
+      "completedAt": "2026-02-11T22:10:34Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:34Z] Detection works for all 28 providers via multiple methods."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:34Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T004",
+      "title": "Implement config format handlers (JSON/JSONC, YAML, TOML)",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:38Z",
+      "updatedAt": "2026-02-11T22:10:42Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/formats/ with json.ts, yaml.ts, toml.ts, utils.ts, and index.ts router. JSONC preserves comments via jsonc-parser. Includes readConfig, writeConfig, deepMerge, setNestedValue, getNestedValue, ensureDir.",
+      "completedAt": "2026-02-11T22:10:42Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:42Z] 18 tests in tests/unit/formats.test.ts covering all formats."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:42Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T005",
+      "title": "Implement MCP server config installer with format transforms",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:46Z",
+      "updatedAt": "2026-02-11T22:10:50Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/mcp/installer.ts with installMcpServer, installMcpServerToAll, buildServerConfig. Created src/core/mcp/transforms.ts for provider-specific config transformations (Goose YAML, Zed JSON, etc).",
+      "completedAt": "2026-02-11T22:10:50Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:50Z] 8 tests in tests/unit/installer.test.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:50Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T006",
+      "title": "Implement lock file management for MCP servers and skills",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:55Z",
+      "updatedAt": "2026-02-11T22:10:59Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/mcp/lock.ts and src/core/skills/lock.ts sharing ~/.agents/.caamp-lock.json. Tracks installations, versions, selected agents.",
+      "completedAt": "2026-02-11T22:10:59Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:59Z] 3 tests in tests/unit/lock.test.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:59Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T007",
+      "title": "Implement skills installer, discovery, validator, and audit scanner",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:04Z",
+      "updatedAt": "2026-02-11T22:11:04Z",
+      "size": "large",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/skills/ with installer.ts (canonical + symlink model), discovery.ts (parseSkillFile, discoverSkills), validator.ts (Agent Skills standard validation), and audit/scanner.ts (security scanning with SARIF output)."
+    }
+  ],
+  "labels": {}
+}

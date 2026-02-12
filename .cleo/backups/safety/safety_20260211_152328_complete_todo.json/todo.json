@@ -1,0 +1,979 @@
+{
+  "$schema": "./schemas/todo.schema.json",
+  "version": "2.10.0",
+  "project": {
+    "name": "caamp",
+    "currentPhase": "setup",
+    "phases": {
+      "setup": {
+        "order": 1,
+        "name": "Setup & Foundation",
+        "description": "Initial project setup, dependencies, and configuration",
+        "status": "active",
+        "startedAt": "2026-02-11T22:05:12Z",
+        "completedAt": null
+      },
+      "core": {
+        "order": 2,
+        "name": "Core Development",
+        "description": "Build core functionality and features",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "testing": {
+        "order": 3,
+        "name": "Testing & Validation",
+        "description": "Comprehensive testing, validation, and quality assurance",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "polish": {
+        "order": 4,
+        "name": "Polish & Refinement",
+        "description": "UX improvements, optimization, and release preparation",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "maintenance": {
+        "order": 5,
+        "name": "Maintenance",
+        "description": "Bug fixes, updates, and ongoing support",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      }
+    },
+    "releases": [
+      {
+        "version": "v0.1.0",
+        "status": "released",
+        "targetDate": null,
+        "releasedAt": "2026-02-11T22:14:33Z",
+        "createdAt": "2026-02-11T22:13:51Z",
+        "tasks": [],
+        "notes": null,
+        "gitTag": "v0.1.0",
+        "changelog": "## [0.1.0] - 2026-02-11"
+      }
+    ]
+  },
+  "lastUpdated": "2026-02-11T23:23:27Z",
+  "_meta": {
+    "schemaVersion": "2.10.0",
+    "checksum": "04cce88a2baaf022",
+    "configVersion": "2.10.0",
+    "lastSessionId": null,
+    "activeSession": null,
+    "generation": 55,
+    "lastModified": "2026-02-11T23:18:09Z",
+    "multiSessionEnabled": true,
+    "activeSessionCount": 2
+  },
+  "focus": {
+    "currentTask": null,
+    "currentPhase": "setup",
+    "blockedUntil": null,
+    "sessionNote": null,
+    "nextAction": null
+  },
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "CAAMP v0.1.0 - Initial Release",
+      "status": "done",
+      "priority": "medium",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-11T22:09:17Z",
+      "updatedAt": "2026-02-11T22:13:42Z",
+      "size": "large",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Initial release of CAAMP as @cleocode/caamp on npm. Includes unified provider registry (28 providers), MCP server management, skills management, instructions injection, and library API for programmatic usage.",
+      "completedAt": "2026-02-11T22:13:42Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:13:42Z] All 19 child tasks complete. CAAMP v0.1.0 published to npm as @cleocode/caamp. GitHub repo at https://github.com/kryptobaseddev/caamp. 28 providers, 74 tests, 57 library exports."
+      ]
+    },
+    {
+      "id": "T002",
+      "title": "Implement unified provider registry with 28 AI coding agent definitions",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:23Z",
+      "updatedAt": "2026-02-11T22:10:26Z",
+      "size": "large",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/registry/providers.ts with getAllProviders, getProvider, resolveAlias, getProvidersByPriority, and providers/ directory with 28 YAML provider definitions.",
+      "completedAt": "2026-02-11T22:10:26Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:26Z] 28 providers in registry. Tests in tests/unit/registry.test.ts (14 tests)."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:27Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T003",
+      "title": "Implement provider auto-detection engine",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:31Z",
+      "updatedAt": "2026-02-11T22:10:34Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/registry/detection.ts with detectProvider, detectAllProviders, getInstalledProviders, detectProjectProviders. Supports binary, directory, appBundle, and flatpak detection methods.",
+      "completedAt": "2026-02-11T22:10:34Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:34Z] Detection works for all 28 providers via multiple methods."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:34Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T004",
+      "title": "Implement config format handlers (JSON/JSONC, YAML, TOML)",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:38Z",
+      "updatedAt": "2026-02-11T22:10:42Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/formats/ with json.ts, yaml.ts, toml.ts, utils.ts, and index.ts router. JSONC preserves comments via jsonc-parser. Includes readConfig, writeConfig, deepMerge, setNestedValue, getNestedValue, ensureDir.",
+      "completedAt": "2026-02-11T22:10:42Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:42Z] 18 tests in tests/unit/formats.test.ts covering all formats."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:42Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T005",
+      "title": "Implement MCP server config installer with format transforms",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:46Z",
+      "updatedAt": "2026-02-11T22:10:50Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/mcp/installer.ts with installMcpServer, installMcpServerToAll, buildServerConfig. Created src/core/mcp/transforms.ts for provider-specific config transformations (Goose YAML, Zed JSON, etc).",
+      "completedAt": "2026-02-11T22:10:50Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:50Z] 8 tests in tests/unit/installer.test.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:50Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T006",
+      "title": "Implement lock file management for MCP servers and skills",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:10:55Z",
+      "updatedAt": "2026-02-11T22:10:59Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/mcp/lock.ts and src/core/skills/lock.ts sharing ~/.agents/.caamp-lock.json. Tracks installations, versions, selected agents.",
+      "completedAt": "2026-02-11T22:10:59Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:10:59Z] 3 tests in tests/unit/lock.test.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:10:59Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T007",
+      "title": "Implement skills installer, discovery, validator, and audit scanner",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:04Z",
+      "updatedAt": "2026-02-11T22:11:08Z",
+      "size": "large",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/skills/ with installer.ts (canonical + symlink model), discovery.ts (parseSkillFile, discoverSkills), validator.ts (Agent Skills standard validation), and audit/scanner.ts (security scanning with SARIF output).",
+      "completedAt": "2026-02-11T22:11:08Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:08Z] Skills install, remove, discover, validate, scan, and toSarif all working."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:08Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T008",
+      "title": "Implement source parser for GitHub/npm/URL/local/command sources",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:13Z",
+      "updatedAt": "2026-02-11T22:11:17Z",
+      "size": "small",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/sources/parser.ts with parseSource and isMarketplaceScoped. Classifies inputs as remote, package, command, github, gitlab, or local.",
+      "completedAt": "2026-02-11T22:11:17Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:17Z] 13 tests in tests/unit/source-parser.test.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:18Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T009",
+      "title": "Implement instructions injection system for agent config files",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:24Z",
+      "updatedAt": "2026-02-11T22:11:28Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/instructions/injector.ts and templates.ts. Supports inject, checkInjection, removeInjection, checkAllInjections, injectAll with CLEO-style marker blocks.",
+      "completedAt": "2026-02-11T22:11:28Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:28Z] Injection system handles CLAUDE.md, AGENTS.md, GEMINI.md and all provider instruction files."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:28Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T010",
+      "title": "Implement marketplace client for skill discovery",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:33Z",
+      "updatedAt": "2026-02-11T22:11:36Z",
+      "size": "small",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/core/marketplace/client.ts with MarketplaceClient class for searching and fetching skills from the marketplace API.",
+      "completedAt": "2026-02-11T22:11:36Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:36Z] Client supports search, list, and fetch operations."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:37Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T011",
+      "title": "Implement CLI with commander.js command structure",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:42Z",
+      "updatedAt": "2026-02-11T22:11:45Z",
+      "size": "large",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created src/cli.ts and src/commands/ with providers (list, search), mcp (install, list, remove, detect), skills (install, remove, list, validate, audit), instructions (inject, check, remove), and marketplace commands.",
+      "completedAt": "2026-02-11T22:11:45Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:45Z] Full CLI with interactive prompts via @clack/prompts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:46Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T012",
+      "title": "Create src/core/mcp/reader.ts with library API for MCP read/list/remove",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:11:52Z",
+      "updatedAt": "2026-02-11T22:11:56Z",
+      "size": "medium",
+      "position": 11,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "NEW file: src/core/mcp/reader.ts with resolveConfigPath, listMcpServers, listAllMcpServers, removeMcpServer. Extracted from CLI commands into reusable core functions.",
+      "depends": [
+        "T004",
+        "T005"
+      ],
+      "completedAt": "2026-02-11T22:11:56Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:11:56Z] 18 tests in tests/unit/mcp-reader.test.ts. All functions tested with temp dirs and mock configs."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:11:56Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T013",
+      "title": "Add removeConfig format router to src/core/formats/index.ts",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:02Z",
+      "updatedAt": "2026-02-11T22:12:05Z",
+      "size": "small",
+      "position": 12,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Added removeConfig() that routes to removeJsonConfig, removeYamlConfig, or removeTomlConfig. Re-exported getNestedValue and ensureDir from utils.",
+      "depends": [
+        "T004"
+      ],
+      "completedAt": "2026-02-11T22:12:05Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:05Z] Parallels existing readConfig/writeConfig pattern."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:06Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T014",
+      "title": "Add McpServerEntry type to src/types.ts",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:11Z",
+      "updatedAt": "2026-02-11T22:12:15Z",
+      "size": "small",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Added McpServerEntry interface with name, providerId, providerName, scope, configPath, and config fields for typed MCP list results.",
+      "completedAt": "2026-02-11T22:12:15Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:15Z] Used by listMcpServers and listAllMcpServers return values."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:15Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T015",
+      "title": "Refactor mcp list/remove/detect commands to delegate to core reader",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:20Z",
+      "updatedAt": "2026-02-11T22:12:24Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Updated src/commands/mcp/list.ts, remove.ts, and detect.ts to use listMcpServers, removeMcpServer, and resolveConfigPath from src/core/mcp/reader.ts instead of inline config reading.",
+      "depends": [
+        "T012"
+      ],
+      "completedAt": "2026-02-11T22:12:24Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:24Z] Removed ~30 lines of duplicated config reading logic from CLI commands."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:25Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T016",
+      "title": "Export ~25 new symbols from src/index.ts for library API",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:31Z",
+      "updatedAt": "2026-02-11T22:12:35Z",
+      "size": "medium",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Added exports for: MCP reader (4), MCP lock (6), skills lock (4), format utils (removeConfig, getNestedValue, deepMerge, ensureDir), result types (DetectionResult, InstallResult, SkillInstallResult, ValidationResult, ValidationIssue), and McpServerEntry type.",
+      "depends": [
+        "T012",
+        "T013",
+        "T014"
+      ],
+      "completedAt": "2026-02-11T22:12:35Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:35Z] 57 total exports from library entry point. All planned imports from the CLEO integration surface are now available."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:35Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T017",
+      "title": "Move resolveConfigPath from installer to reader",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:40Z",
+      "updatedAt": "2026-02-11T22:12:44Z",
+      "size": "small",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Removed private resolveConfigPath from src/core/mcp/installer.ts. Installer now imports it from src/core/mcp/reader.ts. Single source of truth for config path resolution.",
+      "depends": [
+        "T012"
+      ],
+      "completedAt": "2026-02-11T22:12:44Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:44Z] No behavior change, just module organization."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:44Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T018",
+      "title": "Update package.json name to @cleocode/caamp with publishConfig",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:50Z",
+      "updatedAt": "2026-02-11T22:12:54Z",
+      "size": "small",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Changed package name from caamp to @cleocode/caamp. Added publishConfig.access: public for npm scoped package publishing.",
+      "completedAt": "2026-02-11T22:12:54Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:12:54Z] Package name updated and publishConfig added."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:12:54Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T019",
+      "title": "Create GitHub repo kryptobaseddev/caamp and push code",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:12:59Z",
+      "updatedAt": "2026-02-11T22:13:03Z",
+      "size": "small",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Created public repo at https://github.com/kryptobaseddev/caamp. Pushed all code to main branch.",
+      "completedAt": "2026-02-11T22:13:03Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:13:03Z] Repo live at https://github.com/kryptobaseddev/caamp"
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:13:03Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T020",
+      "title": "Publish @cleocode/caamp@0.1.0 to npm registry",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-11T22:13:09Z",
+      "updatedAt": "2026-02-11T22:13:13Z",
+      "size": "small",
+      "position": 19,
+      "positionVersion": 0,
+      "phase": "core",
+      "description": "Published @cleocode/caamp@0.1.0 to the public npm registry under the cleocode organization. 72.9 kB package, 11 files.",
+      "depends": [
+        "T018",
+        "T019"
+      ],
+      "completedAt": "2026-02-11T22:13:13Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T22:13:13Z] Live at https://www.npmjs.com/package/@cleocode/caamp shasum: 51c111228ba5f62ff68962b8aff0bc6b902c19b0"
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T22:13:14Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T021",
+      "title": "CAAMP v0.2.0 - Documentation, Modernization & Fixes",
+      "status": "pending",
+      "priority": "high",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-11T23:17:26Z",
+      "updatedAt": "2026-02-11T23:17:26Z",
+      "size": "large",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup"
+    },
+    {
+      "id": "T022",
+      "title": "Rewrite README.md with banner, install fixes, architecture, and doc links",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:43Z",
+      "updatedAt": "2026-02-11T23:18:01Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:01Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:01Z] README rewritten: banner, badges, proper install, library usage, architecture, doc links, contributing. 85→204 lines."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:01Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T023",
+      "title": "Modernize package.json deps and bump Node engine to >=20",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:44Z",
+      "updatedAt": "2026-02-11T23:18:02Z",
+      "size": "small",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:02Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:02Z] commander ^14, @clack/prompts ^1.0, Node >=20, tsup target node20. 74/74 tests pass."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:02Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T024",
+      "title": "Fix npx install - scoped package needs npx @cleocode/caamp",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:51Z",
+      "updatedAt": "2026-02-11T23:18:03Z",
+      "size": "small",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:18:03Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:18:03Z] Fixed npx caamp to npx @cleocode/caamp in README and PRD."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:18:03Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T025",
+      "title": "Fix skills update stub command - implement network version checking",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:51Z",
+      "updatedAt": "2026-02-11T23:23:25Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:23:25Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:23:25Z] Implemented network-based version checking in checkSkillUpdate using simple-git ls-remote. skills update now actually compares SHAs and reinstalls outdated skills."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:23:26Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T026",
+      "title": "Fix skills check - add network-based version comparison",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:23:27Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-11T23:23:27Z",
+      "notes": [
+        "[COMPLETED 2026-02-11T23:23:27Z] skills check now uses network-based checkSkillUpdate to compare remote vs local versions."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:23:27Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T027",
+      "title": "Add test coverage for marketplace/ and instructions/ modules",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:17:52Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup"
+    },
+    {
+      "id": "T028",
+      "title": "Expand provider registry from 28 to 40+ providers",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T021",
+      "createdAt": "2026-02-11T23:17:52Z",
+      "updatedAt": "2026-02-11T23:17:52Z",
+      "size": "large",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup"
+    }
+  ],
+  "labels": {}
+}
