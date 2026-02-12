@@ -36,6 +36,20 @@ export type { InstallResult } from "./core/mcp/installer.js";
 export type { SkillInstallResult } from "./core/skills/installer.js";
 export type { ValidationResult, ValidationIssue } from "./core/skills/validator.js";
 export type {
+  RecommendationErrorCode,
+  RecommendationValidationIssue,
+  RecommendationValidationResult,
+  RecommendationCriteriaInput,
+  NormalizedRecommendationCriteria,
+  RecommendationReasonCode,
+  RecommendationReason,
+  RecommendationScoreBreakdown,
+  RankedSkillRecommendation,
+  RecommendationOptions,
+  RecommendationWeights,
+  RecommendSkillsResult,
+} from "./core/skills/recommendation.js";
+export type {
   McpBatchOperation,
   SkillBatchOperation,
   BatchInstallOptions,
@@ -77,6 +91,14 @@ export { parseSource, isMarketplaceScoped } from "./core/sources/parser.js";
 export { installSkill, removeSkill, listCanonicalSkills } from "./core/skills/installer.js";
 export { discoverSkills, discoverSkill, parseSkillFile } from "./core/skills/discovery.js";
 export { validateSkill } from "./core/skills/validator.js";
+export {
+  RECOMMENDATION_ERROR_CODES,
+  tokenizeCriteriaValue,
+  normalizeRecommendationCriteria,
+  validateRecommendationCriteria,
+  scoreSkillRecommendation,
+  recommendSkills,
+} from "./core/skills/recommendation.js";
 export { scanFile, scanDirectory, toSarif } from "./core/skills/audit/scanner.js";
 
 // MCP install
