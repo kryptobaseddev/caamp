@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-11T23:46:11Z",
-    "totalSessionsCreated": 4
+    "lastModified": "2026-02-12T00:06:33Z",
+    "totalSessionsCreated": 5
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -149,7 +149,7 @@
     },
     {
       "id": "session_20260211_154441_2f0fec",
-      "status": "active",
+      "status": "ended",
       "name": "CAAMP v0.3.0 Wave 1",
       "agentId": null,
       "scope": {
@@ -167,10 +167,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T030",
+        "currentTask": null,
         "currentPhase": null,
         "previousTask": "T030",
-        "sessionNote": null,
+        "sessionNote": "v0.3.0 epic T029 complete. All 8 tasks done: API audit, 3 bug fixes, doctor command, verbose/quiet flags, API-REFERENCE.md fixes, TSDoc annotations, TypeDoc setup, gap analysis update.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -186,7 +186,7 @@
         ]
       },
       "startedAt": "2026-02-11T23:44:41Z",
-      "lastActivity": "2026-02-11T23:46:11Z",
+      "lastActivity": "2026-02-12T00:02:17Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -199,7 +199,53 @@
         "start_timestamp": "2026-02-11T23:44:41Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-12T00:02:17Z"
+    },
+    {
+      "id": "session_20260211_160330_444564",
+      "status": "ended",
+      "name": "CAAMP v0.3.0 Release",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T029",
+        "computedTaskIds": [
+          "T029",
+          "T030",
+          "T031",
+          "T032",
+          "T033",
+          "T034",
+          "T035",
+          "T036",
+          "T037"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": "v0.3.0 shipped to GitHub and npm",
+        "nextAction": null,
+        "focusHistory": []
+      },
+      "startedAt": "2026-02-12T00:03:30Z",
+      "lastActivity": "2026-02-12T00:06:33Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 0,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_160330_444564",
+        "start_timestamp": "2026-02-12T00:03:30Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-12T00:06:33Z"
     }
   ],
   "sessionHistory": []

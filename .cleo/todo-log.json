@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 80,
+    "totalEntries": 88,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:55:10Z",
+    "lastEntry": "2026-02-12T00:06:33Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1485,6 +1485,127 @@
       "details": {
         "field": "status",
         "operation": "complete"
+      }
+    },
+    {
+      "id": "log_23b70bedace3",
+      "timestamp": "2026-02-12T00:01:14Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T032",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T00:01:13Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_4345edd6322a",
+      "timestamp": "2026-02-12T00:01:57Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T031",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T00:01:56Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_995c22cd28c0",
+      "timestamp": "2026-02-12T00:01:58Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T035",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T00:01:57Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_d7ea198022b8",
+      "timestamp": "2026-02-12T00:02:05Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T029",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T00:02:05Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_6444ce3c3386",
+      "timestamp": "2026-02-12T00:02:17Z",
+      "sessionId": "session_20260211_154441_2f0fec",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "v0.3.0 epic T029 complete. All 8 tasks done: API audit, 3 bug fixes, doctor command, verbose/quiet flags, API-REFERENCE.md fixes, TSDoc annotations, TypeDoc setup, gap analysis update."
+      }
+    },
+    {
+      "id": "log_efb15099e692",
+      "timestamp": "2026-02-12T00:03:30Z",
+      "sessionId": "session_20260211_160330_444564",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T029"
+      }
+    },
+    {
+      "id": "log_7ef66fc5cdb4",
+      "timestamp": "2026-02-12T00:06:33Z",
+      "sessionId": "session_20260211_160330_444564",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "v0.3.0 shipped to GitHub and npm"
       }
     }
   ]

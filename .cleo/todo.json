@@ -68,18 +68,29 @@
         "notes": null,
         "gitTag": "v0.2.0",
         "changelog": "## [0.2.0] - 2026-02-11"
+      },
+      {
+        "version": "v0.3.0",
+        "status": "released",
+        "targetDate": null,
+        "releasedAt": "2026-02-12T00:05:08Z",
+        "createdAt": "2026-02-12T00:03:35Z",
+        "tasks": [],
+        "notes": null,
+        "gitTag": "v0.3.0",
+        "changelog": "## [0.3.0] - 2026-02-11"
       }
     ]
   },
-  "lastUpdated": "2026-02-12T00:01:13Z",
+  "lastUpdated": "2026-02-12T00:05:08Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "983fb81f13936270",
+    "checksum": "9b3dabb1bdaab05f",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 78,
-    "lastModified": "2026-02-11T23:46:11Z",
+    "generation": 88,
+    "lastModified": "2026-02-12T00:03:30Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 3
   },
@@ -1030,19 +1041,21 @@
     {
       "id": "T029",
       "title": "CAAMP v0.3.0 - API Documentation, Quality & Outstanding Gaps",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "epic",
       "parentId": null,
       "createdAt": "2026-02-11T23:42:51Z",
-      "updatedAt": "2026-02-11T23:42:51Z",
+      "updatedAt": "2026-02-12T00:02:05Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-11 23:42:51 UTC: Epic covering: (1) API-REFERENCE.md accuracy audit, (2) TSDoc annotations for auto-generated API docs, (3) v0.3.0 deferred items from GAP-ANALYSIS.md, (4) Gap Analysis document update"
-      ]
+        "2026-02-11 23:42:51 UTC: Epic covering: (1) API-REFERENCE.md accuracy audit, (2) TSDoc annotations for auto-generated API docs, (3) v0.3.0 deferred items from GAP-ANALYSIS.md, (4) Gap Analysis document update",
+        "[COMPLETED 2026-02-12T00:02:05Z] v0.3.0 epic complete: 8 tasks done - API audit, bug fixes, doctor command, verbose/quiet flags, API docs fixes, TSDoc annotations, TypeDoc setup, gap analysis update"
+      ],
+      "completedAt": "2026-02-12T00:02:05Z"
     },
     {
       "id": "T030",
@@ -1081,12 +1094,12 @@
     {
       "id": "T031",
       "title": "Add TSDoc annotations to all public API exports",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T029",
       "createdAt": "2026-02-11T23:43:07Z",
-      "updatedAt": "2026-02-11T23:43:07Z",
+      "updatedAt": "2026-02-12T00:01:56Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
@@ -1095,8 +1108,25 @@
         "T030"
       ],
       "notes": [
-        "2026-02-11 23:43:07 UTC: Add JSDoc/TSDoc comments to all 82 exported symbols in src/. Must include: @param, @returns, @example for every public function. This enables automated API doc generation via TypeDoc or similar tooling. Covers: src/core/registry/providers.ts, src/core/registry/detection.ts, src/core/mcp/installer.ts, src/core/mcp/reader.ts, src/core/mcp/transforms.ts, src/core/mcp/lock.ts, src/core/skills/installer.ts, src/core/skills/discovery.ts, src/core/skills/validator.ts, src/core/skills/audit/scanner.ts, src/core/skills/lock.ts, src/core/marketplace/client.ts, src/core/instructions/injector.ts, src/core/instructions/templates.ts, src/core/formats/index.ts, src/core/formats/utils.ts, src/core/sources/parser.ts, src/types.ts"
-      ]
+        "2026-02-11 23:43:07 UTC: Add JSDoc/TSDoc comments to all 82 exported symbols in src/. Must include: @param, @returns, @example for every public function. This enables automated API doc generation via TypeDoc or similar tooling. Covers: src/core/registry/providers.ts, src/core/registry/detection.ts, src/core/mcp/installer.ts, src/core/mcp/reader.ts, src/core/mcp/transforms.ts, src/core/mcp/lock.ts, src/core/skills/installer.ts, src/core/skills/discovery.ts, src/core/skills/validator.ts, src/core/skills/audit/scanner.ts, src/core/skills/lock.ts, src/core/marketplace/client.ts, src/core/instructions/injector.ts, src/core/instructions/templates.ts, src/core/formats/index.ts, src/core/formats/utils.ts, src/core/sources/parser.ts, src/types.ts",
+        "[COMPLETED 2026-02-12T00:01:56Z] TSDoc annotations added to all 19 public API source files. Build, typecheck, 120 tests pass."
+      ],
+      "completedAt": "2026-02-12T00:01:56Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T00:01:57Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T032",
@@ -1118,7 +1148,22 @@
         "2026-02-11 23:43:14 UTC: Install and configure TypeDoc for automated API reference generation from TSDoc comments. Create: (1) typedoc.json config, (2) npm run docs:api script, (3) Generate initial API docs to docs/api/ directory, (4) Add to CI workflow for validation (typedoc --validation), (5) Update README.md to link generated docs, (6) Ensure output matches or supersedes manual API-REFERENCE.md",
         "[COMPLETED 2026-02-12T00:01:13Z] TypeDoc configured, docs:api and docs:api:check scripts added, CI validation step added, docs/api/ in .gitignore, README updated"
       ],
-      "completedAt": "2026-02-12T00:01:13Z"
+      "completedAt": "2026-02-12T00:01:13Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T00:01:13Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T033",
@@ -1191,19 +1236,36 @@
     {
       "id": "T035",
       "title": "Add --verbose and --quiet global flags",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T029",
       "createdAt": "2026-02-11T23:43:40Z",
-      "updatedAt": "2026-02-11T23:43:40Z",
+      "updatedAt": "2026-02-12T00:01:57Z",
       "size": "medium",
       "position": 6,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-11 23:43:40 UTC: From GAP-ANALYSIS.md Section 4.4. Add two global CLI flags: (1) --verbose/-v: Debug output showing config paths being read/written, detection methods tried, transform applied, etc. (2) --quiet/-q: Suppress all output except errors, for scripting use. Implement via shared logger utility that respects these flags. Update all commands to use logger instead of direct console.log."
-      ]
+        "2026-02-11 23:43:40 UTC: From GAP-ANALYSIS.md Section 4.4. Add two global CLI flags: (1) --verbose/-v: Debug output showing config paths being read/written, detection methods tried, transform applied, etc. (2) --quiet/-q: Suppress all output except errors, for scripting use. Implement via shared logger utility that respects these flags. Update all commands to use logger instead of direct console.log.",
+        "[COMPLETED 2026-02-12T00:01:57Z] Added --verbose and --quiet global flags with logger utility. Build, typecheck, 120 tests pass."
+      ],
+      "completedAt": "2026-02-12T00:01:57Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T00:01:58Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T036",
