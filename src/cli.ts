@@ -11,6 +11,7 @@ import { registerMcpCommands } from "./commands/mcp/index.js";
 import { registerInstructionsCommands } from "./commands/instructions/index.js";
 import { registerConfigCommand } from "./commands/config.js";
 import { registerDoctorCommand } from "./commands/doctor.js";
+import { registerAdvancedCommands } from "./commands/advanced/index.js";
 import { setVerbose, setQuiet } from "./core/logger.js";
 
 const program = new Command();
@@ -35,5 +36,6 @@ registerMcpCommands(program);
 registerInstructionsCommands(program);
 registerConfigCommand(program);
 registerDoctorCommand(program);
+registerAdvancedCommands(program);
 
 program.parse();

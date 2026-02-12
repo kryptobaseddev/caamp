@@ -3,6 +3,8 @@
 These recipes show how to compose CAAMP's existing APIs for multi-provider automation.
 They focus on production patterns: tier filtering, rollback, conflict handling, and single-operation wrappers.
 
+If you want command-line wrappers for these patterns, use the LAFS-compliant `caamp advanced ...` commands documented in [Advanced CLI](ADVANCED-CLI.md).
+
 ## How would you implement a batch operation in CAAMP that installs multiple skills and MCP servers across a filtered subset of providers based on tier priority, while maintaining rollback capability if any installation fails?
 
 ```typescript

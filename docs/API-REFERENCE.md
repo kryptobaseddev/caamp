@@ -1928,6 +1928,7 @@ console.log(`Status: ${status.status}`);
 ## Advanced orchestration
 
 High-level orchestration helpers built on top of CAAMP's core primitives.
+For command-line wrappers with LAFS output envelopes, see [Advanced CLI](ADVANCED-CLI.md).
 
 ### `selectProvidersByMinimumPriority()`
 

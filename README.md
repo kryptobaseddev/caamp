@@ -16,6 +16,8 @@
 
 CAAMP is a unified provider registry and package manager for AI coding agents. It replaces the need to manually configure each agent's MCP servers, skills, and instruction files individually -- handling the differences in config formats (JSON, JSONC, YAML, TOML), config keys (`mcpServers`, `mcp_servers`, `extensions`, `mcp`, `servers`, `context_servers`), and file paths across all supported providers.
 
+CAAMP adopts an LLM-Agent-First Specification (LAFS) baseline for agent-facing outputs: machine-readable by default, human-readable by explicit opt-in, with MVI-focused token efficiency.
+
 ## Install
 
 ```bash
@@ -115,6 +117,17 @@ caamp config show <provider>       # Show provider config contents
 caamp config path <provider>       # Show config file path
 ```
 
+### Advanced (LAFS-compliant wrappers)
+
+```bash
+caamp advanced providers --min-tier medium --details
+caamp advanced batch --mcp-file ./mcp-batch.json --skills-file ./skills-batch.json
+caamp advanced conflicts --mcp-file ./mcp-batch.json
+caamp advanced apply --mcp-file ./mcp-batch.json --policy skip
+caamp advanced instructions --content-file ./AGENT-BLOCK.md --scope project
+caamp advanced configure -a claude-code --global-mcp-file ./global-mcp.json --project-mcp-file ./project-mcp.json
+```
+
 ## Global Flags
 
 | Flag | Description |
@@ -184,11 +197,13 @@ Each provider uses a different key name for MCP server configuration:
 | Document | Description |
 |----------|-------------|
 | [API Reference](docs/API-REFERENCE.md) | Full library API (signatures and examples) |
+| [Advanced CLI](docs/ADVANCED-CLI.md) | LAFS-compliant advanced command wrappers and input/output schemas |
 | [Advanced Recipes](docs/ADVANCED-RECIPES.md) | Production TypeScript patterns for tier filtering, rollback, conflict handling, and dual-scope operations |
 | [Generated API Docs](docs/api/) | Auto-generated from TSDoc (run `npm run docs:api`) |
 | [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
 | [Product Requirements](claudedocs/PRD.md) | Full PRD with user stories and feature requirements |
 | [Technical Specification](claudedocs/specs/CAAMP-SPEC.md) | RFC 2119 spec covering all subsystems |
+| [LAFS Specification](lafs.md) | Cross-language LLM-agent-first protocol for output, context, and MVI |
 | [Gap Analysis & Roadmap](claudedocs/GAP-ANALYSIS.md) | Current state vs plan, v0.2.0+ roadmap |
 
 ## Contributing
