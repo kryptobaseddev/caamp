@@ -115,14 +115,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T18:43:42Z",
+  "lastUpdated": "2026-02-12T18:54:37Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "438c6e9a6f607e03",
+    "checksum": "5081dd3f9ae4d39a",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 254,
+    "generation": 259,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3949,7 +3949,7 @@
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T18:33:35Z",
+      "updatedAt": "2026-02-12T18:43:48Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
@@ -3968,7 +3968,18 @@
         "T109"
       ],
       "notes": [
-        "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context."
+        "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context.",
+        "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback)."
+      ],
+      "relates": [
+        {
+          "taskId": "T111",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T112",
+          "type": "relates-to"
+        }
       ]
     },
     {
@@ -3993,17 +4004,32 @@
       "completedAt": "2026-02-12T18:43:42Z",
       "notes": [
         "[COMPLETED 2026-02-12T18:43:42Z] Updated src/core/marketplace/skillsmp.ts to query by name/author+name fallback with larger candidate window and exact scopedName filtering. Added coverage in tests/unit/marketplace.test.ts for scoped query behavior and fallback term retry."
-      ]
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:43:43Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T112",
       "title": "Harden marketplace install path resolution for SKILL.md metadata",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:43:42Z",
-      "updatedAt": "2026-02-12T18:43:42Z",
+      "updatedAt": "2026-02-12T18:43:44Z",
       "size": "medium",
       "position": 15,
       "positionVersion": 0,
@@ -4013,6 +4039,89 @@
         "bug",
         "installer",
         "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:43:44Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:43:44Z] Updated src/commands/skills/install.ts with path candidate normalization and fallback handling for missing .claude/ prefix metadata, including existence checks and retry. Added integration coverage in tests/integration/skill-install.test.ts for fallback behavior."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:43:44Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T113",
+      "title": "Complete recommendation API surface for external tools",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:36Z",
+      "updatedAt": "2026-02-12T18:54:37Z",
+      "size": "medium",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add searchSkills(query, options), recommendSkills(query, criteria), and formatSkillRecommendations(result, mode) as stateless composable library APIs.",
+      "labels": [
+        "api",
+        "feature",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:54:37Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:37Z] Implemented new stateless API in src/core/skills/recommendation-api.ts with searchSkills, recommendSkills(query,criteria), and formatSkillRecommendations(mode). Exported API from src/index.ts."
+      ]
+    },
+    {
+      "id": "T114",
+      "title": "Align skills find recommendation output contract with full product shape",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:36Z",
+      "updatedAt": "2026-02-12T18:54:36Z",
+      "size": "medium",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Ensure human and JSON modes expose ranked options, reasons, tradeoffs, CHOOSE helper, top-3 default, details expansion, and stable error taxonomy.",
+      "labels": [
+        "feature",
+        "lafs",
+        "release-v1"
+      ]
+    },
+    {
+      "id": "T115",
+      "title": "Add golden JSON snapshots for LAFS recommendation output",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:37Z",
+      "updatedAt": "2026-02-12T18:54:37Z",
+      "size": "medium",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic MVI and detailed snapshot coverage for skills find --recommend --json output envelopes.",
+      "labels": [
+        "lafs",
+        "release-v1",
+        "test"
       ]
     }
   ],
