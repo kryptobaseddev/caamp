@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 232,
+    "totalEntries": 239,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T17:49:14Z",
+    "lastEntry": "2026-02-12T17:52:02Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -4728,6 +4728,505 @@
         "currentTask": "T088"
       },
       "details": null
+    },
+    {
+      "id": "log_107e39b694f3",
+      "timestamp": "2026-02-12T17:50:37Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T092",
+      "before": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-commands.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-command-wrappers.test.ts",
+          "tests/integration/instructions-commands.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_a441d565976e",
+      "timestamp": "2026-02-12T17:50:47Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T092",
+      "before": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-command-wrappers.test.ts",
+          "tests/integration/instructions-commands.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-command-wrappers.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_0da578e14a58",
+      "timestamp": "2026-02-12T17:51:02Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T092",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T17:51:02Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_24e462869f6c",
+      "timestamp": "2026-02-12T17:51:22Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T088",
+      "before": {
+        "title": "Test advanced command wrappers",
+        "status": "active",
+        "priority": "high",
+        "description": "Add tests for advanced command wrappers (apply,batch,configure,conflicts,instructions,providers,index) using mocked orchestration paths.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/advanced-commands.test.ts"
+        ],
+        "acceptance": [
+          "Advanced command wrapper tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086",
+          "T087"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Test advanced command wrappers",
+        "status": "active",
+        "priority": "high",
+        "description": "Add tests for advanced command wrappers (apply,batch,configure,conflicts,instructions,providers,index) using mocked orchestration paths.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/advanced-commands.test.ts"
+        ],
+        "acceptance": [
+          "Advanced command wrapper tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086",
+          "T087"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5dd7a14dc8a5",
+      "timestamp": "2026-02-12T17:51:48Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T088",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T17:51:48Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_531ef6e57fd5",
+      "timestamp": "2026-02-12T17:52:02Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T088"
+      },
+      "after": {
+        "currentTask": "T086"
+      },
+      "details": null
+    },
+    {
+      "id": "log_72a74c7d19f8",
+      "timestamp": "2026-02-12T17:52:02Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T086",
+      "before": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "active",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "active",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770919782-9d11c1",
+      "timestamp": "2026-02-12T18:09:42Z",
+      "action": "task_created",
+      "taskId": "T097",
+      "actor": "system",
+      "details": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919801-b0afc3",
+      "timestamp": "2026-02-12T18:10:01Z",
+      "action": "task_created",
+      "taskId": "T098",
+      "actor": "system",
+      "details": {
+        "title": "RCSD-R: Research and retrieval benchmark",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "RCSD-R: Research and retrieval benchmark",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919802-0ff5f6",
+      "timestamp": "2026-02-12T18:10:02Z",
+      "action": "task_created",
+      "taskId": "T099",
+      "actor": "system",
+      "details": {
+        "title": "RCSD-S: Specification and contracts",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "RCSD-S: Specification and contracts",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919802-392eeb",
+      "timestamp": "2026-02-12T18:10:02Z",
+      "action": "task_created",
+      "taskId": "T100",
+      "actor": "system",
+      "details": {
+        "title": "RCSD-D: Decomposition and execution plan",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "RCSD-D: Decomposition and execution plan",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919825-333287",
+      "timestamp": "2026-02-12T18:10:25Z",
+      "action": "task_created",
+      "taskId": "T101",
+      "actor": "system",
+      "details": {
+        "title": "Implement query criteria parser and intent normalization",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement query criteria parser and intent normalization",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919826-8598e1",
+      "timestamp": "2026-02-12T18:10:26Z",
+      "action": "task_created",
+      "taskId": "T102",
+      "actor": "system",
+      "details": {
+        "title": "Implement deterministic recommendation scoring engine",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Implement deterministic recommendation scoring engine",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919827-bfc75a",
+      "timestamp": "2026-02-12T18:10:27Z",
+      "action": "task_created",
+      "taskId": "T103",
+      "actor": "system",
+      "details": {
+        "title": "Enhance skills find command with recommend/top/select flows",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Enhance skills find command with recommend/top/select flows",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919827-a56eb5",
+      "timestamp": "2026-02-12T18:10:27Z",
+      "action": "task_created",
+      "taskId": "T104",
+      "actor": "system",
+      "details": {
+        "title": "Add LAFS-compliant JSON output for recommendation results",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Add LAFS-compliant JSON output for recommendation results",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919828-4a6d09",
+      "timestamp": "2026-02-12T18:10:28Z",
+      "action": "task_created",
+      "taskId": "T105",
+      "actor": "system",
+      "details": {
+        "title": "Expose recommendation APIs for external tool integration",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Expose recommendation APIs for external tool integration",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919828-f3b9f3",
+      "timestamp": "2026-02-12T18:10:28Z",
+      "action": "task_created",
+      "taskId": "T106",
+      "actor": "system",
+      "details": {
+        "title": "Write recommendation documentation and usage patterns",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Write recommendation documentation and usage patterns",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770919829-84633d",
+      "timestamp": "2026-02-12T18:10:29Z",
+      "action": "task_created",
+      "taskId": "T107",
+      "actor": "system",
+      "details": {
+        "title": "Build unit test suite for parser, scoring, and reason codes",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Build unit test suite for parser, scoring, and reason codes",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919829-26e885",
+      "timestamp": "2026-02-12T18:10:29Z",
+      "action": "task_created",
+      "taskId": "T108",
+      "actor": "system",
+      "details": {
+        "title": "Build integration and CLI contract tests for recommendation mode",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Build integration and CLI contract tests for recommendation mode",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919830-932053",
+      "timestamp": "2026-02-12T18:10:30Z",
+      "action": "task_created",
+      "taskId": "T109",
+      "actor": "system",
+      "details": {
+        "title": "Run release validation gates for v1.0.0 feature readiness",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Run release validation gates for v1.0.0 feature readiness",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770919830-ab86e8",
+      "timestamp": "2026-02-12T18:10:30Z",
+      "action": "task_created",
+      "taskId": "T110",
+      "actor": "system",
+      "details": {
+        "title": "Prepare and execute release shipping workflow to main",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Prepare and execute release shipping workflow to main",
+        "status": "pending",
+        "priority": "high"
+      }
     }
   ]
 }

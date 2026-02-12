@@ -82,20 +82,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T17:48:32Z",
+  "lastUpdated": "2026-02-12T18:10:47Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "d71d16589035c900",
+    "checksum": "fdc6c058abbb5416",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 199,
-    "lastModified": "2026-02-12T17:49:14Z",
+    "generation": 209,
+    "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
   },
   "focus": {
-    "currentTask": "T088",
+    "currentTask": "T086",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -2875,12 +2875,12 @@
     {
       "id": "T086",
       "title": "Release Coverage Remediation to 80%",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-12T17:49:14Z",
+      "updatedAt": "2026-02-12T17:52:02Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -2891,7 +2891,34 @@
         "coverage CI job passes on GitHub Actions"
       ],
       "notes": [
-        "2026-02-12 17:44:34 UTC: Provenance: task-hygiene audit ses_3ad109aceffeFS3fpoK33Q39rQ; coverage-remediation planner ses_3ad109abeffex8z0DHFCGcVeON. Adopted as canonical execution plan for release blocker remediation."
+        "2026-02-12 17:44:34 UTC: Provenance: task-hygiene audit ses_3ad109aceffeFS3fpoK33Q39rQ; coverage-remediation planner ses_3ad109abeffex8z0DHFCGcVeON. Adopted as canonical execution plan for release blocker remediation.",
+        "2026-02-12 17:52:02 UTC: Progress update: max-depth hierarchy issue resolved via sibling tasks under T049 (T087-T094). Completed T087, T088, T091, T092."
+      ],
+      "relates": [
+        {
+          "taskId": "T049",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T087",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T088",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T091",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T092",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T094",
+          "type": "relates-to"
+        }
       ]
     },
     {
@@ -2943,12 +2970,12 @@
     {
       "id": "T088",
       "title": "Test advanced command wrappers",
-      "status": "active",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:24Z",
-      "updatedAt": "2026-02-12T17:49:14Z",
+      "updatedAt": "2026-02-12T17:51:48Z",
       "size": "large",
       "position": 15,
       "positionVersion": 0,
@@ -2964,7 +2991,27 @@
       "depends": [
         "T086",
         "T087"
-      ]
+      ],
+      "notes": [
+        "2026-02-12 17:51:21 UTC: Provenance: added tests/integration/advanced-commands.test.ts covering src/commands/advanced/{apply,batch,configure,conflicts,instructions,providers,index}.ts with deterministic mocks for node:fs/promises readFile, core advanced orchestration functions, and process.exit. Commands: npm run test -- tests/integration/advanced-commands.test.ts (pass, 13 tests), npx biome lint tests/integration/advanced-commands.test.ts (pass), npm run typecheck (pass). Result: success and representative validation/failure paths covered for each advanced wrapper.",
+        "[COMPLETED 2026-02-12T17:51:48Z] Implemented advanced command wrapper tests in tests/integration/advanced-commands.test.ts with deterministic mocks and success/failure path coverage; validated with targeted vitest, biome lint, and typecheck."
+      ],
+      "completedAt": "2026-02-12T17:51:48Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:51:48Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T089",
@@ -3068,19 +3115,19 @@
     {
       "id": "T092",
       "title": "Cover instructions command wrappers",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:26Z",
-      "updatedAt": "2026-02-12T17:48:31Z",
+      "updatedAt": "2026-02-12T17:51:02Z",
       "size": "medium",
       "position": 19,
       "positionVersion": 0,
       "phase": "setup",
       "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
       "files": [
-        "tests/integration/instructions-commands.test.ts"
+        "tests/integration/instructions-command-wrappers.test.ts"
       ],
       "acceptance": [
         "Instructions command tests added",
@@ -3091,14 +3138,33 @@
       ],
       "notes": [
         "2026-02-12 17:47:31 UTC: Provenance: added MCP command wrapper and lock tests. Ran: npm run test -- tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npx biome lint tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npm run typecheck.",
-        "2026-02-12 17:48:31 UTC: Provenance correction: previous MCP file note moved to T091. T092 remains pending for instructions wrapper coverage implementation."
+        "2026-02-12 17:48:31 UTC: Provenance correction: previous MCP file note moved to T091. T092 remains pending for instructions wrapper coverage implementation.",
+        "2026-02-12 17:50:36 UTC: Validation: npm run test -- tests/integration/instructions-command-wrappers.test.ts; npm run lint; npm run typecheck (all passing).",
+        "2026-02-12 17:50:47 UTC: Provenance: tests added for instructions check/inject/update/index wrappers, covering check --json and human output paths, inject dry-run and write paths, update no-op and selective update paths, plus edge failure when inject resolves zero providers.",
+        "[COMPLETED 2026-02-12T17:51:02Z] Implemented instructions command wrapper integration tests in tests/integration/instructions-command-wrappers.test.ts with JSON/non-JSON coverage and inject zero-provider failure path; verified via targeted vitest, biome lint, and typecheck."
       ],
       "relates": [
         {
           "taskId": "T091",
           "type": "relates-to"
         }
-      ]
+      ],
+      "completedAt": "2026-02-12T17:51:02Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:51:02Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T093",
@@ -3223,6 +3289,422 @@
         "lastUpdated": "2026-02-12T17:44:27Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T097",
+      "title": "Skills Recommendation Intelligence (RCSD)",
+      "status": "pending",
+      "priority": "high",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-12T18:09:42Z",
+      "updatedAt": "2026-02-12T18:10:47Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+      "labels": [
+        "feature",
+        "lafs",
+        "release-v1",
+        "skills"
+      ],
+      "acceptance": [
+        "Research evidence captured before scoring implementation",
+        "Specification approved before command/API implementation",
+        "All decomposition tasks complete before release ship"
+      ],
+      "notes": [
+        "2026-02-12 18:10:47 UTC: RCSD protocol initialized: R=research benchmark (T098), S=spec/contracts (T099), D=decomposition/plan (T100). Execution tasks T101-T110 enforce deterministic recommendation + LAFS output + release gating."
+      ],
+      "relates": [
+        {
+          "taskId": "T098",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T099",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T100",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T101",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T110",
+          "type": "relates-to"
+        }
+      ]
+    },
+    {
+      "id": "T098",
+      "title": "RCSD-R: Research and retrieval benchmark",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:10:01Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Research current skills search signals, marketplace metadata quality, user query intent patterns, and deterministic ranking criteria for recommendation output.",
+      "labels": [
+        "lafs",
+        "research",
+        "skills"
+      ],
+      "acceptance": [
+        "Top query intents documented with scoring signals",
+        "Legacy/modern markers cataloged for docs tooling domains",
+        "Evaluation dataset of at least 20 representative queries prepared"
+      ]
+    },
+    {
+      "id": "T099",
+      "title": "RCSD-S: Specification and contracts",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:10:01Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Define CLI options, library API interfaces, LAFS JSON envelope structure, reason codes, and progressive disclosure behavior for recommendations.",
+      "labels": [
+        "api",
+        "lafs",
+        "skills",
+        "spec"
+      ],
+      "acceptance": [
+        "CLI flag contract documented with precedence and conflict rules",
+        "TypeScript interfaces defined for recommendation result and score breakdown",
+        "Error code taxonomy and output examples specified"
+      ]
+    },
+    {
+      "id": "T100",
+      "title": "RCSD-D: Decomposition and execution plan",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:02Z",
+      "updatedAt": "2026-02-12T18:10:02Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Break implementation into atomic work packages with dependencies, testing strategy, and release gates for v1.0.0.",
+      "labels": [
+        "decomposition",
+        "planning",
+        "release-v1"
+      ],
+      "acceptance": [
+        "Atomic implementation tasks created and dependency-linked",
+        "Test matrix includes unit/integration/cli contract cases",
+        "Release checklist and rollback plan defined"
+      ]
+    },
+    {
+      "id": "T101",
+      "title": "Implement query criteria parser and intent normalization",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:25Z",
+      "updatedAt": "2026-02-12T18:10:25Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic parsing for query, must-have, prefer, and exclude criteria used by skills recommendation scoring.",
+      "labels": [
+        "implementation",
+        "search",
+        "skills"
+      ],
+      "acceptance": [
+        "Criteria parser supports comma-delimited and repeated flags",
+        "Normalized intent object is deterministic and serializable",
+        "Validation errors map to stable error codes"
+      ],
+      "depends": [
+        "T098",
+        "T099"
+      ]
+    },
+    {
+      "id": "T102",
+      "title": "Implement deterministic recommendation scoring engine",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:10:26Z",
+      "size": "large",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Build weighted scoring and reason-code generation for each candidate using query match, metadata quality, modernity markers, and penalties.",
+      "labels": [
+        "implementation",
+        "ranking",
+        "skills"
+      ],
+      "acceptance": [
+        "Score calculation is deterministic for identical inputs",
+        "Each ranked option includes reason codes and tradeoffs",
+        "Legacy marker penalties and modern marker boosts are configurable"
+      ],
+      "depends": [
+        "T098",
+        "T099"
+      ]
+    },
+    {
+      "id": "T103",
+      "title": "Enhance skills find command with recommend/top/select flows",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:10:26Z",
+      "size": "large",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Extend existing skills find command to support recommendation mode, top-N selection list, and choose-index behavior for humans and agents.",
+      "labels": [
+        "cli",
+        "implementation",
+        "skills"
+      ],
+      "acceptance": [
+        "--recommend and --top produce ranked output",
+        "Human output includes CHOOSE index list with recommended marker",
+        "Optional selection index returns chosen item payload"
+      ],
+      "depends": [
+        "T099",
+        "T100"
+      ]
+    },
+    {
+      "id": "T104",
+      "title": "Add LAFS-compliant JSON output for recommendation results",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:27Z",
+      "updatedAt": "2026-02-12T18:10:27Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Return machine-readable recommendation envelopes with MVI default and progressive disclosure details mode.",
+      "labels": [
+        "cli",
+        "implementation",
+        "lafs"
+      ],
+      "acceptance": [
+        "Default JSON output includes compact top recommendations",
+        "MVI metadata and request context are present in envelope",
+        "--details returns expanded score evidence fields"
+      ],
+      "depends": [
+        "T099"
+      ]
+    },
+    {
+      "id": "T105",
+      "title": "Expose recommendation APIs for external tool integration",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:10:28Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Export search/recommend APIs from library surface for consumers integrating CAAMP programmatically.",
+      "labels": [
+        "api",
+        "implementation",
+        "library"
+      ],
+      "acceptance": [
+        "New APIs are exported via package entrypoint",
+        "Typed interfaces cover input criteria and ranked output",
+        "API behavior matches CLI ranking for same query"
+      ],
+      "depends": [
+        "T099"
+      ]
+    },
+    {
+      "id": "T106",
+      "title": "Write recommendation documentation and usage patterns",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:10:28Z",
+      "size": "medium",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Document CLI flags, machine/human output modes, reason codes, and decision workflows for selecting results.",
+      "labels": [
+        "docs",
+        "lafs",
+        "skills"
+      ],
+      "acceptance": [
+        "Docs include examples for human and JSON modes",
+        "Selection workflow includes CHOOSE pattern and criteria usage",
+        "References point to canonical LAFS protocol source"
+      ],
+      "depends": [
+        "T099",
+        "T100"
+      ]
+    },
+    {
+      "id": "T107",
+      "title": "Build unit test suite for parser, scoring, and reason codes",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:10:29Z",
+      "size": "medium",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic tests for criteria parsing, score weighting, tie-break behavior, and reason-code generation.",
+      "labels": [
+        "skills",
+        "test",
+        "unit"
+      ],
+      "acceptance": [
+        "Parser and scoring logic have deterministic unit coverage",
+        "Tie and edge-case ordering assertions are included",
+        "Reason codes are snapshot-validated"
+      ],
+      "depends": [
+        "T101",
+        "T102"
+      ]
+    },
+    {
+      "id": "T108",
+      "title": "Build integration and CLI contract tests for recommendation mode",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:10:29Z",
+      "size": "medium",
+      "position": 11,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for skills find recommend flow, JSON contract shape, details mode, and human CHOOSE output.",
+      "labels": [
+        "cli",
+        "integration",
+        "lafs",
+        "test"
+      ],
+      "acceptance": [
+        "CLI tests cover human and JSON output paths",
+        "LAFS envelope contract assertions pass in JSON mode",
+        "Regression fixtures include real-world query examples"
+      ],
+      "depends": [
+        "T103",
+        "T104",
+        "T105"
+      ]
+    },
+    {
+      "id": "T109",
+      "title": "Run release validation gates for v1.0.0 feature readiness",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T18:10:30Z",
+      "size": "small",
+      "position": 12,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Execute typecheck, unit/integration tests, and documentation validation prior to release planning.",
+      "labels": [
+        "release-v1",
+        "test",
+        "validation"
+      ],
+      "acceptance": [
+        "Typecheck and full test suite pass",
+        "No contract drift detected in recommendation outputs",
+        "Release notes inputs are prepared"
+      ],
+      "depends": [
+        "T107",
+        "T108",
+        "T106"
+      ]
+    },
+    {
+      "id": "T110",
+      "title": "Prepare and execute release shipping workflow to main",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T18:10:30Z",
+      "size": "medium",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Plan release linkage, changelog generation, and ship workflow through CLEO release commands for production main.",
+      "labels": [
+        "operations",
+        "release-v1"
+      ],
+      "acceptance": [
+        "Feature epic is linked to target release",
+        "Changelog entries are generated from completed tasks",
+        "Release ship checklist is completed before merge/tag"
+      ],
+      "depends": [
+        "T109"
+      ]
     }
   ],
   "labels": {}
