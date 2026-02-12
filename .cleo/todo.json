@@ -86,6 +86,15 @@
         "targetDate": null,
         "releasedAt": null,
         "createdAt": "2026-02-12T18:10:56Z",
+        "tasks": [],
+        "notes": "Production release track including skills recommendation intelligence and LAFS-compliant recommendation workflows."
+      },
+      {
+        "version": "v0.4.0",
+        "status": "planned",
+        "targetDate": null,
+        "releasedAt": null,
+        "createdAt": "2026-02-12T18:33:44Z",
         "tasks": [
           "T097",
           "T098",
@@ -102,18 +111,18 @@
           "T109",
           "T110"
         ],
-        "notes": "Production release track including skills recommendation intelligence and LAFS-compliant recommendation workflows."
+        "notes": "Minor release for deterministic skills recommendation, LAFS JSON output, and recommendation API exports."
       }
     ]
   },
-  "lastUpdated": "2026-02-12T18:33:13Z",
+  "lastUpdated": "2026-02-12T18:43:42Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "ca9affaf3902ed82",
+    "checksum": "438c6e9a6f607e03",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 213,
+    "generation": 254,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3393,17 +3402,32 @@
         "2026-02-12 18:11:07 UTC: Kickoff priority: establish benchmark query set and deterministic ranking signals before coding.",
         "[COMPLETED 2026-02-12T18:33:13Z] Research benchmark completed via multi-agent packet: intent weights, modern/legacy markers, 22-query expected top3 set, deterministic metrics/tie-break policy."
       ],
-      "completedAt": "2026-02-12T18:33:13Z"
+      "completedAt": "2026-02-12T18:33:13Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:14Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T099",
       "title": "RCSD-S: Specification and contracts",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:01Z",
-      "updatedAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:33:15Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
@@ -3419,17 +3443,36 @@
         "CLI flag contract documented with precedence and conflict rules",
         "TypeScript interfaces defined for recommendation result and score breakdown",
         "Error code taxonomy and output examples specified"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:15Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:15Z] Spec/contracts completed: CLI flags/precedence, LAFS envelope shape, reason/error taxonomy, API pseudo-types."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:15Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T100",
       "title": "RCSD-D: Decomposition and execution plan",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:02Z",
-      "updatedAt": "2026-02-12T18:10:02Z",
+      "updatedAt": "2026-02-12T18:33:16Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
@@ -3444,17 +3487,36 @@
         "Atomic implementation tasks created and dependency-linked",
         "Test matrix includes unit/integration/cli contract cases",
         "Release checklist and rollback plan defined"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:16Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:16Z] Wave decomposition completed for T101-T110 including validation gates and rollback strategy."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:16Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T101",
       "title": "Implement query criteria parser and intent normalization",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:25Z",
-      "updatedAt": "2026-02-12T18:10:25Z",
+      "updatedAt": "2026-02-12T18:33:17Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
@@ -3473,17 +3535,36 @@
       "depends": [
         "T098",
         "T099"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:17Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:17Z] Implemented deterministic criteria parser/normalizer and stable validation error codes in src/core/skills/recommendation.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:17Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T102",
       "title": "Implement deterministic recommendation scoring engine",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:26Z",
-      "updatedAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:33:18Z",
       "size": "large",
       "position": 5,
       "positionVersion": 0,
@@ -3502,17 +3583,36 @@
       "depends": [
         "T098",
         "T099"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:18Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:18Z] Implemented deterministic scoring engine with reason codes, breakdown support, and tie-break ordering."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:19Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T103",
       "title": "Enhance skills find command with recommend/top/select flows",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:26Z",
-      "updatedAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:33:20Z",
       "size": "large",
       "position": 6,
       "positionVersion": 0,
@@ -3531,17 +3631,36 @@
       "depends": [
         "T099",
         "T100"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:20Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:20Z] Enhanced skills find with recommend/top/must-have/prefer/exclude/details/select flows and CHOOSE human output."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:20Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T104",
       "title": "Add LAFS-compliant JSON output for recommendation results",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:27Z",
-      "updatedAt": "2026-02-12T18:10:27Z",
+      "updatedAt": "2026-02-12T18:33:21Z",
       "size": "medium",
       "position": 7,
       "positionVersion": 0,
@@ -3559,17 +3678,36 @@
       ],
       "depends": [
         "T099"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:21Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:21Z] Added LAFS JSON envelope output for recommendation mode with MVI default and --details expansion."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:21Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T105",
       "title": "Expose recommendation APIs for external tool integration",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:28Z",
-      "updatedAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:33:22Z",
       "size": "medium",
       "position": 8,
       "positionVersion": 0,
@@ -3587,17 +3725,36 @@
       ],
       "depends": [
         "T099"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:22Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:22Z] Exported recommendation APIs/types via src/index.ts for programmatic consumers."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:22Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T106",
       "title": "Write recommendation documentation and usage patterns",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:28Z",
-      "updatedAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:33:23Z",
       "size": "medium",
       "position": 9,
       "positionVersion": 0,
@@ -3616,17 +3773,36 @@
       "depends": [
         "T099",
         "T100"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:23Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:23Z] Added recommendation usage docs in docs/CLI-HELP-EXAMPLES.md and updated references."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:24Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T107",
       "title": "Build unit test suite for parser, scoring, and reason codes",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:29Z",
-      "updatedAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:33:24Z",
       "size": "medium",
       "position": 10,
       "positionVersion": 0,
@@ -3645,17 +3821,36 @@
       "depends": [
         "T101",
         "T102"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:24Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:24Z] Added deterministic unit suite tests/unit/recommendation.test.ts for parser/scoring/reason/tie-break behavior."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:25Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T108",
       "title": "Build integration and CLI contract tests for recommendation mode",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:29Z",
-      "updatedAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:33:26Z",
       "size": "medium",
       "position": 11,
       "positionVersion": 0,
@@ -3676,17 +3871,36 @@
         "T103",
         "T104",
         "T105"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:26Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:26Z] Added integration contract tests tests/integration/skills-find-recommendation.test.ts for human/JSON/details/error flows."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:26Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T109",
       "title": "Run release validation gates for v1.0.0 feature readiness",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T18:33:27Z",
       "size": "small",
       "position": 12,
       "positionVersion": 0,
@@ -3706,17 +3920,36 @@
         "T107",
         "T108",
         "T106"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:33:27Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:27Z] Validation gates executed: npm run lint, npm run typecheck, npm test, npm run docs:api:check, npm run build (all pass). Note: npm run test:coverage fails global threshold due pre-existing baseline, not feature regression."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:27Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T110",
       "title": "Prepare and execute release shipping workflow to main",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T18:33:35Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
@@ -3733,6 +3966,53 @@
       ],
       "depends": [
         "T109"
+      ],
+      "notes": [
+        "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context."
+      ]
+    },
+    {
+      "id": "T111",
+      "title": "Fix SkillsMP scoped lookup for marketplace installs",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:43:41Z",
+      "updatedAt": "2026-02-12T18:43:42Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Use plain keyword queries for agentskills.in getSkill lookup, then exact-match scopedName to prevent false not-found results.",
+      "labels": [
+        "bug",
+        "marketplace",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:43:42Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:43:42Z] Updated src/core/marketplace/skillsmp.ts to query by name/author+name fallback with larger candidate window and exact scopedName filtering. Added coverage in tests/unit/marketplace.test.ts for scoped query behavior and fallback term retry."
+      ]
+    },
+    {
+      "id": "T112",
+      "title": "Harden marketplace install path resolution for SKILL.md metadata",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:43:42Z",
+      "updatedAt": "2026-02-12T18:43:42Z",
+      "size": "medium",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Normalize marketplace paths and fallback to parsed GitHub tree path (including .claude/ prefix variants) before cloning/installing.",
+      "labels": [
+        "bug",
+        "installer",
+        "release-v1"
       ]
     }
   ],

@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 241,
+    "totalEntries": 254,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T18:11:07Z",
+    "lastEntry": "2026-02-12T18:33:36Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -5326,6 +5326,335 @@
       },
       "details": {
         "operation": "update"
+      }
+    },
+    {
+      "id": "log_fd69354f9858",
+      "timestamp": "2026-02-12T18:33:14Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T098",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:13Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_d826a7d87251",
+      "timestamp": "2026-02-12T18:33:15Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T099",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:15Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_b95274c69e07",
+      "timestamp": "2026-02-12T18:33:17Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T100",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:16Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_6196c2cb5ff6",
+      "timestamp": "2026-02-12T18:33:18Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T101",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:17Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_665811cdc813",
+      "timestamp": "2026-02-12T18:33:19Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T102",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:18Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_0b08ea36bf88",
+      "timestamp": "2026-02-12T18:33:20Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T103",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:20Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_61bb1d2a083d",
+      "timestamp": "2026-02-12T18:33:22Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T104",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:21Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_448073811cf6",
+      "timestamp": "2026-02-12T18:33:23Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T105",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:22Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_fd6039b9dce2",
+      "timestamp": "2026-02-12T18:33:24Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T106",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:23Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_be6fb6168f6d",
+      "timestamp": "2026-02-12T18:33:25Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T107",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:24Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_fa814b0b88e6",
+      "timestamp": "2026-02-12T18:33:26Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T108",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:26Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_da0b4438b36c",
+      "timestamp": "2026-02-12T18:33:28Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T109",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T18:33:27Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_8c548c5e69ae",
+      "timestamp": "2026-02-12T18:33:36Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T110",
+      "before": {
+        "title": "Prepare and execute release shipping workflow to main",
+        "status": "pending",
+        "priority": "high",
+        "description": "Plan release linkage, changelog generation, and ship workflow through CLEO release commands for production main.",
+        "phase": "setup",
+        "labels": [
+          "operations",
+          "release-v1"
+        ],
+        "files": null,
+        "acceptance": [
+          "Feature epic is linked to target release",
+          "Changelog entries are generated from completed tasks",
+          "Release ship checklist is completed before merge/tag"
+        ],
+        "depends": [
+          "T109"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Prepare and execute release shipping workflow to main",
+        "status": "active",
+        "priority": "high",
+        "description": "Plan release linkage, changelog generation, and ship workflow through CLEO release commands for production main.",
+        "phase": "setup",
+        "labels": [
+          "operations",
+          "release-v1"
+        ],
+        "files": null,
+        "acceptance": [
+          "Feature epic is linked to target release",
+          "Changelog entries are generated from completed tasks",
+          "Release ship checklist is completed before merge/tag"
+        ],
+        "depends": [
+          "T109"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log-1770921821-1d5723",
+      "timestamp": "2026-02-12T18:43:41Z",
+      "action": "task_created",
+      "taskId": "T111",
+      "actor": "system",
+      "details": {
+        "title": "Fix SkillsMP scoped lookup for marketplace installs",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix SkillsMP scoped lookup for marketplace installs",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770921822-a79e60",
+      "timestamp": "2026-02-12T18:43:42Z",
+      "action": "task_created",
+      "taskId": "T112",
+      "actor": "system",
+      "details": {
+        "title": "Harden marketplace install path resolution for SKILL.md metadata",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Harden marketplace install path resolution for SKILL.md metadata",
+        "status": "pending",
+        "priority": "high"
       }
     }
   ]
