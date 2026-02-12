@@ -82,20 +82,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T01:55:02Z",
+  "lastUpdated": "2026-02-12T01:55:12Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "a9bc98c79d7fa96c",
+    "checksum": "35726233a684a611",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 99,
-    "lastModified": "2026-02-12T01:45:22Z",
+    "generation": 118,
+    "lastModified": "2026-02-12T02:00:23Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 6
   },
   "focus": {
-    "currentTask": null,
+    "currentTask": "T053",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -1364,19 +1364,35 @@
     {
       "id": "T039",
       "title": "Critical Fixes - Error Handling & Documentation",
-      "status": "active",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T038",
       "createdAt": "2026-02-12T00:41:10Z",
-      "updatedAt": "2026-02-12T01:45:22Z",
+      "updatedAt": "2026-02-12T01:55:11Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:10 UTC: Wave 0 (no dependencies). Foundation fixes before major work: global error handler, README updates, network error UX, timeouts, remove invalid providers, fix TSDoc, remove unused deps, extract hardcoded paths."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:11Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:12Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T040",
@@ -1394,143 +1410,286 @@
       "notes": [
         "2026-02-12 00:41:16 UTC: Add process.on('uncaughtException') and process.on('unhandledRejection') handlers. Show user-friendly messages. Suggest --verbose for stack trace. Prevent raw stack traces from reaching users. Location: src/cli.ts around program.parse() call."
       ],
-      "completedAt": "2026-02-12T01:55:02Z"
+      "completedAt": "2026-02-12T01:55:02Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:02Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T041",
       "title": "Fix README.md stale counts",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:28Z",
-      "updatedAt": "2026-02-12T00:41:28Z",
+      "updatedAt": "2026-02-12T01:55:03Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:28 UTC: Update README.md: 28+ -> 46 providers (lines 15, 9 badge, 55, 176). Update 82 -> 88 exports (lines 65, 186). Add doctor command to CLI commands list. File: README.md"
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:03Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:03Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T042",
       "title": "Fix doctor command hardcoded version",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:29Z",
-      "updatedAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T01:55:04Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:29 UTC: Doctor reports version 0.2.0 but should read from package.json. Change from hardcoded string to dynamic import. File: src/commands/doctor.ts"
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:04Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:04Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T043",
       "title": "Add network error UX messages",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:29Z",
-      "updatedAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T01:55:05Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:29 UTC: Add user-friendly messages when fetch/git operations fail. Locations: marketplace/client.ts:70 (log warnings), github.ts:35 (wrap clone), gitlab.ts:28 (wrap clone). Should guide user on network/auth failures."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:05Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:05Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T044",
       "title": "Add fetch timeouts to all network calls",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:29Z",
-      "updatedAt": "2026-02-12T00:41:29Z",
+      "updatedAt": "2026-02-12T01:55:06Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:29 UTC: Use AbortSignal.timeout(10_000) on all fetch() calls. Locations: marketplace/skillsmp.ts:59, skillssh.ts:50, github.ts:61,72, gitlab.ts:55, wellknown.ts:18. Prevents indefinite hanging."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:06Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:06Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T045",
       "title": "Remove invalid providers: supermaven and sweep",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:41Z",
-      "updatedAt": "2026-02-12T00:41:41Z",
+      "updatedAt": "2026-02-12T01:55:07Z",
       "size": "medium",
       "position": 6,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:41 UTC: Remove from registry.json: supermaven (merged into Cursor Nov 2024) and sweep (discontinued, empty config paths). File: providers/registry.json. See code-quality-audit.md M7, M8."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:07Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:07Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T046",
       "title": "Fix MarketplaceResult TSDoc comment",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:41Z",
-      "updatedAt": "2026-02-12T00:41:41Z",
+      "updatedAt": "2026-02-12T01:55:08Z",
       "size": "medium",
       "position": 7,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:41 UTC: Add TSDoc comment to MarketplaceResult interface. Currently has no /** */ block. File: src/core/marketplace/types.ts:11. See api-surface-audit.md finding."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:08Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:08Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T047",
       "title": "Remove unused @clack/prompts dependency or implement",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:42Z",
-      "updatedAt": "2026-02-12T00:41:42Z",
+      "updatedAt": "2026-02-12T01:55:09Z",
       "size": "medium",
       "position": 8,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:42 UTC: Either remove @clack/prompts from package.json or implement interactive prompts for MCP agent selection. Currently declared but unused. See code-quality-audit.md L3."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:09Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:10Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T048",
       "title": "Extract hardcoded ~/.agents path to shared constant",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T039",
       "createdAt": "2026-02-12T00:41:42Z",
-      "updatedAt": "2026-02-12T00:41:42Z",
+      "updatedAt": "2026-02-12T01:55:10Z",
       "size": "medium",
       "position": 9,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:42 UTC: Path appears in 4+ places: lock-utils.ts:14-15, skills/installer.ts:15, doctor.ts:122. Extract to single constant, optionally make configurable via CAAMP_HOME env var. See code-quality-audit.md M5."
-      ]
+      ],
+      "completedAt": "2026-02-12T01:55:10Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T01:55:11Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T049",
@@ -1540,7 +1699,7 @@
       "type": "task",
       "parentId": "T038",
       "createdAt": "2026-02-12T00:41:48Z",
-      "updatedAt": "2026-02-12T00:41:52Z",
+      "updatedAt": "2026-02-12T02:00:23Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
@@ -1606,12 +1765,12 @@
     {
       "id": "T053",
       "title": "Add unit tests for GitHub/GitLab fetchers",
-      "status": "pending",
+      "status": "active",
       "priority": "medium",
       "type": "subtask",
       "parentId": "T049",
       "createdAt": "2026-02-12T00:42:06Z",
-      "updatedAt": "2026-02-12T00:42:06Z",
+      "updatedAt": "2026-02-12T02:00:23Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
