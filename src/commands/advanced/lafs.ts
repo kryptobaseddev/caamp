@@ -3,18 +3,11 @@
  */
 
 import { randomUUID } from "node:crypto";
-
-type LAFSErrorCategory =
-  | "VALIDATION"
-  | "AUTH"
-  | "PERMISSION"
-  | "NOT_FOUND"
-  | "CONFLICT"
-  | "RATE_LIMIT"
-  | "TRANSIENT"
-  | "INTERNAL"
-  | "CONTRACT"
-  | "MIGRATION";
+import {
+  isRegisteredErrorCode,
+  type LAFSEnvelope as ProtocolEnvelope,
+  type LAFSErrorCategory,
+} from "@cleocode/lafs-protocol";
 
 interface LAFSErrorShape {
   code: string;
@@ -52,6 +45,11 @@ export interface LAFSEnvelope<T> {
   error: LAFSErrorShape | null;
   page: LAFSPage | null;
 }
+
+type LAFSResultEnvelope<T> = Omit<ProtocolEnvelope, "result" | "error"> & {
+  result: T | null;
+  error: LAFSErrorShape | null;
+};
 
 export class LAFSCommandError extends Error {
   code: string;
@@ -106,7 +104,7 @@ function baseMeta(operation: string, mvi: boolean) {
 }
 
 export function emitSuccess<T>(operation: string, result: T, mvi = true): void {
-  const envelope: LAFSEnvelope<T> = {
+  const envelope: LAFSResultEnvelope<T> = {
     $schema: "https://lafs.dev/schemas/v1/envelope.schema.json",
     _meta: {
       ...baseMeta(operation, mvi),
@@ -120,7 +118,7 @@ export function emitSuccess<T>(operation: string, result: T, mvi = true): void {
 }
 
 export function emitError(operation: string, error: unknown, mvi = true): void {
-  let envelope: LAFSEnvelope<null>;
+  let envelope: LAFSResultEnvelope<null>;
 
   if (error instanceof LAFSCommandError) {
     envelope = {
@@ -131,7 +129,7 @@ export function emitError(operation: string, error: unknown, mvi = true): void {
       success: false,
       result: null,
       error: {
-        code: error.code,
+        code: isRegisteredErrorCode(error.code) ? error.code : "E_INTERNAL_UNEXPECTED",
         message: error.message,
         category: error.category,
         retryable: error.recoverable,
