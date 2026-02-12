@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 79,
+    "totalEntries": 80,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-11T23:52:18Z",
+    "lastEntry": "2026-02-11T23:55:10Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1461,6 +1461,26 @@
       "after": {
         "status": "done",
         "completedAt": "2026-02-11T23:52:17Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_cb9f1a7acd1c",
+      "timestamp": "2026-02-11T23:55:10Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T036",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-11T23:55:10Z"
       },
       "details": {
         "field": "status",

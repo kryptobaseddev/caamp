@@ -71,14 +71,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-11T23:55:10Z",
+  "lastUpdated": "2026-02-12T00:01:13Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "30e4966ec6240ca5",
+    "checksum": "983fb81f13936270",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 76,
+    "generation": 78,
     "lastModified": "2026-02-11T23:46:11Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 3
@@ -1101,12 +1101,12 @@
     {
       "id": "T032",
       "title": "Set up automated API doc generation with TypeDoc",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T029",
       "createdAt": "2026-02-11T23:43:14Z",
-      "updatedAt": "2026-02-11T23:43:14Z",
+      "updatedAt": "2026-02-12T00:01:13Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
@@ -1115,8 +1115,10 @@
         "T031"
       ],
       "notes": [
-        "2026-02-11 23:43:14 UTC: Install and configure TypeDoc for automated API reference generation from TSDoc comments. Create: (1) typedoc.json config, (2) npm run docs:api script, (3) Generate initial API docs to docs/api/ directory, (4) Add to CI workflow for validation (typedoc --validation), (5) Update README.md to link generated docs, (6) Ensure output matches or supersedes manual API-REFERENCE.md"
-      ]
+        "2026-02-11 23:43:14 UTC: Install and configure TypeDoc for automated API reference generation from TSDoc comments. Create: (1) typedoc.json config, (2) npm run docs:api script, (3) Generate initial API docs to docs/api/ directory, (4) Add to CI workflow for validation (typedoc --validation), (5) Update README.md to link generated docs, (6) Ensure output matches or supersedes manual API-REFERENCE.md",
+        "[COMPLETED 2026-02-12T00:01:13Z] TypeDoc configured, docs:api and docs:api:check scripts added, CI validation step added, docs/api/ in .gitignore, README updated"
+      ],
+      "completedAt": "2026-02-12T00:01:13Z"
     },
     {
       "id": "T033",
@@ -1226,7 +1228,22 @@
         "2026-02-11 23:43:48 UTC: Update claudedocs/GAP-ANALYSIS.md to reflect v0.3.0 work: (1) Update Section 9 file inventory with actual file counts and line counts (currently shows v0.1.0 data), (2) Add v0.3.0 Results section paralleling v0.2.0 Results, (3) Update test count and coverage areas, (4) Reconcile Section 6 roadmap with what was actually completed, (5) Update Section 1 shipped inventory numbers",
         "[COMPLETED 2026-02-11T23:55:10Z] Gap analysis updated for v0.3.0 state: Section 1 numbers updated (22 commands, 30 core files, 2953 core lines, 88 exports, 120 tests, Node>=20), Section 2 gaps updated with v0.3.0 fixes, Section 4 feature gaps marked as done, Section 5.2/5.4/5.5 deferred items resolved, Section 5.7 added with full v0.3.0 results, Section 6 retitled as remaining items, Section 9 file inventory rebuilt from actual counts"
       ],
-      "completedAt": "2026-02-11T23:55:10Z"
+      "completedAt": "2026-02-11T23:55:10Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-11T23:55:10Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T037",
