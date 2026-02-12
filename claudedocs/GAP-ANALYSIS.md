@@ -4,12 +4,12 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.0.0 |
+| Version | 3.0.0 |
 | Date | 2026-02-11 |
 | Project | CAAMP (Central AI Agent Managed Packages) |
-| Package | @cleocode/caamp v0.2.0 |
-| Status | Released |
-| Updated | v0.2.0 shipped - gap analysis updated to reflect current state |
+| Package | @cleocode/caamp v0.3.0 (planned) |
+| Status | In Development |
+| Updated | v0.3.0 in progress - gap analysis updated to reflect current state |
 
 ---
 
@@ -53,19 +53,19 @@
 **Config Format Distribution:** 24 JSON, 1 JSONC, 1 YAML, 1 TOML (1 shares JSONC as JSON variant)
 **Unique Config Keys:** mcpServers (21), mcp_servers (1), extensions (1), mcp (1), servers (1), context_servers (1)
 
-### 1.2 CLI Commands (21 commands across 5 groups)
+### 1.2 CLI Commands (22 commands across 6 groups)
 
 | Group | Command | Status | Lines | Notes |
 |-------|---------|--------|-------|-------|
 | **providers** | `list` | Full | 143 | Tier filtering, JSON output, color-coded display |
-| **providers** | `detect` | Full | (shared) | Binary/directory/appBundle/flatpak detection |
+| **providers** | `detect` | Full | (shared) | Binary/directory/appBundle/flatpak detection (Windows-compatible in v0.3.0) |
 | **providers** | `show` | Full | (shared) | Detailed provider info with all fields |
-| **skills** | `install` | Full | 139 | GitHub, GitLab, local, marketplace sources |
+| **skills** | `install` | Full | 139 | GitHub, GitLab, local, marketplace sources (sourceType fix in v0.3.0) |
 | **skills** | `remove` | Full | 51 | Canonical + symlink cleanup |
 | **skills** | `list` | Full | 64 | Multi-directory discovery |
 | **skills** | `find` | Full | 54 | Marketplace search with star counts |
-| **skills** | `check` | Partial | 47 | Reads lock file; no network check for updates |
-| **skills** | `update` | Stub | 30 | Placeholder only -- always says "up to date" |
+| **skills** | `check` | Full | 47 | Network SHA comparison via git ls-remote (fixed in v0.2.0) |
+| **skills** | `update` | Full | 30 | Git remote HEAD comparison + reinstall (fixed in v0.2.0) |
 | **skills** | `init` | Full | 60 | Scaffolds SKILL.md template |
 | **skills** | `audit` | Full | 80 | 46 rules, SARIF output, severity scoring |
 | **skills** | `validate` | Full | 38 | Frontmatter validation with reserved names |
@@ -78,40 +78,45 @@
 | **instructions** | `update` | Full | 50 | Diff-based selective update |
 | **config** | `show` | Full | 81 | Read and display provider config |
 | **config** | `path` | Full | (shared) | Show config file paths |
+| **doctor** | `doctor` | Full | 357 | Config health checks, broken symlink detection, registry integrity (NEW in v0.3.0) |
 
-**Summary:** 18 fully functional, 1 partially functional, 1 stub, 1 shared (totals to 21 distinct subcommands).
+**Summary:** 22 fully functional commands across 6 groups. All commands support `--verbose` and `--quiet` global flags (added in v0.3.0).
 
 ### 1.3 Core Modules
 
 | Module | Files | Total Lines | Test Coverage |
 |--------|-------|-------------|---------------|
-| registry/ | 3 (providers, detection, types) | 374 | 14 tests (registry.test.ts) |
-| formats/ | 5 (json, yaml, toml, utils, index) | 440 | 18 tests (formats.test.ts) |
-| mcp/ | 4 (installer, reader, transforms, lock) | 430 | 18 tests (mcp-reader.test.ts) |
-| skills/ | 6 (installer, discovery, validator, lock, audit/scanner, audit/rules) | 804 | 8 tests (installer.test.ts) |
-| marketplace/ | 4 (client, types, skillsmp, skillssh) | 238 | 0 tests |
+| registry/ | 3 (providers, detection, types) | 379 | 14 tests (registry.test.ts) |
+| formats/ | 5 (json, yaml, toml, utils, index) | 443 | 18 tests (formats.test.ts) |
+| mcp/ | 4 (installer, reader, transforms, lock) | 415 | 18 tests (mcp-reader.test.ts) |
+| skills/ | 6 (installer, discovery, validator, lock, audit/scanner, audit/rules) | 851 | 8 tests (installer.test.ts) |
+| marketplace/ | 4 (client, types, skillsmp, skillssh) | 238 | 21 tests (marketplace.test.ts) |
 | sources/ | 4 (parser, github, gitlab, wellknown) | 320 | 13 tests (source-parser.test.ts) |
-| instructions/ | 2 (injector, templates) | 232 | 0 tests |
-| **Total** | **28 files** | **2,838 lines** | **71 tests across 4 modules** |
+| instructions/ | 2 (injector, templates) | 232 | 25 tests (instructions.test.ts) |
+| logger.ts | 1 | 41 | 0 tests (new in v0.3.0) |
+| lock-utils.ts | 1 | 34 | 0 tests (new in v0.3.0) |
+| **Total** | **30 files** | **2,953 lines** | **120 tests across 8 files** |
 
-Note: 3 additional tests exist in lock.test.ts covering data structure validation (not I/O).
+Note: 3 tests in lock.test.ts cover data structure validation (not I/O). Logger and lock-utils are new shared modules added in v0.3.0.
 
-### 1.4 Library API (57 exports)
+### 1.4 Library API (88 exports)
 
 | Category | Export Count | Key Exports |
 |----------|-------------|-------------|
-| Types | 18 | Provider, McpServerConfig, McpServerEntry, ConfigFormat, TransportType, SourceType, ParsedSource, SkillMetadata, SkillEntry, LockEntry, CaampLockFile, MarketplaceSkill, AuditRule, AuditFinding, AuditResult, InjectionStatus, InjectionCheckResult, GlobalOptions |
-| Registry | 8 | getAllProviders, getProvider, resolveAlias, getProvidersByPriority, getProvidersByStatus, getProvidersByInstructFile, getInstructionFiles, getProviderCount |
-| Detection | 5 (+1 type) | detectProvider, detectAllProviders, getInstalledProviders, detectProjectProviders, DetectionResult |
+| Types | 20 | Provider, McpServerConfig, McpServerEntry, ConfigFormat, TransportType, SourceType, ParsedSource, SkillMetadata, SkillEntry, LockEntry, CaampLockFile, MarketplaceSkill, MarketplaceSearchResult, AuditRule, AuditFinding, AuditResult, AuditSeverity, InjectionStatus, InjectionCheckResult, GlobalOptions |
+| Result Types | 5 | DetectionResult, InstallResult, SkillInstallResult, ValidationResult, ValidationIssue |
+| Registry | 9 | getAllProviders, getProvider, resolveAlias, getProvidersByPriority, getProvidersByStatus, getProvidersByInstructFile, getInstructionFiles, getProviderCount, getRegistryVersion |
+| Detection | 4 | detectProvider, detectAllProviders, getInstalledProviders, detectProjectProviders |
 | Sources | 2 | parseSource, isMarketplaceScoped |
-| Skills | 8 (+2 types) | installSkill, removeSkill, listCanonicalSkills, discoverSkills, discoverSkill, parseSkillFile, validateSkill, scanFile, scanDirectory, toSarif |
-| MCP | 7 (+1 type) | installMcpServer, installMcpServerToAll, buildServerConfig, getTransform, resolveConfigPath, listMcpServers, listAllMcpServers, removeMcpServer |
-| Lock files | 10 | readLockFile, recordMcpInstall, removeMcpFromLock, getTrackedMcpServers, saveLastSelectedAgents, getLastSelectedAgents, recordSkillInstall, removeSkillFromLock, getTrackedSkills, checkSkillUpdate |
-| Marketplace | 1 class | MarketplaceClient |
-| Instructions | 5 | inject, checkInjection, removeInjection, checkAllInjections, injectAll, generateInjectionContent, groupByInstructFile |
-| Formats | 5 | readConfig, writeConfig, removeConfig, getNestedValue, deepMerge, ensureDir |
+| Skills | 10 | installSkill, removeSkill, listCanonicalSkills, discoverSkills, discoverSkill, parseSkillFile, validateSkill, scanFile, scanDirectory, toSarif |
+| MCP | 10 | installMcpServer, installMcpServerToAll, buildServerConfig, getTransform, resolveConfigPath, listMcpServers, listAllMcpServers, removeMcpServer, readLockFile, recordMcpInstall, removeMcpFromLock, getTrackedMcpServers, saveLastSelectedAgents, getLastSelectedAgents |
+| Skills Lock | 4 | recordSkillInstall, removeSkillFromLock, getTrackedSkills, checkSkillUpdate |
+| Marketplace | 1 class (+1 type) | MarketplaceClient, MarketplaceResult |
+| Instructions | 7 | inject, checkInjection, removeInjection, checkAllInjections, injectAll, generateInjectionContent, groupByInstructFile |
+| Formats | 6 | readConfig, writeConfig, removeConfig, getNestedValue, deepMerge, ensureDir |
+| Logger | 4 | setVerbose, setQuiet, isVerbose, isQuiet (NEW in v0.3.0) |
 
-### 1.5 Test Suite (74 tests across 6 files)
+### 1.5 Test Suite (120 tests across 8 files)
 
 | Test File | Tests | Coverage Area |
 |-----------|-------|---------------|
@@ -121,19 +126,21 @@ Note: 3 additional tests exist in lock.test.ts covering data structure validatio
 | installer.test.ts | 8 | Skill validator (7 cases), canonical install (1 case) |
 | lock.test.ts | 3 | Lock file data structure validation |
 | mcp-reader.test.ts | 18 | Config path resolution, server listing, deduplication, removal, edge cases |
-| **Total** | **74** | **Unit tests only -- no integration or e2e tests** |
+| marketplace.test.ts | 21 | Client adapter pattern, search merging, getSkill, skillsmp/skillssh adapters (NEW in v0.2.0) |
+| instructions.test.ts | 25 | Inject, check, remove, injectAll, templates, groupByInstructFile (NEW in v0.2.0) |
+| **Total** | **120** | **Unit tests only -- no integration or e2e tests** |
 
 ### 1.6 Build and Publish
 
 | Aspect | Detail |
 |--------|--------|
 | Package name | @cleocode/caamp |
-| Version | 0.1.0 |
+| Version | 0.3.0 (planned) |
 | Build tool | tsup (ESM + declarations) |
 | Test framework | vitest v3.2.4 |
 | Module system | ESM only (NodeNext resolution) |
 | TypeScript | Strict mode with noUncheckedIndexedAccess |
-| Node requirement | >=18 |
+| Node requirement | >=20 |
 | Dependencies | 7 (commander, @clack/prompts, picocolors, gray-matter, simple-git, jsonc-parser, js-yaml, @iarna/toml) |
 | Dev dependencies | 5 (typescript, tsup, tsx, vitest, @types/node, @types/js-yaml) |
 | Binary | `caamp` via dist/cli.js |
@@ -153,7 +160,7 @@ The registry covers the major players (Claude Code, Cursor, Windsurf, Codex, Gem
 ### 2.2 Test Coverage
 
 - **Planned:** Unit + Integration tests
-- **Shipped:** 74 unit tests only
+- **Shipped:** 120 unit tests across 8 files
 - **Gap:** No integration tests, no e2e tests
 
 **What's covered well:**
@@ -162,10 +169,10 @@ The registry covers the major players (Claude Code, Cursor, Windsurf, Codex, Gem
 - Config format read/write/remove for JSON/JSONC/YAML (18 tests)
 - MCP config reader operations: list, remove, path resolution (18 tests)
 - Skill validation rules (7 tests)
+- Marketplace client adapter pattern, search merging, getSkill (21 tests, added v0.2.0)
+- Instructions inject/check/remove/injectAll/templates (25 tests, added v0.2.0)
 
 **What has no test coverage:**
-- Marketplace client (client.ts, skillsmp.ts, skillssh.ts) -- 0 tests
-- Instructions injector (injector.ts, templates.ts) -- 0 tests
 - MCP installer (installer.ts) -- 0 tests (only reader.ts tested)
 - MCP transforms (transforms.ts) -- 0 tests for Goose/Zed/OpenCode/Codex/Cursor transforms
 - Skills lock file I/O -- only data structure tests, no actual read/write tests
@@ -173,11 +180,14 @@ The registry covers the major players (Claude Code, Cursor, Windsurf, Codex, Gem
 - Well-known discovery (wellknown.ts) -- 0 tests
 - Skills discovery (discovery.ts) -- 0 tests
 - Detection engine actual binary/directory checks -- 0 tests
+- Logger utility (logger.ts) -- 0 tests (new in v0.3.0)
+- Lock utils (lock-utils.ts) -- 0 tests (new in v0.3.0)
+- Doctor command (doctor.ts) -- 0 tests (new in v0.3.0)
 
 **Integration tests needed:**
 - Full install flow: parse source -> fetch -> install to canonical -> symlink to agents
 - Full MCP install flow: parse source -> build config -> transform -> write to all agents
-- Instructions inject/check/update lifecycle
+- Doctor command end-to-end validation
 - Marketplace search -> install pipeline
 - Lock file concurrency (two installs at once)
 - Cross-platform path resolution (Windows junctions vs Unix symlinks)
@@ -202,18 +212,19 @@ No sessions were created or ended during development. The `activeSession` is nul
 
 ### 2.5 Command Completeness Gaps
 
-| Command | Gap | Severity |
-|---------|-----|----------|
-| `skills update` | Stub -- always returns "up to date" without checking network | High |
-| `skills check` | Reads lock file but `checkSkillUpdate()` always returns `{hasUpdate: false}` -- no git remote HEAD comparison | High |
-| `skills install` | No `--force` flag to overwrite without prompting; no version pinning via `@ref` in marketplace installs | Medium |
-| `skills find` | No pagination; no category/author filtering in CLI (adapters support it) | Low |
-| `mcp install` | No interactive agent selection via @clack/prompts (declared dependency but unused for this) | Medium |
-| `mcp list` | No `--all` flag to show both global and project simultaneously | Low |
-| `providers detect` | Binary detection uses `which` -- does not work on Windows (needs `where`) | Medium |
-| `config show` | Does not resolve `$HOME`/`$CONFIG` in paths before checking existence | Low |
-| All commands | No `--verbose` or `--debug` flag for troubleshooting | Medium |
-| All commands | No `--quiet` flag for scripting use | Low |
+| Command | Gap | Severity | Status |
+|---------|-----|----------|--------|
+| `skills update` | ~~Stub -- always returns "up to date"~~ | ~~High~~ | FIXED in v0.2.0 |
+| `skills check` | ~~No git remote HEAD comparison~~ | ~~High~~ | FIXED in v0.2.0 |
+| `skills install` | No `--force` flag to overwrite without prompting; no version pinning via `@ref` in marketplace installs | Medium | Open |
+| `skills install` | ~~sourceType hardcoded to "github"~~ | ~~Medium~~ | FIXED in v0.3.0 |
+| `skills find` | No pagination; no category/author filtering in CLI (adapters support it) | Low | Open |
+| `mcp install` | No interactive agent selection via @clack/prompts (declared dependency but unused for this) | Medium | Open |
+| `mcp list` | No `--all` flag to show both global and project simultaneously | Low | Open |
+| `providers detect` | ~~Binary detection uses `which` -- does not work on Windows~~ | ~~Medium~~ | FIXED in v0.3.0 |
+| `config show` | Does not resolve `$HOME`/`$CONFIG` in paths before checking existence | Low | Open |
+| All commands | ~~No `--verbose` or `--debug` flag for troubleshooting~~ | ~~Medium~~ | FIXED in v0.3.0 |
+| All commands | ~~No `--quiet` flag for scripting use~~ | ~~Low~~ | FIXED in v0.3.0 |
 
 ---
 
@@ -375,30 +386,26 @@ No sessions were created or ended during development. The `activeSession` is nul
 
 ### 4.1 Commands That Need Work
 
-**`skills update` (Critical)**
-The command is a complete stub. It reads the lock file, prints "All skills are up to date," and exits. The underlying `checkSkillUpdate()` function in `src/core/skills/lock.ts:72-89` always returns `{hasUpdate: false}` with a comment "actual check requires network." This needs:
-- Git remote HEAD comparison for github/gitlab sources
-- Re-fetch and diff for marketplace sources
-- Version comparison for versioned skills
-- Actual re-install logic with backup/rollback
+**`skills update` -- FIXED in v0.2.0**
+~~The command was a complete stub.~~ Now performs network SHA comparison via git ls-remote and reinstalls when updates are detected.
 
-**`skills check` (High)**
-Same underlying issue as update -- `checkSkillUpdate()` is a no-op. The command renders nicely but reports false data.
+**`skills check` -- FIXED in v0.2.0**
+~~`checkSkillUpdate()` was a no-op.~~ Now performs git ls-remote SHA comparison for accurate update detection.
 
-**`providers detect` (Medium)**
-The detection engine in `src/core/registry/detection.ts:21-27` uses `which` to find binaries. This is Unix-only and will fail on Windows. Needs `where` fallback on win32.
+**`providers detect` -- FIXED in v0.3.0**
+~~The detection engine used `which` (Unix-only).~~ Now uses `where` on Windows (win32) with `which` fallback on Unix platforms.
 
 ### 4.2 Missing Error Handling
 
-| Location | Issue |
-|----------|-------|
-| `src/commands/skills/install.ts:56` | `sourceType` is hardcoded to `"github"` for all sources -- should use `parsed.type` |
-| `src/core/mcp/lock.ts:26` | Silent catch on corrupted lock file -- should warn user |
-| `src/core/skills/lock.ts:16-19` | Duplicated `writeLockFile` function (also in mcp/lock.ts) -- shared lock file written by two independent functions with no coordination |
-| `src/core/formats/json.ts:24-26` | Fallback to `JSON.parse` on JSONC errors may throw unhandled exception |
-| `src/core/sources/github.ts:35` | `git clone` failure gives no user-friendly error about network/auth issues |
-| `src/core/marketplace/client.ts:27` | Network errors silently swallowed -- user sees empty results with no explanation |
-| All CLI commands | No global error handler -- unhandled rejections crash with stack traces |
+| Location | Issue | Status |
+|----------|-------|--------|
+| `src/commands/skills/install.ts:56` | ~~`sourceType` hardcoded to `"github"`~~ | FIXED in v0.3.0 -- now uses `parsed.type` |
+| `src/core/mcp/lock.ts:26` | Silent catch on corrupted lock file -- should warn user | Open |
+| `src/core/skills/lock.ts:16-19` | ~~Duplicated `writeLockFile` function~~ | FIXED in v0.3.0 -- shared via `src/core/lock-utils.ts` |
+| `src/core/formats/json.ts:24-26` | Fallback to `JSON.parse` on JSONC errors may throw unhandled exception | Open |
+| `src/core/sources/github.ts:35` | `git clone` failure gives no user-friendly error about network/auth issues | Open |
+| `src/core/marketplace/client.ts:27` | Network errors silently swallowed -- user sees empty results with no explanation | Open |
+| All CLI commands | No global error handler -- unhandled rejections crash with stack traces | Open |
 
 ### 4.3 Edge Cases
 
@@ -415,22 +422,22 @@ The detection engine in `src/core/registry/detection.ts:21-27` uses `which` to f
 
 ### 4.4 Missing Features
 
-| Feature | Category | Description |
-|---------|----------|-------------|
-| `caamp doctor` | CLI | Diagnose config issues, check broken symlinks, validate registry integrity |
-| `caamp migrate` | CLI | Migrate MCP configs between providers (e.g., Cursor -> Claude) |
-| `caamp sync` | CLI | Sync MCP servers across all installed providers from a single source of truth |
-| `caamp export/import` | CLI | Export/import full config for team sharing |
-| CI/CD integration | DevOps | GitHub Actions / GitLab CI for automated skill auditing |
-| Team config sharing | Collaboration | Shared team config file (like .npmrc for npm) |
-| Interactive prompts | UX | @clack/prompts dependency exists but is unused in most commands |
-| Config backup | Safety | No backup before destructive config writes |
-| Rollback mechanism | Safety | No undo for failed installs |
-| Telemetry opt-in | Analytics | No usage analytics for understanding adoption |
-| Plugin system | Extensibility | No way for community to add custom providers or marketplace adapters |
-| Well-known discovery integration | CLI | `wellknown.ts` exists in core but no CLI command exposes it |
-| TOML write tests | Quality | `writeTomlConfig` and `removeTomlConfig` exist but have zero tests |
-| Help text quality | UX | Commands have descriptions but no examples or extended help |
+| Feature | Category | Description | Status |
+|---------|----------|-------------|--------|
+| ~~`caamp doctor`~~ | ~~CLI~~ | ~~Diagnose config issues, check broken symlinks, validate registry integrity~~ | DONE in v0.3.0 |
+| `caamp migrate` | CLI | Migrate MCP configs between providers (e.g., Cursor -> Claude) | Open |
+| `caamp sync` | CLI | Sync MCP servers across all installed providers from a single source of truth | Open |
+| `caamp export/import` | CLI | Export/import full config for team sharing | Open |
+| CI/CD integration | DevOps | GitHub Actions / GitLab CI for automated skill auditing | Open |
+| Team config sharing | Collaboration | Shared team config file (like .npmrc for npm) | Open |
+| Interactive prompts | UX | @clack/prompts dependency exists but is unused in most commands | Open |
+| Config backup | Safety | No backup before destructive config writes | Open |
+| Rollback mechanism | Safety | No undo for failed installs | Open |
+| Telemetry opt-in | Analytics | No usage analytics for understanding adoption | Open |
+| Plugin system | Extensibility | No way for community to add custom providers or marketplace adapters | Open |
+| Well-known discovery integration | CLI | `wellknown.ts` exists in core but no CLI command exposes it | Open |
+| TOML write tests | Quality | `writeTomlConfig` and `removeTomlConfig` exist but have zero tests | Open |
+| Help text quality | UX | Commands have descriptions but no examples or extended help | Open |
 
 ---
 
@@ -461,15 +468,15 @@ The detection engine in `src/core/registry/detection.ts:21-27` uses `which` to f
 
 **Result: 28 -> 46 providers (exceeded 40+ target)**
 
-### 5.2 Critical Command Gaps -- PARTIALLY COMPLETED
+### 5.2 Critical Command Gaps -- COMPLETED
 
 | Fix | Status | Notes |
 |-----|--------|-------|
-| `skills update` with git remote HEAD comparison | DONE | Network SHA comparison + reinstall |
-| `skills check` with actual network comparison | DONE | ls-remote SHA comparison |
-| `providers detect` for Windows | DEFERRED to v0.3.0 | Unix-only `which` still used |
-| Hardcoded `sourceType` in skills install | DEFERRED to v0.3.0 | Low impact |
-| Deduplicate lock file write functions | DEFERRED to v0.3.0 | No data loss reported |
+| `skills update` with git remote HEAD comparison | DONE (v0.2.0) | Network SHA comparison + reinstall |
+| `skills check` with actual network comparison | DONE (v0.2.0) | ls-remote SHA comparison |
+| `providers detect` for Windows | DONE (v0.3.0) | Uses `where` on win32, `which` on Unix |
+| Hardcoded `sourceType` in skills install | DONE (v0.3.0) | Now uses `parsed.type` |
+| Deduplicate lock file write functions | DONE (v0.3.0) | Shared via `src/core/lock-utils.ts` |
 
 ### 5.3 Tests -- PARTIALLY COMPLETED
 
@@ -481,16 +488,23 @@ The detection engine in `src/core/registry/detection.ts:21-27` uses `which` to f
 
 **Test count: 74 -> 120 (+46 new unit tests)**
 
-### 5.4 New Commands -- DEFERRED to v0.3.0
+### 5.4 New Commands -- PARTIALLY COMPLETED
 
 | Command | Status |
 |---------|--------|
-| `caamp doctor` | DEFERRED -- v0.3.0 |
-| `caamp upgrade` | DEFERRED -- v0.3.0 |
+| `caamp doctor` | DONE (v0.3.0) -- 357 lines, config health checks, broken symlinks, registry integrity |
+| `caamp upgrade` | DEFERRED -- still not implemented |
 
-### 5.5 Improvements -- DEFERRED to v0.3.0
+### 5.5 Improvements -- PARTIALLY COMPLETED
 
-All improvement items (--verbose, --quiet, interactive prompts, config backup, error messages, help examples) deferred to v0.3.0.
+| Improvement | Status |
+|-------------|--------|
+| `--verbose` global flag | DONE (v0.3.0) -- via `src/core/logger.ts`, exported as library API |
+| `--quiet` global flag | DONE (v0.3.0) -- via `src/core/logger.ts`, exported as library API |
+| Interactive prompts | DEFERRED -- @clack/prompts still unused in most commands |
+| Config backup | DEFERRED |
+| Error messages | DEFERRED |
+| Help examples | DEFERRED |
 
 ### 5.6 Additional v0.2.0 Deliverables (not in original plan)
 
@@ -506,9 +520,67 @@ All improvement items (--verbose, --quiet, interactive prompts, config backup, e
 | Gap Analysis & Roadmap (this document) | Current state analysis |
 | Research Brief (457 lines) | Competitive analysis |
 
+### 5.7 v0.3.0 Results (IN PROGRESS)
+
+#### Bug Fixes (T033) -- COMPLETED
+
+| Bug | Status | Notes |
+|-----|--------|-------|
+| Windows `providers detect` | DONE | Uses `where` on win32, `which` on Unix |
+| `sourceType` hardcoded in `skills install` | DONE | Now uses `parsed.type` from source parser |
+| Lock file `writeLockFile` duplication | DONE | Shared module at `src/core/lock-utils.ts` |
+
+#### New Commands (T034) -- COMPLETED
+
+| Command | Status | Notes |
+|---------|--------|-------|
+| `caamp doctor` | DONE | 357 lines. Config health checks, broken symlink detection, registry integrity validation |
+
+#### Global Flags (T035) -- COMPLETED
+
+| Flag | Status | Notes |
+|------|--------|-------|
+| `--verbose` | DONE | Logger utility at `src/core/logger.ts` (41 lines), exported via library API |
+| `--quiet` | DONE | Suppresses non-essential output for scripting use |
+
+#### API Documentation (T030, T037) -- COMPLETED
+
+| Task | Status | Notes |
+|------|--------|-------|
+| API-REFERENCE.md audit (T030) | DONE | 12 findings documented in `claudedocs/agent-outputs/T030-api-audit.md` |
+| API-REFERENCE.md fixes (T037) | DONE | All 12 audit findings addressed |
+
+#### TSDoc Annotations (T031) -- IN PROGRESS
+
+Adding TSDoc/JSDoc annotations to all public API exports for TypeDoc compatibility.
+
+#### TypeDoc Generation (T032) -- IN PROGRESS
+
+Setting up automated API documentation generation via TypeDoc.
+
+#### Gap Analysis Update (T036) -- COMPLETED
+
+This document updated to reflect v0.3.0 state.
+
+#### v0.3.0 Summary
+
+| Metric | v0.2.0 | v0.3.0 | Delta |
+|--------|--------|--------|-------|
+| Providers | 46 | 46 | -- |
+| CLI Commands | 21 | 22 | +1 (doctor) |
+| Core files | 28 | 30 | +2 (logger, lock-utils) |
+| Core lines | 2,838 | 2,953 | +115 |
+| Command files | 18 | 22 | +4 (doctor.ts + count update) |
+| Command lines | 1,274 | 1,867 | +593 |
+| Library exports | 82 | 88 | +6 (logger exports, result types) |
+| Unit tests | 120 | 120 | -- |
+| Test files | 8 | 8 | -- |
+| Registry lines | 721 | 1,171 | +450 |
+| Bugs fixed | -- | 3 | Windows detect, sourceType, lock dedup |
+
 ---
 
-## 6. v0.3.0 Roadmap
+## 6. v0.3.0 Roadmap (Remaining Items)
 
 ### 6.1 Plugin System
 
@@ -547,9 +619,8 @@ Loading plugins from `~/.caamp/plugins/` and merging into the registry at runtim
 
 ### 6.5 Additional Providers
 
-Add remaining low-priority and new tools to reach 40+:
-- SWE-Agent, AutoCodeRover (if they gain MCP support)
-- Any new AI coding tools that emerge
+Provider count already exceeds 40+ target (46 providers shipped in v0.2.0). Future additions are opportunistic:
+- New AI coding tools that emerge with MCP support
 - Warp AI (if they add agent capabilities)
 
 ---
@@ -558,7 +629,7 @@ Add remaining low-priority and new tools to reach 40+:
 
 ### 7.1 API Stability
 
-- All 57+ library exports must have stable interfaces (no breaking changes without major version bump)
+- All 88+ library exports must have stable interfaces (no breaking changes without major version bump)
 - Provider type interface frozen
 - Lock file format versioned and migration-supported
 - Config format handlers must pass round-trip tests for all supported formats
@@ -611,38 +682,43 @@ Add remaining low-priority and new tools to reach 40+:
 
 ### Source Files by Category
 
-**Entry points (2 files, 131 lines):**
-- `src/cli.ts` (29 lines) -- Commander CLI entry
-- `src/index.ts` (102 lines) -- Library barrel export
+**Entry points (2 files, 143 lines):**
+- `src/cli.ts` (39 lines) -- Commander CLI entry
+- `src/index.ts` (104 lines) -- Library barrel export (88 symbols)
 
-**Type definitions (1 file, 213 lines):**
-- `src/types.ts` (213 lines) -- All core types
+**Type definitions (1 file, 214 lines):**
+- `src/types.ts` (214 lines) -- All core types
 
-**Commands (18 files, 1,274 lines):**
+**Commands (22 files, 1,867 lines):**
 - `src/commands/providers.ts` (143 lines)
 - `src/commands/config.ts` (81 lines)
-- `src/commands/skills/` (7 files + index, 563 lines)
-- `src/commands/mcp/` (4 files + index, 309 lines)
-- `src/commands/instructions/` (3 files + index, 218 lines)
+- `src/commands/doctor.ts` (357 lines) -- NEW in v0.3.0
+- `src/commands/skills/` (10 files, 761 lines)
+- `src/commands/mcp/` (5 files, 308 lines)
+- `src/commands/instructions/` (4 files, 217 lines)
 
-**Core modules (28 files, 2,838 lines):**
-- `src/core/registry/` (3 files, 374 lines)
-- `src/core/formats/` (5 files, 440 lines)
-- `src/core/mcp/` (4 files, 430 lines)
-- `src/core/skills/` (6 files, 804 lines)
+**Core modules (30 files, 2,953 lines):**
+- `src/core/registry/` (3 files, 379 lines)
+- `src/core/formats/` (5 files, 443 lines)
+- `src/core/mcp/` (4 files, 415 lines)
+- `src/core/skills/` (6 files, 851 lines)
 - `src/core/marketplace/` (4 files, 238 lines)
 - `src/core/sources/` (4 files, 320 lines)
 - `src/core/instructions/` (2 files, 232 lines)
+- `src/core/logger.ts` (41 lines) -- NEW in v0.3.0
+- `src/core/lock-utils.ts` (34 lines) -- NEW in v0.3.0
 
-**Tests (6 files, 548 lines):**
-- `tests/unit/registry.test.ts` (119 lines)
-- `tests/unit/source-parser.test.ts` (90 lines)
-- `tests/unit/formats.test.ts` (163 lines)
-- `tests/unit/installer.test.ts` (130 lines)
-- `tests/unit/lock.test.ts` (60 lines)
-- `tests/unit/mcp-reader.test.ts` (239 lines)
+**Tests (8 files, 1,553 lines):**
+- `tests/unit/registry.test.ts` (119 lines, 14 tests)
+- `tests/unit/source-parser.test.ts` (90 lines, 13 tests)
+- `tests/unit/formats.test.ts` (163 lines, 18 tests)
+- `tests/unit/installer.test.ts` (130 lines, 8 tests)
+- `tests/unit/lock.test.ts` (60 lines, 3 tests)
+- `tests/unit/mcp-reader.test.ts` (239 lines, 18 tests)
+- `tests/unit/marketplace.test.ts` (425 lines, 21 tests) -- Added in v0.2.0
+- `tests/unit/instructions.test.ts` (327 lines, 25 tests) -- Added in v0.2.0
 
-**Data (1 file, 721 lines):**
-- `providers/registry.json` (721 lines)
+**Data (1 file, 1,171 lines):**
+- `providers/registry.json` (1,171 lines)
 
-**Total: ~4,180 lines of TypeScript source + 721 lines of registry JSON**
+**Total: ~5,177 lines of TypeScript source + 1,553 lines of tests + 1,171 lines of registry JSON**

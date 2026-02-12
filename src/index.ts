@@ -7,6 +7,8 @@
 // Types
 export type {
   Provider,
+  ProviderPriority,
+  ProviderStatus,
   McpServerConfig,
   McpServerEntry,
   ConfigFormat,
@@ -91,6 +93,7 @@ export {
 
 // Marketplace
 export { MarketplaceClient } from "./core/marketplace/client.js";
+export type { MarketplaceResult } from "./core/marketplace/types.js";
 
 // Instructions
 export { inject, checkInjection, removeInjection, checkAllInjections, injectAll } from "./core/instructions/injector.js";
@@ -99,3 +102,6 @@ export { generateInjectionContent, groupByInstructFile } from "./core/instructio
 // Formats
 export { readConfig, writeConfig, removeConfig } from "./core/formats/index.js";
 export { getNestedValue, deepMerge, ensureDir } from "./core/formats/utils.js";
+
+// Logger
+export { setVerbose, setQuiet, isVerbose, isQuiet } from "./core/logger.js";

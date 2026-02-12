@@ -6,11 +6,27 @@ import type { ConfigFormat } from "../../types.js";
 import { readJsonConfig, writeJsonConfig, removeJsonConfig } from "./json.js";
 import { readYamlConfig, writeYamlConfig, removeYamlConfig } from "./yaml.js";
 import { readTomlConfig, writeTomlConfig, removeTomlConfig } from "./toml.js";
+import { debug } from "../logger.js";
 
 export { deepMerge, getNestedValue, ensureDir } from "./utils.js";
 
-/** Read a config file in the specified format */
+/**
+ * Read and parse a config file in the specified format.
+ *
+ * Dispatches to the appropriate format handler (JSON/JSONC, YAML, or TOML).
+ *
+ * @param filePath - Absolute path to the config file
+ * @param format - Config file format
+ * @returns Parsed config object
+ * @throws If the file cannot be read or the format is unsupported
+ *
+ * @example
+ * ```typescript
+ * const config = await readConfig("/path/to/config.json", "jsonc");
+ * ```
+ */
 export async function readConfig(filePath: string, format: ConfigFormat): Promise<Record<string, unknown>> {
+  debug(`reading config: ${filePath} (format: ${format})`);
   switch (format) {
     case "json":
     case "jsonc":
@@ -24,7 +40,24 @@ export async function readConfig(filePath: string, format: ConfigFormat): Promis
   }
 }
 
-/** Write a config file in the specified format, preserving existing content */
+/**
+ * Write a server entry to a config file, preserving existing content.
+ *
+ * Dispatches to the appropriate format handler. For JSONC files, comments are
+ * preserved using `jsonc-parser`.
+ *
+ * @param filePath - Absolute path to the config file
+ * @param format - Config file format
+ * @param key - Dot-notation key path to the servers section (e.g. `"mcpServers"`)
+ * @param serverName - Name/key for the server entry
+ * @param serverConfig - Server configuration object to write
+ * @throws If the format is unsupported
+ *
+ * @example
+ * ```typescript
+ * await writeConfig("/path/to/config.json", "jsonc", "mcpServers", "my-server", config);
+ * ```
+ */
 export async function writeConfig(
   filePath: string,
   format: ConfigFormat,
@@ -32,6 +65,7 @@ export async function writeConfig(
   serverName: string,
   serverConfig: unknown,
 ): Promise<void> {
+  debug(`writing config: ${filePath} (format: ${format}, key: ${key}, server: ${serverName})`);
   switch (format) {
     case "json":
     case "jsonc":
@@ -45,7 +79,21 @@ export async function writeConfig(
   }
 }
 
-/** Remove a server entry from a config file in the specified format */
+/**
+ * Remove a server entry from a config file in the specified format.
+ *
+ * @param filePath - Absolute path to the config file
+ * @param format - Config file format
+ * @param key - Dot-notation key path to the servers section
+ * @param serverName - Name/key of the server entry to remove
+ * @returns `true` if the entry was removed, `false` otherwise
+ * @throws If the format is unsupported
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeConfig("/path/to/config.json", "jsonc", "mcpServers", "my-server");
+ * ```
+ */
 export async function removeConfig(
   filePath: string,
   format: ConfigFormat,

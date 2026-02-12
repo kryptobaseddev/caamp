@@ -15,7 +15,27 @@ const MARKER_START = "<!-- CAAMP:START -->";
 const MARKER_END = "<!-- CAAMP:END -->";
 const MARKER_PATTERN = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/;
 
-/** Check if a file has a CAAMP injection block */
+/**
+ * Check the status of a CAAMP injection block in an instruction file.
+ *
+ * Returns the injection status:
+ * - `"missing"` - File does not exist
+ * - `"none"` - File exists but has no CAAMP markers
+ * - `"current"` - CAAMP block exists and matches expected content (or no expected content given)
+ * - `"outdated"` - CAAMP block exists but differs from expected content
+ *
+ * @param filePath - Absolute path to the instruction file
+ * @param expectedContent - Optional expected content to compare against
+ * @returns The injection status
+ *
+ * @example
+ * ```typescript
+ * const status = await checkInjection("/project/CLAUDE.md", expectedContent);
+ * if (status === "outdated") {
+ *   console.log("CAAMP injection needs updating");
+ * }
+ * ```
+ */
 export async function checkInjection(
   filePath: string,
   expectedContent?: string,
@@ -53,7 +73,24 @@ function buildBlock(content: string): string {
   return `${MARKER_START}\n${content}\n${MARKER_END}`;
 }
 
-/** Inject content into a file */
+/**
+ * Inject content into an instruction file between CAAMP markers.
+ *
+ * Behavior depends on the file state:
+ * - File does not exist: creates the file with the injection block
+ * - File exists without markers: prepends the injection block
+ * - File exists with markers: replaces the existing injection block
+ *
+ * @param filePath - Absolute path to the instruction file
+ * @param content - Content to inject between CAAMP markers
+ * @returns Action taken: `"created"`, `"added"`, or `"updated"`
+ *
+ * @example
+ * ```typescript
+ * const action = await inject("/project/CLAUDE.md", "## My Config\nSome content");
+ * console.log(`File ${action}`);
+ * ```
+ */
 export async function inject(
   filePath: string,
   content: string,
@@ -84,7 +121,19 @@ export async function inject(
   return "added";
 }
 
-/** Remove the CAAMP injection block from a file */
+/**
+ * Remove the CAAMP injection block from an instruction file.
+ *
+ * If removing the block would leave the file empty, the file is deleted entirely.
+ *
+ * @param filePath - Absolute path to the instruction file
+ * @returns `true` if a CAAMP block was found and removed, `false` otherwise
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeInjection("/project/CLAUDE.md");
+ * ```
+ */
 export async function removeInjection(filePath: string): Promise<boolean> {
   if (!existsSync(filePath)) return false;
 
@@ -107,7 +156,24 @@ export async function removeInjection(filePath: string): Promise<boolean> {
   return true;
 }
 
-/** Check injection status across all providers' instruction files */
+/**
+ * Check injection status across all providers' instruction files.
+ *
+ * Deduplicates by file path since multiple providers may share the same
+ * instruction file (e.g. many providers use `AGENTS.md`).
+ *
+ * @param providers - Array of providers to check
+ * @param projectDir - Absolute path to the project directory
+ * @param scope - Whether to check project or global instruction files
+ * @param expectedContent - Optional expected content to compare against
+ * @returns Array of injection check results, one per unique instruction file
+ *
+ * @example
+ * ```typescript
+ * const results = await checkAllInjections(providers, "/project", "project");
+ * const outdated = results.filter(r => r.status === "outdated");
+ * ```
+ */
 export async function checkAllInjections(
   providers: Provider[],
   projectDir: string,
@@ -139,7 +205,25 @@ export async function checkAllInjections(
   return results;
 }
 
-/** Inject content into all providers' instruction files */
+/**
+ * Inject content into all providers' instruction files.
+ *
+ * Deduplicates by file path to avoid injecting the same file multiple times.
+ *
+ * @param providers - Array of providers to inject into
+ * @param projectDir - Absolute path to the project directory
+ * @param scope - Whether to target project or global instruction files
+ * @param content - Content to inject between CAAMP markers
+ * @returns Map of file path to action taken (`"created"`, `"added"`, or `"updated"`)
+ *
+ * @example
+ * ```typescript
+ * const results = await injectAll(providers, "/project", "project", content);
+ * for (const [file, action] of results) {
+ *   console.log(`${file}: ${action}`);
+ * }
+ * ```
+ */
 export async function injectAll(
   providers: Provider[],
   projectDir: string,

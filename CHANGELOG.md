@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-02-11
+
+### Added
+
+- `caamp doctor` command with 6 diagnostic categories: environment, registry, installed providers, skills symlinks, lock file, config files (T034)
+- `--verbose` / `-v` global flag for debug output across all commands (T035)
+- `--quiet` / `-q` global flag to suppress non-error output for scripting (T035)
+- Shared logger utility (`src/core/logger.ts`) with `setVerbose`, `setQuiet`, `isVerbose`, `isQuiet` exports (T035)
+- TSDoc/JSDoc annotations on all 89 public API exports across 19 source files (T031)
+- TypeDoc configuration for automated API reference generation via `npm run docs:api` (T032)
+- `docs:api:check` CI validation step to ensure TSDoc stays valid (T032)
+- API audit report documenting all 89 exports against source code (T030)
+- `MarketplaceResult` type export for accurate `MarketplaceClient` return types (T037)
+- `ProviderPriority` and `ProviderStatus` union type exports (T037)
+- Debug logging in detection, MCP installer, MCP reader, and format handlers (T035)
+
+### Changed
+
+- Library export count from 82 to 89 (added logger, MarketplaceResult, ProviderPriority, ProviderStatus) (T037)
+- Deduplicated lock file I/O into shared `src/core/lock-utils.ts` module (T033)
+- API-REFERENCE.md updated with accurate return types and new export documentation (T037)
+- GAP-ANALYSIS.md updated with v0.3.0 results and current file inventory (T036)
+- CI workflow now includes TypeDoc validation step (T032)
+
+### Fixed
+
+- `providers detect` now uses `where` on Windows instead of Unix-only `which` (T033)
+- `skills install` sourceType was hardcoded to `"github"` -- now uses `parsed.type` from source parser (T033)
+- `checkSkillUpdate()` API docs incorrectly stated "not yet implemented" -- function performs actual network SHA comparison since v0.2.0 (T037)
+- `MarketplaceClient.search()` and `getSkill()` docs referenced wrong return type (`MarketplaceSkill` instead of `MarketplaceResult`) (T037)
+
 ## [0.2.0] - 2026-02-11
 
 ### Added

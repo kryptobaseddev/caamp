@@ -61,7 +61,28 @@ function inferName(source: string, type: SourceType): string {
   return source;
 }
 
-/** Parse a source string into a typed ParsedSource */
+/**
+ * Parse and classify a source string into a typed {@link ParsedSource}.
+ *
+ * Supports GitHub URLs, GitLab URLs, GitHub shorthand (`owner/repo`),
+ * HTTP URLs (remote MCP servers), npm package names, local paths, and
+ * shell commands as a fallback.
+ *
+ * @param input - Raw source string to classify
+ * @returns Parsed source with type, value, and inferred name
+ *
+ * @example
+ * ```typescript
+ * parseSource("owner/repo");
+ * // { type: "github", value: "https://github.com/owner/repo", inferredName: "repo", ... }
+ *
+ * parseSource("https://mcp.example.com/sse");
+ * // { type: "remote", value: "https://mcp.example.com/sse", inferredName: "example" }
+ *
+ * parseSource("@modelcontextprotocol/server-filesystem");
+ * // { type: "package", value: "@modelcontextprotocol/server-filesystem", inferredName: "filesystem" }
+ * ```
+ */
 export function parseSource(input: string): ParsedSource {
   // GitHub URL
   const ghUrlMatch = input.match(GITHUB_URL);
@@ -148,7 +169,19 @@ export function parseSource(input: string): ParsedSource {
   };
 }
 
-/** Check if source looks like an MCP marketplace scoped name (@author/name) */
+/**
+ * Check if a source string looks like a marketplace scoped name (`@author/name`).
+ *
+ * @param input - Source string to check
+ * @returns `true` if the input matches the `@scope/name` pattern
+ *
+ * @example
+ * ```typescript
+ * isMarketplaceScoped("@anthropic/my-skill"); // true
+ * isMarketplaceScoped("my-skill");             // false
+ * isMarketplaceScoped("owner/repo");           // false
+ * ```
+ */
 export function isMarketplaceScoped(input: string): boolean {
   return /^@[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(input);
 }

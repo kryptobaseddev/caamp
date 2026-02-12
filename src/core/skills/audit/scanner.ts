@@ -18,7 +18,23 @@ const SEVERITY_WEIGHTS: Record<AuditSeverity, number> = {
   info: 0,
 };
 
-/** Scan a single file against all rules */
+/**
+ * Scan a single file against security audit rules.
+ *
+ * Checks each line of the file against all active rules and produces findings
+ * with line-level precision. Calculates a security score (100 = clean, 0 = dangerous)
+ * based on severity-weighted penalties.
+ *
+ * @param filePath - Absolute path to the file to scan
+ * @param rules - Custom rules to scan against (defaults to the built-in 46+ rules)
+ * @returns Audit result with findings, score, and pass/fail status
+ *
+ * @example
+ * ```typescript
+ * const result = await scanFile("/path/to/SKILL.md");
+ * console.log(`Score: ${result.score}/100, Passed: ${result.passed}`);
+ * ```
+ */
 export async function scanFile(
   filePath: string,
   rules?: AuditRule[],
@@ -59,7 +75,20 @@ export async function scanFile(
   return { file: filePath, findings, score, passed };
 }
 
-/** Scan a directory of skills */
+/**
+ * Scan a directory of skills for security issues.
+ *
+ * Iterates over skill subdirectories and scans each `SKILL.md` file found.
+ *
+ * @param dirPath - Absolute path to the skills directory to scan
+ * @returns Array of audit results, one per scanned SKILL.md
+ *
+ * @example
+ * ```typescript
+ * const results = await scanDirectory("/home/user/.agents/skills");
+ * const failing = results.filter(r => !r.passed);
+ * ```
+ */
 export async function scanDirectory(dirPath: string): Promise<AuditResult[]> {
   const { readdir } = await import("node:fs/promises");
   const { join } = await import("node:path");
@@ -81,7 +110,22 @@ export async function scanDirectory(dirPath: string): Promise<AuditResult[]> {
   return results;
 }
 
-/** Format findings as SARIF (Static Analysis Results Interchange Format) */
+/**
+ * Convert audit results to SARIF 2.1.0 format (Static Analysis Results Interchange Format).
+ *
+ * Produces a standards-compliant SARIF document suitable for CI/CD integration
+ * and code scanning tools (e.g. GitHub Code Scanning).
+ *
+ * @param results - Array of audit results to convert
+ * @returns SARIF 2.1.0 JSON object
+ *
+ * @example
+ * ```typescript
+ * const results = await scanDirectory("/path/to/skills");
+ * const sarif = toSarif(results);
+ * writeFileSync("audit.sarif", JSON.stringify(sarif, null, 2));
+ * ```
+ */
 export function toSarif(results: AuditResult[]): object {
   return {
     $schema: "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",

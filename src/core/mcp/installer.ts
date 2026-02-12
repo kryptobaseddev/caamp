@@ -9,12 +9,29 @@ import type { Provider, McpServerConfig, GlobalOptions } from "../../types.js";
 import { writeConfig } from "../formats/index.js";
 import { getTransform } from "./transforms.js";
 import { resolveConfigPath } from "./reader.js";
+import { debug } from "../logger.js";
 
+/**
+ * Result of installing an MCP server configuration to a single provider.
+ *
+ * @example
+ * ```typescript
+ * const result = await installMcpServer(provider, "my-server", config);
+ * if (result.success) {
+ *   console.log(`Written to ${result.configPath}`);
+ * }
+ * ```
+ */
 export interface InstallResult {
+  /** The provider the config was written to. */
   provider: Provider;
+  /** Whether project or global scope was used. */
   scope: "project" | "global";
+  /** Absolute path to the config file that was written. */
   configPath: string;
+  /** Whether the write succeeded. */
   success: boolean;
+  /** Error message if the write failed. */
   error?: string;
 }
 
@@ -27,7 +44,28 @@ function buildConfig(provider: Provider, serverName: string, config: McpServerCo
   return config;
 }
 
-/** Install an MCP server config for a single provider */
+/**
+ * Install an MCP server configuration for a single provider.
+ *
+ * Applies provider-specific transforms (e.g. Goose, Zed, Codex) and writes
+ * the config to the provider's config file in the specified scope.
+ *
+ * @param provider - Target provider to write config for
+ * @param serverName - Name/key for the MCP server entry
+ * @param config - Canonical MCP server configuration
+ * @param scope - Whether to write to project or global config (default: `"project"`)
+ * @param projectDir - Project directory path (defaults to `process.cwd()`)
+ * @returns Install result with success status and config path
+ *
+ * @example
+ * ```typescript
+ * const provider = getProvider("claude-code")!;
+ * const result = await installMcpServer(provider, "filesystem", {
+ *   command: "npx",
+ *   args: ["-y", "@modelcontextprotocol/server-filesystem"],
+ * });
+ * ```
+ */
 export async function installMcpServer(
   provider: Provider,
   serverName: string,
@@ -36,6 +74,9 @@ export async function installMcpServer(
   projectDir?: string,
 ): Promise<InstallResult> {
   const configPath = resolveConfigPath(provider, scope, projectDir);
+
+  debug(`installing MCP server "${serverName}" for ${provider.id} (${scope})`);
+  debug(`  config path: ${configPath ?? "(none)"}`);
 
   if (!configPath) {
     return {
@@ -49,6 +90,8 @@ export async function installMcpServer(
 
   try {
     const transformedConfig = buildConfig(provider, serverName, config);
+    const transform = getTransform(provider.id);
+    debug(`  transform applied: ${transform ? "yes" : "no"}`);
 
     await writeConfig(
       configPath,
@@ -75,7 +118,25 @@ export async function installMcpServer(
   }
 }
 
-/** Install an MCP server config for multiple providers */
+/**
+ * Install an MCP server configuration to multiple providers.
+ *
+ * Calls {@link installMcpServer} for each provider sequentially and collects results.
+ *
+ * @param providers - Array of target providers
+ * @param serverName - Name/key for the MCP server entry
+ * @param config - Canonical MCP server configuration
+ * @param scope - Whether to write to project or global config (default: `"project"`)
+ * @param projectDir - Project directory path (defaults to `process.cwd()`)
+ * @returns Array of install results, one per provider
+ *
+ * @example
+ * ```typescript
+ * const providers = getInstalledProviders();
+ * const results = await installMcpServerToAll(providers, "my-server", config);
+ * const successes = results.filter(r => r.success);
+ * ```
+ */
 export async function installMcpServerToAll(
   providers: Provider[],
   serverName: string,
@@ -93,7 +154,28 @@ export async function installMcpServerToAll(
   return results;
 }
 
-/** Build a canonical MCP server config from parsed source */
+/**
+ * Build a canonical {@link McpServerConfig} from a parsed source.
+ *
+ * Maps source types to appropriate transport configurations:
+ * - `"remote"` sources become HTTP/SSE configs with a `url`
+ * - `"package"` sources become `npx -y <package>` stdio configs
+ * - All others are treated as shell commands split into `command` + `args`
+ *
+ * @param source - Parsed source with `type` and `value`
+ * @param transport - Override transport type for remote sources (default: `"http"`)
+ * @param headers - Optional HTTP headers for remote servers
+ * @returns Canonical MCP server configuration
+ *
+ * @example
+ * ```typescript
+ * buildServerConfig({ type: "package", value: "@mcp/server-fs" });
+ * // { command: "npx", args: ["-y", "@mcp/server-fs"] }
+ *
+ * buildServerConfig({ type: "remote", value: "https://mcp.example.com" });
+ * // { type: "http", url: "https://mcp.example.com" }
+ * ```
+ */
 export function buildServerConfig(
   source: { type: string; value: string },
   transport?: string,

@@ -12,7 +12,7 @@ import { getProvider } from "../../core/registry/providers.js";
 import { cloneRepo } from "../../core/sources/github.js";
 import { cloneGitLabRepo } from "../../core/sources/gitlab.js";
 import { MarketplaceClient } from "../../core/marketplace/client.js";
-import type { Provider } from "../../types.js";
+import type { Provider, SourceType } from "../../types.js";
 
 export function registerSkillsInstall(parent: Command): void {
   parent
@@ -53,7 +53,7 @@ export function registerSkillsInstall(parent: Command): void {
       let cleanup: (() => Promise<void>) | undefined;
       let skillName: string;
       let sourceValue: string;
-      let sourceType = "github" as const;
+      let sourceType: SourceType;
 
       // Handle marketplace scoped names
       if (isMarketplaceScoped(source)) {
@@ -79,11 +79,13 @@ export function registerSkillsInstall(parent: Command): void {
         cleanup = result.cleanup;
         skillName = skill.name;
         sourceValue = skill.githubUrl;
+        sourceType = parsed.type;
       } else {
         // Parse source
         const parsed = parseSource(source);
         skillName = parsed.inferredName;
         sourceValue = parsed.value;
+        sourceType = parsed.type;
 
         if (parsed.type === "github" && parsed.owner && parsed.repo) {
           const result = await cloneRepo(parsed.owner, parsed.repo, parsed.ref, parsed.path);

@@ -184,6 +184,7 @@ Each provider uses a different key name for MCP server configuration:
 | Document | Description |
 |----------|-------------|
 | [API Reference](docs/API-REFERENCE.md) | Full library API (82 exports with signatures and examples) |
+| [Generated API Docs](docs/api/) | Auto-generated from TSDoc (run `npm run docs:api`) |
 | [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
 | [Product Requirements](claudedocs/PRD.md) | Full PRD with user stories and feature requirements |
 | [Technical Specification](claudedocs/specs/CAAMP-SPEC.md) | RFC 2119 spec covering all subsystems |

@@ -10,7 +10,24 @@ import { join, dirname, basename } from "node:path";
 import matter from "gray-matter";
 import type { SkillEntry, SkillMetadata } from "../../types.js";
 
-/** Parse a SKILL.md file and extract metadata */
+/**
+ * Parse a SKILL.md file and extract its frontmatter metadata.
+ *
+ * Reads the file, parses YAML frontmatter via `gray-matter`, and maps the
+ * fields to a {@link SkillMetadata} object. Returns `null` if the file cannot
+ * be read or lacks required `name` and `description` fields.
+ *
+ * @param filePath - Absolute path to the SKILL.md file
+ * @returns Parsed metadata, or `null` if invalid
+ *
+ * @example
+ * ```typescript
+ * const meta = await parseSkillFile("/path/to/SKILL.md");
+ * if (meta) {
+ *   console.log(`${meta.name}: ${meta.description}`);
+ * }
+ * ```
+ */
 export async function parseSkillFile(filePath: string): Promise<SkillMetadata | null> {
   try {
     const content = await readFile(filePath, "utf-8");
@@ -40,7 +57,22 @@ export async function parseSkillFile(filePath: string): Promise<SkillMetadata | 
   }
 }
 
-/** Discover a skill at a given path (directory containing SKILL.md) */
+/**
+ * Discover a single skill at a given directory path.
+ *
+ * Checks for a `SKILL.md` file in the directory and parses its metadata.
+ *
+ * @param skillDir - Absolute path to a skill directory (containing SKILL.md)
+ * @returns Skill entry with metadata, or `null` if no valid SKILL.md exists
+ *
+ * @example
+ * ```typescript
+ * const skill = await discoverSkill("/home/user/.agents/skills/my-skill");
+ * if (skill) {
+ *   console.log(`Found: ${skill.name}`);
+ * }
+ * ```
+ */
 export async function discoverSkill(skillDir: string): Promise<SkillEntry | null> {
   const skillFile = join(skillDir, "SKILL.md");
   if (!existsSync(skillFile)) return null;
@@ -56,7 +88,21 @@ export async function discoverSkill(skillDir: string): Promise<SkillEntry | null
   };
 }
 
-/** Scan a directory for skill directories (each containing SKILL.md) */
+/**
+ * Scan a directory for skill subdirectories, each containing a SKILL.md file.
+ *
+ * Iterates over directories and symlinks in `rootDir` and calls
+ * {@link discoverSkill} on each.
+ *
+ * @param rootDir - Absolute path to a skills root directory to scan
+ * @returns Array of discovered skill entries
+ *
+ * @example
+ * ```typescript
+ * const skills = await discoverSkills("/home/user/.agents/skills");
+ * console.log(`Found ${skills.length} skills`);
+ * ```
+ */
 export async function discoverSkills(rootDir: string): Promise<SkillEntry[]> {
   if (!existsSync(rootDir)) return [];
 

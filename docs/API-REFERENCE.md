@@ -61,6 +61,7 @@ const servers = await listAllMcpServers(installed, "global");
 - [Formats](#formats)
 - [Instructions](#instructions)
 - [Marketplace](#marketplace)
+- [Logger](#logger)
 - [Complete Export List](#complete-export-list)
 
 ---
@@ -91,6 +92,22 @@ Classification of MCP server or skill source inputs.
 
 ```typescript
 type SourceType = "remote" | "package" | "command" | "github" | "gitlab" | "local";
+```
+
+#### `ProviderPriority`
+
+Priority tier for provider ordering.
+
+```typescript
+type ProviderPriority = "high" | "medium" | "low";
+```
+
+#### `ProviderStatus`
+
+Lifecycle status of a provider.
+
+```typescript
+type ProviderStatus = "active" | "beta" | "deprecated" | "planned";
 ```
 
 #### `Provider`
@@ -524,6 +541,36 @@ interface MarketplaceSkill {
 | `path` | `string` | Path within repository |
 | `category` | `string` | Category (optional) |
 | `hasContent` | `boolean` | Whether content was fetched |
+
+#### `MarketplaceResult`
+
+A skill result returned by marketplace adapters (used by `MarketplaceClient.search()` and `MarketplaceClient.getSkill()`). This is distinct from `MarketplaceSkill`, which is the type used in `MarketplaceSearchResult`.
+
+```typescript
+interface MarketplaceResult {
+  name: string;
+  scopedName: string;
+  description: string;
+  author: string;
+  stars: number;
+  githubUrl: string;
+  repoFullName: string;
+  path: string;
+  source: string;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `string` | Skill name |
+| `scopedName` | `string` | Scoped name (e.g., `"@author/name"`) |
+| `description` | `string` | Description text |
+| `author` | `string` | Author name |
+| `stars` | `number` | GitHub star count |
+| `githubUrl` | `string` | GitHub repository URL |
+| `repoFullName` | `string` | Full `"owner/repo"` name |
+| `path` | `string` | Path within repository |
+| `source` | `string` | Which marketplace the result came from |
 
 #### `MarketplaceSearchResult`
 
@@ -1831,12 +1878,17 @@ for (const [name, entry] of Object.entries(tracked)) {
 
 ### `checkSkillUpdate()`
 
-Checks if a skill has updates available. Currently returns `hasUpdate: false` (network check not yet implemented).
+Checks if a skill has updates available. For GitHub and GitLab sources, performs a remote SHA comparison via `simple-git` `ls-remote` to detect whether the remote HEAD has changed since install. Other source types return `status: "unknown"`.
 
 ```typescript
 async function checkSkillUpdate(
   skillName: string
-): Promise<{ hasUpdate: boolean; currentVersion?: string; latestVersion?: string }>
+): Promise<{
+  hasUpdate: boolean;
+  currentVersion?: string;
+  latestVersion?: string;
+  status: "up-to-date" | "update-available" | "unknown";
+}>
 ```
 
 **Parameters**:
@@ -1845,7 +1897,14 @@ async function checkSkillUpdate(
 |------|------|-------------|
 | `skillName` | `string` | Skill name to check |
 
-**Returns**: `Promise<{ hasUpdate: boolean; currentVersion?: string; latestVersion?: string }>` -- Update status.
+**Returns**: `Promise<{ hasUpdate: boolean; currentVersion?: string; latestVersion?: string; status: "up-to-date" | "update-available" | "unknown" }>` -- Update status.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `hasUpdate` | `boolean` | Whether an update is available |
+| `currentVersion` | `string` | Currently installed version/SHA (optional) |
+| `latestVersion` | `string` | Latest remote version/SHA (optional) |
+| `status` | `"up-to-date" \| "update-available" \| "unknown"` | Update status. `"unknown"` for non-GitHub/GitLab sources or when the skill is not tracked. |
 
 ```typescript
 import { checkSkillUpdate } from "@cleocode/caamp";
@@ -1854,6 +1913,7 @@ const status = await checkSkillUpdate("my-skill");
 if (status.hasUpdate) {
   console.log(`Update available: ${status.currentVersion} -> ${status.latestVersion}`);
 }
+console.log(`Status: ${status.status}`);
 ```
 
 ---
@@ -2278,8 +2338,8 @@ Unified marketplace client that aggregates results from multiple marketplace ada
 ```typescript
 class MarketplaceClient {
   constructor(adapters?: MarketplaceAdapter[]);
-  async search(query: string, limit?: number): Promise<MarketplaceSkill[]>;
-  async getSkill(scopedName: string): Promise<MarketplaceSkill | null>;
+  async search(query: string, limit?: number): Promise<MarketplaceResult[]>;
+  async getSkill(scopedName: string): Promise<MarketplaceResult | null>;
 }
 ```
 
@@ -2291,14 +2351,14 @@ constructor(adapters?: MarketplaceAdapter[])
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `adapters` | `MarketplaceAdapter[]` | SkillsMPAdapter + SkillsShAdapter | Custom adapters |
+| `adapters` | `MarketplaceAdapter[]` | `[new SkillsMPAdapter(), new SkillsShAdapter()]` | Custom adapters |
 
 #### `search()`
 
 Searches all marketplace adapters in parallel, deduplicates by `scopedName` (keeping higher star count), and returns results sorted by stars descending.
 
 ```typescript
-async search(query: string, limit?: number): Promise<MarketplaceSkill[]>
+async search(query: string, limit?: number): Promise<MarketplaceResult[]>
 ```
 
 | Name | Type | Default | Description |
@@ -2306,21 +2366,23 @@ async search(query: string, limit?: number): Promise<MarketplaceSkill[]>
 | `query` | `string` | -- | Search query |
 | `limit` | `number` | `20` | Maximum results |
 
-**Returns**: `Promise<MarketplaceSkill[]>` -- Deduplicated, sorted results.
+**Returns**: `Promise<MarketplaceResult[]>` -- Deduplicated, sorted results.
+
+> **Note**: Returns `MarketplaceResult[]`, not `MarketplaceSkill[]`. `MarketplaceResult` is the type returned by marketplace adapters and has a different shape than `MarketplaceSkill`. See [MarketplaceResult](#marketplaceresult) for the type definition.
 
 #### `getSkill()`
 
 Gets a specific skill by scoped name, trying each adapter in order until one returns a result.
 
 ```typescript
-async getSkill(scopedName: string): Promise<MarketplaceSkill | null>
+async getSkill(scopedName: string): Promise<MarketplaceResult | null>
 ```
 
 | Name | Type | Description |
 |------|------|-------------|
 | `scopedName` | `string` | Scoped skill name (e.g., `"@author/name"`) |
 
-**Returns**: `Promise<MarketplaceSkill | null>` -- Skill details or `null` if not found.
+**Returns**: `Promise<MarketplaceResult | null>` -- Skill details or `null` if not found.
 
 ```typescript
 import { MarketplaceClient } from "@cleocode/caamp";
@@ -2337,11 +2399,107 @@ const skill = await marketplace.getSkill("@anthropic/code-review");
 
 ---
 
+## Logger
+
+Functions for controlling CLI output verbosity.
+
+### `setVerbose()`
+
+Enables or disables verbose (debug) output to stderr.
+
+```typescript
+function setVerbose(v: boolean): void
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `v` | `boolean` | Enable verbose mode |
+
+**Returns**: `void`
+
+```typescript
+import { setVerbose } from "@cleocode/caamp";
+
+setVerbose(true); // Enable debug output
+```
+
+---
+
+### `setQuiet()`
+
+Enables or disables quiet mode, which suppresses info and warn output (errors are always shown).
+
+```typescript
+function setQuiet(q: boolean): void
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `q` | `boolean` | Enable quiet mode |
+
+**Returns**: `void`
+
+```typescript
+import { setQuiet } from "@cleocode/caamp";
+
+setQuiet(true); // Suppress info and warn output
+```
+
+---
+
+### `isVerbose()`
+
+Returns whether verbose mode is currently enabled.
+
+```typescript
+function isVerbose(): boolean
+```
+
+**Parameters**: None
+
+**Returns**: `boolean` -- True if verbose mode is enabled.
+
+```typescript
+import { isVerbose } from "@cleocode/caamp";
+
+if (isVerbose()) {
+  // Additional debug output
+}
+```
+
+---
+
+### `isQuiet()`
+
+Returns whether quiet mode is currently enabled.
+
+```typescript
+function isQuiet(): boolean
+```
+
+**Parameters**: None
+
+**Returns**: `boolean` -- True if quiet mode is enabled.
+
+```typescript
+import { isQuiet } from "@cleocode/caamp";
+
+if (!isQuiet()) {
+  console.log("Status: OK");
+}
+```
+
+---
+
 ## Complete Export List
 
-Alphabetical checklist of all exported symbols from `src/index.ts` (25 types + 56 functions + 1 class = 82 named exports).
+Alphabetical checklist of all exported symbols from `src/index.ts` (28 types + 60 functions + 1 class = 89 named exports).
 
-### Types (25)
+### Types (28)
 
 - [ ] `AuditFinding`
 - [ ] `AuditResult`
@@ -2355,12 +2513,15 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (25 types + 5
 - [ ] `InjectionStatus`
 - [ ] `InstallResult`
 - [ ] `LockEntry`
+- [ ] `MarketplaceResult`
 - [ ] `MarketplaceSearchResult`
 - [ ] `MarketplaceSkill`
 - [ ] `McpServerConfig`
 - [ ] `McpServerEntry`
 - [ ] `ParsedSource`
 - [ ] `Provider`
+- [ ] `ProviderPriority`
+- [ ] `ProviderStatus`
 - [ ] `SkillEntry`
 - [ ] `SkillInstallResult`
 - [ ] `SkillMetadata`
@@ -2369,7 +2530,7 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (25 types + 5
 - [ ] `ValidationIssue`
 - [ ] `ValidationResult`
 
-### Functions (56)
+### Functions (60)
 
 - [ ] `buildServerConfig`
 - [ ] `checkAllInjections`
@@ -2404,6 +2565,8 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (25 types + 5
 - [ ] `installMcpServerToAll`
 - [ ] `installSkill`
 - [ ] `isMarketplaceScoped`
+- [ ] `isQuiet`
+- [ ] `isVerbose`
 - [ ] `listAllMcpServers`
 - [ ] `listCanonicalSkills`
 - [ ] `listMcpServers`
@@ -2424,6 +2587,8 @@ Alphabetical checklist of all exported symbols from `src/index.ts` (25 types + 5
 - [ ] `saveLastSelectedAgents`
 - [ ] `scanDirectory`
 - [ ] `scanFile`
+- [ ] `setQuiet`
+- [ ] `setVerbose`
 - [ ] `toSarif`
 - [ ] `validateSkill`
 - [ ] `writeConfig`

@@ -143,41 +143,121 @@ function ensureProviders(): void {
   }
 }
 
-/** Get all providers */
+/**
+ * Retrieve all registered providers with resolved platform paths.
+ *
+ * Providers are lazily loaded from `providers/registry.json` on first call
+ * and cached for subsequent calls.
+ *
+ * @returns Array of all provider definitions
+ *
+ * @example
+ * ```typescript
+ * const providers = getAllProviders();
+ * console.log(`${providers.length} providers registered`);
+ * ```
+ */
 export function getAllProviders(): Provider[] {
   ensureProviders();
   return Array.from(_providers!.values());
 }
 
-/** Get a provider by ID or alias */
+/**
+ * Look up a provider by its ID or any of its aliases.
+ *
+ * @param idOrAlias - Provider ID (e.g. `"claude-code"`) or alias (e.g. `"claude"`)
+ * @returns The matching provider, or `undefined` if not found
+ *
+ * @example
+ * ```typescript
+ * const provider = getProvider("claude");
+ * // Returns the claude-code provider via alias resolution
+ * ```
+ */
 export function getProvider(idOrAlias: string): Provider | undefined {
   ensureProviders();
   const resolved = _aliasMap!.get(idOrAlias) ?? idOrAlias;
   return _providers!.get(resolved);
 }
 
-/** Resolve an alias to provider ID */
+/**
+ * Resolve an alias to its canonical provider ID.
+ *
+ * If the input is already a canonical ID (or unrecognized), it is returned as-is.
+ *
+ * @param idOrAlias - Provider ID or alias to resolve
+ * @returns The canonical provider ID
+ *
+ * @example
+ * ```typescript
+ * resolveAlias("claude"); // "claude-code"
+ * resolveAlias("claude-code"); // "claude-code"
+ * resolveAlias("unknown"); // "unknown"
+ * ```
+ */
 export function resolveAlias(idOrAlias: string): string {
   ensureProviders();
   return _aliasMap!.get(idOrAlias) ?? idOrAlias;
 }
 
-/** Get providers by priority tier */
+/**
+ * Filter providers by their priority tier.
+ *
+ * @param priority - Priority level to filter by (`"high"`, `"medium"`, or `"low"`)
+ * @returns Array of providers matching the given priority
+ *
+ * @example
+ * ```typescript
+ * const highPriority = getProvidersByPriority("high");
+ * ```
+ */
 export function getProvidersByPriority(priority: ProviderPriority): Provider[] {
   return getAllProviders().filter((p) => p.priority === priority);
 }
 
-/** Get providers by status */
+/**
+ * Filter providers by their lifecycle status.
+ *
+ * @param status - Status to filter by (`"active"`, `"beta"`, `"deprecated"`, or `"planned"`)
+ * @returns Array of providers matching the given status
+ *
+ * @example
+ * ```typescript
+ * const active = getProvidersByStatus("active");
+ * ```
+ */
 export function getProvidersByStatus(status: ProviderStatus): Provider[] {
   return getAllProviders().filter((p) => p.status === status);
 }
 
-/** Get providers that use a specific instruction file */
+/**
+ * Filter providers that use a specific instruction file.
+ *
+ * Multiple providers often share the same instruction file (e.g. many use `"AGENTS.md"`).
+ *
+ * @param file - Instruction file name (e.g. `"CLAUDE.md"`, `"AGENTS.md"`)
+ * @returns Array of providers that use the given instruction file
+ *
+ * @example
+ * ```typescript
+ * const claudeProviders = getProvidersByInstructFile("CLAUDE.md");
+ * ```
+ */
 export function getProvidersByInstructFile(file: string): Provider[] {
   return getAllProviders().filter((p) => p.instructFile === file);
 }
 
-/** Get all unique instruction files */
+/**
+ * Get the set of all unique instruction file names across all providers.
+ *
+ * @returns Array of unique instruction file names (e.g. `["CLAUDE.md", "AGENTS.md", "GEMINI.md"]`)
+ *
+ * @example
+ * ```typescript
+ * const files = getInstructionFiles();
+ * // ["CLAUDE.md", "AGENTS.md", "GEMINI.md"]
+ * ```
+ */
 export function getInstructionFiles(): string[] {
   const files = new Set<string>();
   for (const p of getAllProviders()) {
@@ -186,13 +266,31 @@ export function getInstructionFiles(): string[] {
   return Array.from(files);
 }
 
-/** Get provider count */
+/**
+ * Get the total number of registered providers.
+ *
+ * @returns Count of providers in the registry
+ *
+ * @example
+ * ```typescript
+ * console.log(`Registry has ${getProviderCount()} providers`);
+ * ```
+ */
 export function getProviderCount(): number {
   ensureProviders();
   return _providers!.size;
 }
 
-/** Get registry version */
+/**
+ * Get the semantic version string of the provider registry.
+ *
+ * @returns Version string from `providers/registry.json` (e.g. `"1.0.0"`)
+ *
+ * @example
+ * ```typescript
+ * console.log(`Registry version: ${getRegistryVersion()}`);
+ * ```
+ */
 export function getRegistryVersion(): string {
   return loadRegistry().version;
 }

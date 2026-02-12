@@ -4,23 +4,35 @@
  * Shares the same lock file as MCP (~/.agents/.caamp-lock.json).
  */
 
-import type { CaampLockFile, LockEntry, SourceType } from "../../types.js";
-import { readLockFile } from "../mcp/lock.js";
+import type { LockEntry, SourceType } from "../../types.js";
+import { readLockFile, writeLockFile } from "../lock-utils.js";
 import { parseSource } from "../sources/parser.js";
 import { simpleGit } from "simple-git";
-import { writeFile, mkdir } from "node:fs/promises";
-import { homedir } from "node:os";
-import { join } from "node:path";
 
-const LOCK_DIR = join(homedir(), ".agents");
-const LOCK_FILE = join(LOCK_DIR, ".caamp-lock.json");
-
-async function writeLockFile(lock: CaampLockFile): Promise<void> {
-  await mkdir(LOCK_DIR, { recursive: true });
-  await writeFile(LOCK_FILE, JSON.stringify(lock, null, 2) + "\n", "utf-8");
-}
-
-/** Record a skill installation */
+/**
+ * Record a skill installation in the lock file.
+ *
+ * Creates or updates an entry in `lock.skills`. If the skill already exists,
+ * the agent list is merged and `updatedAt` is refreshed while `installedAt` is preserved.
+ *
+ * @param skillName - Skill name
+ * @param scopedName - Scoped name (may include marketplace scope)
+ * @param source - Original source string
+ * @param sourceType - Classified source type
+ * @param agents - Provider IDs the skill was linked to
+ * @param canonicalPath - Absolute path to the canonical installation
+ * @param isGlobal - Whether this is a global installation
+ * @param projectDir - Project directory (for project-scoped installs)
+ * @param version - Version string or commit SHA
+ *
+ * @example
+ * ```typescript
+ * await recordSkillInstall(
+ *   "my-skill", "my-skill", "owner/repo", "github",
+ *   ["claude-code"], "/home/user/.agents/skills/my-skill", true,
+ * );
+ * ```
+ */
 export async function recordSkillInstall(
   skillName: string,
   scopedName: string,
@@ -54,7 +66,17 @@ export async function recordSkillInstall(
   await writeLockFile(lock);
 }
 
-/** Remove a skill from the lock file */
+/**
+ * Remove a skill entry from the lock file.
+ *
+ * @param skillName - Name of the skill to remove
+ * @returns `true` if the entry was found and removed, `false` if not found
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeSkillFromLock("my-skill");
+ * ```
+ */
 export async function removeSkillFromLock(skillName: string): Promise<boolean> {
   const lock = await readLockFile();
   if (!(skillName in lock.skills)) return false;
@@ -64,7 +86,19 @@ export async function removeSkillFromLock(skillName: string): Promise<boolean> {
   return true;
 }
 
-/** Get all tracked skills */
+/**
+ * Get all skills tracked in the lock file.
+ *
+ * @returns Record of skill name to lock entry
+ *
+ * @example
+ * ```typescript
+ * const skills = await getTrackedSkills();
+ * for (const [name, entry] of Object.entries(skills)) {
+ *   console.log(`${name}: ${entry.source}`);
+ * }
+ * ```
+ */
 export async function getTrackedSkills(): Promise<Record<string, LockEntry>> {
   const lock = await readLockFile();
   return lock.skills;
@@ -92,7 +126,24 @@ async function fetchLatestSha(
   }
 }
 
-/** Check if a skill has updates available (comparing version/hash) */
+/**
+ * Check if a skill has updates available by comparing the installed version
+ * against the latest remote commit SHA.
+ *
+ * Only supports GitHub and GitLab sources. Returns `"unknown"` for local,
+ * package, or other source types.
+ *
+ * @param skillName - Name of the installed skill to check
+ * @returns Object with update status, current version, and latest version
+ *
+ * @example
+ * ```typescript
+ * const update = await checkSkillUpdate("my-skill");
+ * if (update.hasUpdate) {
+ *   console.log(`Update available: ${update.currentVersion} -> ${update.latestVersion}`);
+ * }
+ * ```
+ */
 export async function checkSkillUpdate(skillName: string): Promise<{
   hasUpdate: boolean;
   currentVersion?: string;

@@ -8,15 +8,46 @@ import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import matter from "gray-matter";
 
+/**
+ * A single validation issue found during SKILL.md validation.
+ *
+ * @example
+ * ```typescript
+ * const issue: ValidationIssue = {
+ *   level: "error",
+ *   field: "name",
+ *   message: "Missing required field: name",
+ * };
+ * ```
+ */
 export interface ValidationIssue {
+  /** Severity: `"error"` causes validation failure, `"warning"` does not. */
   level: "error" | "warning";
+  /** The field or section that triggered the issue. */
   field: string;
+  /** Human-readable description of the issue. */
   message: string;
 }
 
+/**
+ * Result of validating a SKILL.md file against the Agent Skills standard.
+ *
+ * @example
+ * ```typescript
+ * const result = await validateSkill("/path/to/SKILL.md");
+ * if (!result.valid) {
+ *   for (const issue of result.issues) {
+ *     console.log(`[${issue.level}] ${issue.field}: ${issue.message}`);
+ *   }
+ * }
+ * ```
+ */
 export interface ValidationResult {
+  /** Whether the skill passed validation (no error-level issues). */
   valid: boolean;
+  /** All issues found during validation. */
   issues: ValidationIssue[];
+  /** Parsed frontmatter metadata, or `null` if parsing failed. */
   metadata: Record<string, unknown> | null;
 }
 
@@ -31,7 +62,22 @@ const MAX_DESCRIPTION_LENGTH = 1024;
 const WARN_BODY_LINES = 500;
 const WARN_DESCRIPTION_LENGTH = 50;
 
-/** Validate a SKILL.md file */
+/**
+ * Validate a SKILL.md file against the Agent Skills standard.
+ *
+ * Checks for required frontmatter fields (`name`, `description`), validates
+ * naming conventions, enforces length limits, checks for reserved names,
+ * and warns about long skill bodies.
+ *
+ * @param filePath - Absolute path to the SKILL.md file to validate
+ * @returns Validation result with issues and parsed metadata
+ *
+ * @example
+ * ```typescript
+ * const result = await validateSkill("/path/to/SKILL.md");
+ * console.log(result.valid ? "Valid" : `${result.issues.length} issues found`);
+ * ```
+ */
 export async function validateSkill(filePath: string): Promise<ValidationResult> {
   const issues: ValidationIssue[] = [];
 

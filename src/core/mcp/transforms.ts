@@ -103,7 +103,24 @@ export function transformCursor(serverName: string, config: McpServerConfig): un
   return config;
 }
 
-/** Get the transform function for a provider, or undefined for passthrough */
+/**
+ * Get the config transform function for a provider, or `undefined` for passthrough.
+ *
+ * Providers with non-standard MCP config schemas (Goose, Zed, OpenCode, Codex, Cursor)
+ * require transforms to convert the canonical {@link McpServerConfig} into their
+ * provider-specific format.
+ *
+ * @param providerId - Provider ID to look up (e.g. `"goose"`, `"zed"`)
+ * @returns Transform function, or `undefined` if the provider uses the canonical format
+ *
+ * @example
+ * ```typescript
+ * const transform = getTransform("goose");
+ * if (transform) {
+ *   const gooseConfig = transform("my-server", canonicalConfig);
+ * }
+ * ```
+ */
 export function getTransform(
   providerId: string,
 ): ((name: string, config: McpServerConfig) => unknown) | undefined {

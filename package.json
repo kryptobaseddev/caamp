@@ -1,6 +1,6 @@
 {
   "name": "@cleocode/caamp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Central AI Agent Managed Packages - unified provider registry and package manager for AI coding agents",
   "type": "module",
   "bin": {
@@ -27,6 +27,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
+    "docs:api": "typedoc",
+    "docs:api:check": "typedoc --emit none",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -44,22 +46,23 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "commander": "^14.0.0",
     "@clack/prompts": "^1.0.0",
-    "picocolors": "^1.1.1",
+    "@iarna/toml": "^2.2.5",
+    "commander": "^14.0.0",
     "gray-matter": "^4.0.3",
-    "simple-git": "^3.30.0",
-    "jsonc-parser": "^3.3.1",
     "js-yaml": "^4.1.0",
-    "@iarna/toml": "^2.2.5"
+    "jsonc-parser": "^3.3.1",
+    "picocolors": "^1.1.1",
+    "simple-git": "^3.30.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
     "tsup": "^8.5.0",
     "tsx": "^4.21.0",
-    "vitest": "^3.2.0",
-    "@types/node": "^22.0.0",
-    "@types/js-yaml": "^4.0.9"
+    "typedoc": "^0.28.16",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
   },
   "engines": {
     "node": ">=20"

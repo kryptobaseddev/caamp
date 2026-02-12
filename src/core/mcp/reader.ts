@@ -10,8 +10,25 @@ import { existsSync } from "node:fs";
 import type { Provider, McpServerEntry } from "../../types.js";
 import { readConfig, removeConfig } from "../formats/index.js";
 import { getNestedValue } from "../formats/utils.js";
+import { debug } from "../logger.js";
 
-/** Resolve the config file path for a provider and scope */
+/**
+ * Resolve the absolute config file path for a provider and scope.
+ *
+ * For project scope, joins the project directory with the provider's relative
+ * config path. For global scope, returns the provider's global config path.
+ *
+ * @param provider - Provider to resolve config path for
+ * @param scope - Whether to resolve project or global config path
+ * @param projectDir - Project directory (defaults to `process.cwd()`)
+ * @returns Absolute config file path, or `null` if the provider does not support the given scope
+ *
+ * @example
+ * ```typescript
+ * const path = resolveConfigPath(provider, "project", "/home/user/my-project");
+ * // "/home/user/my-project/.claude/settings.json"
+ * ```
+ */
 export function resolveConfigPath(
   provider: Provider,
   scope: "project" | "global",
@@ -24,13 +41,32 @@ export function resolveConfigPath(
   return provider.configPathGlobal;
 }
 
-/** List MCP servers configured for a single provider */
+/**
+ * List MCP servers configured for a single provider.
+ *
+ * Reads the provider's config file, extracts the MCP servers section using the
+ * provider's `configKey`, and returns each server entry with metadata.
+ *
+ * @param provider - Provider whose config file to read
+ * @param scope - Whether to read project or global config
+ * @param projectDir - Project directory (defaults to `process.cwd()`)
+ * @returns Array of MCP server entries found in the config file
+ *
+ * @example
+ * ```typescript
+ * const servers = await listMcpServers(provider, "project");
+ * for (const s of servers) {
+ *   console.log(`${s.name} (${s.scope})`);
+ * }
+ * ```
+ */
 export async function listMcpServers(
   provider: Provider,
   scope: "project" | "global",
   projectDir?: string,
 ): Promise<McpServerEntry[]> {
   const configPath = resolveConfigPath(provider, scope, projectDir);
+  debug(`listing MCP servers for ${provider.id} (${scope}) at ${configPath ?? "(none)"}`);
   if (!configPath || !existsSync(configPath)) return [];
 
   try {
@@ -57,7 +93,22 @@ export async function listMcpServers(
   }
 }
 
-/** List MCP servers across all given providers, deduplicating by config path */
+/**
+ * List MCP servers across all given providers, deduplicating by config path.
+ *
+ * Multiple providers may share the same config file. This function ensures each
+ * config file is read only once to avoid duplicate entries.
+ *
+ * @param providers - Array of providers to query
+ * @param scope - Whether to read project or global config
+ * @param projectDir - Project directory (defaults to `process.cwd()`)
+ * @returns Combined array of MCP server entries from all providers
+ *
+ * @example
+ * ```typescript
+ * const allServers = await listAllMcpServers(getInstalledProviders(), "global");
+ * ```
+ */
 export async function listAllMcpServers(
   providers: Provider[],
   scope: "project" | "global",
@@ -78,7 +129,20 @@ export async function listAllMcpServers(
   return allEntries;
 }
 
-/** Remove an MCP server entry from a provider's config file */
+/**
+ * Remove an MCP server entry from a provider's config file.
+ *
+ * @param provider - Provider whose config file to modify
+ * @param serverName - Name/key of the MCP server to remove
+ * @param scope - Whether to modify project or global config
+ * @param projectDir - Project directory (defaults to `process.cwd()`)
+ * @returns `true` if the entry was removed, `false` if no config path exists
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeMcpServer(provider, "my-server", "project");
+ * ```
+ */
 export async function removeMcpServer(
   provider: Provider,
   serverName: string,

@@ -25,4 +25,6 @@ jobs:
 
       - run: npm run typecheck
 
+      - run: npm run docs:api:check
+
       - run: npm test
