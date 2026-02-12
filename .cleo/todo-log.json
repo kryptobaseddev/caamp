@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 88,
+    "totalEntries": 89,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T00:06:33Z",
+    "lastEntry": "2026-02-12T00:39:53Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -1606,6 +1606,21 @@
       "after": null,
       "details": {
         "note": "v0.3.0 shipped to GitHub and npm"
+      }
+    },
+    {
+      "id": "log_c99c5551a099",
+      "timestamp": "2026-02-12T00:39:53Z",
+      "sessionId": "session_20260211_163953_169520",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T001"
       }
     }
   ]
