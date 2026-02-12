@@ -5,7 +5,7 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-12T02:17:34Z",
+    "lastModified": "2026-02-12T17:49:14Z",
     "totalSessionsCreated": 13
   },
   "config": {
@@ -503,13 +503,22 @@
           "T058",
           "T059",
           "T060",
-          "T061"
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094"
         ]
       },
       "focus": {
-        "currentTask": "T054",
+        "currentTask": "T088",
         "currentPhase": null,
-        "previousTask": "T053",
+        "previousTask": "T086",
         "sessionNote": null,
         "nextAction": null,
         "focusHistory": [
@@ -527,15 +536,25 @@
             "taskId": "T054",
             "timestamp": "2026-02-12T02:01:35Z",
             "action": "focused"
+          },
+          {
+            "taskId": "T086",
+            "timestamp": "2026-02-12T17:44:34Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T088",
+            "timestamp": "2026-02-12T17:49:14Z",
+            "action": "focused"
           }
         ]
       },
       "startedAt": "2026-02-12T01:58:45Z",
-      "lastActivity": "2026-02-12T02:01:35Z",
+      "lastActivity": "2026-02-12T17:49:14Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
-        "focusChanges": 3,
+        "focusChanges": 5,
         "suspendCount": 0,
         "resumeCount": 0
       },
@@ -548,7 +567,7 @@
     },
     {
       "id": "session_20260211_180446_609180",
-      "status": "active",
+      "status": "ended",
       "name": "v1.0.0 Wave 1 CI Hardening Track",
       "agentId": null,
       "scope": {
@@ -566,10 +585,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T063",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": "T064",
-        "sessionNote": null,
+        "previousTask": "T063",
+        "sessionNote": "Wave 1 CI hardening complete; ending session to prevent stale active state.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -590,7 +609,7 @@
         ]
       },
       "startedAt": "2026-02-12T02:04:46Z",
-      "lastActivity": "2026-02-12T02:13:35Z",
+      "lastActivity": "2026-02-12T17:44:13Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -603,11 +622,12 @@
         "start_timestamp": "2026-02-12T02:04:46Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-12T17:44:13Z"
     },
     {
       "id": "session_20260211_181557_affa6e",
-      "status": "active",
+      "status": "ended",
       "name": "v1.0.0 Wave 2 Documentation",
       "agentId": null,
       "scope": {
@@ -625,10 +645,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T070",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": null,
-        "sessionNote": null,
+        "previousTask": "T070",
+        "sessionNote": "Wave 2 complete; ending session to prevent stale active state.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -639,7 +659,7 @@
         ]
       },
       "startedAt": "2026-02-12T02:15:57Z",
-      "lastActivity": "2026-02-12T02:15:57Z",
+      "lastActivity": "2026-02-12T17:44:13Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -652,7 +672,8 @@
         "start_timestamp": "2026-02-12T02:15:57Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-12T17:44:13Z"
     },
     {
       "id": "session_20260211_181734_1c0d6e",

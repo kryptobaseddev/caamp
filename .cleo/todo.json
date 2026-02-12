@@ -82,20 +82,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T17:43:44Z",
+  "lastUpdated": "2026-02-12T17:48:32Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "749d9affb565de96",
+    "checksum": "d71d16589035c900",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 182,
-    "lastModified": "2026-02-12T02:17:34Z",
+    "generation": 199,
+    "lastModified": "2026-02-12T17:49:14Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 9
+    "activeSessionCount": 7
   },
   "focus": {
-    "currentTask": null,
+    "currentTask": "T088",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -2757,13 +2757,19 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:01Z",
-      "updatedAt": "2026-02-12T00:44:01Z",
+      "updatedAt": "2026-02-12T17:43:45Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:01 UTC: Update package.json version to 1.0.0. Update src/cli.ts .version() to 1.0.0 (or read from package.json). Files: package.json, src/cli.ts."
+      ],
+      "depends": [
+        "T079",
+        "T094",
+        "T095",
+        "T096"
       ]
     },
     {
@@ -2774,13 +2780,16 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:02Z",
-      "updatedAt": "2026-02-12T00:44:02Z",
+      "updatedAt": "2026-02-12T17:43:45Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:02 UTC: Document all features, fixes, breaking changes from v0.3.0 to v1.0.0. Include all 5 epic deliverables. Migration notes. File: CHANGELOG.md."
+      ],
+      "depends": [
+        "T080"
       ]
     },
     {
@@ -2791,13 +2800,16 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:02Z",
-      "updatedAt": "2026-02-12T00:44:02Z",
+      "updatedAt": "2026-02-12T17:43:46Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:02 UTC: Tag v1.0.0. Create GitHub release with CHANGELOG content. Mark as stable release (not prerelease). Attach assets if needed."
+      ],
+      "depends": [
+        "T081"
       ]
     },
     {
@@ -2808,13 +2820,16 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:10Z",
-      "updatedAt": "2026-02-12T00:44:10Z",
+      "updatedAt": "2026-02-12T17:43:47Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:10 UTC: Run npm publish --dry-run. Verify package.json files field includes all necessary files. Test npx @cleocode/caamp after publish. Ensure provenance is enabled."
+      ],
+      "depends": [
+        "T082"
       ]
     },
     {
@@ -2825,13 +2840,16 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:10Z",
-      "updatedAt": "2026-02-12T00:44:10Z",
+      "updatedAt": "2026-02-12T17:43:48Z",
       "size": "medium",
       "position": 6,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:10 UTC: Update GAP-ANALYSIS.md Section 1 to reflect v1.0.0 as shipped. Document remaining deferred items for future versions. File: claudedocs/GAP-ANALYSIS.md."
+      ],
+      "depends": [
+        "T083"
       ]
     },
     {
@@ -2842,13 +2860,16 @@
       "type": "subtask",
       "parentId": "T078",
       "createdAt": "2026-02-12T00:44:11Z",
-      "updatedAt": "2026-02-12T00:44:11Z",
+      "updatedAt": "2026-02-12T17:43:49Z",
       "size": "medium",
       "position": 7,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:11 UTC: Prepare release announcement for: GitHub Discussions, npm package description, CLAUDE.md update, community channels. Include highlights, migration guide link, breaking changes."
+      ],
+      "depends": [
+        "T084"
       ]
     },
     {
@@ -2859,7 +2880,7 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-12T17:42:54Z",
+      "updatedAt": "2026-02-12T17:49:14Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -2868,17 +2889,20 @@
       "acceptance": [
         "npm run test:coverage passes thresholds",
         "coverage CI job passes on GitHub Actions"
+      ],
+      "notes": [
+        "2026-02-12 17:44:34 UTC: Provenance: task-hygiene audit ses_3ad109aceffeFS3fpoK33Q39rQ; coverage-remediation planner ses_3ad109abeffex8z0DHFCGcVeON. Adopted as canonical execution plan for release blocker remediation."
       ]
     },
     {
       "id": "T087",
       "title": "Test advanced common and LAFS foundations",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:24Z",
-      "updatedAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:48:32Z",
       "size": "medium",
       "position": 14,
       "positionVersion": 0,
@@ -2894,17 +2918,37 @@
       ],
       "depends": [
         "T086"
-      ]
+      ],
+      "notes": [
+        "2026-02-12 17:47:14 UTC: Provenance: added tests/unit/advanced-common.test.ts and tests/unit/advanced-lafs.test.ts; ran npm test -- tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts; npx biome lint tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts; npx tsc --noEmit tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts (fails without project config); npm run typecheck.",
+        "[COMPLETED 2026-02-12T17:48:32Z] Implemented advanced common/LAFS coverage via tests/unit/advanced-common.test.ts and tests/unit/advanced-lafs.test.ts; targeted tests pass."
+      ],
+      "completedAt": "2026-02-12T17:48:32Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:48:32Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T088",
       "title": "Test advanced command wrappers",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:24Z",
-      "updatedAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:49:14Z",
       "size": "large",
       "position": 15,
       "positionVersion": 0,
@@ -2977,19 +3021,20 @@
     {
       "id": "T091",
       "title": "Cover MCP command wrappers and lock",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:26Z",
-      "updatedAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:48:30Z",
       "size": "medium",
       "position": 18,
       "positionVersion": 0,
       "phase": "setup",
       "description": "Add tests for MCP list/remove/detect/index wrappers and core mcp lock behavior.",
       "files": [
-        "tests/integration/mcp-commands.test.ts",
+        "tests/integration/mcp-command-wrappers.test.ts",
+        "tests/unit/mcp-command-index.test.ts",
         "tests/unit/mcp-lock.test.ts"
       ],
       "acceptance": [
@@ -2998,7 +3043,27 @@
       ],
       "depends": [
         "T086"
-      ]
+      ],
+      "notes": [
+        "2026-02-12 17:48:29 UTC: Provenance correction: MCP wrapper/lock implementation mapped here from subagent execution ses_3ad0b5d66ffeqJzECDXmtAeOAs.",
+        "[COMPLETED 2026-02-12T17:48:30Z] Implemented MCP wrapper+lock coverage with deterministic tests and targeted validation: npm test -- tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts."
+      ],
+      "completedAt": "2026-02-12T17:48:30Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:48:30Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T092",
@@ -3008,7 +3073,7 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:26Z",
-      "updatedAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:48:31Z",
       "size": "medium",
       "position": 19,
       "positionVersion": 0,
@@ -3023,6 +3088,16 @@
       ],
       "depends": [
         "T086"
+      ],
+      "notes": [
+        "2026-02-12 17:47:31 UTC: Provenance: added MCP command wrapper and lock tests. Ran: npm run test -- tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npx biome lint tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npm run typecheck.",
+        "2026-02-12 17:48:31 UTC: Provenance correction: previous MCP file note moved to T091. T092 remains pending for instructions wrapper coverage implementation."
+      ],
+      "relates": [
+        {
+          "taskId": "T091",
+          "type": "relates-to"
+        }
       ]
     },
     {
@@ -3110,12 +3185,12 @@
     {
       "id": "T096",
       "title": "Close stale CLEO sessions for completed waves",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "type": "task",
       "parentId": "T078",
       "createdAt": "2026-02-12T17:43:37Z",
-      "updatedAt": "2026-02-12T17:43:37Z",
+      "updatedAt": "2026-02-12T17:44:27Z",
       "size": "small",
       "position": 9,
       "positionVersion": 0,
@@ -3128,7 +3203,26 @@
         "T049",
         "T062",
         "T070"
-      ]
+      ],
+      "completedAt": "2026-02-12T17:44:27Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T17:44:27Z] Session hygiene applied: ended stale active sessions for completed wave scopes (T070, T062). Active sessions now limited to actionable scopes T049 and T078."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:44:27Z",
+        "failureLog": []
+      }
     }
   ],
   "labels": {}

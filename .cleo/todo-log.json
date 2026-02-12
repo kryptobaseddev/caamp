@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 202,
+    "totalEntries": 232,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T02:23:09Z",
+    "lastEntry": "2026-02-12T17:49:14Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -4094,6 +4094,640 @@
         "status": "pending",
         "priority": "medium"
       }
+    },
+    {
+      "id": "log_e72d9410d060",
+      "timestamp": "2026-02-12T17:43:44Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "title": "Release Preparation",
+        "status": "active",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062",
+          "T070"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Preparation",
+        "status": "blocked",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039",
+          "T049",
+          "T062",
+          "T070"
+        ],
+        "blockedBy": "Release cannot proceed until coverage remediation tasks (T086-T095) complete and coverage gate passes >=80%."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_c026475df692",
+      "timestamp": "2026-02-12T17:43:45Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T080",
+      "before": {
+        "title": "Version bump to 1.0.0",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Version bump to 1.0.0",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T079",
+          "T094",
+          "T095",
+          "T096"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_f81dabfde588",
+      "timestamp": "2026-02-12T17:43:46Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T081",
+      "before": {
+        "title": "Write CHANGELOG.md v1.0.0 entry",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Write CHANGELOG.md v1.0.0 entry",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T080"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_b0c9c09e1eae",
+      "timestamp": "2026-02-12T17:43:47Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T082",
+      "before": {
+        "title": "Create GitHub release v1.0.0",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Create GitHub release v1.0.0",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T081"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_167e0d08b39e",
+      "timestamp": "2026-02-12T17:43:48Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T083",
+      "before": {
+        "title": "Verify npm publish",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Verify npm publish",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T082"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_deaf594f3c0f",
+      "timestamp": "2026-02-12T17:43:48Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T084",
+      "before": {
+        "title": "Update GAP-ANALYSIS.md with v1.0.0 shipped status",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Update GAP-ANALYSIS.md with v1.0.0 shipped status",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T083"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_f12be3911412",
+      "timestamp": "2026-02-12T17:43:49Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T085",
+      "before": {
+        "title": "Announce release",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Announce release",
+        "status": "pending",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T084"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_b3721719fad4",
+      "timestamp": "2026-02-12T17:44:13Z",
+      "sessionId": "session_20260211_181557_affa6e",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Wave 2 complete; ending session to prevent stale active state."
+      }
+    },
+    {
+      "id": "log_6a0ba6c5acf1",
+      "timestamp": "2026-02-12T17:44:13Z",
+      "sessionId": "session_20260211_180446_609180",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Wave 1 CI hardening complete; ending session to prevent stale active state."
+      }
+    },
+    {
+      "id": "log_bf3d6984a4e2",
+      "timestamp": "2026-02-12T17:44:27Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T096",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T17:44:27Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_e0b59da01629",
+      "timestamp": "2026-02-12T17:44:34Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T054"
+      },
+      "after": {
+        "currentTask": "T086"
+      },
+      "details": null
+    },
+    {
+      "id": "log_2b3b73f1382c",
+      "timestamp": "2026-02-12T17:44:34Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T086",
+      "before": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "active",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "active",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_dd248bff801b",
+      "timestamp": "2026-02-12T17:47:14Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T087",
+      "before": {
+        "title": "Test advanced common and LAFS foundations",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add focused tests for src/commands/advanced/common.ts and src/commands/advanced/lafs.ts to cover validation and envelope behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/advanced-common.test.ts",
+          "tests/unit/advanced-lafs.test.ts"
+        ],
+        "acceptance": [
+          "Advanced common and lafs unit tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Test advanced common and LAFS foundations",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add focused tests for src/commands/advanced/common.ts and src/commands/advanced/lafs.ts to cover validation and envelope behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/advanced-common.test.ts",
+          "tests/unit/advanced-lafs.test.ts"
+        ],
+        "acceptance": [
+          "Advanced common and lafs unit tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_2bb897f73688",
+      "timestamp": "2026-02-12T17:47:31Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T092",
+      "before": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-commands.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-commands.test.ts",
+          "tests/integration/mcp-command-wrappers.test.ts",
+          "tests/unit/mcp-command-index.test.ts",
+          "tests/unit/mcp-lock.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5d0eb524dfb7",
+      "timestamp": "2026-02-12T17:48:29Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T091",
+      "before": {
+        "title": "Cover MCP command wrappers and lock",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for MCP list/remove/detect/index wrappers and core mcp lock behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/mcp-commands.test.ts",
+          "tests/unit/mcp-lock.test.ts"
+        ],
+        "acceptance": [
+          "MCP wrapper and lock tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover MCP command wrappers and lock",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for MCP list/remove/detect/index wrappers and core mcp lock behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/mcp-command-wrappers.test.ts",
+          "tests/unit/mcp-command-index.test.ts",
+          "tests/unit/mcp-lock.test.ts"
+        ],
+        "acceptance": [
+          "MCP wrapper and lock tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_3ef9ad489d6d",
+      "timestamp": "2026-02-12T17:48:30Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T091",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T17:48:30Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_d3d2f6494078",
+      "timestamp": "2026-02-12T17:48:31Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T092",
+      "before": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-commands.test.ts",
+          "tests/integration/mcp-command-wrappers.test.ts",
+          "tests/unit/mcp-command-index.test.ts",
+          "tests/unit/mcp-lock.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/instructions-commands.test.ts"
+        ],
+        "acceptance": [
+          "Instructions command tests added",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_37efde29ecec",
+      "timestamp": "2026-02-12T17:48:32Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T087",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T17:48:32Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_64164e9b01f6",
+      "timestamp": "2026-02-12T17:49:14Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T086"
+      },
+      "after": {
+        "currentTask": "T088"
+      },
+      "details": null
     }
   ]
 }
