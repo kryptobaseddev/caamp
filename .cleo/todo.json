@@ -115,14 +115,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T19:03:37Z",
+  "lastUpdated": "2026-02-12T19:19:09Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "cb6ef71242110925",
+    "checksum": "2980b3fc63791245",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 266,
+    "generation": 267,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3949,7 +3949,7 @@
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T19:03:37Z",
+      "updatedAt": "2026-02-12T19:19:09Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
@@ -3971,7 +3971,8 @@
         "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context.",
         "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback).",
         "2026-02-12 18:54:47 UTC: Closed remaining feature-shape gaps via T113-T115 (API surface, contract alignment, JSON snapshots). Recommendation feature now meets full requested product shape pending release ship step.",
-        "2026-02-12 19:03:37 UTC: Release branch pushed: release/v0.4.0; tag pushed: v0.4.0; PR opened: https://github.com/kryptobaseddev/caamp/pull/1. Merge blocked by repository branch protection rules."
+        "2026-02-12 19:03:37 UTC: Release branch pushed: release/v0.4.0; tag pushed: v0.4.0; PR opened: https://github.com/kryptobaseddev/caamp/pull/1. Merge blocked by repository branch protection rules.",
+        "2026-02-12 19:19:09 UTC: Resolved stuck check issue by restoring required CI contexts (matrix tests, audit, coverage, analyze). Current blocker is review requirement only."
       ],
       "relates": [
         {
@@ -3991,7 +3992,7 @@
           "type": "relates-to"
         }
       ],
-      "blockedBy": "PR #1 requires 1 approving review and 9 required checks before protected-branch merge"
+      "blockedBy": "PR #1 requires one approving review with write access; all required status checks now passing"
     },
     {
       "id": "T111",
