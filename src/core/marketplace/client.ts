@@ -9,6 +9,16 @@ import type { MarketplaceAdapter, MarketplaceResult } from "./types.js";
 import { SkillsMPAdapter } from "./skillsmp.js";
 import { SkillsShAdapter } from "./skillssh.js";
 
+export class MarketplaceUnavailableError extends Error {
+  details: string[];
+
+  constructor(message: string, details: string[]) {
+    super(message);
+    this.name = "MarketplaceUnavailableError";
+    this.details = details;
+  }
+}
+
 /**
  * Unified marketplace client that aggregates results from multiple marketplace adapters.
  *
@@ -65,13 +75,25 @@ export class MarketplaceClient {
    * ```
    */
   async search(query: string, limit = 20): Promise<MarketplaceResult[]> {
-    // Query all adapters in parallel
-    const promises = this.adapters.map((adapter) =>
-      adapter.search(query, limit).catch(() => [] as MarketplaceResult[]),
-    );
+    const settled = await Promise.allSettled(this.adapters.map((adapter) => adapter.search(query, limit)));
 
-    const allResults = await Promise.all(promises);
-    const flat = allResults.flat();
+    const flat: MarketplaceResult[] = [];
+    const failures: string[] = [];
+
+    for (const [index, result] of settled.entries()) {
+      const adapterName = this.adapters[index]?.name ?? "unknown";
+
+      if (result.status === "fulfilled") {
+        flat.push(...result.value);
+      } else {
+        const reason = result.reason instanceof Error ? result.reason.message : String(result.reason);
+        failures.push(`${adapterName}: ${reason}`);
+      }
+    }
+
+    if (flat.length === 0 && failures.length > 0) {
+      throw new MarketplaceUnavailableError("All marketplace sources failed.", failures);
+    }
 
     // Deduplicate by scopedName, keeping higher star count
     const seen = new Map<string, MarketplaceResult>();
@@ -103,10 +125,22 @@ export class MarketplaceClient {
    * ```
    */
   async getSkill(scopedName: string): Promise<MarketplaceResult | null> {
+    const failures: string[] = [];
+
     for (const adapter of this.adapters) {
-      const result = await adapter.getSkill(scopedName).catch(() => null);
-      if (result) return result;
+      try {
+        const result = await adapter.getSkill(scopedName);
+        if (result) return result;
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        failures.push(`${adapter.name}: ${reason}`);
+      }
     }
+
+    if (failures.length === this.adapters.length && this.adapters.length > 0) {
+      throw new MarketplaceUnavailableError("All marketplace sources failed.", failures);
+    }
+
     return null;
   }
 }

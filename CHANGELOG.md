@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-02-12
+
+### Added
+
+- Deterministic recommendation engine for `skills find --recommend` with ranked reasoning and tradeoff generation (`src/core/skills/recommendation.ts`)
+- New recommendation API surface for external tools: `searchSkills`, `recommendSkills`, and `formatSkillRecommendations` (`src/core/skills/recommendation-api.ts`)
+- LAFS JSON contract snapshots for recommendation output (MVI and detailed modes)
+- Feature documentation for recommendation CLI and machine contract (`docs/SKILLS-RECOMMENDATIONS.md`)
+
+### Changed
+
+- `caamp skills find` now supports criteria-driven recommendation mode with `--must-have`, `--prefer`, `--exclude`, `--details`, `--select`, `--json`, and `--human`
+- Recommendation output now defaults to top-3 ranked options and includes `CHOOSE: ...` in human mode
+- JSON recommendation output now exposes `result.query`, `result.recommended`, and `result.options[]` including `score`, `reasons[]`, and `tradeoffs[]`
+- Stable recommendation error taxonomy standardized to:
+  - `E_SKILLS_QUERY_INVALID`
+  - `E_SKILLS_NO_MATCHES`
+  - `E_SKILLS_SOURCE_UNAVAILABLE`
+  - `E_SKILLS_CRITERIA_CONFLICT`
+
+### Fixed
+
+- Fixed marketplace scoped lookup mismatch where `skills install @scope/name` could fail on agentskills.in scoped search behavior
+- Fixed marketplace install path handling when API metadata omits `.claude/` prefix for `SKILL.md` paths
+- Hardened marketplace adapter error propagation and unavailable-source handling in shared client
+
 ## [0.3.0] - 2026-02-11
 
 ### Added
