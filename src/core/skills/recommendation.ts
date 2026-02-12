@@ -1,11 +1,10 @@
 import type { MarketplaceResult } from "../marketplace/types.js";
 
 export const RECOMMENDATION_ERROR_CODES = {
-  EMPTY_CRITERIA: "E_SKILLS_RECOMMEND_EMPTY_CRITERIA",
-  INVALID_QUERY: "E_SKILLS_RECOMMEND_INVALID_QUERY",
-  INVALID_MUST_HAVE: "E_SKILLS_RECOMMEND_INVALID_MUST_HAVE",
-  INVALID_PREFER: "E_SKILLS_RECOMMEND_INVALID_PREFER",
-  INVALID_EXCLUDE: "E_SKILLS_RECOMMEND_INVALID_EXCLUDE",
+  QUERY_INVALID: "E_SKILLS_QUERY_INVALID",
+  NO_MATCHES: "E_SKILLS_NO_MATCHES",
+  SOURCE_UNAVAILABLE: "E_SKILLS_SOURCE_UNAVAILABLE",
+  CRITERIA_CONFLICT: "E_SKILLS_CRITERIA_CONFLICT",
 } as const;
 
 export type RecommendationErrorCode = (typeof RECOMMENDATION_ERROR_CODES)[keyof typeof RECOMMENDATION_ERROR_CODES];
@@ -37,6 +36,10 @@ export interface NormalizedRecommendationCriteria {
 }
 
 export type RecommendationReasonCode =
+  | "MATCH_TOPIC_GITBOOK"
+  | "HAS_GIT_SYNC"
+  | "HAS_API_WORKFLOW"
+  | "PENALTY_LEGACY_CLI"
   | "MUST_HAVE_MATCH"
   | "MISSING_MUST_HAVE"
   | "PREFER_MATCH"
@@ -67,6 +70,7 @@ export interface RankedSkillRecommendation {
   skill: MarketplaceResult;
   score: number;
   reasons: RecommendationReason[];
+  tradeoffs: string[];
   excluded: boolean;
   breakdown?: RecommendationScoreBreakdown;
 }
@@ -109,7 +113,7 @@ const DEFAULT_WEIGHTS: RecommendationWeights = {
 };
 
 const DEFAULT_MODERN_MARKERS = ["svelte 5", "runes", "lafs", "slsa", "drizzle", "better-auth"];
-const DEFAULT_LEGACY_MARKERS = ["svelte 3", "jquery", "bower", "legacy"];
+const DEFAULT_LEGACY_MARKERS = ["svelte 3", "jquery", "bower", "legacy", "book.json", "gitbook-cli"];
 
 export function tokenizeCriteriaValue(value: string): string[] {
   return value
@@ -141,7 +145,7 @@ export function validateRecommendationCriteria(input: RecommendationCriteriaInpu
 
   if (input.query !== undefined && typeof input.query !== "string") {
     issues.push({
-      code: RECOMMENDATION_ERROR_CODES.INVALID_QUERY,
+      code: RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
       field: "query",
       message: "query must be a string",
     });
@@ -149,7 +153,7 @@ export function validateRecommendationCriteria(input: RecommendationCriteriaInpu
 
   if (input.mustHave !== undefined && !(typeof input.mustHave === "string" || Array.isArray(input.mustHave))) {
     issues.push({
-      code: RECOMMENDATION_ERROR_CODES.INVALID_MUST_HAVE,
+      code: RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
       field: "mustHave",
       message: "mustHave must be a string or string[]",
     });
@@ -157,7 +161,7 @@ export function validateRecommendationCriteria(input: RecommendationCriteriaInpu
 
   if (input.prefer !== undefined && !(typeof input.prefer === "string" || Array.isArray(input.prefer))) {
     issues.push({
-      code: RECOMMENDATION_ERROR_CODES.INVALID_PREFER,
+      code: RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
       field: "prefer",
       message: "prefer must be a string or string[]",
     });
@@ -165,15 +169,27 @@ export function validateRecommendationCriteria(input: RecommendationCriteriaInpu
 
   if (input.exclude !== undefined && !(typeof input.exclude === "string" || Array.isArray(input.exclude))) {
     issues.push({
-      code: RECOMMENDATION_ERROR_CODES.INVALID_EXCLUDE,
+      code: RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
       field: "exclude",
       message: "exclude must be a string or string[]",
     });
   }
 
+  const mustHave = normalizeList(input.mustHave);
+  const prefer = normalizeList(input.prefer);
+  const exclude = normalizeList(input.exclude);
+  const conflict = mustHave.some((term) => exclude.includes(term)) || prefer.some((term) => exclude.includes(term));
+  if (conflict) {
+    issues.push({
+      code: RECOMMENDATION_ERROR_CODES.CRITERIA_CONFLICT,
+      field: "exclude",
+      message: "criteria terms cannot appear in both prefer/must-have and exclude",
+    });
+  }
+
   if (issues.length === 0 && !hasAnyCriteriaInput(input)) {
     issues.push({
-      code: RECOMMENDATION_ERROR_CODES.EMPTY_CRITERIA,
+      code: RECOMMENDATION_ERROR_CODES.QUERY_INVALID,
       field: "query",
       message: "at least one criteria value is required",
     });
@@ -224,6 +240,7 @@ export function scoreSkillRecommendation(
   const legacyMarkers = (options.legacyMarkers ?? DEFAULT_LEGACY_MARKERS).map((marker) => marker.toLowerCase());
   const text = buildSearchText(skill);
   const reasons: RecommendationReason[] = [];
+  const tradeoffs: string[] = [];
 
   const mustHaveMatches = countMatches(text, criteria.mustHave);
   const missingMustHave = Math.max(criteria.mustHave.length - mustHaveMatches, 0);
@@ -234,19 +251,36 @@ export function scoreSkillRecommendation(
   const legacyMatches = countMatches(text, legacyMarkers);
   const metadataSignal = skill.description.trim().length >= 80 ? 1 : 0;
   const starsSignal = Math.log10(skill.stars + 1);
+  const sourceConfidence = skill.source === "agentskills.in"
+    ? 1
+    : skill.source === "skills.sh"
+      ? 0.8
+      : 0.6;
 
   const mustHaveScore = (mustHaveMatches * weights.mustHaveMatch) - (missingMustHave * weights.missingMustHavePenalty);
   const preferScore = preferMatches * weights.preferMatch;
   const queryScore = queryMatches * weights.queryTokenMatch;
   const starsScore = starsSignal * weights.starsFactor;
-  const metadataScore = metadataSignal * weights.metadataBoost;
+  const metadataScore = (metadataSignal + sourceConfidence) * weights.metadataBoost;
   const modernityScore =
     (modernMatches * weights.modernMarkerBoost) - (legacyMatches * weights.legacyMarkerPenalty);
   const exclusionPenalty = excludeMatches * weights.excludePenalty;
 
+  const hasGitbookTopic = text.includes("gitbook");
+  const hasGitSync = text.includes("git sync") || (text.includes("git") && text.includes("sync"));
+  const hasApiWorkflow = text.includes("api") && (text.includes("workflow") || text.includes("sync"));
+  const hasLegacyCli = text.includes("gitbook-cli") || text.includes("book.json");
+
+  const topicScore = (hasGitbookTopic ? 3 : 0) + (hasGitSync ? 2 : 0) + (hasApiWorkflow ? 2 : 0) - (hasLegacyCli ? 4 : 0);
+
   const total = clampScore(
-    mustHaveScore + preferScore + queryScore + starsScore + metadataScore + modernityScore - exclusionPenalty,
+    mustHaveScore + preferScore + queryScore + starsScore + metadataScore + modernityScore + topicScore - exclusionPenalty,
   );
+
+  if (hasGitbookTopic) reasons.push({ code: "MATCH_TOPIC_GITBOOK" });
+  if (hasGitSync) reasons.push({ code: "HAS_GIT_SYNC" });
+  if (hasApiWorkflow) reasons.push({ code: "HAS_API_WORKFLOW" });
+  if (hasLegacyCli) reasons.push({ code: "PENALTY_LEGACY_CLI" });
 
   if (mustHaveMatches > 0) reasons.push({ code: "MUST_HAVE_MATCH", detail: String(mustHaveMatches) });
   if (missingMustHave > 0) reasons.push({ code: "MISSING_MUST_HAVE", detail: String(missingMustHave) });
@@ -258,10 +292,16 @@ export function scoreSkillRecommendation(
   if (legacyMatches > 0) reasons.push({ code: "LEGACY_MARKER", detail: String(legacyMatches) });
   if (excludeMatches > 0) reasons.push({ code: "EXCLUDE_MATCH", detail: String(excludeMatches) });
 
+  if (missingMustHave > 0) tradeoffs.push("Missing one or more required criteria terms.");
+  if (excludeMatches > 0) tradeoffs.push("Matches one or more excluded terms.");
+  if (skill.stars < 10) tradeoffs.push("Low quality signal from repository stars.");
+  if (hasLegacyCli) tradeoffs.push("Contains legacy GitBook CLI markers.");
+
   const result: RankedSkillRecommendation = {
     skill,
     score: total,
     reasons,
+    tradeoffs,
     excluded: excludeMatches > 0,
   };
 
@@ -312,3 +352,5 @@ export function recommendSkills(
     ranking: typeof options.top === "number" ? ranking.slice(0, Math.max(0, options.top)) : ranking,
   };
 }
+
+export const rankSkills = recommendSkills;

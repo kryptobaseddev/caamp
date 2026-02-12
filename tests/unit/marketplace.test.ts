@@ -98,6 +98,22 @@ describe("MarketplaceClient", () => {
     expect(results[0]!.scopedName).toBe("@a/ok");
   });
 
+  it("throws when all adapters fail during search", async () => {
+    const a1: MarketplaceAdapter = {
+      name: "failing-1",
+      search: vi.fn().mockRejectedValue(new Error("network down")),
+      getSkill: vi.fn().mockResolvedValue(null),
+    };
+    const a2: MarketplaceAdapter = {
+      name: "failing-2",
+      search: vi.fn().mockRejectedValue(new Error("timeout")),
+      getSkill: vi.fn().mockResolvedValue(null),
+    };
+    const client = new MarketplaceClient([a1, a2]);
+
+    await expect(client.search("test")).rejects.toThrow("All marketplace sources failed.");
+  });
+
   it("respects limit parameter", async () => {
     const items = Array.from({ length: 10 }, (_, i) =>
       makeResult({ scopedName: `@a/s${i}`, stars: 10 - i }),
@@ -142,6 +158,22 @@ describe("MarketplaceClient", () => {
     const result = await client.getSkill("@a/recover");
     expect(result).not.toBeNull();
     expect(result!.scopedName).toBe("@a/recover");
+  });
+
+  it("getSkill throws when all adapters fail", async () => {
+    const a1: MarketplaceAdapter = {
+      name: "failing-1",
+      search: vi.fn().mockResolvedValue([]),
+      getSkill: vi.fn().mockRejectedValue(new Error("timeout")),
+    };
+    const a2: MarketplaceAdapter = {
+      name: "failing-2",
+      search: vi.fn().mockResolvedValue([]),
+      getSkill: vi.fn().mockRejectedValue(new Error("network down")),
+    };
+    const client = new MarketplaceClient([a1, a2]);
+
+    await expect(client.getSkill("@a/missing")).rejects.toThrow("All marketplace sources failed.");
   });
 });
 
@@ -210,24 +242,22 @@ describe("SkillsMPAdapter", () => {
     });
   });
 
-  it("returns empty array on non-ok response", async () => {
+  it("throws on non-ok response", async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 });
 
     const adapter = new SkillsMPAdapter();
-    const results = await adapter.search("fail");
-    expect(results).toEqual([]);
+    await expect(adapter.search("fail")).rejects.toThrow("status 500");
   });
 
-  it("returns empty array on network error", async () => {
+  it("throws on network error", async () => {
     globalThis.fetch = vi.fn().mockRejectedValue(new Error("ECONNREFUSED"));
 
     const adapter = new SkillsMPAdapter();
-    const results = await adapter.search("error");
-    expect(results).toEqual([]);
+    await expect(adapter.search("error")).rejects.toThrow("Network request failed");
   });
 
-  it("getSkill finds exact scopedName match", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
+  it("getSkill searches by plain name and then matches exact scopedName", async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: () =>
         Promise.resolve({
@@ -247,15 +277,63 @@ describe("SkillsMPAdapter", () => {
             },
           ],
           total: 1,
-          limit: 1,
+          limit: 50,
           offset: 0,
         }),
     });
+    globalThis.fetch = mockFetch;
 
     const adapter = new SkillsMPAdapter();
     const result = await adapter.getSkill("@bob/target");
     expect(result).not.toBeNull();
     expect(result!.scopedName).toBe("@bob/target");
+
+    const url = mockFetch.mock.calls[0]![0] as string;
+    expect(url).toContain("search=target");
+    expect(url).toContain("limit=50");
+  });
+
+  it("getSkill retries with additional query terms when first lookup misses", async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ skills: [], total: 0, limit: 50, offset: 0 }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            skills: [
+              {
+                id: "1",
+                name: "target",
+                description: "Target skill",
+                author: "bob",
+                scopedName: "@bob/target",
+                stars: 50,
+                forks: 2,
+                githubUrl: "https://github.com/bob/target",
+                repoFullName: "bob/target",
+                path: "",
+                hasContent: true,
+              },
+            ],
+            total: 1,
+            limit: 50,
+            offset: 0,
+          }),
+      });
+    globalThis.fetch = mockFetch;
+
+    const adapter = new SkillsMPAdapter();
+    const result = await adapter.getSkill("@bob/target");
+    expect(result).not.toBeNull();
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+
+    const firstUrl = mockFetch.mock.calls[0]![0] as string;
+    const secondUrl = mockFetch.mock.calls[1]![0] as string;
+    expect(firstUrl).toContain("search=target");
+    expect(secondUrl).toContain("search=bob+target");
   });
 
   it("getSkill returns null when no match", async () => {
@@ -350,20 +428,18 @@ describe("SkillsShAdapter", () => {
     expect(results[0]!.stars).toBe(0);
   });
 
-  it("returns empty array on non-ok response", async () => {
+  it("throws on non-ok response", async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 404 });
 
     const adapter = new SkillsShAdapter();
-    const results = await adapter.search("fail");
-    expect(results).toEqual([]);
+    await expect(adapter.search("fail")).rejects.toThrow("status 404");
   });
 
-  it("returns empty array on network error", async () => {
+  it("throws on network error", async () => {
     globalThis.fetch = vi.fn().mockRejectedValue(new Error("DNS failure"));
 
     const adapter = new SkillsShAdapter();
-    const results = await adapter.search("error");
-    expect(results).toEqual([]);
+    await expect(adapter.search("error")).rejects.toThrow("Network request failed");
   });
 
   it("getSkill delegates to search and finds exact match", async () => {

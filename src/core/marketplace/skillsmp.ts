@@ -6,6 +6,7 @@
  */
 
 import type { MarketplaceAdapter, MarketplaceResult, SearchOptions } from "./types.js";
+import { ensureOkResponse, fetchWithTimeout } from "../network/fetch.js";
 
 const API_BASE = "https://www.agentskills.in/api/skills";
 
@@ -29,6 +30,20 @@ interface ApiResponse {
   total: number;
   limit: number;
   offset: number;
+}
+
+interface ScopedNameParts {
+  author: string;
+  name: string;
+}
+
+function parseScopedName(value: string): ScopedNameParts | null {
+  const match = value.match(/^@([^/]+)\/([^/]+)$/);
+  if (!match) return null;
+  return {
+    author: match[1]!,
+    name: match[2]!,
+  };
 }
 
 function toResult(skill: ApiSkill): MarketplaceResult {
@@ -55,34 +70,40 @@ export class SkillsMPAdapter implements MarketplaceAdapter {
       sortBy: "stars",
     });
 
-    try {
-      const response = await fetch(`${API_BASE}?${params}`);
-      if (!response.ok) return [];
-
-      const data = (await response.json()) as ApiResponse;
-      return data.skills.map(toResult);
-    } catch {
-      return [];
-    }
+    const url = `${API_BASE}?${params}`;
+    const response = ensureOkResponse(await fetchWithTimeout(url), url);
+    const data = (await response.json()) as ApiResponse;
+    return data.skills.map(toResult);
   }
 
   async getSkill(scopedName: string): Promise<MarketplaceResult | null> {
-    const params = new URLSearchParams({
-      search: scopedName,
-      limit: "1",
-    });
+    const parts = parseScopedName(scopedName);
+    const searchTerms = parts
+      ? [parts.name, `${parts.author} ${parts.name}`, scopedName]
+      : [scopedName];
 
-    try {
-      const response = await fetch(`${API_BASE}?${params}`);
-      if (!response.ok) return null;
+    const seen = new Set<string>();
+    for (const term of searchTerms) {
+      if (seen.has(term)) continue;
+      seen.add(term);
 
+      const params = new URLSearchParams({
+        search: term,
+        limit: "50",
+        sortBy: "stars",
+      });
+
+      const url = `${API_BASE}?${params}`;
+      const response = ensureOkResponse(await fetchWithTimeout(url), url);
       const data = (await response.json()) as ApiResponse;
       const match = data.skills.find(
         (s) => s.scopedName === scopedName || `@${s.author}/${s.name}` === scopedName,
       );
-      return match ? toResult(match) : null;
-    } catch {
-      return null;
+      if (match) {
+        return toResult(match);
+      }
     }
+
+    return null;
   }
 }
