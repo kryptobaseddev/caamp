@@ -115,14 +115,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T18:54:37Z",
+  "lastUpdated": "2026-02-12T19:03:37Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "5081dd3f9ae4d39a",
+    "checksum": "cb6ef71242110925",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 259,
+    "generation": 266,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3944,12 +3944,12 @@
     {
       "id": "T110",
       "title": "Prepare and execute release shipping workflow to main",
-      "status": "active",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T18:43:48Z",
+      "updatedAt": "2026-02-12T19:03:37Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
@@ -3969,7 +3969,9 @@
       ],
       "notes": [
         "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context.",
-        "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback)."
+        "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback).",
+        "2026-02-12 18:54:47 UTC: Closed remaining feature-shape gaps via T113-T115 (API surface, contract alignment, JSON snapshots). Recommendation feature now meets full requested product shape pending release ship step.",
+        "2026-02-12 19:03:37 UTC: Release branch pushed: release/v0.4.0; tag pushed: v0.4.0; PR opened: https://github.com/kryptobaseddev/caamp/pull/1. Merge blocked by repository branch protection rules."
       ],
       "relates": [
         {
@@ -3979,8 +3981,17 @@
         {
           "taskId": "T112",
           "type": "relates-to"
+        },
+        {
+          "taskId": "T113",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T115",
+          "type": "relates-to"
         }
-      ]
+      ],
+      "blockedBy": "PR #1 requires 1 approving review and 9 required checks before protected-branch merge"
     },
     {
       "id": "T111",
@@ -4082,17 +4093,32 @@
       "completedAt": "2026-02-12T18:54:37Z",
       "notes": [
         "[COMPLETED 2026-02-12T18:54:37Z] Implemented new stateless API in src/core/skills/recommendation-api.ts with searchSkills, recommendSkills(query,criteria), and formatSkillRecommendations(mode). Exported API from src/index.ts."
-      ]
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:38Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T114",
       "title": "Align skills find recommendation output contract with full product shape",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:54:36Z",
-      "updatedAt": "2026-02-12T18:54:36Z",
+      "updatedAt": "2026-02-12T18:54:38Z",
       "size": "medium",
       "position": 17,
       "positionVersion": 0,
@@ -4102,17 +4128,36 @@
         "feature",
         "lafs",
         "release-v1"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:54:38Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:38Z] Updated src/commands/skills/find.ts and src/core/skills/recommendation.ts to enforce top-3 default, CHOOSE human flow, JSON result.query/recommended/options contract, reasons+tradeoffs payloads, and stable error codes (query invalid, no matches, source unavailable, criteria conflict)."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:39Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T115",
       "title": "Add golden JSON snapshots for LAFS recommendation output",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:54:37Z",
-      "updatedAt": "2026-02-12T18:54:37Z",
+      "updatedAt": "2026-02-12T18:54:40Z",
       "size": "medium",
       "position": 18,
       "positionVersion": 0,
@@ -4122,7 +4167,26 @@
         "lafs",
         "release-v1",
         "test"
-      ]
+      ],
+      "completedAt": "2026-02-12T18:54:40Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:40Z] Added golden inline snapshots in tests/integration/skills-find-recommendation.test.ts for MVI and --details LAFS envelopes."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:40Z",
+        "failureLog": []
+      }
     }
   ],
   "labels": {}
