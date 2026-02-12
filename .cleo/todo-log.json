@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 201,
+    "totalEntries": 202,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T02:17:35Z",
+    "lastEntry": "2026-02-12T02:23:09Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -3875,6 +3875,224 @@
       "scope": {
         "type": "epic",
         "rootTaskId": "T078"
+      }
+    },
+    {
+      "id": "log_5be536578cb0",
+      "timestamp": "2026-02-12T02:23:09Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T079",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-12T02:23:08Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770918174-ace200",
+      "timestamp": "2026-02-12T17:42:54Z",
+      "action": "task_created",
+      "taskId": "T086",
+      "actor": "system",
+      "details": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918204-f0637d",
+      "timestamp": "2026-02-12T17:43:24Z",
+      "action": "task_created",
+      "taskId": "T087",
+      "actor": "system",
+      "details": {
+        "title": "Test advanced common and LAFS foundations",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Test advanced common and LAFS foundations",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918205-81bcd2",
+      "timestamp": "2026-02-12T17:43:25Z",
+      "action": "task_created",
+      "taskId": "T088",
+      "actor": "system",
+      "details": {
+        "title": "Test advanced command wrappers",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Test advanced command wrappers",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918205-ae1db5",
+      "timestamp": "2026-02-12T17:43:25Z",
+      "action": "task_created",
+      "taskId": "T089",
+      "actor": "system",
+      "details": {
+        "title": "Cover skills command surfaces",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Cover skills command surfaces",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918206-2825f8",
+      "timestamp": "2026-02-12T17:43:26Z",
+      "action": "task_created",
+      "taskId": "T090",
+      "actor": "system",
+      "details": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918206-387778",
+      "timestamp": "2026-02-12T17:43:26Z",
+      "action": "task_created",
+      "taskId": "T091",
+      "actor": "system",
+      "details": {
+        "title": "Cover MCP command wrappers and lock",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Cover MCP command wrappers and lock",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770918206-3bde23",
+      "timestamp": "2026-02-12T17:43:26Z",
+      "action": "task_created",
+      "taskId": "T092",
+      "actor": "system",
+      "details": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Cover instructions command wrappers",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770918207-98e49c",
+      "timestamp": "2026-02-12T17:43:27Z",
+      "action": "task_created",
+      "taskId": "T093",
+      "actor": "system",
+      "details": {
+        "title": "Cover config/providers/version modules",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Cover config/providers/version modules",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770918208-74fca2",
+      "timestamp": "2026-02-12T17:43:28Z",
+      "action": "task_created",
+      "taskId": "T094",
+      "actor": "system",
+      "details": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918216-c5df6a",
+      "timestamp": "2026-02-12T17:43:36Z",
+      "action": "task_created",
+      "taskId": "T095",
+      "actor": "system",
+      "details": {
+        "title": "Publish final audit artifact with provenance",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Publish final audit artifact with provenance",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770918217-372377",
+      "timestamp": "2026-02-12T17:43:37Z",
+      "action": "task_created",
+      "taskId": "T096",
+      "actor": "system",
+      "details": {
+        "title": "Close stale CLEO sessions for completed waves",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Close stale CLEO sessions for completed waves",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   ]

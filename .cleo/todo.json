@@ -82,14 +82,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-12T02:23:08Z",
+  "lastUpdated": "2026-02-12T17:43:44Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "b0575eec9b9c2572",
+    "checksum": "749d9affb565de96",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 180,
+    "generation": 182,
     "lastModified": "2026-02-12T02:17:34Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 9
@@ -2694,12 +2694,12 @@
     {
       "id": "T078",
       "title": "Release Preparation",
-      "status": "active",
+      "status": "blocked",
       "priority": "medium",
       "type": "task",
       "parentId": "T038",
       "createdAt": "2026-02-12T00:43:43Z",
-      "updatedAt": "2026-02-12T02:17:34Z",
+      "updatedAt": "2026-02-12T17:43:44Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
@@ -2712,7 +2712,8 @@
         "T049",
         "T062",
         "T070"
-      ]
+      ],
+      "blockedBy": "Release cannot proceed until coverage remediation tasks (T086-T095) complete and coverage gate passes >=80%."
     },
     {
       "id": "T079",
@@ -2731,7 +2732,22 @@
         "2026-02-12 00:44:01 UTC: Re-run stability-validation, code-quality-audit, api-surface-audit, cicd-audit. Verify all previous findings are resolved. Document any new findings. Output to claudedocs/agent-outputs/v1-final-audit.md.",
         "[COMPLETED 2026-02-12T02:23:08Z] Final validation rerun completed (multi-agent + command checks). Current gates: npm run lint PASS, npm test PASS, npm run docs:api:check PASS (warnings), branch protection with required checks configured. Release blocker remains coverage threshold: npm run test:coverage fails at 42.41% lines/statements vs 80% target."
       ],
-      "completedAt": "2026-02-12T02:23:08Z"
+      "completedAt": "2026-02-12T02:23:08Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T02:23:08Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T080",
@@ -2833,6 +2849,285 @@
       "phase": "setup",
       "notes": [
         "2026-02-12 00:44:11 UTC: Prepare release announcement for: GitHub Discussions, npm package description, CLAUDE.md update, community channels. Include highlights, migration guide link, breaking changes."
+      ]
+    },
+    {
+      "id": "T086",
+      "title": "Release Coverage Remediation to 80%",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:42:54Z",
+      "updatedAt": "2026-02-12T17:42:54Z",
+      "size": "large",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+      "acceptance": [
+        "npm run test:coverage passes thresholds",
+        "coverage CI job passes on GitHub Actions"
+      ]
+    },
+    {
+      "id": "T087",
+      "title": "Test advanced common and LAFS foundations",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:43:24Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add focused tests for src/commands/advanced/common.ts and src/commands/advanced/lafs.ts to cover validation and envelope behavior.",
+      "files": [
+        "tests/unit/advanced-common.test.ts",
+        "tests/unit/advanced-lafs.test.ts"
+      ],
+      "acceptance": [
+        "Advanced common and lafs unit tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T088",
+      "title": "Test advanced command wrappers",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:43:24Z",
+      "size": "large",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for advanced command wrappers (apply,batch,configure,conflicts,instructions,providers,index) using mocked orchestration paths.",
+      "files": [
+        "tests/integration/advanced-commands.test.ts"
+      ],
+      "acceptance": [
+        "Advanced command wrapper tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086",
+        "T087"
+      ]
+    },
+    {
+      "id": "T089",
+      "title": "Cover skills command surfaces",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-12T17:43:25Z",
+      "size": "large",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+      "files": [
+        "tests/integration/skills-commands.test.ts"
+      ],
+      "acceptance": [
+        "Skills command coverage materially improved",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T090",
+      "title": "Cover core skills audit and lock/discovery",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-12T17:43:25Z",
+      "size": "large",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+      "files": [
+        "tests/unit/skills-audit.test.ts",
+        "tests/unit/skills-lock.test.ts",
+        "tests/unit/skills-discovery.test.ts"
+      ],
+      "acceptance": [
+        "Core skills modules have substantial new coverage",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T091",
+      "title": "Cover MCP command wrappers and lock",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:43:26Z",
+      "size": "medium",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for MCP list/remove/detect/index wrappers and core mcp lock behavior.",
+      "files": [
+        "tests/integration/mcp-commands.test.ts",
+        "tests/unit/mcp-lock.test.ts"
+      ],
+      "acceptance": [
+        "MCP wrapper and lock tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T092",
+      "title": "Cover instructions command wrappers",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:43:26Z",
+      "size": "medium",
+      "position": 19,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+      "files": [
+        "tests/integration/instructions-commands.test.ts"
+      ],
+      "acceptance": [
+        "Instructions command tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T093",
+      "title": "Cover config/providers/version modules",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-12T17:43:27Z",
+      "size": "medium",
+      "position": 20,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+      "files": [
+        "tests/integration/config-providers.test.ts",
+        "tests/unit/version.test.ts"
+      ],
+      "acceptance": [
+        "Config/providers/version coverage increased",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T094",
+      "title": "Finalize coverage gate and evidence",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-12T17:43:27Z",
+      "size": "small",
+      "position": 21,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+      "files": [
+        "coverage/coverage-summary.json"
+      ],
+      "acceptance": [
+        "npm run test:coverage passes",
+        "coverage report attached to task notes"
+      ],
+      "depends": [
+        "T088",
+        "T089",
+        "T090",
+        "T091",
+        "T092",
+        "T093"
+      ]
+    },
+    {
+      "id": "T095",
+      "title": "Publish final audit artifact with provenance",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T17:43:36Z",
+      "updatedAt": "2026-02-12T17:43:36Z",
+      "size": "small",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Create concise final audit artifact in claudedocs/agent-outputs capturing validation gates, blockers, and provenance links to agent outputs/tasks.",
+      "files": [
+        "claudedocs/agent-outputs/v1-final-audit.md",
+        "claudedocs/agent-outputs/MANIFEST.jsonl"
+      ],
+      "acceptance": [
+        "Final audit file exists and is referenced by release prep tasks"
+      ],
+      "depends": [
+        "T079",
+        "T094"
+      ]
+    },
+    {
+      "id": "T096",
+      "title": "Close stale CLEO sessions for completed waves",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T17:43:37Z",
+      "updatedAt": "2026-02-12T17:43:37Z",
+      "size": "small",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "End or archive stale active sessions for completed wave epics to keep canonical task state clean.",
+      "acceptance": [
+        "Only current actionable sessions remain active"
+      ],
+      "depends": [
+        "T049",
+        "T062",
+        "T070"
       ]
     }
   ],
