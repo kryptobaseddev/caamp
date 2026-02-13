@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-02-12
+
+### Other Changes
+- Skills Lock File Bugs & Naming Fix (T119)
+- Fix scopedName using raw CLI input in skills install (T120)
+- Fix isGlobal defaulting to false for catalog installs (T121)
+- Fix lock file re-install overwriting metadata instead of merging (T122)
+- Rename contribution-protocol to ct-contribution in canonical install (T123)
+- Add skills health check to doctor command (T124)
+
+
 ## [0.5.0] - 2026-02-12
 
 ### Added
