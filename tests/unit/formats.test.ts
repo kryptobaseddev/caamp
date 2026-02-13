@@ -153,7 +153,7 @@ describe("YAML Format", () => {
     });
 
     const data = await readYamlConfig(filePath);
-    expect((data.extensions as Record<string, unknown>)?.["test"]).toBeDefined();
+    expect((data.extensions as Record<string, unknown>)?.test).toBeDefined();
   });
 
   it("returns empty object for missing file", async () => {

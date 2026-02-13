@@ -118,10 +118,10 @@ export async function validateSkill(filePath: string): Promise<ValidationResult>
   }
 
   // Required: name
-  if (!data["name"]) {
+  if (!data.name) {
     issues.push({ level: "error", field: "name", message: "Missing required field: name" });
   } else {
-    const name = String(data["name"]);
+    const name = String(data.name);
 
     if (name.length > MAX_NAME_LENGTH) {
       issues.push({
@@ -157,10 +157,10 @@ export async function validateSkill(filePath: string): Promise<ValidationResult>
   }
 
   // Required: description
-  if (!data["description"]) {
+  if (!data.description) {
     issues.push({ level: "error", field: "description", message: "Missing required field: description" });
   } else {
-    const desc = String(data["description"]);
+    const desc = String(data.description);
 
     if (desc.length > MAX_DESCRIPTION_LENGTH) {
       issues.push({

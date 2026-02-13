@@ -2,7 +2,7 @@
  * advanced configure command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { configureProviderGlobalAndProject } from "../../core/advanced/orchestration.js";
 import { getProvider } from "../../core/registry/providers.js";
 import { readMcpOperations, readTextInput } from "./common.js";

@@ -35,7 +35,7 @@ export const AUDIT_RULES: AuditRule[] = [
   rule("PI007", "Context manipulation", "Fake conversation context", "high", "prompt-injection",
     /(?:Human:|Assistant:|User:|System:)\s*(?:ignore|execute|run)/i),
   rule("PI008", "Token smuggling", "Invisible characters or zero-width spaces", "medium", "prompt-injection",
-    /[\u200B\u200C\u200D\u2060\uFEFF]/),
+    /(?:\u200B|\u200C|\u200D|\u2060|\uFEFF)/),
 
   // ── Command Injection ───────────────────────────────────────
   rule("CI001", "Destructive command", "File deletion or system modification", "critical", "command-injection",

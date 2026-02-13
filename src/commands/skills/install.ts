@@ -2,7 +2,7 @@
  * skills install command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { existsSync } from "node:fs";
 import pc from "picocolors";
 import { parseSource, isMarketplaceScoped } from "../../core/sources/parser.js";

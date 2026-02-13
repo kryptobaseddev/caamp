@@ -65,8 +65,8 @@ describe("MarketplaceClient", () => {
     const results = await client.search("test");
     expect(results).toHaveLength(2);
     // Sorted by stars descending
-    expect(results[0]!.scopedName).toBe("@b/skill2");
-    expect(results[1]!.scopedName).toBe("@a/skill1");
+    expect(results[0]?.scopedName).toBe("@b/skill2");
+    expect(results[1]?.scopedName).toBe("@a/skill1");
   });
 
   it("deduplicates by scopedName keeping higher star count", async () => {
@@ -79,8 +79,8 @@ describe("MarketplaceClient", () => {
 
     const results = await client.search("dup");
     expect(results).toHaveLength(1);
-    expect(results[0]!.stars).toBe(20);
-    expect(results[0]!.source).toBe("sh");
+    expect(results[0]?.stars).toBe(20);
+    expect(results[0]?.source).toBe("sh");
   });
 
   it("handles adapter errors gracefully (returns empty for failed adapter)", async () => {
@@ -95,7 +95,7 @@ describe("MarketplaceClient", () => {
 
     const results = await client.search("test");
     expect(results).toHaveLength(1);
-    expect(results[0]!.scopedName).toBe("@a/ok");
+    expect(results[0]?.scopedName).toBe("@a/ok");
   });
 
   it("throws when all adapters fail during search", async () => {
@@ -133,7 +133,7 @@ describe("MarketplaceClient", () => {
 
     const result = await client.getSkill("@a/found");
     expect(result).not.toBeNull();
-    expect(result!.scopedName).toBe("@a/found");
+    expect(result?.scopedName).toBe("@a/found");
   });
 
   it("getSkill returns null when no adapter has the skill", async () => {
@@ -157,7 +157,7 @@ describe("MarketplaceClient", () => {
 
     const result = await client.getSkill("@a/recover");
     expect(result).not.toBeNull();
-    expect(result!.scopedName).toBe("@a/recover");
+    expect(result?.scopedName).toBe("@a/recover");
   });
 
   it("getSkill throws when all adapters fail", async () => {
@@ -191,7 +191,7 @@ describe("SkillsMPAdapter", () => {
     await adapter.search("react hooks", 5);
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    const url = mockFetch.mock.calls[0]![0] as string;
+    const url = mockFetch.mock.calls[0]?.[0] as string;
     expect(url).toContain("agentskills.in/api/skills");
     expect(url).toContain("search=react+hooks");
     expect(url).toContain("limit=5");
@@ -286,9 +286,9 @@ describe("SkillsMPAdapter", () => {
     const adapter = new SkillsMPAdapter();
     const result = await adapter.getSkill("@bob/target");
     expect(result).not.toBeNull();
-    expect(result!.scopedName).toBe("@bob/target");
+    expect(result?.scopedName).toBe("@bob/target");
 
-    const url = mockFetch.mock.calls[0]![0] as string;
+    const url = mockFetch.mock.calls[0]?.[0] as string;
     expect(url).toContain("search=target");
     expect(url).toContain("limit=50");
   });
@@ -330,8 +330,8 @@ describe("SkillsMPAdapter", () => {
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
-    const firstUrl = mockFetch.mock.calls[0]![0] as string;
-    const secondUrl = mockFetch.mock.calls[1]![0] as string;
+    const firstUrl = mockFetch.mock.calls[0]?.[0] as string;
+    const secondUrl = mockFetch.mock.calls[1]?.[0] as string;
     expect(firstUrl).toContain("search=target");
     expect(secondUrl).toContain("search=bob+target");
   });
@@ -362,7 +362,7 @@ describe("SkillsShAdapter", () => {
     const adapter = new SkillsShAdapter();
     await adapter.search("vue", 10);
 
-    const url = mockFetch.mock.calls[0]![0] as string;
+    const url = mockFetch.mock.calls[0]?.[0] as string;
     expect(url).toContain("skills.sh/api/search");
     expect(url).toContain("q=vue");
     expect(url).toContain("limit=10");
@@ -425,7 +425,7 @@ describe("SkillsShAdapter", () => {
 
     const adapter = new SkillsShAdapter();
     const results = await adapter.search("no-stars");
-    expect(results[0]!.stars).toBe(0);
+    expect(results[0]?.stars).toBe(0);
   });
 
   it("throws on non-ok response", async () => {
@@ -472,7 +472,7 @@ describe("SkillsShAdapter", () => {
     const adapter = new SkillsShAdapter();
     const result = await adapter.getSkill("@eve/exact");
     expect(result).not.toBeNull();
-    expect(result!.scopedName).toBe("@eve/exact");
+    expect(result?.scopedName).toBe("@eve/exact");
   });
 
   it("getSkill returns null when no exact match found", async () => {

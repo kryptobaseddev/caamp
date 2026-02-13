@@ -149,8 +149,8 @@ describe("updateInstructionsSingleOperation", () => {
     );
 
     expect(result.updatedFiles).toBe(1);
-    expect(result.actions[0]!.providers.sort()).toEqual(["p1", "p2"]);
-    expect(result.actions[0]!.configFormats.sort()).toEqual(["json", "yaml"]);
+    expect(result.actions[0]?.providers.sort()).toEqual(["p1", "p2"]);
+    expect(result.actions[0]?.configFormats.sort()).toEqual(["json", "yaml"]);
   });
 });
 
@@ -168,8 +168,8 @@ describe("configureProviderGlobalAndProject", () => {
       projectDir: testDir,
     });
 
-    expect(result.mcp.global[0]!.success).toBe(true);
-    expect(result.mcp.project[0]!.success).toBe(true);
+    expect(result.mcp.global[0]?.success).toBe(true);
+    expect(result.mcp.project[0]?.success).toBe(true);
 
     const globalInstructionPath = join(provider.pathGlobal, provider.instructFile);
     const projectInstructionPath = join(testDir, provider.instructFile);

@@ -5,8 +5,8 @@
  * GitHub is always the actual source for installation.
  */
 
-import type { MarketplaceAdapter, MarketplaceResult, SearchOptions } from "./types.js";
 import { ensureOkResponse, fetchWithTimeout } from "../network/fetch.js";
+import type { MarketplaceAdapter, MarketplaceResult, } from "./types.js";
 
 const API_BASE = "https://www.agentskills.in/api/skills";
 
@@ -40,9 +40,11 @@ interface ScopedNameParts {
 function parseScopedName(value: string): ScopedNameParts | null {
   const match = value.match(/^@([^/]+)\/([^/]+)$/);
   if (!match) return null;
+  const [, author, name] = match;
+  if (!author || !name) return null;
   return {
-    author: match[1]!,
-    name: match[2]!,
+    author,
+    name,
   };
 }
 

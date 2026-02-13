@@ -2,7 +2,7 @@
  * skills init command - scaffold a new skill
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -54,7 +54,7 @@ Show example inputs and expected outputs.
       console.log(pc.green(`✓ Created skill template: ${skillDir}/SKILL.md`));
       console.log(pc.dim("\nNext steps:"));
       console.log(pc.dim("  1. Edit SKILL.md with your instructions"));
-      console.log(pc.dim("  2. Validate: caamp skills validate " + join(skillDir, "SKILL.md")));
-      console.log(pc.dim("  3. Install: caamp skills install " + skillDir));
+      console.log(pc.dim(`  2. Validate: caamp skills validate ${join(skillDir, "SKILL.md")}`));
+      console.log(pc.dim(`  3. Install: caamp skills install ${skillDir}`));
     });
 }

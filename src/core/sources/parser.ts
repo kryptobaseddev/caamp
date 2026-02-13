@@ -22,14 +22,16 @@ function inferName(source: string, type: SourceType): string {
       // Extract brand from hostname: mcp.neon.tech -> neon
       const parts = url.hostname.split(".");
       if (parts.length >= 2) {
-        const brand = parts.length === 3 ? parts[parts.length - 2]! : parts[0]!;
+        const fallback = parts[0] ?? source;
+        const secondLevel = parts[parts.length - 2] ?? fallback;
+        const brand = parts.length === 3 ? secondLevel : fallback;
         if (brand !== "www" && brand !== "api" && brand !== "mcp") {
           return brand;
         }
         // Fall back to second-level domain
-        return parts[parts.length - 2] ?? parts[0]!;
+        return secondLevel;
       }
-      return parts[0]!;
+      return parts[0] ?? source;
     } catch {
       return source;
     }
@@ -87,12 +89,17 @@ export function parseSource(input: string): ParsedSource {
   // GitHub URL
   const ghUrlMatch = input.match(GITHUB_URL);
   if (ghUrlMatch) {
+    const owner = ghUrlMatch[1];
+    const repo = ghUrlMatch[2];
+    if (!owner || !repo) {
+      return { type: "command", value: input, inferredName: inferName(input, "command") };
+    }
     return {
       type: "github",
       value: input,
-      inferredName: ghUrlMatch[2]!,
-      owner: ghUrlMatch[1],
-      repo: ghUrlMatch[2],
+      inferredName: repo,
+      owner,
+      repo,
       ref: ghUrlMatch[3],
       path: ghUrlMatch[4],
     };
@@ -101,12 +108,17 @@ export function parseSource(input: string): ParsedSource {
   // GitLab URL
   const glUrlMatch = input.match(GITLAB_URL);
   if (glUrlMatch) {
+    const owner = glUrlMatch[1];
+    const repo = glUrlMatch[2];
+    if (!owner || !repo) {
+      return { type: "command", value: input, inferredName: inferName(input, "command") };
+    }
     return {
       type: "gitlab",
       value: input,
-      inferredName: glUrlMatch[2]!,
-      owner: glUrlMatch[1],
-      repo: glUrlMatch[2],
+      inferredName: repo,
+      owner,
+      repo,
       ref: glUrlMatch[3],
       path: glUrlMatch[4],
     };
@@ -133,12 +145,17 @@ export function parseSource(input: string): ParsedSource {
   // GitHub shorthand: owner/repo or owner/repo/path
   const ghShorthand = input.match(GITHUB_SHORTHAND);
   if (ghShorthand && !NPM_SCOPED.test(input)) {
+    const owner = ghShorthand[1];
+    const repo = ghShorthand[2];
+    if (!owner || !repo) {
+      return { type: "command", value: input, inferredName: inferName(input, "command") };
+    }
     return {
       type: "github",
-      value: `https://github.com/${ghShorthand[1]}/${ghShorthand[2]}`,
-      inferredName: ghShorthand[2]!,
-      owner: ghShorthand[1],
-      repo: ghShorthand[2],
+      value: `https://github.com/${owner}/${repo}`,
+      inferredName: repo,
+      owner,
+      repo,
       path: ghShorthand[3],
     };
   }

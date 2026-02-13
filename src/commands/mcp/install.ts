@@ -2,7 +2,7 @@
  * mcp install command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { parseSource } from "../../core/sources/parser.js";
 import { installMcpServerToAll, buildServerConfig } from "../../core/mcp/installer.js";

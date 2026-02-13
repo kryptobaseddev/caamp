@@ -6,7 +6,7 @@
 
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join, dirname, basename } from "node:path";
+import { join, } from "node:path";
 import matter from "gray-matter";
 import type { SkillEntry, SkillMetadata } from "../../types.js";
 
@@ -33,24 +33,24 @@ export async function parseSkillFile(filePath: string): Promise<SkillMetadata | 
     const content = await readFile(filePath, "utf-8");
     const { data } = matter(content);
 
-    if (!data["name"] || !data["description"]) {
+    if (!data.name || !data.description) {
       return null;
     }
 
-    const allowedTools = data["allowed-tools"] ?? data["allowedTools"];
+    const allowedTools = data["allowed-tools"] ?? data.allowedTools;
 
     return {
-      name: String(data["name"]),
-      description: String(data["description"]),
-      license: data["license"] ? String(data["license"]) : undefined,
-      compatibility: data["compatibility"] ? String(data["compatibility"]) : undefined,
-      metadata: data["metadata"] as Record<string, string> | undefined,
+      name: String(data.name),
+      description: String(data.description),
+      license: data.license ? String(data.license) : undefined,
+      compatibility: data.compatibility ? String(data.compatibility) : undefined,
+      metadata: data.metadata as Record<string, string> | undefined,
       allowedTools: typeof allowedTools === "string"
         ? allowedTools.split(/\s+/)
         : Array.isArray(allowedTools)
           ? allowedTools.map(String)
           : undefined,
-      version: data["version"] ? String(data["version"]) : undefined,
+      version: data.version ? String(data.version) : undefined,
     };
   } catch {
     return null;

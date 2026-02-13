@@ -2,7 +2,7 @@
  * skills check command - check for updates
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { getTrackedSkills, checkSkillUpdate } from "../../core/skills/lock.js";
 

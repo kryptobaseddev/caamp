@@ -2,7 +2,7 @@
  * advanced conflicts command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { detectMcpConfigConflicts, selectProvidersByMinimumPriority } from "../../core/advanced/orchestration.js";
 import { parsePriority, readMcpOperations, resolveProviders } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";

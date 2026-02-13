@@ -41,7 +41,7 @@ async function releaseLockGuard(): Promise<void> {
 
 async function writeLockFileUnsafe(lock: CaampLockFile): Promise<void> {
   const tmpPath = `${LOCK_FILE_PATH}.tmp-${process.pid}-${Date.now()}`;
-  await writeFile(tmpPath, JSON.stringify(lock, null, 2) + "\n", "utf-8");
+  await writeFile(tmpPath, `${JSON.stringify(lock, null, 2)}\n`, "utf-8");
   await rename(tmpPath, LOCK_FILE_PATH);
 }
 

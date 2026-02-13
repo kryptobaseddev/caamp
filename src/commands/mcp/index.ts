@@ -2,7 +2,7 @@
  * MCP command group registration
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { registerMcpInstall } from "./install.js";
 import { registerMcpRemove } from "./remove.js";
 import { registerMcpList } from "./list.js";

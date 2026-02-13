@@ -8,9 +8,9 @@
 import { readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Provider, ConfigFormat, TransportType, ProviderPriority, ProviderStatus, DetectionMethod } from "../../types.js";
-import type { ProviderRegistry, RegistryProvider } from "./types.js";
+import type { ConfigFormat, DetectionMethod, Provider, ProviderPriority, ProviderStatus, TransportType } from "../../types.js";
 import { resolveProvidersRegistryPath, resolveRegistryTemplatePath } from "../paths/standard.js";
+import type { ProviderRegistry, RegistryProvider } from "./types.js";
 
 function findRegistryPath(): string {
   const thisDir = dirname(fileURLToPath(import.meta.url));
@@ -95,7 +95,8 @@ function ensureProviders(): void {
  */
 export function getAllProviders(): Provider[] {
   ensureProviders();
-  return Array.from(_providers!.values());
+  if (!_providers) return [];
+  return Array.from(_providers.values());
 }
 
 /**
@@ -112,8 +113,8 @@ export function getAllProviders(): Provider[] {
  */
 export function getProvider(idOrAlias: string): Provider | undefined {
   ensureProviders();
-  const resolved = _aliasMap!.get(idOrAlias) ?? idOrAlias;
-  return _providers!.get(resolved);
+  const resolved = _aliasMap?.get(idOrAlias) ?? idOrAlias;
+  return _providers?.get(resolved);
 }
 
 /**
@@ -133,7 +134,7 @@ export function getProvider(idOrAlias: string): Provider | undefined {
  */
 export function resolveAlias(idOrAlias: string): string {
   ensureProviders();
-  return _aliasMap!.get(idOrAlias) ?? idOrAlias;
+  return _aliasMap?.get(idOrAlias) ?? idOrAlias;
 }
 
 /**
@@ -214,7 +215,7 @@ export function getInstructionFiles(): string[] {
  */
 export function getProviderCount(): number {
   ensureProviders();
-  return _providers!.size;
+  return _providers?.size ?? 0;
 }
 
 /**
