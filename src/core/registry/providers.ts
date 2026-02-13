@@ -11,7 +11,6 @@ import { fileURLToPath } from "node:url";
 import type { ConfigFormat, DetectionMethod, Provider, ProviderPriority, ProviderStatus, TransportType } from "../../types.js";
 import { resolveProvidersRegistryPath, resolveRegistryTemplatePath } from "../paths/standard.js";
 import type { ProviderRegistry, RegistryProvider } from "./types.js";
-import { resolveProvidersRegistryPath, resolveRegistryTemplatePath } from "../paths/standard.js";
 
 function findRegistryPath(): string {
   const thisDir = dirname(fileURLToPath(import.meta.url));
