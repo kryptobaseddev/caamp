@@ -2,7 +2,7 @@
  * Skills command group registration
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { registerSkillsInstall } from "./install.js";
 import { registerSkillsRemove } from "./remove.js";
 import { registerSkillsList } from "./list.js";

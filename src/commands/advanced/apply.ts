@@ -2,7 +2,7 @@
  * advanced apply command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import {
   applyMcpInstallWithPolicy,
   selectProvidersByMinimumPriority,

@@ -95,13 +95,13 @@ describe("listMcpServers", () => {
     const result = await listMcpServers(provider, "global");
 
     expect(result).toHaveLength(2);
-    expect(result[0]!.name).toBe("server-a");
-    expect(result[0]!.providerId).toBe("test-agent");
-    expect(result[0]!.providerName).toBe("Test Agent");
-    expect(result[0]!.scope).toBe("global");
-    expect(result[0]!.configPath).toBe(configPath);
-    expect(result[0]!.config).toEqual({ command: "npx", args: ["-y", "server-a"] });
-    expect(result[1]!.name).toBe("server-b");
+    expect(result[0]?.name).toBe("server-a");
+    expect(result[0]?.providerId).toBe("test-agent");
+    expect(result[0]?.providerName).toBe("Test Agent");
+    expect(result[0]?.scope).toBe("global");
+    expect(result[0]?.configPath).toBe(configPath);
+    expect(result[0]?.config).toEqual({ command: "npx", args: ["-y", "server-a"] });
+    expect(result[1]?.name).toBe("server-b");
   });
 
   it("returns empty array when config key has no servers", async () => {
@@ -137,7 +137,7 @@ describe("listMcpServers", () => {
     const result = await listMcpServers(provider, "global");
 
     expect(result).toHaveLength(1);
-    expect(result[0]!.name).toBe("my-server");
+    expect(result[0]?.name).toBe("my-server");
   });
 
   it("handles malformed config files gracefully", async () => {
@@ -167,8 +167,8 @@ describe("listAllMcpServers", () => {
 
     const result = await listAllMcpServers([providerA, providerB], "global");
     expect(result).toHaveLength(2);
-    expect(result[0]!.providerId).toBe("agent-a");
-    expect(result[1]!.providerId).toBe("agent-b");
+    expect(result[0]?.providerId).toBe("agent-a");
+    expect(result[1]?.providerId).toBe("agent-b");
   });
 
   it("deduplicates by config path", async () => {
@@ -183,7 +183,7 @@ describe("listAllMcpServers", () => {
     const result = await listAllMcpServers([providerA, providerB], "global");
     // Should only include entries from the first provider that claimed this config path
     expect(result).toHaveLength(1);
-    expect(result[0]!.providerId).toBe("agent-a");
+    expect(result[0]?.providerId).toBe("agent-a");
   });
 
   it("returns empty array when no providers given", async () => {
@@ -209,7 +209,7 @@ describe("removeMcpServer", () => {
     // Verify the server was removed
     const remaining = await listMcpServers(provider, "global");
     expect(remaining).toHaveLength(1);
-    expect(remaining[0]!.name).toBe("keep");
+    expect(remaining[0]?.name).toBe("keep");
   });
 
   it("returns false when server does not exist", async () => {

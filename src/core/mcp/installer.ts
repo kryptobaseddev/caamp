@@ -5,11 +5,11 @@
  * handling per-agent formats, keys, and transformations.
  */
 
-import type { Provider, McpServerConfig, GlobalOptions } from "../../types.js";
+import type { McpServerConfig, Provider, } from "../../types.js";
 import { writeConfig } from "../formats/index.js";
-import { getTransform } from "./transforms.js";
-import { resolveConfigPath } from "./reader.js";
 import { debug } from "../logger.js";
+import { resolveConfigPath } from "./reader.js";
+import { getTransform } from "./transforms.js";
 
 /**
  * Result of installing an MCP server configuration to a single provider.
@@ -197,9 +197,10 @@ export function buildServerConfig(
   }
 
   // Command type - split into command and args
-  const parts = source.value.split(/\s+/);
+  const parts = source.value.trim().split(/\s+/);
+  const command = parts[0] ?? source.value;
   return {
-    command: parts[0]!,
+    command,
     args: parts.slice(1),
   };
 }

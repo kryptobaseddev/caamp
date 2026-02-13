@@ -19,7 +19,7 @@ export function getPlatformLocations(): PlatformLocations {
   const platform = process.platform;
 
   if (platform === "win32") {
-    const appData = process.env["APPDATA"] ?? join(home, "AppData", "Roaming");
+    const appData = process.env.APPDATA ?? join(home, "AppData", "Roaming");
     return {
       home,
       config: appData,
@@ -31,7 +31,7 @@ export function getPlatformLocations(): PlatformLocations {
   }
 
   if (platform === "darwin") {
-    const config = process.env["XDG_CONFIG_HOME"] ?? join(home, ".config");
+    const config = process.env.XDG_CONFIG_HOME ?? join(home, ".config");
     return {
       home,
       config,
@@ -42,7 +42,7 @@ export function getPlatformLocations(): PlatformLocations {
     };
   }
 
-  const config = process.env["XDG_CONFIG_HOME"] ?? join(home, ".config");
+  const config = process.env.XDG_CONFIG_HOME ?? join(home, ".config");
   return {
     home,
     config,
@@ -69,7 +69,7 @@ function normalizeHomeOverride(value: string): string {
 }
 
 export function getAgentsHome(): string {
-  const override = process.env["AGENTS_HOME"];
+  const override = process.env.AGENTS_HOME;
   if (override && override.trim().length > 0) {
     return normalizeHomeOverride(override);
   }

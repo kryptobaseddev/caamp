@@ -2,7 +2,7 @@
  * providers list|detect|show commands
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import {
   getAllProviders,

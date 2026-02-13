@@ -2,7 +2,7 @@
  * Instructions command group registration
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { registerInstructionsInject } from "./inject.js";
 import { registerInstructionsCheck } from "./check.js";
 import { registerInstructionsUpdate } from "./update.js";

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { rm, mkdir, writeFile, readFile } from "node:fs/promises";
-import { existsSync, lstatSync } from "node:fs";
+import { rm, mkdir, writeFile, } from "node:fs/promises";
+import { existsSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { installToCanonical, listCanonicalSkills } from "../../src/core/skills/installer.js";
+import { installToCanonical, } from "../../src/core/skills/installer.js";
 import { validateSkill } from "../../src/core/skills/validator.js";
 
 let testDir: string;

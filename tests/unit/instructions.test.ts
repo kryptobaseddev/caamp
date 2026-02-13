@@ -212,8 +212,8 @@ describe("checkAllInjections()", () => {
     const results = await checkAllInjections(providers, testDir, "project");
     // Should deduplicate - only one result for CLAUDE.md
     expect(results).toHaveLength(1);
-    expect(results[0]!.status).toBe("current");
-    expect(results[0]!.fileExists).toBe(true);
+    expect(results[0]?.status).toBe("current");
+    expect(results[0]?.fileExists).toBe(true);
   });
 
   it("returns results for different instruction files", async () => {
@@ -230,8 +230,8 @@ describe("checkAllInjections()", () => {
 
     const claudeResult = results.find((r) => r.file.includes("CLAUDE.md"));
     const agentsResult = results.find((r) => r.file.includes("AGENTS.md"));
-    expect(claudeResult!.status).toBe("current");
-    expect(agentsResult!.status).toBe("missing");
+    expect(claudeResult?.status).toBe("current");
+    expect(agentsResult?.status).toBe("missing");
   });
 });
 

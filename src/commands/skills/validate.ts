@@ -2,7 +2,7 @@
  * skills validate command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { validateSkill } from "../../core/skills/validator.js";
 

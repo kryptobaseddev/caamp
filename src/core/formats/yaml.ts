@@ -2,8 +2,8 @@
  * YAML config reader/writer
  */
 
-import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import yaml from "js-yaml";
 import { deepMerge, ensureDir } from "./utils.js";
 
@@ -33,8 +33,8 @@ export async function writeYamlConfig(
   const keyParts = configKey.split(".");
   let newEntry: Record<string, unknown> = { [serverName]: serverConfig };
 
-  for (let i = keyParts.length - 1; i >= 0; i--) {
-    newEntry = { [keyParts[i]!]: newEntry };
+  for (const part of [...keyParts].reverse()) {
+    newEntry = { [part]: newEntry };
   }
 
   const merged = deepMerge(existing, newEntry);

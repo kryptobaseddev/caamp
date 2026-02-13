@@ -8,7 +8,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import * as jsonc from "jsonc-parser";
-import { deepMerge, setNestedValue, ensureDir } from "./utils.js";
+import { ensureDir } from "./utils.js";
 
 /** Read a JSON/JSONC config file */
 export async function readJsonConfig(filePath: string): Promise<Record<string, unknown>> {

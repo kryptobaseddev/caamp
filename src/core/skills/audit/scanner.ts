@@ -5,9 +5,9 @@
  * and produces findings with line-level precision.
  */
 
-import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import type { AuditResult, AuditFinding, AuditRule, AuditSeverity } from "../../../types.js";
+import { readFile } from "node:fs/promises";
+import type { AuditFinding, AuditResult, AuditRule, AuditSeverity } from "../../../types.js";
 import { AUDIT_RULES } from "./rules.js";
 
 const SEVERITY_WEIGHTS: Record<AuditSeverity, number> = {
@@ -50,7 +50,7 @@ export async function scanFile(
 
   for (const rule of activeRules) {
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]!;
+      const line = lines[i] ?? "";
       const match = line.match(rule.pattern);
       if (match) {
         findings.push({

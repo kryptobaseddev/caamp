@@ -3,7 +3,7 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { Command } from "commander";
+import type { Command } from "commander";
 import {
   resolveOutputFormat,
   type LAFSErrorCategory,

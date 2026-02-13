@@ -2,7 +2,7 @@
  * instructions inject command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { injectAll } from "../../core/instructions/injector.js";
 import { generateInjectionContent, groupByInstructFile } from "../../core/instructions/templates.js";

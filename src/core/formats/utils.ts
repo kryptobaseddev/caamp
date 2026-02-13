@@ -60,7 +60,8 @@ export function setNestedValue(
   let current: Record<string, unknown> = result;
 
   for (let i = 0; i < parts.length; i++) {
-    const part = parts[i]!;
+    const part = parts[i];
+    if (part === undefined) continue;
     if (i === parts.length - 1) {
       // Last part: set the server entry
       const existing = (current[part] as Record<string, unknown>) ?? {};

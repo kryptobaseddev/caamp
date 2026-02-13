@@ -102,7 +102,7 @@ export async function inject(
 
   if (!existsSync(filePath)) {
     // Create new file with injection block
-    await writeFile(filePath, block + "\n", "utf-8");
+    await writeFile(filePath, `${block}\n`, "utf-8");
     return "created";
   }
 
@@ -116,7 +116,7 @@ export async function inject(
   }
 
   // Prepend block to existing content
-  const updated = block + "\n\n" + existing;
+  const updated = `${block}\n\n${existing}`;
   await writeFile(filePath, updated, "utf-8");
   return "added";
 }
@@ -150,7 +150,7 @@ export async function removeInjection(filePath: string): Promise<boolean> {
     const { rm } = await import("node:fs/promises");
     await rm(filePath);
   } else {
-    await writeFile(filePath, cleaned + "\n", "utf-8");
+    await writeFile(filePath, `${cleaned}\n`, "utf-8");
   }
 
   return true;

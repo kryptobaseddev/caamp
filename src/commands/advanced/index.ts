@@ -2,7 +2,7 @@
  * Advanced command group registration.
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { registerAdvancedProviders } from "./providers.js";
 import { registerAdvancedBatch } from "./batch.js";
 import { registerAdvancedConflicts } from "./conflicts.js";

@@ -2,17 +2,16 @@
  * doctor command - diagnose configuration issues and health
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, lstatSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, lstatSync, } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { getAllProviders, getProviderCount } from "../core/registry/providers.js";
 import { detectAllProviders } from "../core/registry/detection.js";
 import { readLockFile } from "../core/mcp/lock.js";
 import { readConfig } from "../core/formats/index.js";
-import type { Provider } from "../types.js";
 
 const CAAMP_VERSION = "0.2.0";
 
@@ -187,7 +186,7 @@ async function checkLockFile(): Promise<SectionResult> {
 
     // Check for orphaned skill entries (canonical path no longer exists)
     let orphaned = 0;
-    for (const [name, entry] of Object.entries(lock.skills)) {
+    for (const [_name, entry] of Object.entries(lock.skills)) {
       if (entry.canonicalPath && !existsSync(entry.canonicalPath)) {
         orphaned++;
       }
