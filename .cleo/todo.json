@@ -159,14 +159,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-13T06:04:00Z",
+  "lastUpdated": "2026-02-13T06:06:47Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "fae94f8d1e930b70",
+    "checksum": "6b2dda87b2e14b92",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 315,
+    "generation": 316,
     "lastModified": "2026-02-13T06:03:32Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 5
@@ -4667,13 +4667,14 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-13T06:03:24Z",
-      "updatedAt": "2026-02-13T06:03:32Z",
+      "updatedAt": "2026-02-13T06:06:47Z",
       "size": "medium",
       "position": 22,
       "positionVersion": 0,
       "phase": "setup",
       "description": "Add focused tests for src/core/skills/installer.ts (installSkill/removeSkill/listCanonicalSkills) to close remaining global coverage gap and stabilize release gate.",
       "files": [
+        "src/core/registry/providers.ts",
         "tests/unit/skills-installer.test.ts"
       ],
       "acceptance": [
@@ -4684,7 +4685,8 @@
         "T086"
       ],
       "notes": [
-        "2026-02-13 06:03:32 UTC: Created as final gap task after coverage run reached 78.52%."
+        "2026-02-13 06:03:32 UTC: Created as final gap task after coverage run reached 78.52%.",
+        "2026-02-13 06:06:48 UTC: Provenance: added tests/unit/skills-installer.test.ts covering installSkill aggregation (success/missing-dir/provider error), symlink fallback copy, removeSkill removal/provider/canonical errors, and listCanonicalSkills filtering+missing-dir path with mocked CANONICAL_SKILLS_DIR and mocked resolveProviderSkillsDir (no ~/.agents access). Commands: npm run test -- tests/unit/skills-installer.test.ts (pass 6/6); npm run lint (pass); npm run typecheck (fails: src/core/registry/providers.ts duplicate identifier resolveProvidersRegistryPath/resolveRegistryTemplatePath at lines 12 and 14); npm run test:coverage (runs, gate fails). Coverage totals: statements 65.85%, lines 65.85% (global threshold 80%)."
       ]
     },
     {
