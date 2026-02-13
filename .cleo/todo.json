@@ -112,17 +112,26 @@
           "T110"
         ],
         "notes": "Minor release for deterministic skills recommendation, LAFS JSON output, and recommendation API exports."
+      },
+      {
+        "version": "v0.4.1",
+        "status": "planned",
+        "targetDate": "2026-02-20",
+        "releasedAt": null,
+        "createdAt": "2026-02-13T01:02:02Z",
+        "tasks": [],
+        "notes": null
       }
     ]
   },
-  "lastUpdated": "2026-02-12T19:19:09Z",
+  "lastUpdated": "2026-02-13T01:02:02Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "2980b3fc63791245",
+    "checksum": "f2c3db469e2fb1db",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 267,
+    "generation": 270,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
@@ -3944,12 +3953,12 @@
     {
       "id": "T110",
       "title": "Prepare and execute release shipping workflow to main",
-      "status": "blocked",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T097",
       "createdAt": "2026-02-12T18:10:30Z",
-      "updatedAt": "2026-02-12T19:19:09Z",
+      "updatedAt": "2026-02-12T19:23:05Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
@@ -3972,7 +3981,8 @@
         "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback).",
         "2026-02-12 18:54:47 UTC: Closed remaining feature-shape gaps via T113-T115 (API surface, contract alignment, JSON snapshots). Recommendation feature now meets full requested product shape pending release ship step.",
         "2026-02-12 19:03:37 UTC: Release branch pushed: release/v0.4.0; tag pushed: v0.4.0; PR opened: https://github.com/kryptobaseddev/caamp/pull/1. Merge blocked by repository branch protection rules.",
-        "2026-02-12 19:19:09 UTC: Resolved stuck check issue by restoring required CI contexts (matrix tests, audit, coverage, analyze). Current blocker is review requirement only."
+        "2026-02-12 19:19:09 UTC: Resolved stuck check issue by restoring required CI contexts (matrix tests, audit, coverage, analyze). Current blocker is review requirement only.",
+        "[COMPLETED 2026-02-12T19:23:05Z] Release v0.4.0 shipped. PR #1 merged to main at commit c454e735b3a876f13c830635026fc07d838b61ed. All required checks passed and tag v0.4.0 remains published."
       ],
       "relates": [
         {
@@ -3992,7 +4002,22 @@
           "type": "relates-to"
         }
       ],
-      "blockedBy": "PR #1 requires one approving review with write access; all required status checks now passing"
+      "completedAt": "2026-02-12T19:23:05Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T19:23:05Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T111",
