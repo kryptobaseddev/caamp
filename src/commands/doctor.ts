@@ -2,7 +2,7 @@
  * doctor command - diagnose configuration issues and health
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, lstatSync, readlinkSync } from "node:fs";

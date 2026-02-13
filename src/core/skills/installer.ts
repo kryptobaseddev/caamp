@@ -5,7 +5,7 @@
  * and symlinked to each target agent's skills directory.
  */
 
-import { readFile, writeFile, mkdir, symlink, readlink, rm, cp } from "node:fs/promises";
+import { mkdir, symlink, rm, cp } from "node:fs/promises";
 import { existsSync, lstatSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import type { Provider, SkillMetadata, ParsedSource } from "../../types.js";

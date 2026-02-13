@@ -1,15 +1,15 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
   getAllProviders,
+  getInstructionFiles,
   getProvider,
-  resolveAlias,
+  getProviderCount,
+  getProvidersByInstructFile,
   getProvidersByPriority,
   getProvidersByStatus,
-  getProvidersByInstructFile,
-  getInstructionFiles,
-  getProviderCount,
   getRegistryVersion,
   resetRegistry,
+  resolveAlias,
 } from "../../src/core/registry/providers.js";
 
 beforeEach(() => {
@@ -33,15 +33,15 @@ describe("Provider Registry", () => {
   it("gets provider by ID", () => {
     const claude = getProvider("claude-code");
     expect(claude).toBeDefined();
-    expect(claude!.toolName).toBe("Claude Code");
-    expect(claude!.vendor).toBe("Anthropic");
-    expect(claude!.instructFile).toBe("CLAUDE.md");
+    expect(claude?.toolName).toBe("Claude Code");
+    expect(claude?.vendor).toBe("Anthropic");
+    expect(claude?.instructFile).toBe("CLAUDE.md");
   });
 
   it("gets provider by alias", () => {
     const claude = getProvider("claude");
     expect(claude).toBeDefined();
-    expect(claude!.id).toBe("claude-code");
+    expect(claude?.id).toBe("claude-code");
   });
 
   it("resolves aliases", () => {
@@ -95,25 +95,26 @@ describe("Provider Registry", () => {
   });
 
   it("resolves platform-specific paths", () => {
-    const claude = getProvider("claude-code")!;
-    expect(claude.pathGlobal).not.toContain("$HOME");
-    expect(claude.configPathGlobal).not.toContain("$HOME");
-    expect(claude.pathSkills).not.toContain("$HOME");
+    const claude = getProvider("claude-code");
+    expect(claude).toBeDefined();
+    expect(claude?.pathGlobal).not.toContain("$HOME");
+    expect(claude?.configPathGlobal).not.toContain("$HOME");
+    expect(claude?.pathSkills).not.toContain("$HOME");
   });
 
   it("has correct config keys per provider", () => {
-    expect(getProvider("claude-code")!.configKey).toBe("mcpServers");
-    expect(getProvider("codex")!.configKey).toBe("mcp_servers");
-    expect(getProvider("goose")!.configKey).toBe("extensions");
-    expect(getProvider("opencode")!.configKey).toBe("mcp");
-    expect(getProvider("vscode")!.configKey).toBe("servers");
-    expect(getProvider("zed")!.configKey).toBe("context_servers");
+    expect(getProvider("claude-code")?.configKey).toBe("mcpServers");
+    expect(getProvider("codex")?.configKey).toBe("mcp_servers");
+    expect(getProvider("goose")?.configKey).toBe("extensions");
+    expect(getProvider("opencode")?.configKey).toBe("mcp");
+    expect(getProvider("vscode")?.configKey).toBe("servers");
+    expect(getProvider("zed")?.configKey).toBe("context_servers");
   });
 
   it("has correct config formats per provider", () => {
-    expect(getProvider("claude-code")!.configFormat).toBe("json");
-    expect(getProvider("goose")!.configFormat).toBe("yaml");
-    expect(getProvider("codex")!.configFormat).toBe("toml");
-    expect(getProvider("zed")!.configFormat).toBe("jsonc");
+    expect(getProvider("claude-code")?.configFormat).toBe("json");
+    expect(getProvider("goose")?.configFormat).toBe("yaml");
+    expect(getProvider("codex")?.configFormat).toBe("toml");
+    expect(getProvider("zed")?.configFormat).toBe("jsonc");
   });
 });

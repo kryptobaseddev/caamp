@@ -2,7 +2,7 @@
  * instructions check command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { checkAllInjections } from "../../core/instructions/injector.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";

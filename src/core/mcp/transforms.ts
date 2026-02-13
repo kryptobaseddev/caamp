@@ -35,7 +35,7 @@ export function transformGoose(serverName: string, config: McpServerConfig): unk
 }
 
 /** Transform config for Zed (context_servers format) */
-export function transformZed(serverName: string, config: McpServerConfig): unknown {
+export function transformZed(_serverName: string, config: McpServerConfig): unknown {
   if (config.url) {
     return {
       source: "custom",
@@ -54,7 +54,7 @@ export function transformZed(serverName: string, config: McpServerConfig): unkno
 }
 
 /** Transform config for OpenCode (mcp format) */
-export function transformOpenCode(serverName: string, config: McpServerConfig): unknown {
+export function transformOpenCode(_serverName: string, config: McpServerConfig): unknown {
   if (config.url) {
     return {
       type: "remote",
@@ -74,7 +74,7 @@ export function transformOpenCode(serverName: string, config: McpServerConfig): 
 }
 
 /** Transform config for Codex (TOML mcp_servers format) */
-export function transformCodex(serverName: string, config: McpServerConfig): unknown {
+export function transformCodex(_serverName: string, config: McpServerConfig): unknown {
   if (config.url) {
     return {
       type: config.type ?? "http",
@@ -91,7 +91,7 @@ export function transformCodex(serverName: string, config: McpServerConfig): unk
 }
 
 /** Transform config for Cursor (mcpServers format - strips type field for remote) */
-export function transformCursor(serverName: string, config: McpServerConfig): unknown {
+export function transformCursor(_serverName: string, config: McpServerConfig): unknown {
   if (config.url) {
     return {
       url: config.url,

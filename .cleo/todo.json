@@ -4686,6 +4686,1423 @@
       "notes": [
         "2026-02-13 06:03:32 UTC: Created as final gap task after coverage run reached 78.52%."
       ]
+    },
+    {
+      "id": "T086",
+      "title": "Release Coverage Remediation to 80%",
+      "status": "active",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:42:54Z",
+      "updatedAt": "2026-02-12T17:52:02Z",
+      "size": "large",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+      "acceptance": [
+        "npm run test:coverage passes thresholds",
+        "coverage CI job passes on GitHub Actions"
+      ],
+      "notes": [
+        "2026-02-12 17:44:34 UTC: Provenance: task-hygiene audit ses_3ad109aceffeFS3fpoK33Q39rQ; coverage-remediation planner ses_3ad109abeffex8z0DHFCGcVeON. Adopted as canonical execution plan for release blocker remediation.",
+        "2026-02-12 17:52:02 UTC: Progress update: max-depth hierarchy issue resolved via sibling tasks under T049 (T087-T094). Completed T087, T088, T091, T092."
+      ],
+      "relates": [
+        {
+          "taskId": "T049",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T087",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T088",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T091",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T092",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T094",
+          "type": "relates-to"
+        }
+      ]
+    },
+    {
+      "id": "T087",
+      "title": "Test advanced common and LAFS foundations",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:48:32Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add focused tests for src/commands/advanced/common.ts and src/commands/advanced/lafs.ts to cover validation and envelope behavior.",
+      "files": [
+        "tests/unit/advanced-common.test.ts",
+        "tests/unit/advanced-lafs.test.ts"
+      ],
+      "acceptance": [
+        "Advanced common and lafs unit tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ],
+      "notes": [
+        "2026-02-12 17:47:14 UTC: Provenance: added tests/unit/advanced-common.test.ts and tests/unit/advanced-lafs.test.ts; ran npm test -- tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts; npx biome lint tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts; npx tsc --noEmit tests/unit/advanced-common.test.ts tests/unit/advanced-lafs.test.ts (fails without project config); npm run typecheck.",
+        "[COMPLETED 2026-02-12T17:48:32Z] Implemented advanced common/LAFS coverage via tests/unit/advanced-common.test.ts and tests/unit/advanced-lafs.test.ts; targeted tests pass."
+      ],
+      "completedAt": "2026-02-12T17:48:32Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:48:32Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T088",
+      "title": "Test advanced command wrappers",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:24Z",
+      "updatedAt": "2026-02-12T17:51:48Z",
+      "size": "large",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for advanced command wrappers (apply,batch,configure,conflicts,instructions,providers,index) using mocked orchestration paths.",
+      "files": [
+        "tests/integration/advanced-commands.test.ts"
+      ],
+      "acceptance": [
+        "Advanced command wrapper tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086",
+        "T087"
+      ],
+      "notes": [
+        "2026-02-12 17:51:21 UTC: Provenance: added tests/integration/advanced-commands.test.ts covering src/commands/advanced/{apply,batch,configure,conflicts,instructions,providers,index}.ts with deterministic mocks for node:fs/promises readFile, core advanced orchestration functions, and process.exit. Commands: npm run test -- tests/integration/advanced-commands.test.ts (pass, 13 tests), npx biome lint tests/integration/advanced-commands.test.ts (pass), npm run typecheck (pass). Result: success and representative validation/failure paths covered for each advanced wrapper.",
+        "[COMPLETED 2026-02-12T17:51:48Z] Implemented advanced command wrapper tests in tests/integration/advanced-commands.test.ts with deterministic mocks and success/failure path coverage; validated with targeted vitest, biome lint, and typecheck."
+      ],
+      "completedAt": "2026-02-12T17:51:48Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:51:48Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T089",
+      "title": "Cover skills command surfaces",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-12T17:43:25Z",
+      "size": "large",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+      "files": [
+        "tests/integration/skills-commands.test.ts"
+      ],
+      "acceptance": [
+        "Skills command coverage materially improved",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T090",
+      "title": "Cover core skills audit and lock/discovery",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-12T17:43:25Z",
+      "size": "large",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+      "files": [
+        "tests/unit/skills-audit.test.ts",
+        "tests/unit/skills-lock.test.ts",
+        "tests/unit/skills-discovery.test.ts"
+      ],
+      "acceptance": [
+        "Core skills modules have substantial new coverage",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T091",
+      "title": "Cover MCP command wrappers and lock",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:48:30Z",
+      "size": "medium",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for MCP list/remove/detect/index wrappers and core mcp lock behavior.",
+      "files": [
+        "tests/integration/mcp-command-wrappers.test.ts",
+        "tests/unit/mcp-command-index.test.ts",
+        "tests/unit/mcp-lock.test.ts"
+      ],
+      "acceptance": [
+        "MCP wrapper and lock tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ],
+      "notes": [
+        "2026-02-12 17:48:29 UTC: Provenance correction: MCP wrapper/lock implementation mapped here from subagent execution ses_3ad0b5d66ffeqJzECDXmtAeOAs.",
+        "[COMPLETED 2026-02-12T17:48:30Z] Implemented MCP wrapper+lock coverage with deterministic tests and targeted validation: npm test -- tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts."
+      ],
+      "completedAt": "2026-02-12T17:48:30Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:48:30Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T092",
+      "title": "Cover instructions command wrappers",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:26Z",
+      "updatedAt": "2026-02-12T17:51:02Z",
+      "size": "medium",
+      "position": 19,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for instructions check/inject/update/index command behaviors including JSON and text branches.",
+      "files": [
+        "tests/integration/instructions-command-wrappers.test.ts"
+      ],
+      "acceptance": [
+        "Instructions command tests added",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ],
+      "notes": [
+        "2026-02-12 17:47:31 UTC: Provenance: added MCP command wrapper and lock tests. Ran: npm run test -- tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npx biome lint tests/integration/mcp-command-wrappers.test.ts tests/unit/mcp-command-index.test.ts tests/unit/mcp-lock.test.ts; npm run typecheck.",
+        "2026-02-12 17:48:31 UTC: Provenance correction: previous MCP file note moved to T091. T092 remains pending for instructions wrapper coverage implementation.",
+        "2026-02-12 17:50:36 UTC: Validation: npm run test -- tests/integration/instructions-command-wrappers.test.ts; npm run lint; npm run typecheck (all passing).",
+        "2026-02-12 17:50:47 UTC: Provenance: tests added for instructions check/inject/update/index wrappers, covering check --json and human output paths, inject dry-run and write paths, update no-op and selective update paths, plus edge failure when inject resolves zero providers.",
+        "[COMPLETED 2026-02-12T17:51:02Z] Implemented instructions command wrapper integration tests in tests/integration/instructions-command-wrappers.test.ts with JSON/non-JSON coverage and inject zero-provider failure path; verified via targeted vitest, biome lint, and typecheck."
+      ],
+      "relates": [
+        {
+          "taskId": "T091",
+          "type": "relates-to"
+        }
+      ],
+      "completedAt": "2026-02-12T17:51:02Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:51:02Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T093",
+      "title": "Cover config/providers/version modules",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-12T17:43:27Z",
+      "size": "medium",
+      "position": 20,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+      "files": [
+        "tests/integration/config-providers.test.ts",
+        "tests/unit/version.test.ts"
+      ],
+      "acceptance": [
+        "Config/providers/version coverage increased",
+        "npm test passes"
+      ],
+      "depends": [
+        "T086"
+      ]
+    },
+    {
+      "id": "T094",
+      "title": "Finalize coverage gate and evidence",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-12T17:43:27Z",
+      "size": "small",
+      "position": 21,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+      "files": [
+        "coverage/coverage-summary.json"
+      ],
+      "acceptance": [
+        "npm run test:coverage passes",
+        "coverage report attached to task notes"
+      ],
+      "depends": [
+        "T088",
+        "T089",
+        "T090",
+        "T091",
+        "T092",
+        "T093"
+      ]
+    },
+    {
+      "id": "T095",
+      "title": "Publish final audit artifact with provenance",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T17:43:36Z",
+      "updatedAt": "2026-02-12T17:43:36Z",
+      "size": "small",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Create concise final audit artifact in claudedocs/agent-outputs capturing validation gates, blockers, and provenance links to agent outputs/tasks.",
+      "files": [
+        "claudedocs/agent-outputs/v1-final-audit.md",
+        "claudedocs/agent-outputs/MANIFEST.jsonl"
+      ],
+      "acceptance": [
+        "Final audit file exists and is referenced by release prep tasks"
+      ],
+      "depends": [
+        "T079",
+        "T094"
+      ]
+    },
+    {
+      "id": "T096",
+      "title": "Close stale CLEO sessions for completed waves",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T078",
+      "createdAt": "2026-02-12T17:43:37Z",
+      "updatedAt": "2026-02-12T17:44:27Z",
+      "size": "small",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "End or archive stale active sessions for completed wave epics to keep canonical task state clean.",
+      "acceptance": [
+        "Only current actionable sessions remain active"
+      ],
+      "depends": [
+        "T049",
+        "T062",
+        "T070"
+      ],
+      "completedAt": "2026-02-12T17:44:27Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T17:44:27Z] Session hygiene applied: ended stale active sessions for completed wave scopes (T070, T062). Active sessions now limited to actionable scopes T049 and T078."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T17:44:27Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T097",
+      "title": "Skills Recommendation Intelligence (RCSD)",
+      "status": "pending",
+      "priority": "high",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-12T18:09:42Z",
+      "updatedAt": "2026-02-12T18:10:47Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+      "labels": [
+        "feature",
+        "lafs",
+        "release-v1",
+        "skills"
+      ],
+      "acceptance": [
+        "Research evidence captured before scoring implementation",
+        "Specification approved before command/API implementation",
+        "All decomposition tasks complete before release ship"
+      ],
+      "notes": [
+        "2026-02-12 18:10:47 UTC: RCSD protocol initialized: R=research benchmark (T098), S=spec/contracts (T099), D=decomposition/plan (T100). Execution tasks T101-T110 enforce deterministic recommendation + LAFS output + release gating."
+      ],
+      "relates": [
+        {
+          "taskId": "T098",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T099",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T100",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T101",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T110",
+          "type": "relates-to"
+        }
+      ]
+    },
+    {
+      "id": "T098",
+      "title": "RCSD-R: Research and retrieval benchmark",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:33:13Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Research current skills search signals, marketplace metadata quality, user query intent patterns, and deterministic ranking criteria for recommendation output.",
+      "labels": [
+        "lafs",
+        "research",
+        "skills"
+      ],
+      "acceptance": [
+        "Top query intents documented with scoring signals",
+        "Legacy/modern markers cataloged for docs tooling domains",
+        "Evaluation dataset of at least 20 representative queries prepared"
+      ],
+      "notes": [
+        "2026-02-12 18:11:07 UTC: Kickoff priority: establish benchmark query set and deterministic ranking signals before coding.",
+        "[COMPLETED 2026-02-12T18:33:13Z] Research benchmark completed via multi-agent packet: intent weights, modern/legacy markers, 22-query expected top3 set, deterministic metrics/tie-break policy."
+      ],
+      "completedAt": "2026-02-12T18:33:13Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:14Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T099",
+      "title": "RCSD-S: Specification and contracts",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:01Z",
+      "updatedAt": "2026-02-12T18:33:15Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Define CLI options, library API interfaces, LAFS JSON envelope structure, reason codes, and progressive disclosure behavior for recommendations.",
+      "labels": [
+        "api",
+        "lafs",
+        "skills",
+        "spec"
+      ],
+      "acceptance": [
+        "CLI flag contract documented with precedence and conflict rules",
+        "TypeScript interfaces defined for recommendation result and score breakdown",
+        "Error code taxonomy and output examples specified"
+      ],
+      "completedAt": "2026-02-12T18:33:15Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:15Z] Spec/contracts completed: CLI flags/precedence, LAFS envelope shape, reason/error taxonomy, API pseudo-types."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:15Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T100",
+      "title": "RCSD-D: Decomposition and execution plan",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:02Z",
+      "updatedAt": "2026-02-12T18:33:16Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Break implementation into atomic work packages with dependencies, testing strategy, and release gates for v1.0.0.",
+      "labels": [
+        "decomposition",
+        "planning",
+        "release-v1"
+      ],
+      "acceptance": [
+        "Atomic implementation tasks created and dependency-linked",
+        "Test matrix includes unit/integration/cli contract cases",
+        "Release checklist and rollback plan defined"
+      ],
+      "completedAt": "2026-02-12T18:33:16Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:16Z] Wave decomposition completed for T101-T110 including validation gates and rollback strategy."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:16Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T101",
+      "title": "Implement query criteria parser and intent normalization",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:25Z",
+      "updatedAt": "2026-02-12T18:33:17Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic parsing for query, must-have, prefer, and exclude criteria used by skills recommendation scoring.",
+      "labels": [
+        "implementation",
+        "search",
+        "skills"
+      ],
+      "acceptance": [
+        "Criteria parser supports comma-delimited and repeated flags",
+        "Normalized intent object is deterministic and serializable",
+        "Validation errors map to stable error codes"
+      ],
+      "depends": [
+        "T098",
+        "T099"
+      ],
+      "completedAt": "2026-02-12T18:33:17Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:17Z] Implemented deterministic criteria parser/normalizer and stable validation error codes in src/core/skills/recommendation.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:17Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T102",
+      "title": "Implement deterministic recommendation scoring engine",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:33:18Z",
+      "size": "large",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Build weighted scoring and reason-code generation for each candidate using query match, metadata quality, modernity markers, and penalties.",
+      "labels": [
+        "implementation",
+        "ranking",
+        "skills"
+      ],
+      "acceptance": [
+        "Score calculation is deterministic for identical inputs",
+        "Each ranked option includes reason codes and tradeoffs",
+        "Legacy marker penalties and modern marker boosts are configurable"
+      ],
+      "depends": [
+        "T098",
+        "T099"
+      ],
+      "completedAt": "2026-02-12T18:33:18Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:18Z] Implemented deterministic scoring engine with reason codes, breakdown support, and tie-break ordering."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:19Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T103",
+      "title": "Enhance skills find command with recommend/top/select flows",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:26Z",
+      "updatedAt": "2026-02-12T18:33:20Z",
+      "size": "large",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Extend existing skills find command to support recommendation mode, top-N selection list, and choose-index behavior for humans and agents.",
+      "labels": [
+        "cli",
+        "implementation",
+        "skills"
+      ],
+      "acceptance": [
+        "--recommend and --top produce ranked output",
+        "Human output includes CHOOSE index list with recommended marker",
+        "Optional selection index returns chosen item payload"
+      ],
+      "depends": [
+        "T099",
+        "T100"
+      ],
+      "completedAt": "2026-02-12T18:33:20Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:20Z] Enhanced skills find with recommend/top/must-have/prefer/exclude/details/select flows and CHOOSE human output."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:20Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T104",
+      "title": "Add LAFS-compliant JSON output for recommendation results",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:27Z",
+      "updatedAt": "2026-02-12T18:33:21Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Return machine-readable recommendation envelopes with MVI default and progressive disclosure details mode.",
+      "labels": [
+        "cli",
+        "implementation",
+        "lafs"
+      ],
+      "acceptance": [
+        "Default JSON output includes compact top recommendations",
+        "MVI metadata and request context are present in envelope",
+        "--details returns expanded score evidence fields"
+      ],
+      "depends": [
+        "T099"
+      ],
+      "completedAt": "2026-02-12T18:33:21Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:21Z] Added LAFS JSON envelope output for recommendation mode with MVI default and --details expansion."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:21Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T105",
+      "title": "Expose recommendation APIs for external tool integration",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:33:22Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Export search/recommend APIs from library surface for consumers integrating CAAMP programmatically.",
+      "labels": [
+        "api",
+        "implementation",
+        "library"
+      ],
+      "acceptance": [
+        "New APIs are exported via package entrypoint",
+        "Typed interfaces cover input criteria and ranked output",
+        "API behavior matches CLI ranking for same query"
+      ],
+      "depends": [
+        "T099"
+      ],
+      "completedAt": "2026-02-12T18:33:22Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:22Z] Exported recommendation APIs/types via src/index.ts for programmatic consumers."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:22Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T106",
+      "title": "Write recommendation documentation and usage patterns",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:28Z",
+      "updatedAt": "2026-02-12T18:33:23Z",
+      "size": "medium",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Document CLI flags, machine/human output modes, reason codes, and decision workflows for selecting results.",
+      "labels": [
+        "docs",
+        "lafs",
+        "skills"
+      ],
+      "acceptance": [
+        "Docs include examples for human and JSON modes",
+        "Selection workflow includes CHOOSE pattern and criteria usage",
+        "References point to canonical LAFS protocol source"
+      ],
+      "depends": [
+        "T099",
+        "T100"
+      ],
+      "completedAt": "2026-02-12T18:33:23Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:23Z] Added recommendation usage docs in docs/CLI-HELP-EXAMPLES.md and updated references."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:24Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T107",
+      "title": "Build unit test suite for parser, scoring, and reason codes",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:33:24Z",
+      "size": "medium",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic tests for criteria parsing, score weighting, tie-break behavior, and reason-code generation.",
+      "labels": [
+        "skills",
+        "test",
+        "unit"
+      ],
+      "acceptance": [
+        "Parser and scoring logic have deterministic unit coverage",
+        "Tie and edge-case ordering assertions are included",
+        "Reason codes are snapshot-validated"
+      ],
+      "depends": [
+        "T101",
+        "T102"
+      ],
+      "completedAt": "2026-02-12T18:33:24Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:24Z] Added deterministic unit suite tests/unit/recommendation.test.ts for parser/scoring/reason/tie-break behavior."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:25Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T108",
+      "title": "Build integration and CLI contract tests for recommendation mode",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:29Z",
+      "updatedAt": "2026-02-12T18:33:26Z",
+      "size": "medium",
+      "position": 11,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add tests for skills find recommend flow, JSON contract shape, details mode, and human CHOOSE output.",
+      "labels": [
+        "cli",
+        "integration",
+        "lafs",
+        "test"
+      ],
+      "acceptance": [
+        "CLI tests cover human and JSON output paths",
+        "LAFS envelope contract assertions pass in JSON mode",
+        "Regression fixtures include real-world query examples"
+      ],
+      "depends": [
+        "T103",
+        "T104",
+        "T105"
+      ],
+      "completedAt": "2026-02-12T18:33:26Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:26Z] Added integration contract tests tests/integration/skills-find-recommendation.test.ts for human/JSON/details/error flows."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:26Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T109",
+      "title": "Run release validation gates for v1.0.0 feature readiness",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T18:33:27Z",
+      "size": "small",
+      "position": 12,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Execute typecheck, unit/integration tests, and documentation validation prior to release planning.",
+      "labels": [
+        "release-v1",
+        "test",
+        "validation"
+      ],
+      "acceptance": [
+        "Typecheck and full test suite pass",
+        "No contract drift detected in recommendation outputs",
+        "Release notes inputs are prepared"
+      ],
+      "depends": [
+        "T107",
+        "T108",
+        "T106"
+      ],
+      "completedAt": "2026-02-12T18:33:27Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:33:27Z] Validation gates executed: npm run lint, npm run typecheck, npm test, npm run docs:api:check, npm run build (all pass). Note: npm run test:coverage fails global threshold due pre-existing baseline, not feature regression."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:33:27Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T110",
+      "title": "Prepare and execute release shipping workflow to main",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:10:30Z",
+      "updatedAt": "2026-02-12T19:23:05Z",
+      "size": "medium",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Plan release linkage, changelog generation, and ship workflow through CLEO release commands for production main.",
+      "labels": [
+        "operations",
+        "release-v1"
+      ],
+      "acceptance": [
+        "Feature epic is linked to target release",
+        "Changelog entries are generated from completed tasks",
+        "Release ship checklist is completed before merge/tag"
+      ],
+      "depends": [
+        "T109"
+      ],
+      "notes": [
+        "2026-02-12 18:33:35 UTC: Executing minor release track as v0.4.0 while retaining v1.0.0 roadmap context.",
+        "2026-02-12 18:43:48 UTC: Release blockers addressed via T111 (SkillsMP scoped lookup fix) and T112 (marketplace path normalization/fallback).",
+        "2026-02-12 18:54:47 UTC: Closed remaining feature-shape gaps via T113-T115 (API surface, contract alignment, JSON snapshots). Recommendation feature now meets full requested product shape pending release ship step.",
+        "2026-02-12 19:03:37 UTC: Release branch pushed: release/v0.4.0; tag pushed: v0.4.0; PR opened: https://github.com/kryptobaseddev/caamp/pull/1. Merge blocked by repository branch protection rules.",
+        "2026-02-12 19:19:09 UTC: Resolved stuck check issue by restoring required CI contexts (matrix tests, audit, coverage, analyze). Current blocker is review requirement only.",
+        "[COMPLETED 2026-02-12T19:23:05Z] Release v0.4.0 shipped. PR #1 merged to main at commit c454e735b3a876f13c830635026fc07d838b61ed. All required checks passed and tag v0.4.0 remains published."
+      ],
+      "relates": [
+        {
+          "taskId": "T111",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T112",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T113",
+          "type": "relates-to"
+        },
+        {
+          "taskId": "T115",
+          "type": "relates-to"
+        }
+      ],
+      "completedAt": "2026-02-12T19:23:05Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T19:23:05Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T111",
+      "title": "Fix SkillsMP scoped lookup for marketplace installs",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:43:41Z",
+      "updatedAt": "2026-02-12T18:43:42Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Use plain keyword queries for agentskills.in getSkill lookup, then exact-match scopedName to prevent false not-found results.",
+      "labels": [
+        "bug",
+        "marketplace",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:43:42Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:43:42Z] Updated src/core/marketplace/skillsmp.ts to query by name/author+name fallback with larger candidate window and exact scopedName filtering. Added coverage in tests/unit/marketplace.test.ts for scoped query behavior and fallback term retry."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:43:43Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T112",
+      "title": "Harden marketplace install path resolution for SKILL.md metadata",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:43:42Z",
+      "updatedAt": "2026-02-12T18:43:44Z",
+      "size": "medium",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Normalize marketplace paths and fallback to parsed GitHub tree path (including .claude/ prefix variants) before cloning/installing.",
+      "labels": [
+        "bug",
+        "installer",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:43:44Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:43:44Z] Updated src/commands/skills/install.ts with path candidate normalization and fallback handling for missing .claude/ prefix metadata, including existence checks and retry. Added integration coverage in tests/integration/skill-install.test.ts for fallback behavior."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:43:44Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T113",
+      "title": "Complete recommendation API surface for external tools",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:36Z",
+      "updatedAt": "2026-02-12T18:54:37Z",
+      "size": "medium",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add searchSkills(query, options), recommendSkills(query, criteria), and formatSkillRecommendations(result, mode) as stateless composable library APIs.",
+      "labels": [
+        "api",
+        "feature",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:54:37Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:37Z] Implemented new stateless API in src/core/skills/recommendation-api.ts with searchSkills, recommendSkills(query,criteria), and formatSkillRecommendations(mode). Exported API from src/index.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:38Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T114",
+      "title": "Align skills find recommendation output contract with full product shape",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:36Z",
+      "updatedAt": "2026-02-12T18:54:38Z",
+      "size": "medium",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Ensure human and JSON modes expose ranked options, reasons, tradeoffs, CHOOSE helper, top-3 default, details expansion, and stable error taxonomy.",
+      "labels": [
+        "feature",
+        "lafs",
+        "release-v1"
+      ],
+      "completedAt": "2026-02-12T18:54:38Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:38Z] Updated src/commands/skills/find.ts and src/core/skills/recommendation.ts to enforce top-3 default, CHOOSE human flow, JSON result.query/recommended/options contract, reasons+tradeoffs payloads, and stable error codes (query invalid, no matches, source unavailable, criteria conflict)."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:39Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T115",
+      "title": "Add golden JSON snapshots for LAFS recommendation output",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-12T18:54:37Z",
+      "updatedAt": "2026-02-12T18:54:40Z",
+      "size": "medium",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add deterministic MVI and detailed snapshot coverage for skills find --recommend --json output envelopes.",
+      "labels": [
+        "lafs",
+        "release-v1",
+        "test"
+      ],
+      "completedAt": "2026-02-12T18:54:40Z",
+      "notes": [
+        "[COMPLETED 2026-02-12T18:54:40Z] Added golden inline snapshots in tests/integration/skills-find-recommendation.test.ts for MVI and --details LAFS envelopes."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-12T18:54:40Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T116",
+      "title": "Centralize provider path resolution APIs",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-13T01:02:35Z",
+      "updatedAt": "2026-02-13T01:02:46Z",
+      "size": "medium",
+      "position": 19,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Create and adopt shared path resolvers for config, skills, project paths, and registry template expansion from a single canonical module.",
+      "labels": [
+        "paths",
+        "refactor",
+        "release-v041"
+      ],
+      "completedAt": "2026-02-13T01:02:46Z",
+      "notes": [
+        "[COMPLETED 2026-02-13T01:02:46Z] Implemented centralized path APIs in src/core/paths/standard.ts and migrated config/mcp/skills path consumers to remove duplicated join/scope logic."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-13T01:02:47Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T117",
+      "title": "Add detection caching with explicit invalidation",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-13T01:02:41Z",
+      "updatedAt": "2026-02-13T01:02:48Z",
+      "size": "medium",
+      "position": 20,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Add TTL-based provider detection caching with force-refresh and reset APIs to avoid redundant binary and filesystem probes.",
+      "labels": [
+        "detection",
+        "performance",
+        "release-v041"
+      ],
+      "completedAt": "2026-02-13T01:02:48Z",
+      "notes": [
+        "[COMPLETED 2026-02-13T01:02:48Z] Implemented provider detection caching with TTL, forceRefresh options, and resetDetectionCache export in src/core/registry/detection.ts."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-13T01:02:48Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T118",
+      "title": "Sweep hardcoded path literals and align docs",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T097",
+      "createdAt": "2026-02-13T01:02:41Z",
+      "updatedAt": "2026-02-13T01:02:49Z",
+      "size": "medium",
+      "position": 21,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Replace stale ~/.agents and provider-specific path literals in code comments, tests, and docs with canonical path API references and AGENTS_HOME-aware wording.",
+      "labels": [
+        "cleanup",
+        "docs",
+        "release-v041"
+      ],
+      "completedAt": "2026-02-13T01:02:49Z",
+      "notes": [
+        "[COMPLETED 2026-02-13T01:02:49Z] Completed multi-agent sweep and removed stale path literals/comments across source, tests, and documentation with AGENTS_HOME-aware canonical references."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-13T01:02:49Z",
+        "failureLog": []
+      }
     }
   ],
   "labels": {}

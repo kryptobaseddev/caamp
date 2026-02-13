@@ -2,10 +2,9 @@
  * skills list command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
-import { discoverSkills, discoverSkillsMulti } from "../../core/skills/discovery.js";
-import { listCanonicalSkills } from "../../core/skills/installer.js";
+import { discoverSkillsMulti } from "../../core/skills/discovery.js";
 import { getProvider } from "../../core/registry/providers.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { resolveProviderSkillsDir } from "../../core/paths/standard.js";

@@ -2,7 +2,7 @@
  * advanced batch command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { installBatchWithRollback, selectProvidersByMinimumPriority } from "../../core/advanced/orchestration.js";
 import { parsePriority, readMcpOperations, readSkillOperations, resolveProviders } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";

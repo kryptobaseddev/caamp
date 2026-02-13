@@ -2,7 +2,7 @@
  * skills remove command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { removeSkill, listCanonicalSkills } from "../../core/skills/installer.js";
 import { removeSkillFromLock } from "../../core/skills/lock.js";

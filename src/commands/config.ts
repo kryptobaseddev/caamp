@@ -2,7 +2,7 @@
  * config show|path commands
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { getProvider } from "../core/registry/providers.js";
 import { existsSync } from "node:fs";

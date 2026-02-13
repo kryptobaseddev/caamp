@@ -2,7 +2,7 @@
  * mcp detect command - auto-detect installed MCP tools
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { existsSync } from "node:fs";
 import { getInstalledProviders } from "../../core/registry/detection.js";

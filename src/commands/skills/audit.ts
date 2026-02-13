@@ -2,10 +2,11 @@
  * skills audit command - security scanning
  */
 
-import { Command } from "commander";
-import pc from "picocolors";
-import { scanFile, scanDirectory, toSarif } from "../../core/skills/audit/scanner.js";
 import { existsSync, statSync } from "node:fs";
+import type { Command } from "commander";
+import pc from "picocolors";
+import { scanDirectory, scanFile, toSarif } from "../../core/skills/audit/scanner.js";
+import type { AuditResult } from "../../types.js";
 
 export function registerSkillsAudit(parent: Command): void {
   parent
@@ -21,7 +22,7 @@ export function registerSkillsAudit(parent: Command): void {
       }
 
       const stat = statSync(path);
-      let results;
+      let results: AuditResult[];
 
       if (stat.isFile()) {
         results = [await scanFile(path)];

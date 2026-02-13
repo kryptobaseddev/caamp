@@ -2,7 +2,7 @@
  * skills update command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
 import { getTrackedSkills, checkSkillUpdate, recordSkillInstall } from "../../core/skills/lock.js";
 import { installSkill } from "../../core/skills/installer.js";

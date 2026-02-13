@@ -2,7 +2,7 @@
  * advanced providers command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import { selectProvidersByMinimumPriority } from "../../core/advanced/orchestration.js";
 import { parsePriority, resolveProviders } from "./common.js";
 import { runLafsCommand } from "./lafs.js";

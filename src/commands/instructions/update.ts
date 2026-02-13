@@ -2,12 +2,11 @@
  * instructions update command
  */
 
-import { Command } from "commander";
+import type { Command } from "commander";
 import pc from "picocolors";
-import { injectAll, checkAllInjections } from "../../core/instructions/injector.js";
+import { checkAllInjections, injectAll } from "../../core/instructions/injector.js";
 import { generateInjectionContent } from "../../core/instructions/templates.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
-import type { Provider } from "../../types.js";
 
 export function registerInstructionsUpdate(parent: Command): void {
   parent

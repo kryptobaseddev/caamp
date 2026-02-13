@@ -93,9 +93,9 @@ export async function readMcpOperations(path: string): Promise<McpBatchOperation
     }
 
     const obj = item as Record<string, unknown>;
-    const serverName = obj["serverName"];
-    const config = obj["config"];
-    const scope = obj["scope"];
+    const serverName = obj.serverName;
+    const config = obj.config;
+    const scope = obj.scope;
 
     if (typeof serverName !== "string" || serverName.length === 0) {
       throw new LAFSCommandError(
@@ -152,9 +152,9 @@ export async function readSkillOperations(path: string): Promise<SkillBatchOpera
     }
 
     const obj = item as Record<string, unknown>;
-    const sourcePath = obj["sourcePath"];
-    const skillName = obj["skillName"];
-    const isGlobal = obj["isGlobal"];
+    const sourcePath = obj.sourcePath;
+    const skillName = obj.skillName;
+    const isGlobal = obj.isGlobal;
 
     if (typeof sourcePath !== "string" || sourcePath.length === 0) {
       throw new LAFSCommandError(
