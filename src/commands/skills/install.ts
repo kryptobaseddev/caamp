@@ -97,7 +97,7 @@ export function registerSkillsInstall(parent: Command): void {
                 "package",
                 result.linkedAgents,
                 result.canonicalPath,
-                opts.global ?? false,
+                true,
               );
               installed++;
             } else {
@@ -261,14 +261,15 @@ export function registerSkillsInstall(parent: Command): void {
           console.log(`  Linked to: ${result.linkedAgents.join(", ")}`);
 
           // Record in lock file
+          const isGlobal = sourceType === "package" ? true : (opts.global ?? false);
           await recordSkillInstall(
             skillName,
-            source,
+            sourceValue,
             sourceValue,
             sourceType,
             result.linkedAgents,
             result.canonicalPath,
-            opts.global ?? false,
+            isGlobal,
           );
         }
 
