@@ -2,14 +2,14 @@
  * MCP lock file management
  *
  * Tracks installed MCP servers with source and agent metadata.
- * Stored at ~/.agents/.caamp-lock.json (shared with skills lock).
+ * Stored in the canonical CAAMP lock file (shared with skills lock).
  */
 
 import type { LockEntry, SourceType } from "../../types.js";
-import { readLockFile, writeLockFile } from "../lock-utils.js";
+import { readLockFile, updateLockFile } from "../lock-utils.js";
 
 /**
- * Read and parse the CAAMP lock file from `~/.agents/.caamp-lock.json`.
+ * Read and parse the CAAMP lock file from the canonical lock path.
  *
  * Returns the full {@link CaampLockFile} structure. Creates a default lock file
  * if one does not exist.
@@ -48,24 +48,22 @@ export async function recordMcpInstall(
   agents: string[],
   isGlobal: boolean,
 ): Promise<void> {
-  const lock = await readLockFile();
-  const now = new Date().toISOString();
+  await updateLockFile((lock) => {
+    const now = new Date().toISOString();
+    const existing = lock.mcpServers[serverName];
 
-  const existing = lock.mcpServers[serverName];
-
-  lock.mcpServers[serverName] = {
-    name: serverName,
-    scopedName: serverName,
-    source,
-    sourceType,
-    installedAt: existing?.installedAt ?? now,
-    updatedAt: now,
-    agents: [...new Set([...(existing?.agents ?? []), ...agents])],
-    canonicalPath: "",
-    isGlobal,
-  };
-
-  await writeLockFile(lock);
+    lock.mcpServers[serverName] = {
+      name: serverName,
+      scopedName: serverName,
+      source,
+      sourceType,
+      installedAt: existing?.installedAt ?? now,
+      updatedAt: now,
+      agents: [...new Set([...(existing?.agents ?? []), ...agents])],
+      canonicalPath: "",
+      isGlobal,
+    };
+  });
 }
 
 /**
@@ -80,12 +78,13 @@ export async function recordMcpInstall(
  * ```
  */
 export async function removeMcpFromLock(serverName: string): Promise<boolean> {
-  const lock = await readLockFile();
-  if (!(serverName in lock.mcpServers)) return false;
-
-  delete lock.mcpServers[serverName];
-  await writeLockFile(lock);
-  return true;
+  let removed = false;
+  await updateLockFile((lock) => {
+    if (!(serverName in lock.mcpServers)) return;
+    delete lock.mcpServers[serverName];
+    removed = true;
+  });
+  return removed;
 }
 
 /**
@@ -119,9 +118,9 @@ export async function getTrackedMcpServers(): Promise<Record<string, LockEntry>>
  * ```
  */
 export async function saveLastSelectedAgents(agents: string[]): Promise<void> {
-  const lock = await readLockFile();
-  lock.lastSelectedAgents = agents;
-  await writeLockFile(lock);
+  await updateLockFile((lock) => {
+    lock.lastSelectedAgents = agents;
+  });
 }
 
 /**

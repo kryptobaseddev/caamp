@@ -11,6 +11,7 @@ import { join } from "node:path";
 import type { Provider } from "../../types.js";
 import { getAllProviders } from "./providers.js";
 import { debug } from "../logger.js";
+import { getPlatformLocations, resolveProviderProjectPath } from "../paths/standard.js";
 
 /**
  * Result of detecting whether a provider is installed on the system.
@@ -34,6 +35,20 @@ export interface DetectionResult {
   projectDetected: boolean;
 }
 
+export interface DetectionCacheOptions {
+  forceRefresh?: boolean;
+  ttlMs?: number;
+}
+
+interface DetectionCacheState {
+  createdAt: number;
+  signature: string;
+  results: DetectionResult[];
+}
+
+const DEFAULT_DETECTION_CACHE_TTL_MS = 30_000;
+let detectionCache: DetectionCacheState | null = null;
+
 function checkBinary(binary: string): boolean {
   try {
     const cmd = process.platform === "win32" ? "where" : "which";
@@ -50,7 +65,8 @@ function checkDirectory(dir: string): boolean {
 
 function checkAppBundle(appName: string): boolean {
   if (process.platform !== "darwin") return false;
-  return existsSync(join("/Applications", appName));
+  const applications = getPlatformLocations().applications;
+  return applications.some((base) => existsSync(join(base, appName)));
 }
 
 function checkFlatpak(flatpakId: string): boolean {
@@ -126,10 +142,56 @@ export function detectProvider(provider: Provider): DetectionResult {
   };
 }
 
+function providerSignature(provider: Provider): string {
+  return JSON.stringify({
+    id: provider.id,
+    methods: provider.detection.methods,
+    binary: provider.detection.binary,
+    directories: provider.detection.directories,
+    appBundle: provider.detection.appBundle,
+    flatpakId: provider.detection.flatpakId,
+  });
+}
+
+function buildProvidersSignature(providers: Provider[]): string {
+  return providers.map(providerSignature).join("|");
+}
+
+function cloneDetectionResults(results: DetectionResult[]): DetectionResult[] {
+  return results.map((result) => ({
+    provider: result.provider,
+    installed: result.installed,
+    methods: [...result.methods],
+    projectDetected: result.projectDetected,
+  }));
+}
+
+function getCachedResults(
+  signature: string,
+  options: DetectionCacheOptions,
+): DetectionResult[] | null {
+  if (!detectionCache || options.forceRefresh) return null;
+  if (detectionCache.signature !== signature) return null;
+
+  const ttlMs = options.ttlMs ?? DEFAULT_DETECTION_CACHE_TTL_MS;
+  if (ttlMs <= 0) return null;
+  if ((Date.now() - detectionCache.createdAt) > ttlMs) return null;
+
+  return cloneDetectionResults(detectionCache.results);
+}
+
+function setCachedResults(signature: string, results: DetectionResult[]): void {
+  detectionCache = {
+    createdAt: Date.now(),
+    signature,
+    results: cloneDetectionResults(results),
+  };
+}
+
 /** Detect if a provider has project-level config in the given directory */
 export function detectProjectProvider(provider: Provider, projectDir: string): boolean {
   if (!provider.pathProject) return false;
-  return existsSync(join(projectDir, provider.pathProject));
+  return existsSync(resolveProviderProjectPath(provider, projectDir));
 }
 
 /**
@@ -146,9 +208,18 @@ export function detectProjectProvider(provider: Provider, projectDir: string): b
  * console.log(`${installed.length} agents detected`);
  * ```
  */
-export function detectAllProviders(): DetectionResult[] {
+export function detectAllProviders(options: DetectionCacheOptions = {}): DetectionResult[] {
   const providers = getAllProviders();
-  return providers.map(detectProvider);
+  const signature = buildProvidersSignature(providers);
+  const cached = getCachedResults(signature, options);
+  if (cached) {
+    debug(`detection cache hit for ${providers.length} providers`);
+    return cached;
+  }
+
+  const results = providers.map(detectProvider);
+  setCachedResults(signature, results);
+  return cloneDetectionResults(results);
 }
 
 /**
@@ -165,8 +236,8 @@ export function detectAllProviders(): DetectionResult[] {
  * console.log(installed.map(p => p.toolName).join(", "));
  * ```
  */
-export function getInstalledProviders(): Provider[] {
-  return detectAllProviders()
+export function getInstalledProviders(options: DetectionCacheOptions = {}): Provider[] {
+  return detectAllProviders(options)
     .filter((r) => r.installed)
     .map((r) => r.provider);
 }
@@ -190,10 +261,14 @@ export function getInstalledProviders(): Provider[] {
  * }
  * ```
  */
-export function detectProjectProviders(projectDir: string): DetectionResult[] {
-  const results = detectAllProviders();
+export function detectProjectProviders(projectDir: string, options: DetectionCacheOptions = {}): DetectionResult[] {
+  const results = detectAllProviders(options);
   return results.map((r) => ({
     ...r,
     projectDetected: detectProjectProvider(r.provider, projectDir),
   }));
+}
+
+export function resetDetectionCache(): void {
+  detectionCache = null;
 }

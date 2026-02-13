@@ -7,6 +7,7 @@ import pc from "picocolors";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
 import { listMcpServers } from "../../core/mcp/reader.js";
+import { resolvePreferredConfigScope } from "../../core/paths/standard.js";
 import type { McpServerEntry } from "../../types.js";
 
 export function registerMcpList(parent: Command): void {
@@ -24,12 +25,7 @@ export function registerMcpList(parent: Command): void {
       const allEntries: McpServerEntry[] = [];
 
       for (const provider of providers) {
-        // With --global, use global. Otherwise use project if provider supports it, else global.
-        const scope: "project" | "global" = opts.global
-          ? "global"
-          : provider.configPathProject
-            ? "project"
-            : "global";
+        const scope = resolvePreferredConfigScope(provider, opts.global);
 
         const entries = await listMcpServers(provider, scope);
         allEntries.push(...entries);

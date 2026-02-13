@@ -14,36 +14,9 @@ import { cloneRepo } from "../../core/sources/github.js";
 import { cloneGitLabRepo } from "../../core/sources/gitlab.js";
 import { MarketplaceClient } from "../../core/marketplace/client.js";
 import { formatNetworkError } from "../../core/network/fetch.js";
+import { buildSkillSubPathCandidates } from "../../core/paths/standard.js";
 import type { MarketplaceResult } from "../../core/marketplace/types.js";
 import type { Provider, SourceType } from "../../types.js";
-
-function normalizeSkillSubPath(path: string | undefined): string | undefined {
-  if (!path) return undefined;
-  const normalized = path.replace(/\\/g, "/").replace(/^\/+/, "").replace(/\/SKILL\.md$/i, "").trim();
-  return normalized.length > 0 ? normalized : undefined;
-}
-
-function marketplacePathCandidates(skillPath: string | undefined, parsedPath: string | undefined): (string | undefined)[] {
-  const candidates: (string | undefined)[] = [];
-  const base = normalizeSkillSubPath(skillPath);
-  const parsed = normalizeSkillSubPath(parsedPath);
-
-  if (base) candidates.push(base);
-  if (parsed) candidates.push(parsed);
-
-  if (base && base.startsWith("skills/") && !base.startsWith(".claude/")) {
-    candidates.push(`.claude/${base}`);
-  }
-  if (parsed && parsed.startsWith("skills/") && !parsed.startsWith(".claude/")) {
-    candidates.push(`.claude/${parsed}`);
-  }
-
-  if (candidates.length === 0) {
-    candidates.push(undefined);
-  }
-
-  return Array.from(new Set(candidates));
-}
 
 export function registerSkillsInstall(parent: Command): void {
   parent
@@ -113,7 +86,7 @@ export function registerSkillsInstall(parent: Command): void {
         }
 
         try {
-          const subPathCandidates = marketplacePathCandidates(skill.path, parsed.path);
+          const subPathCandidates = buildSkillSubPathCandidates(skill.path, parsed.path);
           let cloneError: unknown;
           let cloned = false;
 

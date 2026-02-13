@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-02-12
+
+### Documentation
+- Sweep hardcoded path literals and align docs (T118)
+
+### Refactoring
+- Centralize provider path resolution APIs (T116)
+
+### Other Changes
+- Add detection caching with explicit invalidation (T117)
+
+
 ## [0.4.0] - 2026-02-12
 
 ### Added

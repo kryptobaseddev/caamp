@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { readFile, writeFile, rm, mkdir } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // We test the lock file data structures and utility functions
 // rather than the file I/O functions that depend on specific paths
@@ -31,7 +31,7 @@ describe("Lock File Structure", () => {
       installedAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-02T00:00:00.000Z",
       agents: ["claude-code", "cursor"],
-      canonicalPath: "/home/user/.agents/skills/test-skill",
+      canonicalPath: "/canonical/skills/test-skill",
       isGlobal: true,
     };
 
