@@ -91,9 +91,9 @@
       },
       {
         "version": "v0.4.0",
-        "status": "planned",
+        "status": "released",
         "targetDate": null,
-        "releasedAt": null,
+        "releasedAt": "2026-02-13T01:18:26Z",
         "createdAt": "2026-02-12T18:33:44Z",
         "tasks": [
           "T097",
@@ -111,31 +111,44 @@
           "T109",
           "T110"
         ],
-        "notes": "Minor release for deterministic skills recommendation, LAFS JSON output, and recommendation API exports."
+        "notes": "Minor release for deterministic skills recommendation, LAFS JSON output, and recommendation API exports.",
+        "gitTag": "v0.4.0",
+        "changelog": "## [0.4.0] - 2026-02-12\n\n### Features\n- Skills Recommendation Intelligence (RCSD) (T097)\n\n### Documentation\n- Write recommendation documentation and usage patterns (T106)\n\n### Tests\n- Build unit test suite for parser, scoring, and reason codes (T107)\n- Build integration and CLI contract tests for recommendation mode (T108)\n- Run release validation gates for v1.0.0 feature readiness (T109)\n\n### Other Changes\n- RCSD-R: Research and retrieval benchmark (T098)\n- RCSD-S: Specification and contracts (T099)\n- RCSD-D: Decomposition and execution plan (T100)\n- Implement query criteria parser and intent normalization (T101)\n- Implement deterministic recommendation scoring engine (T102)\n- Enhance skills find command with recommend/top/select flows (T103)\n- Add LAFS-compliant JSON output for recommendation results (T104)\n- Expose recommendation APIs for external tool integration (T105)\n- Prepare and execute release shipping workflow to main (T110)"
       },
       {
         "version": "v0.4.1",
-        "status": "planned",
+        "status": "released",
         "targetDate": "2026-02-20",
-        "releasedAt": null,
+        "releasedAt": "2026-02-13T01:18:34Z",
         "createdAt": "2026-02-13T01:02:02Z",
         "tasks": [
           "T116",
           "T117",
           "T118"
         ],
+        "notes": null,
+        "gitTag": "v0.4.1",
+        "changelog": "## [0.4.1] - 2026-02-12\n\n### Documentation\n- Sweep hardcoded path literals and align docs (T118)\n\n### Refactoring\n- Centralize provider path resolution APIs (T116)\n\n### Other Changes\n- Add detection caching with explicit invalidation (T117)"
+      },
+      {
+        "version": "v0.5.0",
+        "status": "planned",
+        "targetDate": null,
+        "releasedAt": null,
+        "createdAt": "2026-02-13T04:38:17Z",
+        "tasks": [],
         "notes": null
       }
     ]
   },
-  "lastUpdated": "2026-02-13T01:02:56Z",
+  "lastUpdated": "2026-02-13T04:38:17Z",
   "_meta": {
     "schemaVersion": "2.10.0",
     "checksum": "e1f5538c9b7b1f46",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 277,
+    "generation": 282,
     "lastModified": "2026-02-12T17:52:02Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 7
