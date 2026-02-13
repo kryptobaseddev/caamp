@@ -31,7 +31,7 @@ export type {
 } from "./types.js";
 
 // Result types from core modules
-export type { DetectionResult } from "./core/registry/detection.js";
+export type { DetectionResult, DetectionCacheOptions } from "./core/registry/detection.js";
 export type { InstallResult } from "./core/mcp/installer.js";
 export type { SkillInstallResult } from "./core/skills/installer.js";
 export type { ValidationResult, ValidationIssue } from "./core/skills/validator.js";
@@ -82,7 +82,18 @@ export {
   detectAllProviders,
   getInstalledProviders,
   detectProjectProviders,
+  resetDetectionCache,
 } from "./core/registry/detection.js";
+
+// Canonical path utilities
+export {
+  getAgentsHome,
+  getProjectAgentsDir,
+  getCanonicalSkillsDir,
+  getLockFilePath,
+  getPlatformLocations,
+  resolveRegistryTemplatePath,
+} from "./core/paths/standard.js";
 
 // Source parsing
 export { parseSource, isMarketplaceScoped } from "./core/sources/parser.js";

@@ -8,7 +8,7 @@ import { discoverSkills, discoverSkillsMulti } from "../../core/skills/discovery
 import { listCanonicalSkills } from "../../core/skills/installer.js";
 import { getProvider } from "../../core/registry/providers.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
-import { join } from "node:path";
+import { resolveProviderSkillsDir } from "../../core/paths/standard.js";
 
 export function registerSkillsList(parent: Command): void {
   parent
@@ -27,17 +27,17 @@ export function registerSkillsList(parent: Command): void {
           process.exit(1);
         }
         dirs = opts.global
-          ? [provider.pathSkills]
-          : [join(process.cwd(), provider.pathProjectSkills)];
+          ? [resolveProviderSkillsDir(provider, "global")]
+          : [resolveProviderSkillsDir(provider, "project")];
       } else if (opts.global) {
         // List from all installed providers' global skill dirs
         const providers = getInstalledProviders();
-        dirs = providers.map((p) => p.pathSkills).filter(Boolean);
+        dirs = providers.map((p) => resolveProviderSkillsDir(p, "global")).filter(Boolean);
       } else {
         // List from all installed providers' project skill dirs
         const providers = getInstalledProviders();
         dirs = providers
-          .map((p) => join(process.cwd(), p.pathProjectSkills))
+          .map((p) => resolveProviderSkillsDir(p, "project"))
           .filter(Boolean);
       }
 

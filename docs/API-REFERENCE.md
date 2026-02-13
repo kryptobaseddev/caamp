@@ -255,6 +255,8 @@ interface GlobalOptions {
   all?: boolean;
   json?: boolean;
   dryRun?: boolean;
+  verbose?: boolean;
+  quiet?: boolean;
 }
 ```
 
@@ -266,6 +268,8 @@ interface GlobalOptions {
 | `all` | `boolean` | Target all providers |
 | `json` | `boolean` | Output as JSON |
 | `dryRun` | `boolean` | Preview without writing |
+| `verbose` | `boolean` | Enable debug output |
+| `quiet` | `boolean` | Suppress non-error output |
 
 #### `AuditSeverity`
 
@@ -346,7 +350,7 @@ interface SkillInstallResult {
 | Property | Type | Description |
 |----------|------|-------------|
 | `name` | `string` | Skill name |
-| `canonicalPath` | `string` | Path to canonical copy at `~/.agents/skills/<name>/` |
+| `canonicalPath` | `string` | Path to canonical copy at `getCanonicalSkillsDir()/&lt;name&gt;` (default `~/.agents/skills/<name>/`) |
 | `linkedAgents` | `string[]` | Provider IDs successfully linked |
 | `errors` | `string[]` | Error messages from failed links |
 | `success` | `boolean` | True if at least one agent was linked |
@@ -495,7 +499,7 @@ interface LockEntry {
 
 #### `CaampLockFile`
 
-Top-level lock file structure at `~/.agents/.caamp-lock.json`.
+Top-level lock file structure at `getLockFilePath()` (default `~/.agents/.caamp-lock.json`).
 
 ```typescript
 interface CaampLockFile {
@@ -912,10 +916,14 @@ console.log(result.methods);   // ["binary"]
 Runs detection for all registered providers.
 
 ```typescript
-function detectAllProviders(): DetectionResult[]
+function detectAllProviders(options?: { forceRefresh?: boolean; ttlMs?: number }): DetectionResult[]
 ```
 
-**Parameters**: None
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `options` | `{ forceRefresh?: boolean; ttlMs?: number }` | Optional cache controls for detection reuse |
 
 **Returns**: `DetectionResult[]` -- Detection results for every provider.
 
@@ -934,10 +942,14 @@ console.log(`${installed.length} agents detected`);
 Returns only providers detected as installed on the system.
 
 ```typescript
-function getInstalledProviders(): Provider[]
+function getInstalledProviders(options?: { forceRefresh?: boolean; ttlMs?: number }): Provider[]
 ```
 
-**Parameters**: None
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `options` | `{ forceRefresh?: boolean; ttlMs?: number }` | Optional cache controls for detection reuse |
 
 **Returns**: `Provider[]` -- Installed providers.
 
@@ -955,7 +967,7 @@ const installed = getInstalledProviders();
 Detects all providers and also checks for project-level configuration in the given directory.
 
 ```typescript
-function detectProjectProviders(projectDir: string): DetectionResult[]
+function detectProjectProviders(projectDir: string, options?: { forceRefresh?: boolean; ttlMs?: number }): DetectionResult[]
 ```
 
 **Parameters**:
@@ -963,6 +975,7 @@ function detectProjectProviders(projectDir: string): DetectionResult[]
 | Name | Type | Description |
 |------|------|-------------|
 | `projectDir` | `string` | Directory to check for project-level configs |
+| `options` | `{ forceRefresh?: boolean; ttlMs?: number }` | Optional cache controls for detection reuse |
 
 **Returns**: `DetectionResult[]` -- Detection results with `projectDetected` populated.
 
@@ -971,6 +984,50 @@ import { detectProjectProviders } from "@cleocode/caamp";
 
 const results = detectProjectProviders("/path/to/project");
 const projectConfigured = results.filter(r => r.projectDetected);
+```
+
+---
+
+### `resetDetectionCache()`
+
+Clears in-memory provider detection cache.
+
+```typescript
+function resetDetectionCache(): void
+```
+
+**Parameters**: None
+
+**Returns**: `void`
+
+---
+
+### `getAgentsHome()`
+
+Resolves canonical global `.agents` directory, honoring `AGENTS_HOME` when set.
+
+```typescript
+function getAgentsHome(): string
+```
+
+---
+
+### `getCanonicalSkillsDir()`
+
+Returns canonical global skills directory used for install-then-symlink flow.
+
+```typescript
+function getCanonicalSkillsDir(): string
+```
+
+---
+
+### `getLockFilePath()`
+
+Returns canonical CAAMP lock file path.
+
+```typescript
+function getLockFilePath(): string
 ```
 
 ---
@@ -1288,7 +1345,7 @@ const removed = await removeMcpServer(claude, "old-server", "project");
 
 ## MCP -- Lock File
 
-Functions for tracking MCP server installations in the shared lock file (`~/.agents/.caamp-lock.json`).
+Functions for tracking MCP server installations in the shared lock file (`getLockFilePath()`).
 
 ### `readLockFile()`
 
@@ -1479,7 +1536,7 @@ Functions for installing and removing agent skills.
 
 ### `installSkill()`
 
-Installs a skill from a local path: copies to the canonical location (`~/.agents/skills/<name>/`) and creates symlinks in each target provider's skills directory.
+Installs a skill from a local path: copies to the canonical location (`getCanonicalSkillsDir()/&lt;name&gt;`) and creates symlinks in each target provider's skills directory.
 
 ```typescript
 async function installSkill(
@@ -1514,7 +1571,7 @@ const result = await installSkill(
   true
 );
 
-console.log(result.canonicalPath); // "~/.agents/skills/my-skill/"
+console.log(result.canonicalPath); // e.g. "<AGENTS_HOME>/skills/my-skill/"
 console.log(result.linkedAgents);  // ["claude-code", "cursor"]
 ```
 
@@ -1558,7 +1615,7 @@ const { removed, errors } = await removeSkill(
 
 ### `listCanonicalSkills()`
 
-Lists all skill names installed in the canonical directory (`~/.agents/skills/`).
+Lists all skill names installed in the canonical directory (`getCanonicalSkillsDir()`).
 
 ```typescript
 async function listCanonicalSkills(): Promise<string[]>
@@ -1652,9 +1709,9 @@ async function discoverSkills(rootDir: string): Promise<SkillEntry[]>
 **Returns**: `Promise<SkillEntry[]>` -- Array of discovered skills.
 
 ```typescript
-import { discoverSkills } from "@cleocode/caamp";
+import { discoverSkills, getCanonicalSkillsDir } from "@cleocode/caamp";
 
-const skills = await discoverSkills("~/.agents/skills");
+const skills = await discoverSkills(getCanonicalSkillsDir());
 skills.forEach(s => console.log(`${s.scopedName}: ${s.metadata.description}`));
 ```
 
@@ -1746,9 +1803,9 @@ async function scanDirectory(dirPath: string): Promise<AuditResult[]>
 **Returns**: `Promise<AuditResult[]>` -- Array of audit results, one per scanned SKILL.md.
 
 ```typescript
-import { scanDirectory } from "@cleocode/caamp";
+import { scanDirectory, getCanonicalSkillsDir } from "@cleocode/caamp";
 
-const results = await scanDirectory("~/.agents/skills");
+const results = await scanDirectory(getCanonicalSkillsDir());
 const failed = results.filter(r => !r.passed);
 console.log(`${failed.length} skills failed security audit`);
 ```
@@ -1772,10 +1829,10 @@ function toSarif(results: AuditResult[]): object
 **Returns**: `object` -- SARIF-formatted object.
 
 ```typescript
-import { scanDirectory, toSarif } from "@cleocode/caamp";
+import { scanDirectory, toSarif, getCanonicalSkillsDir } from "@cleocode/caamp";
 import { writeFileSync } from "fs";
 
-const results = await scanDirectory("~/.agents/skills");
+const results = await scanDirectory(getCanonicalSkillsDir());
 const sarif = toSarif(results);
 writeFileSync("audit-results.sarif", JSON.stringify(sarif, null, 2));
 ```
@@ -1788,7 +1845,7 @@ Functions for tracking skill installations in the shared lock file.
 
 ### `recordSkillInstall()`
 
-Records a skill installation in the shared lock file (`~/.agents/.caamp-lock.json`). Merges agent lists on re-install and preserves the original `installedAt` timestamp.
+Records a skill installation in the shared lock file (`getLockFilePath()`). Merges agent lists on re-install and preserves the original `installedAt` timestamp.
 
 ```typescript
 async function recordSkillInstall(
@@ -1821,7 +1878,8 @@ async function recordSkillInstall(
 **Returns**: `Promise<void>`
 
 ```typescript
-import { recordSkillInstall } from "@cleocode/caamp";
+import { recordSkillInstall, getCanonicalSkillsDir } from "@cleocode/caamp";
+import { join } from "node:path";
 
 await recordSkillInstall(
   "my-skill",
@@ -1829,7 +1887,7 @@ await recordSkillInstall(
   "github:author/my-skill",
   "github",
   ["claude-code"],
-  "~/.agents/skills/my-skill",
+  join(getCanonicalSkillsDir(), "my-skill"),
   true
 );
 ```

@@ -85,7 +85,9 @@ export async function scanFile(
  *
  * @example
  * ```typescript
- * const results = await scanDirectory("/home/user/.agents/skills");
+ * import { getCanonicalSkillsDir } from "../../paths/standard.js";
+ *
+ * const results = await scanDirectory(getCanonicalSkillsDir());
  * const failing = results.filter(r => !r.passed);
  * ```
  */

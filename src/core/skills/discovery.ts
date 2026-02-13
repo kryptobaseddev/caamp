@@ -67,7 +67,10 @@ export async function parseSkillFile(filePath: string): Promise<SkillMetadata | 
  *
  * @example
  * ```typescript
- * const skill = await discoverSkill("/home/user/.agents/skills/my-skill");
+ * import { getCanonicalSkillsDir } from "../paths/standard.js";
+ * import { join } from "node:path";
+ *
+ * const skill = await discoverSkill(join(getCanonicalSkillsDir(), "my-skill"));
  * if (skill) {
  *   console.log(`Found: ${skill.name}`);
  * }
@@ -99,7 +102,9 @@ export async function discoverSkill(skillDir: string): Promise<SkillEntry | null
  *
  * @example
  * ```typescript
- * const skills = await discoverSkills("/home/user/.agents/skills");
+ * import { getCanonicalSkillsDir } from "../paths/standard.js";
+ *
+ * const skills = await discoverSkills(getCanonicalSkillsDir());
  * console.log(`Found ${skills.length} skills`);
  * ```
  */

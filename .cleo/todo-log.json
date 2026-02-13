@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 264,
+    "totalEntries": 267,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-12T19:23:06Z",
+    "lastEntry": "2026-02-13T01:02:50Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -6037,6 +6037,120 @@
       "after": {
         "status": "done",
         "completedAt": "2026-02-12T19:23:05Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770944555-26c966",
+      "timestamp": "2026-02-13T01:02:35Z",
+      "action": "task_created",
+      "taskId": "T116",
+      "actor": "system",
+      "details": {
+        "title": "Centralize provider path resolution APIs",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Centralize provider path resolution APIs",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770944561-bac546",
+      "timestamp": "2026-02-13T01:02:41Z",
+      "action": "task_created",
+      "taskId": "T117",
+      "actor": "system",
+      "details": {
+        "title": "Add detection caching with explicit invalidation",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Add detection caching with explicit invalidation",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770944561-129280",
+      "timestamp": "2026-02-13T01:02:41Z",
+      "action": "task_created",
+      "taskId": "T118",
+      "actor": "system",
+      "details": {
+        "title": "Sweep hardcoded path literals and align docs",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Sweep hardcoded path literals and align docs",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_b31456fb3d97",
+      "timestamp": "2026-02-13T01:02:47Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T116",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T01:02:46Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_8feb4868c215",
+      "timestamp": "2026-02-13T01:02:48Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T117",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T01:02:48Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_ce10c53e413b",
+      "timestamp": "2026-02-13T01:02:50Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T118",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T01:02:49Z"
       },
       "details": {
         "field": "status",
