@@ -143,20 +143,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-13T04:39:30Z",
+  "lastUpdated": "2026-02-13T05:57:43Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "e1f5538c9b7b1f46",
+    "checksum": "25ee5a3b125bf166",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
     "generation": 287,
-    "lastModified": "2026-02-13T05:53:10Z",
+    "lastModified": "2026-02-13T05:58:42Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 7
+    "activeSessionCount": 6
   },
   "focus": {
-    "currentTask": "T086",
+    "currentTask": "T093",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -2936,12 +2936,12 @@
     {
       "id": "T086",
       "title": "Release Coverage Remediation to 80%",
-      "status": "active",
+      "status": "pending",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-13T05:53:10Z",
+      "updatedAt": "2026-02-13T05:57:56Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -3230,12 +3230,12 @@
     {
       "id": "T093",
       "title": "Cover config/providers/version modules",
-      "status": "pending",
+      "status": "active",
       "priority": "medium",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-13T05:58:42Z",
       "size": "medium",
       "position": 20,
       "positionVersion": 0,
@@ -4349,6 +4349,108 @@
         "lastUpdated": "2026-02-13T01:02:49Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T119",
+      "title": "Skills Lock File Bugs & Naming Fix",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-13T05:57:15Z",
+      "updatedAt": "2026-02-13T05:57:15Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:15 UTC: Fix 3 lock file recording bugs and 1 naming mismatch found during CAAMP skills system audit. All are CAAMP-side bugs (install.ts and lock.ts). The ct-contribution naming is correct in ct-skills package; the old contribution-protocol name was legacy."
+      ]
+    },
+    {
+      "id": "T120",
+      "title": "Fix scopedName using raw CLI input in skills install",
+      "status": "pending",
+      "priority": "high",
+      "type": "subtask",
+      "parentId": "T119",
+      "createdAt": "2026-02-13T05:57:32Z",
+      "updatedAt": "2026-02-13T05:58:42Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:32 UTC: install.ts:266 passes 'source' (raw CLI arg) as scopedName to recordSkillInstall. Should pass 'sourceValue' which contains the proper scoped name like '@cleocode/ct-skills:ct-task-executor'. Profile path at line 93-101 does this correctly."
+      ]
+    },
+    {
+      "id": "T121",
+      "title": "Fix isGlobal defaulting to false for catalog installs",
+      "status": "pending",
+      "priority": "high",
+      "type": "subtask",
+      "parentId": "T119",
+      "createdAt": "2026-02-13T05:57:33Z",
+      "updatedAt": "2026-02-13T05:57:33Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:33 UTC: install.ts:271 uses 'opts.global ?? false'. Catalog package installs should always be global since skills come from an npm package, not a project directory. Profile path at line 88 has the same issue. Should default to true when sourceType is 'package'."
+      ]
+    },
+    {
+      "id": "T122",
+      "title": "Fix lock file re-install overwriting metadata instead of merging",
+      "status": "pending",
+      "priority": "high",
+      "type": "subtask",
+      "parentId": "T119",
+      "createdAt": "2026-02-13T05:57:33Z",
+      "updatedAt": "2026-02-13T05:57:33Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:33 UTC: lock.ts:54-67 overwrites scopedName and isGlobal on re-install. When a skill already exists in the lock, these fields should preserve the existing values unless the new values are explicitly different and more specific. Agent list merge is correct (Set union)."
+      ]
+    },
+    {
+      "id": "T123",
+      "title": "Rename contribution-protocol to ct-contribution in canonical install",
+      "status": "pending",
+      "priority": "medium",
+      "type": "subtask",
+      "parentId": "T119",
+      "createdAt": "2026-02-13T05:57:34Z",
+      "updatedAt": "2026-02-13T05:57:34Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:34 UTC: The ct-skills package uses 'ct-contribution' (consistent ct- prefix). The canonical install at ~/.agents/skills/ has the old name 'contribution-protocol' from legacy ~/.cleo/skills/. Need to: rename canonical dir, update all 6 provider symlinks, update lock file entry. This is a data fix, not a code fix."
+      ]
+    },
+    {
+      "id": "T124",
+      "title": "Add skills health check to doctor command",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T038",
+      "createdAt": "2026-02-13T05:57:43Z",
+      "updatedAt": "2026-02-13T05:57:43Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-13 05:57:43 UTC: The doctor command exists but doesn't check skills system integrity. Need checks for: orphaned lock entries (lock says skill exists, canonical dir missing), untracked skills (canonical dir exists, no lock entry), stale/broken symlinks in provider directories, lock vs agent-list mismatch (lock says 6 agents, only 3 have symlinks), canonical path validation. Found during CAAMP audit session."
+      ]
     }
   ],
   "labels": {}

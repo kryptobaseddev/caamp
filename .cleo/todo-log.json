@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 268,
+    "totalEntries": 300,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-13T05:53:10Z",
+    "lastEntry": "2026-02-13T05:58:42Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -6169,6 +6169,170 @@
       },
       "after": {
         "currentTask": "T086"
+      },
+      "details": null
+    },
+    {
+      "id": "log-1770962235-249516",
+      "timestamp": "2026-02-13T05:57:15Z",
+      "action": "task_created",
+      "taskId": "T119",
+      "actor": "system",
+      "details": {
+        "title": "Skills Lock File Bugs & Naming Fix",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Skills Lock File Bugs & Naming Fix",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962252-cbc4f9",
+      "timestamp": "2026-02-13T05:57:32Z",
+      "action": "task_created",
+      "taskId": "T120",
+      "actor": "system",
+      "details": {
+        "title": "Fix scopedName using raw CLI input in skills install",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix scopedName using raw CLI input in skills install",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962253-092116",
+      "timestamp": "2026-02-13T05:57:33Z",
+      "action": "task_created",
+      "taskId": "T121",
+      "actor": "system",
+      "details": {
+        "title": "Fix isGlobal defaulting to false for catalog installs",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix isGlobal defaulting to false for catalog installs",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962253-40b10d",
+      "timestamp": "2026-02-13T05:57:33Z",
+      "action": "task_created",
+      "taskId": "T122",
+      "actor": "system",
+      "details": {
+        "title": "Fix lock file re-install overwriting metadata instead of merging",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix lock file re-install overwriting metadata instead of merging",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962254-80f475",
+      "timestamp": "2026-02-13T05:57:34Z",
+      "action": "task_created",
+      "taskId": "T123",
+      "actor": "system",
+      "details": {
+        "title": "Rename contribution-protocol to ct-contribution in canonical install",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Rename contribution-protocol to ct-contribution in canonical install",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770962263-4399d4",
+      "timestamp": "2026-02-13T05:57:43Z",
+      "action": "task_created",
+      "taskId": "T124",
+      "actor": "system",
+      "details": {
+        "title": "Add skills health check to doctor command",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add skills health check to doctor command",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e5c78ce30799",
+      "timestamp": "2026-02-13T05:57:56Z",
+      "sessionId": "session_20260211_175845_6f6edb",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Switching to skills bug fixes"
+      }
+    },
+    {
+      "id": "log_cf14b9b95975",
+      "timestamp": "2026-02-13T05:58:05Z",
+      "sessionId": "session_20260211_181734_1c0d6e",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Pausing for skills bug fixes"
+      }
+    },
+    {
+      "id": "log_8125e49844ce",
+      "timestamp": "2026-02-13T05:58:06Z",
+      "sessionId": "session_20260212_215806_3ef927",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T120",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log_75bffca0a43f",
+      "timestamp": "2026-02-13T05:58:42Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T120"
+      },
+      "after": {
+        "currentTask": "T093"
       },
       "details": null
     }
