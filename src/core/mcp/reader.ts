@@ -5,12 +5,12 @@
  * Provides the programmatic API that CLI commands delegate to.
  */
 
-import { join } from "node:path";
 import { existsSync } from "node:fs";
 import type { Provider, McpServerEntry } from "../../types.js";
 import { readConfig, removeConfig } from "../formats/index.js";
 import { getNestedValue } from "../formats/utils.js";
 import { debug } from "../logger.js";
+import { resolveProviderConfigPath } from "../paths/standard.js";
 
 /**
  * Resolve the absolute config file path for a provider and scope.
@@ -26,7 +26,7 @@ import { debug } from "../logger.js";
  * @example
  * ```typescript
  * const path = resolveConfigPath(provider, "project", "/home/user/my-project");
- * // "/home/user/my-project/.claude/settings.json"
+ * // Returns provider-specific project config path
  * ```
  */
 export function resolveConfigPath(
@@ -34,11 +34,7 @@ export function resolveConfigPath(
   scope: "project" | "global",
   projectDir?: string,
 ): string | null {
-  if (scope === "project") {
-    if (!provider.configPathProject) return null;
-    return join(projectDir ?? process.cwd(), provider.configPathProject);
-  }
-  return provider.configPathGlobal;
+  return resolveProviderConfigPath(provider, scope, projectDir ?? process.cwd());
 }
 
 /**

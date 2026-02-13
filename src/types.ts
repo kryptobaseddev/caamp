@@ -43,7 +43,7 @@ export type TransportType = "stdio" | "sse" | "http";
  *
  * - `"binary"` - Check if a CLI binary exists on PATH
  * - `"directory"` - Check if known config/data directories exist
- * - `"appBundle"` - Check for macOS .app bundle in /Applications
+ * - `"appBundle"` - Check for macOS .app bundle in standard app directories
  * - `"flatpak"` - Check for Flatpak installation on Linux
  */
 export type DetectionMethod = "binary" | "directory" | "appBundle" | "flatpak";
@@ -278,10 +278,13 @@ export interface SkillMetadata {
  *
  * @example
  * ```typescript
+ * import { getCanonicalSkillsDir } from "./core/paths/standard.js";
+ * import { join } from "node:path";
+ *
  * const entry: SkillEntry = {
  *   name: "my-skill",
  *   scopedName: "my-skill",
- *   path: "/home/user/.agents/skills/my-skill",
+ *   path: join(getCanonicalSkillsDir(), "my-skill"),
  *   metadata: { name: "my-skill", description: "A skill" },
  * };
  * ```
@@ -306,6 +309,9 @@ export interface SkillEntry {
  *
  * @example
  * ```typescript
+ * import { getCanonicalSkillsDir } from "./core/paths/standard.js";
+ * import { join } from "node:path";
+ *
  * const entry: LockEntry = {
  *   name: "my-skill",
  *   scopedName: "my-skill",
@@ -313,7 +319,7 @@ export interface SkillEntry {
  *   sourceType: "github",
  *   installedAt: "2025-01-15T10:30:00.000Z",
  *   agents: ["claude-code", "cursor"],
- *   canonicalPath: "/home/user/.agents/skills/my-skill",
+ *   canonicalPath: join(getCanonicalSkillsDir(), "my-skill"),
  *   isGlobal: true,
  * };
  * ```
@@ -344,7 +350,7 @@ export interface LockEntry {
 }
 
 /**
- * The CAAMP lock file structure, stored at `~/.agents/.caamp-lock.json`.
+ * The CAAMP lock file structure, stored at the resolved canonical lock path.
  *
  * Tracks all installed skills and MCP servers along with their sources,
  * versions, and linked agents.
@@ -586,7 +592,7 @@ export interface InjectionCheckResult {
  *   providerId: "claude-code",
  *   providerName: "Claude Code",
  *   scope: "project",
- *   configPath: "/project/.claude/settings.json",
+ *   configPath: "/project/<provider-project-config>",
  *   config: { command: "npx", args: ["-y", "@mcp/server-filesystem"] },
  * };
  * ```

@@ -1,11 +1,11 @@
 /**
  * Skills lock file management
  *
- * Shares the same lock file as MCP (~/.agents/.caamp-lock.json).
+ * Shares the same canonical lock file as MCP.
  */
 
 import type { LockEntry, SourceType } from "../../types.js";
-import { readLockFile, writeLockFile } from "../lock-utils.js";
+import { readLockFile, updateLockFile } from "../lock-utils.js";
 import { parseSource } from "../sources/parser.js";
 import { simpleGit } from "simple-git";
 
@@ -27,9 +27,12 @@ import { simpleGit } from "simple-git";
  *
  * @example
  * ```typescript
+ * import { getCanonicalSkillsDir } from "../paths/standard.js";
+ * import { join } from "node:path";
+ *
  * await recordSkillInstall(
  *   "my-skill", "my-skill", "owner/repo", "github",
- *   ["claude-code"], "/home/user/.agents/skills/my-skill", true,
+ *   ["claude-code"], join(getCanonicalSkillsDir(), "my-skill"), true,
  * );
  * ```
  */
@@ -44,26 +47,24 @@ export async function recordSkillInstall(
   projectDir?: string,
   version?: string,
 ): Promise<void> {
-  const lock = await readLockFile();
-  const now = new Date().toISOString();
+  await updateLockFile((lock) => {
+    const now = new Date().toISOString();
+    const existing = lock.skills[skillName];
 
-  const existing = lock.skills[skillName];
-
-  lock.skills[skillName] = {
-    name: skillName,
-    scopedName,
-    source,
-    sourceType,
-    version,
-    installedAt: existing?.installedAt ?? now,
-    updatedAt: now,
-    agents: [...new Set([...(existing?.agents ?? []), ...agents])],
-    canonicalPath,
-    isGlobal,
-    projectDir,
-  };
-
-  await writeLockFile(lock);
+    lock.skills[skillName] = {
+      name: skillName,
+      scopedName,
+      source,
+      sourceType,
+      version,
+      installedAt: existing?.installedAt ?? now,
+      updatedAt: now,
+      agents: [...new Set([...(existing?.agents ?? []), ...agents])],
+      canonicalPath,
+      isGlobal,
+      projectDir,
+    };
+  });
 }
 
 /**
@@ -78,12 +79,13 @@ export async function recordSkillInstall(
  * ```
  */
 export async function removeSkillFromLock(skillName: string): Promise<boolean> {
-  const lock = await readLockFile();
-  if (!(skillName in lock.skills)) return false;
-
-  delete lock.skills[skillName];
-  await writeLockFile(lock);
-  return true;
+  let removed = false;
+  await updateLockFile((lock) => {
+    if (!(skillName in lock.skills)) return;
+    delete lock.skills[skillName];
+    removed = true;
+  });
+  return removed;
 }
 
 /**

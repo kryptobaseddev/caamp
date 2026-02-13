@@ -5,85 +5,21 @@
  * platform-specific paths at runtime.
  */
 
-import { readFileSync, existsSync } from "node:fs";
-import { homedir } from "node:os";
-import { join, dirname } from "node:path";
+import { readFileSync } from "node:fs";
+import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Provider, ConfigFormat, TransportType, ProviderPriority, ProviderStatus, DetectionMethod } from "../../types.js";
 import type { ProviderRegistry, RegistryProvider } from "./types.js";
+import { resolveProvidersRegistryPath, resolveRegistryTemplatePath } from "../paths/standard.js";
 
 function findRegistryPath(): string {
   const thisDir = dirname(fileURLToPath(import.meta.url));
-
-  // Development: src/core/registry/ -> ../../.. -> providers/registry.json
-  const devPath = join(thisDir, "..", "..", "..", "providers", "registry.json");
-  if (existsSync(devPath)) return devPath;
-
-  // Bundled: dist/ -> .. -> providers/registry.json
-  const distPath = join(thisDir, "..", "providers", "registry.json");
-  if (existsSync(distPath)) return distPath;
-
-  // Fallback: traverse up until we find it
-  let dir = thisDir;
-  for (let i = 0; i < 5; i++) {
-    const candidate = join(dir, "providers", "registry.json");
-    if (existsSync(candidate)) return candidate;
-    dir = dirname(dir);
-  }
-
-  throw new Error(`Cannot find providers/registry.json (searched from ${thisDir})`);
+  return resolveProvidersRegistryPath(thisDir);
 }
 
 let _registry: ProviderRegistry | null = null;
 let _providers: Map<string, Provider> | null = null;
 let _aliasMap: Map<string, string> | null = null;
-
-function getPlatformPaths(): {
-  config: string;
-  vscodeConfig: string;
-  zedConfig: string;
-  claudeDesktopConfig: string;
-} {
-  const home = homedir();
-  const platform = process.platform;
-
-  if (platform === "win32") {
-    const appData = process.env["APPDATA"] ?? join(home, "AppData", "Roaming");
-    return {
-      config: appData,
-      vscodeConfig: join(appData, "Code", "User"),
-      zedConfig: join(appData, "Zed"),
-      claudeDesktopConfig: join(appData, "Claude"),
-    };
-  } else if (platform === "darwin") {
-    return {
-      config: process.env["XDG_CONFIG_HOME"] ?? join(home, ".config"),
-      vscodeConfig: join(home, "Library", "Application Support", "Code", "User"),
-      zedConfig: join(home, "Library", "Application Support", "Zed"),
-      claudeDesktopConfig: join(home, "Library", "Application Support", "Claude"),
-    };
-  } else {
-    const config = process.env["XDG_CONFIG_HOME"] ?? join(home, ".config");
-    return {
-      config,
-      vscodeConfig: join(config, "Code", "User"),
-      zedConfig: join(config, "zed"),
-      claudeDesktopConfig: join(config, "Claude"),
-    };
-  }
-}
-
-function resolvePath(template: string): string {
-  const home = homedir();
-  const paths = getPlatformPaths();
-
-  return template
-    .replace(/\$HOME/g, home)
-    .replace(/\$CONFIG/g, paths.config)
-    .replace(/\$VSCODE_CONFIG/g, paths.vscodeConfig)
-    .replace(/\$ZED_CONFIG/g, paths.zedConfig)
-    .replace(/\$CLAUDE_DESKTOP_CONFIG/g, paths.claudeDesktopConfig);
-}
 
 function resolveProvider(raw: RegistryProvider): Provider {
   return {
@@ -92,19 +28,19 @@ function resolveProvider(raw: RegistryProvider): Provider {
     vendor: raw.vendor,
     agentFlag: raw.agentFlag,
     aliases: raw.aliases,
-    pathGlobal: resolvePath(raw.pathGlobal),
+    pathGlobal: resolveRegistryTemplatePath(raw.pathGlobal),
     pathProject: raw.pathProject,
     instructFile: raw.instructFile,
     configKey: raw.configKey,
     configFormat: raw.configFormat as ConfigFormat,
-    configPathGlobal: resolvePath(raw.configPathGlobal),
+    configPathGlobal: resolveRegistryTemplatePath(raw.configPathGlobal),
     configPathProject: raw.configPathProject,
-    pathSkills: resolvePath(raw.pathSkills),
+    pathSkills: resolveRegistryTemplatePath(raw.pathSkills),
     pathProjectSkills: raw.pathProjectSkills,
     detection: {
       methods: raw.detection.methods as DetectionMethod[],
       binary: raw.detection.binary,
-      directories: raw.detection.directories?.map(resolvePath),
+      directories: raw.detection.directories?.map(resolveRegistryTemplatePath),
       appBundle: raw.detection.appBundle,
       flatpakId: raw.detection.flatpakId,
     },
