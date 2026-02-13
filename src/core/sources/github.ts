@@ -8,7 +8,7 @@ import { simpleGit } from "simple-git";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { fetchWithTimeout } from "../network/fetch.js";
 
 export interface GitFetchResult {
   localPath: string;
@@ -58,7 +58,7 @@ export async function fetchRawFile(
   const url = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetchWithTimeout(url);
     if (!response.ok) return null;
     return await response.text();
   } catch {
@@ -69,7 +69,7 @@ export async function fetchRawFile(
 /** Check if a GitHub repo exists */
 export async function repoExists(owner: string, repo: string): Promise<boolean> {
   try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+    const response = await fetchWithTimeout(`https://api.github.com/repos/${owner}/${repo}`, {
       method: "HEAD",
     });
     return response.ok;

@@ -32,6 +32,7 @@ This specification covers:
 - Marketplace integration via the adapter pattern
 - Source URL/path classification
 - Instruction file marker-based injection
+- LAFS adoption profile and compliance mapping
 - Lock file schema and operations
 - Library API surface (57 exports)
 - CLI command structure
@@ -47,6 +48,14 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 - **Level 3 (Full)**: Marketplace integration, instruction injection, lock file tracking
 
 A conforming implementation MUST support Level 1. It SHOULD support Level 2. It MAY support Level 3.
+
+### 1.4 LAFS Baseline Requirement
+
+CAAMP adopts the LLM-Agent-First Specification (LAFS) as a normative default for agent-facing outputs.
+
+- Canonical protocol source: `https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md`.
+- Package source: `@cleocode/lafs-protocol`.
+- CAAMP adoption and evidence mapping: `docs/LAFS-COMPLIANCE.md`.
 
 ---
 
@@ -69,6 +78,8 @@ A conforming implementation MUST support Level 1. It SHOULD support Level 2. It 
 | **Marketplace** | An external API for discovering and searching published skills (agentskills.in, skills.sh) |
 | **Transform** | A function that converts canonical `McpServerConfig` to a provider-specific config shape |
 | **Config Format** | One of `json`, `jsonc`, `yaml`, or `toml` |
+| **LAFS** | External protocol reference. Canonical source: `https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md` |
+| **MVI** | Defined by LAFS. CAAMP adopts it through the LAFS compliance profile |
 
 ---
 

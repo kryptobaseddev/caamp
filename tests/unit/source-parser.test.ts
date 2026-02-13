@@ -69,6 +69,18 @@ describe("Source Parser", () => {
       expect(parseSource("~/skills").type).toBe("local");
     });
 
+    it("infers basename from local paths (not full path)", () => {
+      expect(parseSource("./my-skill").inferredName).toBe("my-skill");
+      expect(parseSource("../skills/ct-research").inferredName).toBe("ct-research");
+      expect(parseSource("/home/user/skills/my-skill").inferredName).toBe("my-skill");
+      expect(parseSource("~/skills/another-skill").inferredName).toBe("another-skill");
+    });
+
+    it("handles trailing slashes in local paths", () => {
+      expect(parseSource("./my-skill/").inferredName).toBe("my-skill");
+      expect(parseSource("/path/to/skill//").inferredName).toBe("skill");
+    });
+
     it("treats multi-word strings as commands", () => {
       const result = parseSource("npx -y @modelcontextprotocol/server-postgres");
       expect(result.type).toBe("command");

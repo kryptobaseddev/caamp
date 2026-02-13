@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { rm, mkdir, writeFile, readFile } from "node:fs/promises";
+import { rm, mkdir, writeFile, mkdtemp } from "node:fs/promises";
 import { existsSync, lstatSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { randomUUID } from "node:crypto";
 import { installToCanonical, listCanonicalSkills } from "../../src/core/skills/installer.js";
 import { validateSkill } from "../../src/core/skills/validator.js";
 
 let testDir: string;
 
 beforeEach(async () => {
-  testDir = join(tmpdir(), `caamp-test-${Date.now()}`);
-  await mkdir(testDir, { recursive: true });
+  testDir = await mkdtemp(join(tmpdir(), "caamp-test-"));
 });
 
 afterEach(async () => {
@@ -120,7 +120,7 @@ description: Test installation skill
 Test content.
 `);
 
-    const result = await installToCanonical(sourceDir, `test-install-${Date.now()}`);
+    const result = await installToCanonical(sourceDir, `test-install-${randomUUID()}`);
     expect(existsSync(result)).toBe(true);
     expect(existsSync(join(result, "SKILL.md"))).toBe(true);
 

@@ -92,6 +92,87 @@ export function getLockFilePath(): string {
   return join(getAgentsHome(), ".caamp-lock.json");
 }
 
+// ── .agents/ Standard Directory Structure ────────────────────────────
+
+/**
+ * Get the MCP directory within `.agents/`.
+ *
+ * @param scope - `"global"` for `~/.agents/mcp/`, `"project"` for `<project>/.agents/mcp/`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsMcpDir(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "mcp");
+  return join(projectDir ?? process.cwd(), ".agents", "mcp");
+}
+
+/**
+ * Get the MCP servers.json path within `.agents/`.
+ *
+ * Per the `.agents/` standard (Section 9), this is the canonical MCP
+ * server registry that should be checked before legacy per-provider configs.
+ *
+ * @param scope - `"global"` for `~/.agents/mcp/servers.json`, `"project"` for `<project>/.agents/mcp/servers.json`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsMcpServersPath(scope: PathScope = "global", projectDir?: string): string {
+  return join(getAgentsMcpDir(scope, projectDir), "servers.json");
+}
+
+/**
+ * Get the primary AGENTS.md instruction file path within `.agents/`.
+ *
+ * @param scope - `"global"` for `~/.agents/AGENTS.md`, `"project"` for `<project>/.agents/AGENTS.md`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsInstructFile(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "AGENTS.md");
+  return join(projectDir ?? process.cwd(), ".agents", "AGENTS.md");
+}
+
+/**
+ * Get the config.toml path within `.agents/`.
+ *
+ * @param scope - `"global"` for `~/.agents/config.toml`, `"project"` for `<project>/.agents/config.toml`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsConfigPath(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "config.toml");
+  return join(projectDir ?? process.cwd(), ".agents", "config.toml");
+}
+
+/**
+ * Get the wiki directory within `.agents/`.
+ *
+ * @param scope - `"global"` or `"project"`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsWikiDir(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "wiki");
+  return join(projectDir ?? process.cwd(), ".agents", "wiki");
+}
+
+/**
+ * Get the spec directory within `.agents/`.
+ *
+ * @param scope - `"global"` or `"project"`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsSpecDir(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "spec");
+  return join(projectDir ?? process.cwd(), ".agents", "spec");
+}
+
+/**
+ * Get the links directory within `.agents/`.
+ *
+ * @param scope - `"global"` or `"project"`
+ * @param projectDir - Project root (defaults to `process.cwd()`)
+ */
+export function getAgentsLinksDir(scope: PathScope = "global", projectDir?: string): string {
+  if (scope === "global") return join(getAgentsHome(), "links");
+  return join(projectDir ?? process.cwd(), ".agents", "links");
+}
+
 export function resolveRegistryTemplatePath(template: string): string {
   const locations = getPlatformLocations();
   return template

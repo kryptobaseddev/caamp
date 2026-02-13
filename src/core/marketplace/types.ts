@@ -8,6 +8,12 @@ export interface MarketplaceAdapter {
   getSkill(scopedName: string): Promise<MarketplaceResult | null>;
 }
 
+/**
+ * Normalized marketplace record returned by all adapters.
+ *
+ * This model captures a single skill listing with enough information
+ * for search display and install resolution to GitHub sources.
+ */
 export interface MarketplaceResult {
   name: string;
   scopedName: string;

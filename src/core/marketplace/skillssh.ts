@@ -6,6 +6,7 @@
  */
 
 import type { MarketplaceAdapter, MarketplaceResult } from "./types.js";
+import { ensureOkResponse, fetchWithTimeout } from "../network/fetch.js";
 
 const API_BASE = "https://skills.sh/api";
 
@@ -41,20 +42,15 @@ export class SkillsShAdapter implements MarketplaceAdapter {
   name = "skills.sh";
 
   async search(query: string, limit = 20): Promise<MarketplaceResult[]> {
-    try {
-      const params = new URLSearchParams({
-        q: query,
-        limit: String(limit),
-      });
+    const params = new URLSearchParams({
+      q: query,
+      limit: String(limit),
+    });
 
-      const response = await fetch(`${API_BASE}/search?${params}`);
-      if (!response.ok) return [];
-
-      const data = (await response.json()) as SkillsShResponse;
-      return data.results.map(toResult);
-    } catch {
-      return [];
-    }
+    const url = `${API_BASE}/search?${params}`;
+    const response = ensureOkResponse(await fetchWithTimeout(url), url);
+    const data = (await response.json()) as SkillsShResponse;
+    return data.results.map(toResult);
   }
 
   async getSkill(scopedName: string): Promise<MarketplaceResult | null> {

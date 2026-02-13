@@ -5,16 +5,16 @@
 import { Command } from "commander";
 import pc from "picocolors";
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, lstatSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, lstatSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { CANONICAL_SKILLS_DIR } from "../core/paths/agents.js";
 import { getAllProviders, getProviderCount } from "../core/registry/providers.js";
 import { detectAllProviders } from "../core/registry/detection.js";
 import { readLockFile } from "../core/mcp/lock.js";
 import { readConfig } from "../core/formats/index.js";
+import { getCaampVersion } from "../core/version.js";
 import type { Provider } from "../types.js";
-
-const CAAMP_VERSION = "0.2.0";
 
 interface CheckResult {
   label: string;
@@ -51,7 +51,7 @@ function checkEnvironment(): SectionResult {
     checks.push({ label: "npm not found", status: "warn" });
   }
 
-  checks.push({ label: `CAAMP v${CAAMP_VERSION}`, status: "pass" });
+  checks.push({ label: `CAAMP v${getCaampVersion()}`, status: "pass" });
   checks.push({ label: `${process.platform} ${process.arch}`, status: "pass" });
 
   return { name: "Environment", checks };
@@ -119,7 +119,7 @@ function checkInstalledProviders(): SectionResult {
 function checkSkillSymlinks(): SectionResult {
   const checks: CheckResult[] = [];
 
-  const canonicalDir = join(homedir(), ".agents", "skills");
+  const canonicalDir = CANONICAL_SKILLS_DIR;
 
   if (!existsSync(canonicalDir)) {
     checks.push({ label: "0 canonical skills", status: "pass" });
@@ -323,7 +323,7 @@ export function registerDoctorCommand(program: Command): void {
 
       if (opts.json) {
         const output: JsonOutput = {
-          version: CAAMP_VERSION,
+          version: getCaampVersion(),
           sections: sections.map((s) => ({
             name: s.name,
             checks: s.checks,
