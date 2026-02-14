@@ -12,14 +12,15 @@ import { registerInstructionsCommands } from "./commands/instructions/index.js";
 import { registerConfigCommand } from "./commands/config.js";
 import { registerDoctorCommand } from "./commands/doctor.js";
 import { registerAdvancedCommands } from "./commands/advanced/index.js";
-import { setVerbose, setQuiet } from "./core/logger.js";
+import { isVerbose, setVerbose, setQuiet } from "./core/logger.js";
+import { getCaampVersion } from "./core/version.js";
 
 const program = new Command();
 
 program
   .name("caamp")
   .description("Central AI Agent Managed Packages - unified provider registry and package manager")
-  .version("0.3.0")
+  .version(getCaampVersion())
   .option("-v, --verbose", "Show debug output")
   .option("-q, --quiet", "Suppress non-error output");
 
@@ -38,4 +39,34 @@ registerConfigCommand(program);
 registerDoctorCommand(program);
 registerAdvancedCommands(program);
 
-program.parse();
+function toError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  return new Error(String(error));
+}
+
+function handleFatal(error: unknown, source: "uncaughtException" | "unhandledRejection" | "cli"): void {
+  const normalized = toError(error);
+  console.error(`Fatal error (${source}): ${normalized.message}`);
+  if (isVerbose() && normalized.stack) {
+    console.error(normalized.stack);
+  }
+}
+
+process.on("uncaughtException", (error) => {
+  handleFatal(error, "uncaughtException");
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  handleFatal(reason, "unhandledRejection");
+  process.exit(1);
+});
+
+async function main(): Promise<void> {
+  await program.parseAsync(process.argv);
+}
+
+main().catch((error) => {
+  handleFatal(error, "cli");
+  process.exit(1);
+});

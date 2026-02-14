@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 267,
+    "totalEntries": 325,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-13T01:02:50Z",
+    "lastEntry": "2026-02-13T06:03:33Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -6155,6 +6155,928 @@
       "details": {
         "field": "status",
         "operation": "complete"
+      }
+    },
+    {
+      "id": "log_800e12302d95",
+      "timestamp": "2026-02-13T05:53:10Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T086"
+      },
+      "after": {
+        "currentTask": "T086"
+      },
+      "details": null
+    },
+    {
+      "id": "log-1770962235-249516",
+      "timestamp": "2026-02-13T05:57:15Z",
+      "action": "task_created",
+      "taskId": "T119",
+      "actor": "system",
+      "details": {
+        "title": "Skills Lock File Bugs & Naming Fix",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Skills Lock File Bugs & Naming Fix",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962252-cbc4f9",
+      "timestamp": "2026-02-13T05:57:32Z",
+      "action": "task_created",
+      "taskId": "T120",
+      "actor": "system",
+      "details": {
+        "title": "Fix scopedName using raw CLI input in skills install",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix scopedName using raw CLI input in skills install",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962253-092116",
+      "timestamp": "2026-02-13T05:57:33Z",
+      "action": "task_created",
+      "taskId": "T121",
+      "actor": "system",
+      "details": {
+        "title": "Fix isGlobal defaulting to false for catalog installs",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix isGlobal defaulting to false for catalog installs",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962253-40b10d",
+      "timestamp": "2026-02-13T05:57:33Z",
+      "action": "task_created",
+      "taskId": "T122",
+      "actor": "system",
+      "details": {
+        "title": "Fix lock file re-install overwriting metadata instead of merging",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Fix lock file re-install overwriting metadata instead of merging",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log-1770962254-80f475",
+      "timestamp": "2026-02-13T05:57:34Z",
+      "action": "task_created",
+      "taskId": "T123",
+      "actor": "system",
+      "details": {
+        "title": "Rename contribution-protocol to ct-contribution in canonical install",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Rename contribution-protocol to ct-contribution in canonical install",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log-1770962263-4399d4",
+      "timestamp": "2026-02-13T05:57:43Z",
+      "action": "task_created",
+      "taskId": "T124",
+      "actor": "system",
+      "details": {
+        "title": "Add skills health check to doctor command",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "before": null,
+      "after": {
+        "title": "Add skills health check to doctor command",
+        "status": "pending",
+        "priority": "medium"
+      }
+    },
+    {
+      "id": "log_e5c78ce30799",
+      "timestamp": "2026-02-13T05:57:56Z",
+      "sessionId": "session_20260211_175845_6f6edb",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Switching to skills bug fixes"
+      }
+    },
+    {
+      "id": "log_cf14b9b95975",
+      "timestamp": "2026-02-13T05:58:05Z",
+      "sessionId": "session_20260211_181734_1c0d6e",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Pausing for skills bug fixes"
+      }
+    },
+    {
+      "id": "log_8125e49844ce",
+      "timestamp": "2026-02-13T05:58:06Z",
+      "sessionId": "session_20260212_215806_3ef927",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T120",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log_75bffca0a43f",
+      "timestamp": "2026-02-13T05:58:42Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T120"
+      },
+      "after": {
+        "currentTask": "T093"
+      },
+      "details": null
+    },
+    {
+      "id": "log_3245bebad2a5",
+      "timestamp": "2026-02-13T05:58:54Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T093"
+      },
+      "after": {
+        "currentTask": "T089"
+      },
+      "details": null
+    },
+    {
+      "id": "log_efcce784b0df",
+      "timestamp": "2026-02-13T05:58:55Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T120",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T05:58:54Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_67ccde5a2cb5",
+      "timestamp": "2026-02-13T05:58:56Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T121",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T05:58:56Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_b4828839c05a",
+      "timestamp": "2026-02-13T05:58:58Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T122",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T05:58:57Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_4e9f5c30fb50",
+      "timestamp": "2026-02-13T05:59:04Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T089"
+      },
+      "after": {
+        "currentTask": "T123"
+      },
+      "details": null
+    },
+    {
+      "id": "log_3ac2480505a7",
+      "timestamp": "2026-02-13T05:59:13Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T123"
+      },
+      "after": {
+        "currentTask": "T090"
+      },
+      "details": null
+    },
+    {
+      "id": "log_27ab1f76e63a",
+      "timestamp": "2026-02-13T06:00:05Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T123",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:00:04Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_edf0ba7ab332",
+      "timestamp": "2026-02-13T06:00:15Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T119",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:00:14Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_f9c9be9e06d5",
+      "timestamp": "2026-02-13T06:00:23Z",
+      "sessionId": "session_20260212_215806_3ef927",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Completed: 3 CAAMP lock bugs fixed (T120-T122), naming mismatch fixed (T123). T124 (doctor skills health check) logged as pending feature."
+      }
+    },
+    {
+      "id": "log_8d9642f07ad2",
+      "timestamp": "2026-02-13T06:00:41Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T093",
+      "before": {
+        "title": "Cover config/providers/version modules",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover config/providers/version modules",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_76c2641daae9",
+      "timestamp": "2026-02-13T06:00:56Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T086"
+      },
+      "after": {
+        "currentTask": "T093"
+      },
+      "details": null
+    },
+    {
+      "id": "log_b26bcf50c36f",
+      "timestamp": "2026-02-13T06:00:57Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T093",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:00:56Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_0501b825c399",
+      "timestamp": "2026-02-13T06:01:04Z",
+      "sessionId": "session_20260211_175845_6f6edb",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Completed T093: added config/providers/version coverage tests; targeted tests, lint, and typecheck passed."
+      }
+    },
+    {
+      "id": "log_7651f1cffb7d",
+      "timestamp": "2026-02-13T06:01:33Z",
+      "sessionId": "session_20260212_220133_370bd1",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T124",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log_967a5084f35f",
+      "timestamp": "2026-02-13T06:01:54Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T089",
+      "before": {
+        "title": "Cover skills command surfaces",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover skills command surfaces",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skill-install.test.ts",
+          "tests/integration/skills-commands.test.ts",
+          "tests/integration/skills-find-recommendation.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_ad64b997830d",
+      "timestamp": "2026-02-13T06:01:59Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_77d50fe049ed",
+      "timestamp": "2026-02-13T06:02:11Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T090",
+      "before": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/unit/skills-discovery.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "src/core/skills/audit/rules.ts",
+          "src/core/skills/audit/scanner.ts",
+          "src/core/skills/discovery.ts",
+          "src/core/skills/lock.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_4abddfad7548",
+      "timestamp": "2026-02-13T06:02:46Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T089",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:02:45Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_c9a2a7fb9d69",
+      "timestamp": "2026-02-13T06:02:47Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T090",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:02:47Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_e1449d2beffd",
+      "timestamp": "2026-02-13T06:02:48Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T086",
+      "before": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_a0410ddcc8c6",
+      "timestamp": "2026-02-13T06:03:09Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T124",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-13T06:03:08Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log-1770962604-0fdcdb",
+      "timestamp": "2026-02-13T06:03:24Z",
+      "action": "task_created",
+      "taskId": "T125",
+      "actor": "system",
+      "details": {
+        "title": "Boost core installer coverage to clear 80% gate",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Boost core installer coverage to clear 80% gate",
+        "status": "pending",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "log_1185eb055166",
+      "timestamp": "2026-02-13T06:03:25Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T097"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_e1723fe2e54f",
+      "timestamp": "2026-02-13T06:03:32Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T097"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T125"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_d63dbf338fca",
+      "timestamp": "2026-02-13T06:03:32Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T124"
+      },
+      "after": {
+        "currentTask": "T125"
+      },
+      "details": null
+    },
+    {
+      "id": "log_2d832d21c1c8",
+      "timestamp": "2026-02-13T06:03:33Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T125",
+      "before": {
+        "title": "Boost core installer coverage to clear 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Add focused tests for src/core/skills/installer.ts (installSkill/removeSkill/listCanonicalSkills) to close remaining global coverage gap and stabilize release gate.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/skills-installer.test.ts"
+        ],
+        "acceptance": [
+          "skills installer test suite added",
+          "npm run test:coverage meets global thresholds"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Boost core installer coverage to clear 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Add focused tests for src/core/skills/installer.ts (installSkill/removeSkill/listCanonicalSkills) to close remaining global coverage gap and stabilize release gate.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/skills-installer.test.ts"
+        ],
+        "acceptance": [
+          "skills installer test suite added",
+          "npm run test:coverage meets global thresholds"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
       }
     }
   ]

@@ -4,6 +4,8 @@
  * Checks /.well-known/skills/ on websites for skill definitions.
  */
 
+import { fetchWithTimeout } from "../network/fetch.js";
+
 export interface WellKnownSkill {
   name: string;
   description: string;
@@ -15,7 +17,7 @@ export async function discoverWellKnown(domain: string): Promise<WellKnownSkill[
   const url = `https://${domain}/.well-known/skills/index.json`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetchWithTimeout(url);
     if (!response.ok) return [];
 
     const data = (await response.json()) as { skills?: WellKnownSkill[] };

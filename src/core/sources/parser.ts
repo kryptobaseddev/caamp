@@ -53,6 +53,13 @@ function inferName(source: string, type: SourceType): string {
     return match?.[1] ?? source;
   }
 
+  if (type === "local") {
+    // Extract directory basename from local path
+    const normalized = source.replace(/\\/g, "/").replace(/\/+$/, "");
+    const lastSegment = normalized.split("/").pop();
+    return lastSegment ?? source;
+  }
+
   if (type === "command") {
     // Extract first meaningful word
     const parts = source.split(/\s+/);

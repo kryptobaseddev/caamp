@@ -85,6 +85,7 @@ A developer should be able to:
 4. Discover which agents are installed on their system
 5. Search for and audit community skills before installing them
 6. Track everything in a lock file for reproducibility
+7. Rely on LAFS-compliant default outputs for deterministic agent automation
 
 ---
 
@@ -147,15 +148,16 @@ Engineers managing AI agent infrastructure at scale who need programmatic access
 20. **US-I01**: As a team lead, I want to inject a shared configuration block into all instruction files (CLAUDE.md, AGENTS.md, GEMINI.md) so that all agents receive the same project context.
 21. **US-I02**: As a developer, I want to check whether instruction injections are current, outdated, or missing so that I can identify drift.
 22. **US-I03**: As a developer, I want to update all instruction injections in a single command so that I can keep them synchronized.
+23. **US-I04**: As an automation engineer, I want agent-facing outputs to default to LAFS so that orchestration workflows are consistent, token-efficient, and context-safe across languages.
 
 ### Config Management
 
-23. **US-C01**: As a developer, I want to view the config file for any provider so that I can inspect its current state.
-24. **US-C02**: As a developer, I want to get the config file path for any provider so that I can open it in my editor.
+24. **US-C01**: As a developer, I want to view the config file for any provider so that I can inspect its current state.
+25. **US-C02**: As a developer, I want to get the config file path for any provider so that I can open it in my editor.
 
 ### Library API
 
-25. **US-L01**: As a tool author, I want to use CAAMP as a library (not just a CLI) so that I can build custom tooling on top of its provider registry and config management.
+26. **US-L01**: As a tool author, I want to use CAAMP as a library (not just a CLI) so that I can build custom tooling on top of its provider registry and config management.
 
 ---
 
@@ -214,6 +216,12 @@ Engineers managing AI agent infrastructure at scale who need programmatic access
 - **TOML** (`src/core/formats/toml.ts`): Via `@iarna/toml`
 - **Format router** (`src/core/formats/index.ts`): `readConfig()`, `writeConfig()`, `removeConfig()`
 - **Utilities** (`src/core/formats/utils.ts`): `deepMerge()`, `getNestedValue()`, `ensureDir()`
+
+#### 6.1.6 LAFS Protocol Baseline
+
+- **Canonical protocol**: `https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md`
+- **Package dependency**: `@cleocode/lafs-protocol`
+- **CAAMP profile mapping**: `docs/LAFS-COMPLIANCE.md`
 
 ### 6.2 P1 - Essential (Shipped in v0.1.0)
 

@@ -53,16 +53,16 @@ export async function recordSkillInstall(
 
     lock.skills[skillName] = {
       name: skillName,
-      scopedName,
-      source,
-      sourceType,
-      version,
+      scopedName: existing?.scopedName ?? scopedName,
+      source: existing?.source ?? source,
+      sourceType: existing?.sourceType ?? sourceType,
+      version: version ?? existing?.version,
       installedAt: existing?.installedAt ?? now,
       updatedAt: now,
       agents: [...new Set([...(existing?.agents ?? []), ...agents])],
       canonicalPath,
-      isGlobal,
-      projectDir,
+      isGlobal: existing?.isGlobal ?? isGlobal,
+      projectDir: existing?.projectDir ?? projectDir,
     };
   });
 }

@@ -7,8 +7,9 @@
 
 import { mkdir, symlink, rm, cp } from "node:fs/promises";
 import { existsSync, lstatSync } from "node:fs";
-import { join, } from "node:path";
-import type { Provider, } from "../../types.js";
+import { join, relative, resolve } from "node:path";
+import type { Provider, SkillMetadata, ParsedSource } from "../../types.js";
+import { discoverSkill } from "./discovery.js";
 import { CANONICAL_SKILLS_DIR } from "../paths/agents.js";
 import { resolveProviderSkillsDir } from "../paths/standard.js";
 

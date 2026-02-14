@@ -137,6 +137,8 @@ CAAMP is not another AI agent. It is the infrastructure layer underneath all of 
 
 **Safe.** Config writes preserve JSONC comments using `jsonc-parser`'s surgical edit operations. Lock files track every installation for auditability and rollback. Security scanning with 44 rules across 8 categories catches malicious skills before they execute. `--dry-run` previews every mutation. Nothing is silently overwritten.
 
+**Agent-First by Default (LAFS).** CAAMP adopts the external LAFS protocol and keeps implementation mapping in `docs/LAFS-COMPLIANCE.md`.
+
 **Portable.** TypeScript, compiled with `tsup`, distributed via npm as `@cleocode/caamp`. Works on macOS, Linux, and Windows. Zero native dependencies. 57 library exports for programmatic integration.
 
 **Simple.** The common case should be one command. `caamp skills install owner/repo` handles source parsing, GitHub fetching, SKILL.md discovery, validation, canonical storage, symlink creation across agents, and lock file update -- all in one invocation.

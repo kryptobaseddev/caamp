@@ -28,6 +28,13 @@ export type {
   InjectionStatus,
   InjectionCheckResult,
   GlobalOptions,
+  CtSkillEntry,
+  CtValidationResult,
+  CtValidationIssue,
+  CtProfileDefinition,
+  CtDispatchMatrix,
+  CtManifest,
+  CtManifestSkill,
 } from "./types.js";
 
 // Result types from core modules
@@ -93,10 +100,20 @@ export {
   getLockFilePath,
   getPlatformLocations,
   resolveRegistryTemplatePath,
+  getAgentsMcpDir,
+  getAgentsMcpServersPath,
+  getAgentsInstructFile,
+  getAgentsConfigPath,
+  getAgentsWikiDir,
+  getAgentsSpecDir,
+  getAgentsLinksDir,
 } from "./core/paths/standard.js";
 
 // Source parsing
 export { parseSource, isMarketplaceScoped } from "./core/sources/parser.js";
+
+// Skills catalog (ct-skills library)
+export * as catalog from "./core/skills/catalog.js";
 
 // Skills
 export { installSkill, removeSkill, listCanonicalSkills } from "./core/skills/installer.js";
@@ -118,7 +135,7 @@ export { installMcpServer, installMcpServerToAll, buildServerConfig } from "./co
 export { getTransform } from "./core/mcp/transforms.js";
 
 // MCP read/list/remove
-export { resolveConfigPath, listMcpServers, listAllMcpServers, removeMcpServer } from "./core/mcp/reader.js";
+export { resolveConfigPath, listMcpServers, listAllMcpServers, listAgentsMcpServers, removeMcpServer } from "./core/mcp/reader.js";
 
 // MCP lock
 export {

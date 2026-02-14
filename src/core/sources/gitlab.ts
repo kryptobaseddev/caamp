@@ -7,6 +7,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { GitFetchResult } from "./github.js";
+import { fetchWithTimeout } from "../network/fetch.js";
 
 /** Clone a GitLab repo to a temp directory */
 export async function cloneGitLabRepo(
@@ -52,7 +53,7 @@ export async function fetchGitLabRawFile(
   const url = `https://gitlab.com/${owner}/${repo}/-/raw/${ref}/${encodedPath}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetchWithTimeout(url);
     if (!response.ok) return null;
     return await response.text();
   } catch {

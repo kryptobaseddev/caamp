@@ -10,7 +10,7 @@ import type { Provider, McpServerEntry } from "../../types.js";
 import { readConfig, removeConfig } from "../formats/index.js";
 import { getNestedValue } from "../formats/utils.js";
 import { debug } from "../logger.js";
-import { resolveProviderConfigPath } from "../paths/standard.js";
+import { resolveProviderConfigPath, getAgentsMcpServersPath } from "../paths/standard.js";
 
 /**
  * Resolve the absolute config file path for a provider and scope.
@@ -90,10 +90,57 @@ export async function listMcpServers(
 }
 
 /**
+ * List MCP servers from the `.agents/mcp/servers.json` standard location.
+ *
+ * Per the `.agents/` standard (Section 9), this file is the canonical
+ * provider-agnostic MCP server registry. It should be checked before
+ * per-provider legacy config files.
+ *
+ * @param scope - `"global"` for `~/.agents/mcp/servers.json`, `"project"` for project-level
+ * @param projectDir - Project directory (defaults to `process.cwd()`)
+ * @returns Array of MCP server entries found in the `.agents/` servers.json
+ */
+export async function listAgentsMcpServers(
+  scope: "project" | "global",
+  projectDir?: string,
+): Promise<McpServerEntry[]> {
+  const serversPath = getAgentsMcpServersPath(scope, projectDir);
+  debug(`listing .agents/ MCP servers (${scope}) at ${serversPath}`);
+
+  if (!existsSync(serversPath)) return [];
+
+  try {
+    const config = await readConfig(serversPath, "json");
+    // .agents/mcp/servers.json uses { "servers": { "<name>": { ... } } }
+    const servers = (config as Record<string, unknown>)["servers"];
+
+    if (!servers || typeof servers !== "object") return [];
+
+    const entries: McpServerEntry[] = [];
+    for (const [name, cfg] of Object.entries(servers as Record<string, unknown>)) {
+      entries.push({
+        name,
+        providerId: ".agents",
+        providerName: ".agents/ standard",
+        scope,
+        configPath: serversPath,
+        config: (cfg ?? {}) as Record<string, unknown>,
+      });
+    }
+
+    return entries;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * List MCP servers across all given providers, deduplicating by config path.
  *
- * Multiple providers may share the same config file. This function ensures each
- * config file is read only once to avoid duplicate entries.
+ * Per the `.agents/` standard (Section 9.4), checks `.agents/mcp/servers.json`
+ * first, then falls back to per-provider legacy config files. Multiple providers
+ * may share the same config file; this function ensures each config file is read
+ * only once to avoid duplicate entries.
  *
  * @param providers - Array of providers to query
  * @param scope - Whether to read project or global config
@@ -113,6 +160,15 @@ export async function listAllMcpServers(
   const seen = new Set<string>();
   const allEntries: McpServerEntry[] = [];
 
+  // Check .agents/mcp/servers.json first (standard takes precedence)
+  const agentsServersPath = getAgentsMcpServersPath(scope, projectDir);
+  const agentsEntries = await listAgentsMcpServers(scope, projectDir);
+  if (agentsEntries.length > 0) {
+    allEntries.push(...agentsEntries);
+    seen.add(agentsServersPath);
+  }
+
+  // Then check per-provider legacy config files
   for (const provider of providers) {
     const configPath = resolveConfigPath(provider, scope, projectDir);
     if (!configPath || seen.has(configPath)) continue;

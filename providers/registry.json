@@ -967,30 +967,6 @@
       "status": "active",
       "agentSkillsCompatible": false
     },
-    "sweep": {
-      "id": "sweep",
-      "toolName": "Sweep",
-      "vendor": "Sweep AI",
-      "agentFlag": "sweep",
-      "aliases": ["sweep-ai"],
-      "pathGlobal": "",
-      "pathProject": "",
-      "instructFile": "AGENTS.md",
-      "configKey": "mcpServers",
-      "configFormat": "json",
-      "configPathGlobal": "",
-      "configPathProject": "sweep.yaml",
-      "pathSkills": "",
-      "pathProjectSkills": "",
-      "detection": {
-        "methods": []
-      },
-      "supportedTransports": [],
-      "supportsHeaders": false,
-      "priority": "low",
-      "status": "planned",
-      "agentSkillsCompatible": false
-    },
     "codegen": {
       "id": "codegen",
       "toolName": "Codegen",
@@ -1116,31 +1092,6 @@
       "priority": "low",
       "status": "active",
       "agentSkillsCompatible": true
-    },
-    "supermaven": {
-      "id": "supermaven",
-      "toolName": "Supermaven",
-      "vendor": "Supermaven",
-      "agentFlag": "supermaven",
-      "aliases": [],
-      "pathGlobal": "$HOME/.supermaven",
-      "pathProject": ".supermaven",
-      "instructFile": "AGENTS.md",
-      "configKey": "mcpServers",
-      "configFormat": "json",
-      "configPathGlobal": "$HOME/.supermaven/mcp.json",
-      "configPathProject": ".supermaven/mcp.json",
-      "pathSkills": "$HOME/.supermaven/skills",
-      "pathProjectSkills": ".supermaven/skills",
-      "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.supermaven"]
-      },
-      "supportedTransports": ["stdio"],
-      "supportsHeaders": false,
-      "priority": "low",
-      "status": "planned",
-      "agentSkillsCompatible": false
     },
     "gemini-code-assist": {
       "id": "gemini-code-assist",
