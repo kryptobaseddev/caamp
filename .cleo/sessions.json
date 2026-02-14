@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-13T06:03:32Z",
-    "totalSessionsCreated": 15
+    "lastModified": "2026-02-14T04:03:07Z",
+    "totalSessionsCreated": 16
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -976,6 +976,59 @@
       "startMetrics": {
         "session_id": "session_20260212_220133_370bd1",
         "start_timestamp": "2026-02-13T06:01:33Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      }
+    },
+    {
+      "id": "session_20260213_200307_24ffca",
+      "status": "active",
+      "name": "v1.0.0 Release Finalization",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T078",
+        "computedTaskIds": [
+          "T078",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T095",
+          "T096"
+        ]
+      },
+      "focus": {
+        "currentTask": "T095",
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T095",
+            "timestamp": "2026-02-14T04:03:07Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-14T04:03:07Z",
+      "lastActivity": "2026-02-14T04:03:07Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260213_200307_24ffca",
+        "start_timestamp": "2026-02-14T04:03:07Z",
         "start_tokens": 0,
         "max_tokens": 200000
       }
