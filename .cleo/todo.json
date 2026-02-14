@@ -171,17 +171,17 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-14T08:52:04Z",
+  "lastUpdated": "2026-02-14T17:57:10Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "56b2cbd47a700149",
+    "checksum": "42302415cf418b82",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 388,
-    "lastModified": "2026-02-14T08:53:15Z",
+    "generation": 390,
+    "lastModified": "2026-02-14T08:53:48Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 8
+    "activeSessionCount": 7
   },
   "focus": {
     "currentTask": null,
@@ -3085,12 +3085,12 @@
     {
       "id": "T086",
       "title": "Release Coverage Remediation to 80%",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-14T08:50:54Z",
+      "updatedAt": "2026-02-14T17:57:10Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -3103,7 +3103,8 @@
       "notes": [
         "2026-02-12 17:44:34 UTC: Provenance: task-hygiene audit ses_3ad109aceffeFS3fpoK33Q39rQ; coverage-remediation planner ses_3ad109abeffex8z0DHFCGcVeON. Adopted as canonical execution plan for release blocker remediation.",
         "2026-02-12 17:52:02 UTC: Progress update: max-depth hierarchy issue resolved via sibling tasks under T049 (T087-T094). Completed T087, T088, T091, T092.",
-        "2026-02-13 06:02:48 UTC: Coverage remediation progress: completed T087, T088, T089, T090, T091, T092, T093. Remaining task is T094 final gate run and evidence capture."
+        "2026-02-13 06:02:48 UTC: Coverage remediation progress: completed T087, T088, T089, T090, T091, T092, T093. Remaining task is T094 final gate run and evidence capture.",
+        "2026-02-14 17:57:10 UTC: Regression logged 2026-02-14: npm run test:coverage now fails at 64.11% lines/statements (threshold 80%). Missing artifacts verified by command: npm test -- tests/integration/skills-commands.test.ts tests/unit/skills-audit.test.ts tests/unit/skills-discovery.test.ts tests/unit/skills-lock.test.ts tests/integration/config-providers.test.ts tests/unit/version.test.ts -> No test files found. Recovery tracked in T159."
       ],
       "relates": [
         {
@@ -3141,7 +3142,19 @@
         {
           "taskId": "T093",
           "type": "relates-to"
+        },
+        {
+          "taskId": "T159",
+          "type": "relates-to"
         }
+      ],
+      "files": [
+        "tests/integration/config-providers.test.ts",
+        "tests/integration/skills-commands.test.ts",
+        "tests/unit/skills-audit.test.ts",
+        "tests/unit/skills-discovery.test.ts",
+        "tests/unit/skills-lock.test.ts",
+        "tests/unit/version.test.ts"
       ]
     },
     {
@@ -3487,12 +3500,12 @@
     {
       "id": "T094",
       "title": "Finalize coverage gate and evidence",
-      "status": "active",
+      "status": "pending",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-14T08:53:15Z",
+      "updatedAt": "2026-02-14T08:53:48Z",
       "size": "small",
       "position": 21,
       "positionVersion": 0,
@@ -6304,6 +6317,36 @@
         "lastUpdated": "2026-02-13T01:02:49Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T159",
+      "title": "Restore missing coverage artifacts and recover 80% gate",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-14T17:57:00Z",
+      "updatedAt": "2026-02-14T17:57:00Z",
+      "size": "medium",
+      "position": 23,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Recover missing test suites referenced by prior coverage remediation and re-establish coverage threshold compliance.",
+      "files": [
+        "tests/integration/skills-commands.test.ts",
+        "tests/unit/skills-audit.test.ts",
+        "tests/unit/skills-discovery.test.ts",
+        "tests/unit/skills-lock.test.ts",
+        "tests/integration/config-providers.test.ts",
+        "tests/unit/version.test.ts"
+      ],
+      "acceptance": [
+        "All listed test files exist and pass targeted vitest run",
+        "npm run test:coverage passes global thresholds >=80 lines/statements"
+      ],
+      "depends": [
+        "T086"
+      ]
     }
   ],
   "labels": {}

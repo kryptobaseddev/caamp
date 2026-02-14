@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 351,
+    "totalEntries": 353,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-14T08:53:15Z",
+    "lastEntry": "2026-02-14T08:53:48Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -7923,6 +7923,37 @@
       "scope": {
         "type": "epic",
         "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log_432f7b28998a",
+      "timestamp": "2026-02-14T08:53:48Z",
+      "sessionId": "session_20260214_005315_bf984c",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Closing duplicate follow-up session to remove focus conflict."
+      }
+    },
+    {
+      "id": "log-1771091821-ba3d02",
+      "timestamp": "2026-02-14T17:57:01Z",
+      "action": "task_created",
+      "taskId": "T159",
+      "actor": "system",
+      "details": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "pending",
+        "priority": "high"
+      },
+      "before": null,
+      "after": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "pending",
+        "priority": "high"
       }
     }
   ]
