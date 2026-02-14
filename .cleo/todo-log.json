@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 333,
+    "totalEntries": 339,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-14T04:04:22Z",
+    "lastEntry": "2026-02-14T08:50:54Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -7232,6 +7232,152 @@
       "details": {
         "field": "status",
         "operation": "complete"
+      }
+    },
+    {
+      "id": "log_ad95eb25e017",
+      "timestamp": "2026-02-14T04:05:25Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T095",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-14T04:05:24Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_66f2962c94e1",
+      "timestamp": "2026-02-14T04:05:26Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T135",
+      "before": {
+        "title": "Publish final audit artifact with provenance",
+        "status": "active",
+        "priority": "high",
+        "description": "Create concise final audit artifact in claudedocs/agent-outputs capturing validation gates, blockers, and provenance links to agent outputs/tasks.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "claudedocs/agent-outputs/v1-final-audit.md",
+          "claudedocs/agent-outputs/MANIFEST.jsonl"
+        ],
+        "acceptance": [
+          "Final audit file exists and is referenced by release prep tasks"
+        ],
+        "depends": [
+          "T079",
+          "T094"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Publish final audit artifact with provenance",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Create concise final audit artifact in claudedocs/agent-outputs capturing validation gates, blockers, and provenance links to agent outputs/tasks.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "claudedocs/agent-outputs/v1-final-audit.md",
+          "claudedocs/agent-outputs/MANIFEST.jsonl"
+        ],
+        "acceptance": [
+          "Final audit file exists and is referenced by release prep tasks"
+        ],
+        "depends": [
+          "T079",
+          "T094"
+        ],
+        "blockedBy": "Duplicate mirror task generated during ID repair; canonical task is T095."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_929f110eaea3",
+      "timestamp": "2026-02-14T04:06:00Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T135",
+      "before": {
+        "status": "blocked",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-14T04:05:59Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_2ff44d9169fc",
+      "timestamp": "2026-02-14T04:06:01Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T078",
+      "before": {
+        "status": "blocked",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-14T04:06:00Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_0a9de429e451",
+      "timestamp": "2026-02-14T04:06:02Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T038",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-14T04:06:01Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_4bb52115dfd4",
+      "timestamp": "2026-02-14T08:50:54Z",
+      "sessionId": "session_20260214_005054_d62bf8",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T086",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
       }
     }
   ]
