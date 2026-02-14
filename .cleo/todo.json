@@ -86,7 +86,17 @@
         "targetDate": null,
         "releasedAt": null,
         "createdAt": "2026-02-12T18:10:56Z",
-        "tasks": [],
+        "tasks": [
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096"
+        ],
         "notes": "Production release track including skills recommendation intelligence and LAFS-compliant recommendation workflows."
       },
       {
@@ -159,14 +169,14 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-13T06:06:47Z",
+  "lastUpdated": "2026-02-14T04:00:13Z",
   "_meta": {
     "schemaVersion": "2.10.0",
     "checksum": "6b2dda87b2e14b92",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 316,
+    "generation": 317,
     "lastModified": "2026-02-13T06:03:32Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 5
