@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-02-13
+
+### Added
+- Skills health check in `caamp doctor`: stale symlink detection, untracked skill detection, lock agent-list vs symlink mismatch verification
+- Cross-platform path normalization in test suite for Windows CI compatibility
+
+### Fixed
+- Skills install lock file: `scopedName` now uses resolved source value instead of raw CLI input
+- Skills install lock file: `isGlobal` correctly defaults to `true` for catalog package installs
+- Lock file re-install idempotency: preserve existing `scopedName`, `source`, `sourceType`, `isGlobal`, `version` on re-install; only refresh agent list (merge) and `updatedAt`
+- Windows test failures in paths-standard and source-fetchers tests due to path separator differences
+
+### Changed
+- Version bump from 0.5.1 to 1.0.0 — production stability release
+- 44 providers in registry, 81.90% test coverage, all validation gates passing
+
 ## [0.5.1] - 2026-02-12
 
 ### Other Changes
