@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 339,
+    "totalEntries": 351,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-14T08:50:54Z",
+    "lastEntry": "2026-02-14T08:53:15Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -7372,6 +7372,551 @@
       "action": "session_start",
       "actor": "system",
       "taskId": "T086",
+      "before": null,
+      "after": null,
+      "details": "Multi-session started",
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038"
+      }
+    },
+    {
+      "id": "log_a5e4a2e7245a",
+      "timestamp": "2026-02-14T08:51:39Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T049",
+      "before": {
+        "title": "Test Coverage to 80%+",
+        "status": "done",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Test Coverage to 80%+",
+        "status": "done",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_47497d3a26ee",
+      "timestamp": "2026-02-14T08:51:41Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T089",
+      "before": {
+        "title": "Cover skills command surfaces",
+        "status": "done",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skill-install.test.ts",
+          "tests/integration/skills-commands.test.ts",
+          "tests/integration/skills-find-recommendation.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover skills command surfaces",
+        "status": "done",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skill-install.test.ts",
+          "tests/integration/skills-commands.test.ts",
+          "tests/integration/skills-find-recommendation.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_47c7a15565a7",
+      "timestamp": "2026-02-14T08:51:42Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T090",
+      "before": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "done",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "src/core/skills/audit/rules.ts",
+          "src/core/skills/audit/scanner.ts",
+          "src/core/skills/discovery.ts",
+          "src/core/skills/lock.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "done",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "src/core/skills/audit/rules.ts",
+          "src/core/skills/audit/scanner.ts",
+          "src/core/skills/discovery.ts",
+          "src/core/skills/lock.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5a2727b3af5e",
+      "timestamp": "2026-02-14T08:51:43Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T093",
+      "before": {
+        "title": "Cover config/providers/version modules",
+        "status": "done",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover config/providers/version modules",
+        "status": "done",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_2a7ec0e40872",
+      "timestamp": "2026-02-14T08:51:54Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T126",
+      "before": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": "Duplicate mirror of T086 from ID-repair; canonical task is T086."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_f2162e1c0e2a",
+      "timestamp": "2026-02-14T08:51:55Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T134",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093"
+        ],
+        "blockedBy": "Duplicate mirror of T094 from ID-repair; canonical task is T094."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_c455986a6b85",
+      "timestamp": "2026-02-14T08:51:57Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T129",
+      "before": {
+        "title": "Cover skills command surfaces",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover skills command surfaces",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Add tests for skills command modules with low/zero coverage including update/check/find/list/remove/init/validate/index/audit wrappers.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts"
+        ],
+        "acceptance": [
+          "Skills command coverage materially improved",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": "Duplicate mirror of T089; canonical task is T089."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_27a840de700a",
+      "timestamp": "2026-02-14T08:51:58Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T130",
+      "before": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "pending",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/unit/skills-discovery.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover core skills audit and lock/discovery",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Add tests for core skills audit scanner/rules plus skills lock/discovery behavior to increase coverage in high-volume core modules.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/unit/skills-discovery.test.ts"
+        ],
+        "acceptance": [
+          "Core skills modules have substantial new coverage",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": "Duplicate mirror of T090; canonical task is T090."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_983f1730dc99",
+      "timestamp": "2026-02-14T08:52:00Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T133",
+      "before": {
+        "title": "Cover config/providers/version modules",
+        "status": "pending",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Cover config/providers/version modules",
+        "status": "blocked",
+        "priority": "medium",
+        "description": "Add tests for config command, providers command non-JSON branches, and core version helper fallback/cache behavior.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "Config/providers/version coverage increased",
+          "npm test passes"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": "Duplicate mirror of T093; canonical task is T093."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_dec2c2729a96",
+      "timestamp": "2026-02-14T08:52:01Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T137",
+      "before": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "pending",
+        "priority": "high",
+        "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+        "phase": "setup",
+        "labels": [
+          "feature",
+          "lafs",
+          "release-v1",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": [
+          "Research evidence captured before scoring implementation",
+          "Specification approved before command/API implementation",
+          "All decomposition tasks complete before release ship"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Skills Recommendation Intelligence (RCSD)",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Implement deterministic query analysis, ranking, recommendation, and selectable results for skills search with LAFS-compliant machine/human output for CLI and library API consumers.",
+        "phase": "setup",
+        "labels": [
+          "feature",
+          "lafs",
+          "release-v1",
+          "skills"
+        ],
+        "files": null,
+        "acceptance": [
+          "Research evidence captured before scoring implementation",
+          "Specification approved before command/API implementation",
+          "All decomposition tasks complete before release ship"
+        ],
+        "depends": null,
+        "blockedBy": "Duplicate mirror epic of T097 from ID-repair; canonical epic is T097."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_bcfc0969653d",
+      "timestamp": "2026-02-14T08:52:06Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T097",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-14T08:52:04Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_468876006bce",
+      "timestamp": "2026-02-14T08:53:15Z",
+      "sessionId": "session_20260214_005315_bf984c",
+      "action": "session_start",
+      "actor": "system",
+      "taskId": "T094",
       "before": null,
       "after": null,
       "details": "Multi-session started",

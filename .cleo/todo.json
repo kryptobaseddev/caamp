@@ -171,17 +171,17 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-14T08:45:59Z",
+  "lastUpdated": "2026-02-14T08:52:04Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "01027a81268aa139",
+    "checksum": "56b2cbd47a700149",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 377,
-    "lastModified": "2026-02-14T08:50:54Z",
+    "generation": 388,
+    "lastModified": "2026-02-14T08:53:15Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 7
+    "activeSessionCount": 8
   },
   "focus": {
     "currentTask": null,
@@ -1790,14 +1790,15 @@
       "type": "task",
       "parentId": "T038",
       "createdAt": "2026-02-12T00:41:48Z",
-      "updatedAt": "2026-02-12T02:15:10Z",
+      "updatedAt": "2026-02-14T08:51:39Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
         "2026-02-12 00:41:49 UTC: Wave 1 (depends on Epic 1 critical fixes). Add unit and integration tests to reach 80% line coverage. Cover untested modules: MCP installer/transforms, detection engine, fetchers, doctor command, logger, lock-utils. Add full flow integration tests. Set up coverage reporting.",
-        "[COMPLETED 2026-02-12T02:15:10Z] Wave 1 coverage track implemented: unit/integration tests added for installer, transforms, detection, source fetchers, doctor, logger, lock-utils; flaky installer test fixed; coverage tooling enabled."
+        "[COMPLETED 2026-02-12T02:15:10Z] Wave 1 coverage track implemented: unit/integration tests added for installer, transforms, detection, source fetchers, doctor, logger, lock-utils; flaky installer test fixed; coverage tooling enabled.",
+        "2026-02-14 08:51:39 UTC: Post-release validation on 2026-02-14 found current workspace coverage regression (64.11% lines/statements). Since completed tasks are immutable, remediation tracked in new follow-up tasks."
       ],
       "depends": [
         "T039"
@@ -3084,7 +3085,7 @@
     {
       "id": "T086",
       "title": "Release Coverage Remediation to 80%",
-      "status": "active",
+      "status": "pending",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
@@ -3243,7 +3244,7 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:25Z",
-      "updatedAt": "2026-02-13T06:02:45Z",
+      "updatedAt": "2026-02-14T08:51:40Z",
       "size": "large",
       "position": 16,
       "positionVersion": 0,
@@ -3263,7 +3264,8 @@
       ],
       "notes": [
         "2026-02-13 06:01:54 UTC: Provenance: task_id=T089; files=tests/integration/skills-commands.test.ts,tests/integration/skill-install.test.ts,tests/integration/skills-find-recommendation.test.ts; commands=npm test -- tests/integration/skills-commands.test.ts tests/integration/skill-install.test.ts tests/integration/skills-find-recommendation.test.ts|npm run lint|npm run typecheck; outcomes=targeted tests 32/32 passed, lint passed, typecheck passed; coverage branches added for skills index/list/check/remove/update/init/validate/audit plus install/find edge branches.",
-        "[COMPLETED 2026-02-13T06:02:45Z] Implemented skills command surface coverage in tests/integration/skills-commands.test.ts and expanded branch coverage in skill-install and skills-find recommendation tests; validated via targeted vitest + lint + typecheck."
+        "[COMPLETED 2026-02-13T06:02:45Z] Implemented skills command surface coverage in tests/integration/skills-commands.test.ts and expanded branch coverage in skill-install and skills-find recommendation tests; validated via targeted vitest + lint + typecheck.",
+        "2026-02-14 08:51:40 UTC: Post-completion validation failed: tests/integration/skills-commands.test.ts is missing in current workspace (vitest filter reports no file)."
       ],
       "completedAt": "2026-02-13T06:02:45Z",
       "verification": {
@@ -3290,7 +3292,7 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:25Z",
-      "updatedAt": "2026-02-13T06:02:47Z",
+      "updatedAt": "2026-02-14T08:51:41Z",
       "size": "large",
       "position": 17,
       "positionVersion": 0,
@@ -3314,7 +3316,8 @@
       ],
       "notes": [
         "2026-02-13 06:02:10 UTC: provenance: task_id=T090; files=tests/unit/skills-audit.test.ts,tests/unit/skills-lock.test.ts,tests/unit/skills-discovery.test.ts; commands=npm test -- tests/unit/skills-audit.test.ts tests/unit/skills-lock.test.ts tests/unit/skills-discovery.test.ts|npm run lint|npm run typecheck; outcomes=targeted tests passed (28/28), lint passed, typecheck passed; coverage focus=src/core/skills/audit/rules.ts,src/core/skills/audit/scanner.ts,src/core/skills/lock.ts,src/core/skills/discovery.ts",
-        "[COMPLETED 2026-02-13T06:02:47Z] Implemented core skills coverage suites: tests/unit/skills-audit.test.ts, tests/unit/skills-lock.test.ts, tests/unit/skills-discovery.test.ts; validated via targeted vitest + lint + typecheck."
+        "[COMPLETED 2026-02-13T06:02:47Z] Implemented core skills coverage suites: tests/unit/skills-audit.test.ts, tests/unit/skills-lock.test.ts, tests/unit/skills-discovery.test.ts; validated via targeted vitest + lint + typecheck.",
+        "2026-02-14 08:51:41 UTC: Post-completion validation failed: tests/unit/skills-audit.test.ts, tests/unit/skills-discovery.test.ts, tests/unit/skills-lock.test.ts missing in current workspace."
       ],
       "completedAt": "2026-02-13T06:02:47Z",
       "verification": {
@@ -3442,7 +3445,7 @@
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-13T06:00:56Z",
+      "updatedAt": "2026-02-14T08:51:42Z",
       "size": "medium",
       "position": 20,
       "positionVersion": 0,
@@ -3461,7 +3464,8 @@
       ],
       "notes": [
         "2026-02-13 06:00:41 UTC: Provenance: task_id=T093; files=tests/integration/config-providers.test.ts, tests/unit/version.test.ts; commands=npm test -- tests/integration/config-providers.test.ts tests/unit/version.test.ts | npm run lint | npm run typecheck; outcomes=targeted tests passed (2 files, 15 tests), lint passed, typecheck passed; scope=deterministic JSON/non-JSON and failure/exit-path coverage for config/providers/version modules.",
-        "[COMPLETED 2026-02-13T06:00:56Z] Added deterministic config/providers/version tests for JSON/non-JSON and exit/failure branches; targeted tests, lint, and typecheck all passed."
+        "[COMPLETED 2026-02-13T06:00:56Z] Added deterministic config/providers/version tests for JSON/non-JSON and exit/failure branches; targeted tests, lint, and typecheck all passed.",
+        "2026-02-14 08:51:42 UTC: Post-completion validation failed: tests/integration/config-providers.test.ts and tests/unit/version.test.ts missing in current workspace."
       ],
       "completedAt": "2026-02-13T06:00:56Z",
       "verification": {
@@ -3483,12 +3487,12 @@
     {
       "id": "T094",
       "title": "Finalize coverage gate and evidence",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-13T06:03:31Z",
+      "updatedAt": "2026-02-14T08:53:15Z",
       "size": "small",
       "position": 21,
       "positionVersion": 0,
@@ -3610,12 +3614,12 @@
     {
       "id": "T097",
       "title": "Skills Recommendation Intelligence (RCSD)",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "epic",
       "parentId": null,
       "createdAt": "2026-02-12T18:09:42Z",
-      "updatedAt": "2026-02-12T18:10:47Z",
+      "updatedAt": "2026-02-14T08:52:04Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
@@ -3633,7 +3637,8 @@
         "All decomposition tasks complete before release ship"
       ],
       "notes": [
-        "2026-02-12 18:10:47 UTC: RCSD protocol initialized: R=research benchmark (T098), S=spec/contracts (T099), D=decomposition/plan (T100). Execution tasks T101-T110 enforce deterministic recommendation + LAFS output + release gating."
+        "2026-02-12 18:10:47 UTC: RCSD protocol initialized: R=research benchmark (T098), S=spec/contracts (T099), D=decomposition/plan (T100). Execution tasks T101-T110 enforce deterministic recommendation + LAFS output + release gating.",
+        "[COMPLETED 2026-02-14T08:52:04Z] Validated child set: all 42 child tasks under T097 are done; epic marked complete."
       ],
       "relates": [
         {
@@ -3656,7 +3661,8 @@
           "taskId": "T110",
           "type": "relates-to"
         }
-      ]
+      ],
+      "completedAt": "2026-02-14T08:52:04Z"
     },
     {
       "id": "T098",
@@ -4860,12 +4866,12 @@
     {
       "id": "T126",
       "title": "Release Coverage Remediation to 80%",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-12T17:52:02Z",
+      "updatedAt": "2026-02-14T08:51:54Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -4904,7 +4910,8 @@
           "taskId": "T094",
           "type": "relates-to"
         }
-      ]
+      ],
+      "blockedBy": "Duplicate mirror of T086 from ID-repair; canonical task is T086."
     },
     {
       "id": "T127",
@@ -5001,12 +5008,12 @@
     {
       "id": "T129",
       "title": "Cover skills command surfaces",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:25Z",
-      "updatedAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-14T08:51:56Z",
       "size": "large",
       "position": 16,
       "positionVersion": 0,
@@ -5021,17 +5028,18 @@
       ],
       "depends": [
         "T086"
-      ]
+      ],
+      "blockedBy": "Duplicate mirror of T089; canonical task is T089."
     },
     {
       "id": "T130",
       "title": "Cover core skills audit and lock/discovery",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:25Z",
-      "updatedAt": "2026-02-12T17:43:25Z",
+      "updatedAt": "2026-02-14T08:51:57Z",
       "size": "large",
       "position": 17,
       "positionVersion": 0,
@@ -5048,7 +5056,8 @@
       ],
       "depends": [
         "T086"
-      ]
+      ],
+      "blockedBy": "Duplicate mirror of T090; canonical task is T090."
     },
     {
       "id": "T131",
@@ -5154,12 +5163,12 @@
     {
       "id": "T133",
       "title": "Cover config/providers/version modules",
-      "status": "pending",
+      "status": "blocked",
       "priority": "medium",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-14T08:51:59Z",
       "size": "medium",
       "position": 20,
       "positionVersion": 0,
@@ -5175,17 +5184,18 @@
       ],
       "depends": [
         "T086"
-      ]
+      ],
+      "blockedBy": "Duplicate mirror of T093; canonical task is T093."
     },
     {
       "id": "T134",
       "title": "Finalize coverage gate and evidence",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-12T17:43:27Z",
+      "updatedAt": "2026-02-14T08:51:55Z",
       "size": "small",
       "position": 21,
       "positionVersion": 0,
@@ -5205,7 +5215,8 @@
         "T091",
         "T092",
         "T093"
-      ]
+      ],
+      "blockedBy": "Duplicate mirror of T094 from ID-repair; canonical task is T094."
     },
     {
       "id": "T135",
@@ -5297,12 +5308,12 @@
     {
       "id": "T137",
       "title": "Skills Recommendation Intelligence (RCSD)",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "epic",
       "parentId": null,
       "createdAt": "2026-02-12T18:09:42Z",
-      "updatedAt": "2026-02-12T18:10:47Z",
+      "updatedAt": "2026-02-14T08:52:00Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
@@ -5343,7 +5354,8 @@
           "taskId": "T110",
           "type": "relates-to"
         }
-      ]
+      ],
+      "blockedBy": "Duplicate mirror epic of T097 from ID-repair; canonical epic is T097."
     },
     {
       "id": "T138",
