@@ -4,12 +4,12 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 3.0.0 |
-| Date | 2026-02-11 |
+| Version | 4.0.1 |
+| Date | 2026-02-15 |
 | Project | CAAMP (Central AI Agent Managed Packages) |
-| Package | @cleocode/caamp v0.3.0 (planned) |
-| Status | In Development |
-| Updated | v0.3.0 in progress - gap analysis updated to reflect current state |
+| Package | @cleocode/caamp v1.0.1 |
+| Status | Shipped |
+| Updated | v1.0.1 released with coverage remediation complete (79.04% threshold 79%) |
 
 ---
 

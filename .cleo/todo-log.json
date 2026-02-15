@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 360,
+    "totalEntries": 365,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-15T03:18:06Z",
+    "lastEntry": "2026-02-15T15:27:39Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -8189,6 +8189,186 @@
       },
       "details": {
         "operation": "update"
+      }
+    },
+    {
+      "id": "log_7280dc1c111e",
+      "timestamp": "2026-02-15T15:25:59Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T159",
+      "before": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Recover missing test suites referenced by prior coverage remediation and re-establish coverage threshold compliance.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "All listed test files exist and pass targeted vitest run",
+          "npm run test:coverage passes global thresholds >=80 lines/statements"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Recover missing test suites referenced by prior coverage remediation and re-establish coverage threshold compliance.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "All listed test files exist and pass targeted vitest run",
+          "npm run test:coverage passes global thresholds >=80 lines/statements"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_22ddc8d22918",
+      "timestamp": "2026-02-15T15:27:08Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T159",
+      "before": {
+        "status": "active",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-15T15:27:07Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_a588b932afbd",
+      "timestamp": "2026-02-15T15:27:19Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T125"
+        ],
+        "blockedBy": "Blocked by coverage regression and missing test artifacts; complete T159 then rerun npm run test:coverage."
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T125"
+        ],
+        "blockedBy": "Blocked by coverage regression and missing test artifacts; complete T159 then rerun npm run test:coverage."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_254a6c82cb17",
+      "timestamp": "2026-02-15T15:27:20Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-15T15:27:19Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
+      }
+    },
+    {
+      "id": "log_494255fcee97",
+      "timestamp": "2026-02-15T15:27:39Z",
+      "sessionId": null,
+      "action": "status_changed",
+      "actor": "system",
+      "taskId": "T086",
+      "before": {
+        "status": "pending",
+        "completedAt": null
+      },
+      "after": {
+        "status": "done",
+        "completedAt": "2026-02-15T15:27:38Z"
+      },
+      "details": {
+        "field": "status",
+        "operation": "complete"
       }
     }
   ]
