@@ -5,13 +5,13 @@
  * by checking binaries, directories, app bundles, and flatpak.
  */
 
-import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Provider } from "../../types.js";
-import { getAllProviders } from "./providers.js";
 import { debug } from "../logger.js";
 import { getPlatformLocations, resolveProviderProjectPath } from "../paths/standard.js";
+import { getAllProviders } from "./providers.js";
 
 /**
  * Result of detecting whether a provider is installed on the system.
@@ -154,6 +154,7 @@ function providerSignature(provider: Provider): string {
 }
 
 function buildProvidersSignature(providers: Provider[]): string {
+  if (!providers || !Array.isArray(providers)) return "";
   return providers.map(providerSignature).join("|");
 }
 
@@ -209,7 +210,7 @@ export function detectProjectProvider(provider: Provider, projectDir: string): b
  * ```
  */
 export function detectAllProviders(options: DetectionCacheOptions = {}): DetectionResult[] {
-  const providers = getAllProviders();
+  const providers = getAllProviders() ?? [];
   const signature = buildProvidersSignature(providers);
   const cached = getCachedResults(signature, options);
   if (cached) {

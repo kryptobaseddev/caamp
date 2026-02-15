@@ -1,6 +1,6 @@
 {
   "name": "@cleocode/caamp",
-  "version": "0.4.1",
+  "version": "1.0.1",
   "description": "Central AI Agent Managed Packages - unified provider registry and package manager for AI coding agents",
   "type": "module",
   "bin": {
@@ -48,6 +48,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@cleocode/ct-skills": "^2.0.0",
     "@cleocode/lafs-protocol": "^0.1.1",
     "@iarna/toml": "^2.2.5",
     "commander": "^14.0.0",

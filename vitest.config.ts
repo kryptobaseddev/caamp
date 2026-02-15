@@ -9,6 +9,13 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.ts"],
       exclude: ["src/cli.ts", "src/index.ts"],
+      reporter: ["text", "json-summary", "lcov"],
+      thresholds: {
+        lines: 78,
+        functions: 80,
+        statements: 78,
+        branches: 70,
+      },
     },
   },
 });

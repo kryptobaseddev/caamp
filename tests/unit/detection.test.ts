@@ -97,7 +97,7 @@ describe("detection engine", () => {
   });
 
   it("detects all providers and installed providers", () => {
-    mocks.execFileSync.mockImplementation((_cmd: string, args: string[]) => {
+    mocks.execFileSync.mockImplementation((cmd: string, args: string[]) => {
       if (args[0] === "installed") return "ok";
       throw new Error("missing");
     });

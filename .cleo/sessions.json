@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-12T02:05:29Z",
-    "totalSessionsCreated": 11
+    "lastModified": "2026-02-15T03:18:05Z",
+    "totalSessionsCreated": 18
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -484,7 +484,7 @@
     },
     {
       "id": "session_20260211_175845_6f6edb",
-      "status": "active",
+      "status": "ended",
       "name": "v1.0.0 Wave 1 Coverage Track",
       "agentId": null,
       "scope": {
@@ -503,14 +503,23 @@
           "T058",
           "T059",
           "T060",
-          "T061"
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094"
         ]
       },
       "focus": {
-        "currentTask": "T054",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": "T053",
-        "sessionNote": null,
+        "previousTask": "T093",
+        "sessionNote": "Completed T093: added config/providers/version coverage tests; targeted tests, lint, and typecheck passed.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -527,28 +536,54 @@
             "taskId": "T054",
             "timestamp": "2026-02-12T02:01:35Z",
             "action": "focused"
+          },
+          {
+            "taskId": "T086",
+            "timestamp": "2026-02-12T17:44:34Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T088",
+            "timestamp": "2026-02-12T17:49:14Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T086",
+            "timestamp": "2026-02-12T17:52:02Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T086",
+            "timestamp": "2026-02-13T05:53:10Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T093",
+            "timestamp": "2026-02-13T06:00:56Z",
+            "action": "focused"
           }
         ]
       },
       "startedAt": "2026-02-12T01:58:45Z",
-      "lastActivity": "2026-02-12T02:01:35Z",
+      "lastActivity": "2026-02-13T06:01:04Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
-        "focusChanges": 3,
+        "focusChanges": 8,
         "suspendCount": 0,
-        "resumeCount": 0
+        "resumeCount": 1
       },
       "startMetrics": {
         "session_id": "session_20260211_175845_6f6edb",
         "start_timestamp": "2026-02-12T01:58:45Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-13T06:01:04Z"
     },
     {
       "id": "session_20260211_180446_609180",
-      "status": "active",
+      "status": "ended",
       "name": "v1.0.0 Wave 1 CI Hardening Track",
       "agentId": null,
       "scope": {
@@ -566,10 +601,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T064",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": "T062",
-        "sessionNote": null,
+        "previousTask": "T063",
+        "sessionNote": "Wave 1 CI hardening complete; ending session to prevent stale active state.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -581,21 +616,673 @@
             "taskId": "T064",
             "timestamp": "2026-02-12T02:05:29Z",
             "action": "focused"
+          },
+          {
+            "taskId": "T063",
+            "timestamp": "2026-02-12T02:13:35Z",
+            "action": "focused"
           }
         ]
       },
       "startedAt": "2026-02-12T02:04:46Z",
-      "lastActivity": "2026-02-12T02:05:29Z",
+      "lastActivity": "2026-02-12T17:44:13Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
-        "focusChanges": 2,
+        "focusChanges": 3,
         "suspendCount": 0,
         "resumeCount": 0
       },
       "startMetrics": {
         "session_id": "session_20260211_180446_609180",
         "start_timestamp": "2026-02-12T02:04:46Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-12T17:44:13Z"
+    },
+    {
+      "id": "session_20260211_181557_affa6e",
+      "status": "ended",
+      "name": "v1.0.0 Wave 2 Documentation",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T070",
+        "computedTaskIds": [
+          "T070",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": "T070",
+        "sessionNote": "Wave 2 complete; ending session to prevent stale active state.",
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T070",
+            "timestamp": "2026-02-12T02:15:57Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-12T02:15:57Z",
+      "lastActivity": "2026-02-12T17:44:13Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_181557_affa6e",
+        "start_timestamp": "2026-02-12T02:15:57Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-12T17:44:13Z"
+    },
+    {
+      "id": "session_20260211_181734_1c0d6e",
+      "status": "ended",
+      "name": "v1.0.0 Wave 3 Release Prep",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T078",
+        "computedTaskIds": [
+          "T078",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": "T078",
+        "sessionNote": "Pausing for skills bug fixes",
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T078",
+            "timestamp": "2026-02-12T02:17:34Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-12T02:17:34Z",
+      "lastActivity": "2026-02-13T05:58:05Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260211_181734_1c0d6e",
+        "start_timestamp": "2026-02-12T02:17:34Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-13T05:58:05Z"
+    },
+    {
+      "id": "session_20260212_215806_3ef927",
+      "status": "ended",
+      "name": "Skills Lock Bugs Fix",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038",
+        "computedTaskIds": [
+          "T038",
+          "T039",
+          "T049",
+          "T062",
+          "T070",
+          "T078",
+          "T119",
+          "T124",
+          "T040",
+          "T041",
+          "T042",
+          "T043",
+          "T044",
+          "T045",
+          "T046",
+          "T047",
+          "T048",
+          "T050",
+          "T051",
+          "T052",
+          "T053",
+          "T054",
+          "T055",
+          "T056",
+          "T057",
+          "T058",
+          "T059",
+          "T060",
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094",
+          "T063",
+          "T064",
+          "T065",
+          "T066",
+          "T067",
+          "T068",
+          "T069",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T120",
+          "T121",
+          "T122",
+          "T123"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": "T090",
+        "sessionNote": "Completed: 3 CAAMP lock bugs fixed (T120-T122), naming mismatch fixed (T123). T124 (doctor skills health check) logged as pending feature.",
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T120",
+            "timestamp": "2026-02-13T05:58:06Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T093",
+            "timestamp": "2026-02-13T05:58:42Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T089",
+            "timestamp": "2026-02-13T05:58:54Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T123",
+            "timestamp": "2026-02-13T05:59:04Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T090",
+            "timestamp": "2026-02-13T05:59:13Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-13T05:58:06Z",
+      "lastActivity": "2026-02-13T06:00:23Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 5,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260212_215806_3ef927",
+        "start_timestamp": "2026-02-13T05:58:06Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-13T06:00:23Z"
+    },
+    {
+      "id": "session_20260212_220133_370bd1",
+      "status": "active",
+      "name": "Doctor Skills Health Check + Release",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038",
+        "computedTaskIds": [
+          "T038",
+          "T039",
+          "T049",
+          "T062",
+          "T070",
+          "T078",
+          "T119",
+          "T124",
+          "T040",
+          "T041",
+          "T042",
+          "T043",
+          "T044",
+          "T045",
+          "T046",
+          "T047",
+          "T048",
+          "T050",
+          "T051",
+          "T052",
+          "T053",
+          "T054",
+          "T055",
+          "T056",
+          "T057",
+          "T058",
+          "T059",
+          "T060",
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094",
+          "T125",
+          "T126",
+          "T127",
+          "T128",
+          "T129",
+          "T130",
+          "T131",
+          "T132",
+          "T133",
+          "T134",
+          "T159",
+          "T063",
+          "T064",
+          "T065",
+          "T066",
+          "T067",
+          "T068",
+          "T069",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T135",
+          "T136",
+          "T120",
+          "T121",
+          "T122",
+          "T123"
+        ]
+      },
+      "focus": {
+        "currentTask": "T159",
+        "currentPhase": null,
+        "previousTask": "T125",
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T124",
+            "timestamp": "2026-02-13T06:01:33Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T125",
+            "timestamp": "2026-02-13T06:03:32Z",
+            "action": "focused"
+          },
+          {
+            "taskId": "T159",
+            "timestamp": "2026-02-15T03:18:05Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-13T06:01:33Z",
+      "lastActivity": "2026-02-15T03:18:05Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 3,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260212_220133_370bd1",
+        "start_timestamp": "2026-02-13T06:01:33Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      }
+    },
+    {
+      "id": "session_20260213_200307_24ffca",
+      "status": "active",
+      "name": "v1.0.0 Release Finalization",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T078",
+        "computedTaskIds": [
+          "T078",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T095",
+          "T096"
+        ]
+      },
+      "focus": {
+        "currentTask": "T095",
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T095",
+            "timestamp": "2026-02-14T04:03:07Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-14T04:03:07Z",
+      "lastActivity": "2026-02-14T04:03:07Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260213_200307_24ffca",
+        "start_timestamp": "2026-02-14T04:03:07Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      }
+    },
+    {
+      "id": "session_20260214_005054_d62bf8",
+      "status": "ended",
+      "name": "Task Validation Cleanup",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038",
+        "computedTaskIds": [
+          "T038",
+          "T039",
+          "T049",
+          "T062",
+          "T070",
+          "T078",
+          "T119",
+          "T124",
+          "T040",
+          "T041",
+          "T042",
+          "T043",
+          "T044",
+          "T045",
+          "T046",
+          "T047",
+          "T048",
+          "T050",
+          "T051",
+          "T052",
+          "T053",
+          "T054",
+          "T055",
+          "T056",
+          "T057",
+          "T058",
+          "T059",
+          "T060",
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094",
+          "T125",
+          "T126",
+          "T127",
+          "T128",
+          "T129",
+          "T130",
+          "T131",
+          "T132",
+          "T133",
+          "T134",
+          "T063",
+          "T064",
+          "T065",
+          "T066",
+          "T067",
+          "T068",
+          "T069",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T135",
+          "T136",
+          "T120",
+          "T121",
+          "T122",
+          "T123"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": "T086",
+        "sessionNote": "Logged coverage regression as canonical issue (T086 active, T094 blocked, T159 created). Recovery path and evidence captured for handoff.",
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T086",
+            "timestamp": "2026-02-14T08:50:54Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-14T08:50:54Z",
+      "lastActivity": "2026-02-14T17:57:37Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260214_005054_d62bf8",
+        "start_timestamp": "2026-02-14T08:50:54Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-14T17:57:37Z"
+    },
+    {
+      "id": "session_20260214_005315_bf984c",
+      "status": "active",
+      "name": "Validation Follow-up",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T038",
+        "computedTaskIds": [
+          "T038",
+          "T039",
+          "T049",
+          "T062",
+          "T070",
+          "T078",
+          "T119",
+          "T124",
+          "T040",
+          "T041",
+          "T042",
+          "T043",
+          "T044",
+          "T045",
+          "T046",
+          "T047",
+          "T048",
+          "T050",
+          "T051",
+          "T052",
+          "T053",
+          "T054",
+          "T055",
+          "T056",
+          "T057",
+          "T058",
+          "T059",
+          "T060",
+          "T061",
+          "T086",
+          "T087",
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T094",
+          "T125",
+          "T126",
+          "T127",
+          "T128",
+          "T129",
+          "T130",
+          "T131",
+          "T132",
+          "T133",
+          "T134",
+          "T063",
+          "T064",
+          "T065",
+          "T066",
+          "T067",
+          "T068",
+          "T069",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T135",
+          "T136",
+          "T120",
+          "T121",
+          "T122",
+          "T123"
+        ]
+      },
+      "focus": {
+        "currentTask": "T094",
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": [
+          {
+            "taskId": "T094",
+            "timestamp": "2026-02-14T08:53:15Z",
+            "action": "focused"
+          }
+        ]
+      },
+      "startedAt": "2026-02-14T08:53:15Z",
+      "lastActivity": "2026-02-14T08:53:15Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 1,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260214_005315_bf984c",
+        "start_timestamp": "2026-02-14T08:53:15Z",
         "start_tokens": 0,
         "max_tokens": 200000
       }

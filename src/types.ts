@@ -3,6 +3,153 @@
  * Core type definitions
  */
 
+// ── ct-skills Catalog Types ─────────────────────────────────────────
+
+/**
+ * Skill entry from the `@cleocode/ct-skills` skills.json catalog.
+ *
+ * Mirrors the `SkillEntry` type from `@cleocode/ct-skills/index.d.ts`.
+ */
+export interface CtSkillEntry {
+  /** Skill name (e.g. `"ct-research-agent"`). */
+  name: string;
+  /** Human-readable description. */
+  description: string;
+  /** Semantic version string. */
+  version: string;
+  /** Relative path within the skills library. */
+  path: string;
+  /** File references used by the skill. */
+  references: string[];
+  /** Whether this is a core skill. */
+  core: boolean;
+  /** Skill category tier. */
+  category: "core" | "recommended" | "specialist" | "composition" | "meta";
+  /** Numeric tier (0-3). */
+  tier: number;
+  /** Associated protocol name, or `null`. */
+  protocol: string | null;
+  /** Direct dependency skill names. */
+  dependencies: string[];
+  /** Shared resource names this skill uses. */
+  sharedResources: string[];
+  /** Compatible agent/context types. */
+  compatibility: string[];
+  /** SPDX license identifier. */
+  license: string;
+  /** Arbitrary metadata. */
+  metadata: Record<string, unknown>;
+}
+
+/**
+ * Validation result from ct-skills frontmatter validation.
+ */
+export interface CtValidationResult {
+  /** Whether the skill passed validation (no error-level issues). */
+  valid: boolean;
+  /** Individual validation issues. */
+  issues: CtValidationIssue[];
+}
+
+/**
+ * A single validation issue from ct-skills.
+ */
+export interface CtValidationIssue {
+  /** Severity level. */
+  level: "error" | "warn";
+  /** Field that triggered the issue. */
+  field: string;
+  /** Human-readable message. */
+  message: string;
+}
+
+/**
+ * Profile definition from ct-skills profiles.
+ */
+export interface CtProfileDefinition {
+  /** Profile name (e.g. `"minimal"`, `"core"`, `"recommended"`, `"full"`). */
+  name: string;
+  /** Human-readable description. */
+  description: string;
+  /** Name of parent profile to extend. */
+  extends?: string;
+  /** Skill names included in this profile. */
+  skills: string[];
+  /** Whether to include _shared resources. */
+  includeShared?: boolean;
+  /** Protocol names to include. */
+  includeProtocols: string[];
+}
+
+/**
+ * Dispatch matrix from ct-skills manifest.json.
+ */
+export interface CtDispatchMatrix {
+  /** Task type to skill mapping. */
+  by_task_type: Record<string, string>;
+  /** Keyword to skill mapping. */
+  by_keyword: Record<string, string>;
+  /** Protocol to skill mapping. */
+  by_protocol: Record<string, string>;
+}
+
+/**
+ * Full manifest structure from ct-skills.
+ */
+export interface CtManifest {
+  /** JSON schema reference. */
+  $schema: string;
+  /** Metadata. */
+  _meta: Record<string, unknown>;
+  /** Dispatch matrix for skill routing. */
+  dispatch_matrix: CtDispatchMatrix;
+  /** Manifest skill entries. */
+  skills: CtManifestSkill[];
+}
+
+/**
+ * Skill entry within the ct-skills manifest.
+ */
+export interface CtManifestSkill {
+  /** Skill name. */
+  name: string;
+  /** Version. */
+  version: string;
+  /** Description. */
+  description: string;
+  /** Path within library. */
+  path: string;
+  /** Tags. */
+  tags: string[];
+  /** Status. */
+  status: string;
+  /** Tier. */
+  tier: number;
+  /** Token budget. */
+  token_budget: number;
+  /** References. */
+  references: string[];
+  /** Capabilities. */
+  capabilities: {
+    inputs: string[];
+    outputs: string[];
+    dependencies: string[];
+    dispatch_triggers: string[];
+    compatible_subagent_types: string[];
+    chains_to: string[];
+    dispatch_keywords: {
+      primary: string[];
+      secondary: string[];
+    };
+  };
+  /** Constraints. */
+  constraints: {
+    max_context_tokens: number;
+    requires_session: boolean;
+    requires_epic: boolean;
+  };
+}
+
 // ── Config Formats ──────────────────────────────────────────────────
 
 /**

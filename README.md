@@ -6,17 +6,17 @@
   <a href="https://www.npmjs.com/package/@cleocode/caamp"><img src="https://img.shields.io/npm/v/@cleocode/caamp?color=blue" alt="npm version" /></a>
   <a href="https://github.com/kryptobaseddev/caamp/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@cleocode/caamp" alt="license" /></a>
   <img src="https://img.shields.io/node/v/@cleocode/caamp" alt="node version" />
-  <img src="https://img.shields.io/badge/providers-28%2B-green" alt="providers" />
+  <img src="https://img.shields.io/badge/providers-44-green" alt="providers" />
   <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="typescript" />
 </p>
 
 # CAAMP - Central AI Agent Managed Packages
 
-**One CLI to manage Skills, MCP servers, and instruction files across 28+ AI coding agents.**
+**One CLI to manage Skills, MCP servers, and instruction files across 44 AI coding agents.**
 
 CAAMP is a unified provider registry and package manager for AI coding agents. It replaces the need to manually configure each agent's MCP servers, skills, and instruction files individually -- handling the differences in config formats (JSON, JSONC, YAML, TOML), config keys (`mcpServers`, `mcp_servers`, `extensions`, `mcp`, `servers`, `context_servers`), and file paths across all supported providers.
 
-CAAMP adopts an LLM-Agent-First Specification (LAFS) baseline for agent-facing outputs: machine-readable by default, human-readable by explicit opt-in, with MVI-focused token efficiency.
+CAAMP adopts LAFS for agent-facing output contracts. Protocol authority lives in the standalone LAFS repository and package.
 
 ## Install
 
@@ -54,7 +54,7 @@ import {
   detectAllProviders,
 } from "@cleocode/caamp";
 
-// Get all 28+ registered providers
+// Get all registered providers
 const providers = getAllProviders();
 
 // Detect which agents are installed on this system
@@ -71,7 +71,7 @@ See [API Reference](docs/API-REFERENCE.md) for full programmatic API documentati
 ### Providers
 
 ```bash
-caamp providers list               # List all 28+ supported providers
+caamp providers list               # List all supported providers
 caamp providers list --tier high   # Filter by priority tier
 caamp providers detect             # Auto-detect installed providers
 caamp providers detect --project   # Detect project-level configs
@@ -85,12 +85,26 @@ caamp skills install <source>      # Install from GitHub/URL/marketplace
 caamp skills remove [name]         # Remove skill(s) + symlinks
 caamp skills list [-g]             # List installed skills
 caamp skills find [query]          # Search marketplace (agentskills.in + skills.sh)
+caamp skills find [query] --recommend --top 5   # Ranked recommendations + CHOOSE flow
+caamp skills find [query] --recommend --json    # LAFS envelope JSON for agent consumers
 caamp skills init [name]           # Create new SKILL.md template
 caamp skills validate [path]       # Validate SKILL.md format
 caamp skills audit [path]          # Security scan (46+ rules, SARIF output)
 caamp skills check                 # Check for available updates
 caamp skills update                # Update all outdated skills
 ```
+
+Recommendation criteria flags:
+
+```bash
+--must-have <term>   # repeatable and comma-delimited
+--prefer <term>      # soft preference signal
+--exclude <term>     # hard exclusion signal
+--details            # expanded JSON evidence fields
+--select <index>     # select from ranked CHOOSE list
+```
+
+LAFS canonical spec: https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md
 
 ### MCP Servers
 
@@ -115,6 +129,7 @@ caamp instructions update          # Update all instruction file injections
 ```bash
 caamp config show <provider>       # Show provider config contents
 caamp config path <provider>       # Show config file path
+caamp doctor                       # Diagnose configuration and health issues
 ```
 
 ### Advanced (LAFS-compliant wrappers)
@@ -141,13 +156,13 @@ caamp advanced configure -a claude-code --global-mcp-file ./global-mcp.json --pr
 
 ## Supported Providers
 
-CAAMP supports **46 AI coding agents** across 3 priority tiers:
+CAAMP supports **44 AI coding agents** across 3 priority tiers:
 
 | Priority | Providers |
 |----------|-----------|
 | **High** | Claude Code, Cursor, Windsurf |
-| **Medium** | Codex CLI, Gemini CLI, GitHub Copilot, OpenCode, Cline, Kimi, VS Code, Zed, Claude Desktop |
-| **Low** | Roo, Continue, Goose, Antigravity, Kiro, Amp, Trae, Aide, Pear AI, Void AI, Cody, Kilo Code, Qwen Code, OpenHands, CodeBuddy, CodeStory, Aider, Amazon Q Developer, Tabnine, Augment, JetBrains AI, Devin, Replit Agent, Mentat, Sourcery, Blackbox AI, Double, Codegen, Sweep, Supermaven, Copilot CLI, SWE-Agent, Forge, Gemini Code Assist |
+| **Medium** | Codex CLI, Gemini CLI, GitHub Copilot, OpenCode, Cline, Kimi, VS Code, Zed, Claude Desktop, Amazon Q Developer, GitHub Copilot CLI |
+| **Low** | Roo, Continue, Goose, Antigravity, Kiro, Amp, Trae, Aide, Pear AI, Void AI, Cody, Kilo Code, Qwen Code, OpenHands, CodeBuddy, CodeStory, Aider, Tabnine, Augment, JetBrains AI, Devin, Replit Agent, Mentat, Sourcery, Blackbox AI, Double, Codegen, SWE-Agent, Forge, Gemini Code Assist |
 
 ### Config Key Mapping
 
@@ -186,7 +201,7 @@ Each provider uses a different key name for MCP server configuration:
 └─────────────────────────────────────────────────┘
 ```
 
-- **Provider Registry**: Single `providers/registry.json` with all 28 provider definitions
+- **Provider Registry**: Single `providers/registry.json` with all provider definitions
 - **Format Handlers**: JSON, JSONC (comment-preserving), YAML, TOML
 - **Skills Model**: Canonical copy + symlinks (install once, link to all agents)
 - **MCP Transforms**: Per-agent config shape transforms for Goose, Zed, OpenCode, Codex, Cursor
@@ -199,11 +214,18 @@ Each provider uses a different key name for MCP server configuration:
 | [API Reference](docs/API-REFERENCE.md) | Full library API (signatures and examples) |
 | [Advanced CLI](docs/ADVANCED-CLI.md) | LAFS-compliant advanced command wrappers and input/output schemas |
 | [Advanced Recipes](docs/ADVANCED-RECIPES.md) | Production TypeScript patterns for tier filtering, rollback, conflict handling, and dual-scope operations |
+| [Provider Configuration Guide](docs/PROVIDER-CONFIGURATION.md) | Config keys, formats, scopes, and provider mapping guidance |
+| [Migration Guide](docs/MIGRATION-v1.md) | Upgrade notes for moving to v1.0.0 |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Common failure modes and remediation steps |
+| [CLI Help Examples](docs/CLI-HELP-EXAMPLES.md) | `--help` command examples for every command group |
+| [Contributing](CONTRIBUTING.md) | Development workflow and PR expectations |
+| [Security Policy](SECURITY.md) | Private vulnerability disclosure process |
 | [Generated API Docs](docs/api/) | Auto-generated from TSDoc (run `npm run docs:api`) |
 | [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
 | [Product Requirements](claudedocs/PRD.md) | Full PRD with user stories and feature requirements |
 | [Technical Specification](claudedocs/specs/CAAMP-SPEC.md) | RFC 2119 spec covering all subsystems |
-| [LAFS Specification](lafs.md) | Cross-language LLM-agent-first protocol for output, context, and MVI |
+| [LAFS Specification](https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md) | Canonical cross-language LLM-agent-first protocol |
+| [LAFS Compliance Profile](docs/LAFS-COMPLIANCE.md) | CAAMP-specific LAFS adoption scope and compliance mapping |
 | [Gap Analysis & Roadmap](claudedocs/GAP-ANALYSIS.md) | Current state vs plan, v0.2.0+ roadmap |
 
 ## Contributing

@@ -7,6 +7,14 @@
 
 TypeScript CLI that provides a unified provider registry and package manager for AI coding agents. Single source of truth for all AI agent provider configurations - Skills, MCP, Instructions, and Config management in one tool.
 
+## LAFS Mandate (Required)
+
+CAAMP follows LAFS for agent-facing behavior.
+
+- Canonical protocol source: `https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md`
+- Package: `@cleocode/lafs-protocol`
+- CAAMP implementation profile: `docs/LAFS-COMPLIANCE.md`
+
 ## Build & Test
 
 ```bash

@@ -15,7 +15,7 @@ import {
   symlink,
   writeFile,
 } from "node:fs/promises";
-import { homedir, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import type {
   ConfigFormat,
@@ -27,6 +27,7 @@ import { injectAll } from "../instructions/injector.js";
 import { groupByInstructFile } from "../instructions/templates.js";
 import { installMcpServer, type InstallResult } from "../mcp/installer.js";
 import { listMcpServers, resolveConfigPath } from "../mcp/reader.js";
+import { CANONICAL_SKILLS_DIR } from "../paths/agents.js";
 import { getTransform } from "../mcp/transforms.js";
 import { getInstalledProviders } from "../registry/detection.js";
 import { installSkill, removeSkill } from "../skills/installer.js";
@@ -38,8 +39,6 @@ const PRIORITY_ORDER: Record<ProviderPriority, number> = {
   medium: 1,
   low: 2,
 };
-
-const CANONICAL_SKILLS_DIR = join(homedir(), ".agents", "skills");
 
 /**
  * Filter providers by minimum priority and return them in deterministic tier order.

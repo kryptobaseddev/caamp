@@ -2,13 +2,10 @@
 
 This document defines the CLI wrappers for CAAMP advanced orchestration APIs.
 
-These commands are designed to be compliant with `claudedocs/specs/LLM-AGENT-FIRST-SPEC.md`:
+These commands consume LAFS via `@cleocode/lafs-protocol`.
 
-- Structured JSON output is the default.
-- Validation happens before state mutation.
-- Errors return stable machine-readable codes and recovery suggestions.
-- MVI (Minimal Viable Information) is the default output mode.
-- `--details` enables progressive disclosure with expanded payloads.
+- Canonical protocol: `https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md`
+- CAAMP mapping and compliance scope: `docs/LAFS-COMPLIANCE.md`
 
 ## Command group
 
@@ -20,43 +17,7 @@ caamp advanced <subcommand>
 
 ## Output contract
 
-### Success envelope
-
-```json
-{
-  "$schema": "https://caamp.dev/schemas/v1/output.schema.json",
-  "_meta": {
-    "format": "json",
-    "version": "1.0.0",
-    "command": "advanced.batch",
-    "timestamp": "2026-02-12T00:00:00.000Z",
-    "mvi": true
-  },
-  "success": true,
-  "data": {}
-}
-```
-
-### Error envelope
-
-```json
-{
-  "$schema": "https://caamp.dev/schemas/v1/error.schema.json",
-  "_meta": {
-    "format": "json",
-    "version": "1.0.0",
-    "command": "advanced.batch",
-    "timestamp": "2026-02-12T00:00:00.000Z"
-  },
-  "success": false,
-  "error": {
-    "code": "E_ADVANCED_VALIDATION_NO_OPS",
-    "message": "No operations provided.",
-    "recoverable": true,
-    "suggestion": "Provide --mcp-file and/or --skills-file."
-  }
-}
-```
+Output envelopes for advanced commands follow the canonical LAFS schema and error registry from `@cleocode/lafs-protocol`.
 
 ## Subcommands
 

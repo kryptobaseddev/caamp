@@ -114,6 +114,22 @@ describe("MarketplaceClient", () => {
     await expect(client.search("test")).rejects.toThrow("All marketplace sources failed.");
   });
 
+  it("throws when all adapters fail during search", async () => {
+    const a1: MarketplaceAdapter = {
+      name: "failing-1",
+      search: vi.fn().mockRejectedValue(new Error("network down")),
+      getSkill: vi.fn().mockResolvedValue(null),
+    };
+    const a2: MarketplaceAdapter = {
+      name: "failing-2",
+      search: vi.fn().mockRejectedValue(new Error("timeout")),
+      getSkill: vi.fn().mockResolvedValue(null),
+    };
+    const client = new MarketplaceClient([a1, a2]);
+
+    await expect(client.search("test")).rejects.toThrow("All marketplace sources failed.");
+  });
+
   it("respects limit parameter", async () => {
     const items = Array.from({ length: 10 }, (_, i) =>
       makeResult({ scopedName: `@a/s${i}`, stars: 10 - i }),
@@ -158,6 +174,22 @@ describe("MarketplaceClient", () => {
     const result = await client.getSkill("@a/recover");
     expect(result).not.toBeNull();
     expect(result?.scopedName).toBe("@a/recover");
+  });
+
+  it("getSkill throws when all adapters fail", async () => {
+    const a1: MarketplaceAdapter = {
+      name: "failing-1",
+      search: vi.fn().mockResolvedValue([]),
+      getSkill: vi.fn().mockRejectedValue(new Error("timeout")),
+    };
+    const a2: MarketplaceAdapter = {
+      name: "failing-2",
+      search: vi.fn().mockResolvedValue([]),
+      getSkill: vi.fn().mockRejectedValue(new Error("network down")),
+    };
+    const client = new MarketplaceClient([a1, a2]);
+
+    await expect(client.getSkill("@a/missing")).rejects.toThrow("All marketplace sources failed.");
   });
 
   it("getSkill throws when all adapters fail", async () => {
@@ -286,9 +318,9 @@ describe("SkillsMPAdapter", () => {
     const adapter = new SkillsMPAdapter();
     const result = await adapter.getSkill("@bob/target");
     expect(result).not.toBeNull();
-    expect(result?.scopedName).toBe("@bob/target");
+    expect(result!.scopedName).toBe("@bob/target");
 
-    const url = mockFetch.mock.calls[0]?.[0] as string;
+    const url = mockFetch.mock.calls[0]![0] as string;
     expect(url).toContain("search=target");
     expect(url).toContain("limit=50");
   });
@@ -330,8 +362,8 @@ describe("SkillsMPAdapter", () => {
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
-    const firstUrl = mockFetch.mock.calls[0]?.[0] as string;
-    const secondUrl = mockFetch.mock.calls[1]?.[0] as string;
+    const firstUrl = mockFetch.mock.calls[0]![0] as string;
+    const secondUrl = mockFetch.mock.calls[1]![0] as string;
     expect(firstUrl).toContain("search=target");
     expect(secondUrl).toContain("search=bob+target");
   });
