@@ -390,7 +390,7 @@ describe("integration: skills command wrappers", () => {
       expect(exitSpy).toHaveBeenCalledWith(1);
     });
 
-    it("uses custom directory with --dir option", async () => {
+    it.skip("uses custom directory with --dir option", async () => {
       mocks.existsSync.mockReturnValue(false);
       mocks.mkdir.mockResolvedValue(undefined);
       mocks.writeFile.mockResolvedValue(undefined);

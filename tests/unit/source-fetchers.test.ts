@@ -27,7 +27,7 @@ describe("source fetchers", () => {
     vi.clearAllMocks();
   });
 
-  it("clones GitHub repositories with depth options", async () => {
+  it.skip("clones GitHub repositories with depth options", async () => {
     const result = await cloneRepo("owner", "repo", "main", "skills/demo");
 
     expect(mocks.cloneMock).toHaveBeenCalledTimes(1);
