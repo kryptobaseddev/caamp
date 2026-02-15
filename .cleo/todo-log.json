@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 359,
+    "totalEntries": 360,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-15T03:18:05Z",
+    "lastEntry": "2026-02-15T03:18:06Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -8131,6 +8131,65 @@
         "currentTask": "T159"
       },
       "details": null
+    },
+    {
+      "id": "log_f9aff980edef",
+      "timestamp": "2026-02-15T03:18:06Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T159",
+      "before": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Recover missing test suites referenced by prior coverage remediation and re-establish coverage threshold compliance.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "All listed test files exist and pass targeted vitest run",
+          "npm run test:coverage passes global thresholds >=80 lines/statements"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Restore missing coverage artifacts and recover 80% gate",
+        "status": "active",
+        "priority": "high",
+        "description": "Recover missing test suites referenced by prior coverage remediation and re-establish coverage threshold compliance.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/skills-commands.test.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/integration/config-providers.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "All listed test files exist and pass targeted vitest run",
+          "npm run test:coverage passes global thresholds >=80 lines/statements"
+        ],
+        "depends": [
+          "T086"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
     }
   ]
 }
