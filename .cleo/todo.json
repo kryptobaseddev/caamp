@@ -168,18 +168,28 @@
         ],
         "notes": null,
         "gitTag": "v0.5.1"
+      },
+      {
+        "version": "v1.0.1",
+        "status": "released",
+        "targetDate": null,
+        "releasedAt": "2026-02-15T16:01:23Z",
+        "createdAt": "2026-02-15T16:01:12Z",
+        "tasks": [],
+        "notes": "Coverage remediation and stability fixes. All tests pass.",
+        "gitTag": "v1.0.1"
       }
     ]
   },
-  "lastUpdated": "2026-02-15T15:27:39Z",
+  "lastUpdated": "2026-02-15T16:02:26Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "e02c54630f730620",
+    "checksum": "1adb88401f566dce",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 402,
-    "lastModified": "2026-02-15T16:00:41Z",
+    "generation": 407,
+    "lastModified": "2026-02-15T16:26:53Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 5
   },
@@ -6410,6 +6420,63 @@
         "lastUpdated": "2026-02-15T15:27:07Z",
         "failureLog": []
       }
+    },
+    {
+      "id": "T160",
+      "title": "Fix CodeQL required check configuration",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T078",
+      "createdAt": "2026-02-15T16:01:49Z",
+      "updatedAt": "2026-02-15T16:02:26Z",
+      "size": "small",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Branch protection requires 'analyze' check but CodeQL workflow reports as 'CodeQL' and 'Analyze (javascript-typescript)'. Update branch protection or workflow to align check names.",
+      "acceptance": [
+        "PR merge unblocked",
+        "CodeQL check passes with correct name in future PRs"
+      ],
+      "completedAt": "2026-02-15T16:02:26Z",
+      "notes": [
+        "[COMPLETED 2026-02-15T16:02:26Z] Fixed by updating branch protection required checks from 'analyze' to 'Analyze (javascript-typescript)' via GitHub API. PR #6 successfully merged after fix."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-15T16:02:26Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T161",
+      "title": "Achieve 90%+ test coverage (near 100%)",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T049",
+      "createdAt": "2026-02-15T16:02:14Z",
+      "updatedAt": "2026-02-15T16:02:14Z",
+      "size": "large",
+      "position": 24,
+      "positionVersion": 0,
+      "phase": "setup",
+      "description": "Raise global test coverage from current 78% to 90%+ (target near 100%). This requires comprehensive testing of currently uncovered code paths including: skills installer, catalog, validation-api, yaml/toml parsers, lock-utils, fetch error handling, and provider type definitions.",
+      "acceptance": [
+        "npm run test:coverage passes with >=90% lines/statements",
+        "npm run test:coverage passes with >=95% lines/statements (stretch goal)"
+      ]
     }
   ],
   "labels": {}

@@ -5,8 +5,8 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-15T16:00:41Z",
-    "totalSessionsCreated": 18
+    "lastModified": "2026-02-15T16:26:53Z",
+    "totalSessionsCreated": 20
   },
   "config": {
     "maxConcurrentSessions": 5,
@@ -1000,7 +1000,7 @@
     },
     {
       "id": "session_20260213_200307_24ffca",
-      "status": "active",
+      "status": "ended",
       "name": "v1.0.0 Release Finalization",
       "agentId": null,
       "scope": {
@@ -1022,10 +1022,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T095",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": null,
-        "sessionNote": null,
+        "previousTask": "T095",
+        "sessionNote": "v1.0.1 release completed. CodeQL check configuration fixed.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -1036,7 +1036,7 @@
         ]
       },
       "startedAt": "2026-02-14T04:03:07Z",
-      "lastActivity": "2026-02-14T04:03:07Z",
+      "lastActivity": "2026-02-15T16:00:43Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -1049,7 +1049,8 @@
         "start_timestamp": "2026-02-14T04:03:07Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-15T16:00:43Z"
     },
     {
       "id": "session_20260214_005054_d62bf8",
@@ -1172,7 +1173,7 @@
     },
     {
       "id": "session_20260214_005315_bf984c",
-      "status": "active",
+      "status": "ended",
       "name": "Validation Follow-up",
       "agentId": null,
       "scope": {
@@ -1259,10 +1260,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T094",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": null,
-        "sessionNote": null,
+        "previousTask": "T094",
+        "sessionNote": "v1.0.1 release completed. CodeQL check configuration fixed.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -1273,7 +1274,7 @@
         ]
       },
       "startedAt": "2026-02-14T08:53:15Z",
-      "lastActivity": "2026-02-14T08:53:15Z",
+      "lastActivity": "2026-02-15T16:00:42Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -1284,6 +1285,98 @@
       "startMetrics": {
         "session_id": "session_20260214_005315_bf984c",
         "start_timestamp": "2026-02-14T08:53:15Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-15T16:00:42Z"
+    },
+    {
+      "id": "session_20260215_080149_59ebda",
+      "status": "ended",
+      "name": "CodeQL Fix",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T078",
+        "computedTaskIds": [
+          "T078",
+          "T079",
+          "T080",
+          "T081",
+          "T082",
+          "T083",
+          "T084",
+          "T085",
+          "T095",
+          "T096",
+          "T135",
+          "T136"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": "v1.0.1 fully shipped. T160 (CodeQL fix) completed. T161 (90% coverage) created as future initiative.",
+        "nextAction": null,
+        "focusHistory": []
+      },
+      "startedAt": "2026-02-15T16:01:49Z",
+      "lastActivity": "2026-02-15T16:02:38Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 0,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260215_080149_59ebda",
+        "start_timestamp": "2026-02-15T16:01:49Z",
+        "start_tokens": 0,
+        "max_tokens": 200000
+      },
+      "endedAt": "2026-02-15T16:02:38Z"
+    },
+    {
+      "id": "session_20260215_082653_0774dd",
+      "status": "active",
+      "name": "GitBook Setup",
+      "agentId": null,
+      "scope": {
+        "type": "epic",
+        "rootTaskId": "T070",
+        "computedTaskIds": [
+          "T070",
+          "T071",
+          "T072",
+          "T073",
+          "T074",
+          "T075",
+          "T076",
+          "T077"
+        ]
+      },
+      "focus": {
+        "currentTask": null,
+        "currentPhase": null,
+        "previousTask": null,
+        "sessionNote": null,
+        "nextAction": null,
+        "focusHistory": []
+      },
+      "startedAt": "2026-02-15T16:26:53Z",
+      "lastActivity": "2026-02-15T16:26:53Z",
+      "suspendedAt": null,
+      "stats": {
+        "tasksCompleted": 0,
+        "focusChanges": 0,
+        "suspendCount": 0,
+        "resumeCount": 0
+      },
+      "startMetrics": {
+        "session_id": "session_20260215_082653_0774dd",
+        "start_timestamp": "2026-02-15T16:26:53Z",
         "start_tokens": 0,
         "max_tokens": 200000
       }
