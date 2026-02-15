@@ -4,9 +4,9 @@
   "project": "caamp",
   "_meta": {
     "schemaVersion": "2.4.0",
-    "totalEntries": 353,
+    "totalEntries": 359,
     "firstEntry": "2026-02-11T22:05:12Z",
-    "lastEntry": "2026-02-14T08:53:48Z",
+    "lastEntry": "2026-02-15T03:18:05Z",
     "entriesPruned": 0
   },
   "entries": [
@@ -7955,6 +7955,182 @@
         "status": "pending",
         "priority": "high"
       }
+    },
+    {
+      "id": "log_cde910b66249",
+      "timestamp": "2026-02-14T17:57:11Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T086",
+      "before": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "pending",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Release Coverage Remediation to 80%",
+        "status": "active",
+        "priority": "high",
+        "description": "Close release-blocking coverage gap so vitest thresholds pass (lines/statements >=80). This task is canonical remediation for post-audit blocker discovered in T079.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "tests/integration/config-providers.test.ts",
+          "tests/integration/skills-commands.test.ts",
+          "tests/unit/skills-audit.test.ts",
+          "tests/unit/skills-discovery.test.ts",
+          "tests/unit/skills-lock.test.ts",
+          "tests/unit/version.test.ts"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes thresholds",
+          "coverage CI job passes on GitHub Actions"
+        ],
+        "depends": null,
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_5ed9c56f7aa9",
+      "timestamp": "2026-02-14T17:57:12Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T094",
+      "before": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "pending",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T125"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Finalize coverage gate and evidence",
+        "status": "blocked",
+        "priority": "high",
+        "description": "Run coverage, confirm thresholds pass, capture final evidence for release and unblock version bump.",
+        "phase": "setup",
+        "labels": null,
+        "files": [
+          "coverage/coverage-summary.json"
+        ],
+        "acceptance": [
+          "npm run test:coverage passes",
+          "coverage report attached to task notes"
+        ],
+        "depends": [
+          "T088",
+          "T089",
+          "T090",
+          "T091",
+          "T092",
+          "T093",
+          "T125"
+        ],
+        "blockedBy": "Blocked by coverage regression and missing test artifacts; complete T159 then rerun npm run test:coverage."
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_80c75e2c0f70",
+      "timestamp": "2026-02-14T17:57:22Z",
+      "sessionId": null,
+      "action": "task_updated",
+      "actor": "system",
+      "taskId": "T049",
+      "before": {
+        "title": "Test Coverage to 80%+",
+        "status": "done",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "after": {
+        "title": "Test Coverage to 80%+",
+        "status": "done",
+        "priority": "medium",
+        "description": null,
+        "phase": "setup",
+        "labels": null,
+        "files": null,
+        "acceptance": null,
+        "depends": [
+          "T039"
+        ],
+        "blockedBy": null
+      },
+      "details": {
+        "operation": "update"
+      }
+    },
+    {
+      "id": "log_b76693e84957",
+      "timestamp": "2026-02-14T17:57:37Z",
+      "sessionId": "session_20260214_005054_d62bf8",
+      "action": "session_end",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": {
+        "note": "Logged coverage regression as canonical issue (T086 active, T094 blocked, T159 created). Recovery path and evidence captured for handoff."
+      }
+    },
+    {
+      "id": "log_2dc83ce1bcc5",
+      "timestamp": "2026-02-15T03:18:05Z",
+      "sessionId": null,
+      "action": "session_focus_changed",
+      "actor": "claude",
+      "taskId": null,
+      "before": {
+        "currentTask": "T125"
+      },
+      "after": {
+        "currentTask": "T159"
+      },
+      "details": null
     }
   ]
 }

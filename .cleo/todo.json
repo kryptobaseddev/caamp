@@ -171,20 +171,20 @@
       }
     ]
   },
-  "lastUpdated": "2026-02-14T17:57:10Z",
+  "lastUpdated": "2026-02-14T17:57:21Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "42302415cf418b82",
+    "checksum": "cf542f8dc931ea0f",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 390,
-    "lastModified": "2026-02-14T08:53:48Z",
+    "generation": 392,
+    "lastModified": "2026-02-15T03:18:05Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 7
+    "activeSessionCount": 6
   },
   "focus": {
-    "currentTask": null,
+    "currentTask": "T159",
     "currentPhase": "setup",
     "blockedUntil": null,
     "sessionNote": null,
@@ -1790,7 +1790,7 @@
       "type": "task",
       "parentId": "T038",
       "createdAt": "2026-02-12T00:41:48Z",
-      "updatedAt": "2026-02-14T08:51:39Z",
+      "updatedAt": "2026-02-14T17:57:21Z",
       "size": "medium",
       "position": 2,
       "positionVersion": 0,
@@ -1798,7 +1798,8 @@
       "notes": [
         "2026-02-12 00:41:49 UTC: Wave 1 (depends on Epic 1 critical fixes). Add unit and integration tests to reach 80% line coverage. Cover untested modules: MCP installer/transforms, detection engine, fetchers, doctor command, logger, lock-utils. Add full flow integration tests. Set up coverage reporting.",
         "[COMPLETED 2026-02-12T02:15:10Z] Wave 1 coverage track implemented: unit/integration tests added for installer, transforms, detection, source fetchers, doctor, logger, lock-utils; flaky installer test fixed; coverage tooling enabled.",
-        "2026-02-14 08:51:39 UTC: Post-release validation on 2026-02-14 found current workspace coverage regression (64.11% lines/statements). Since completed tasks are immutable, remediation tracked in new follow-up tasks."
+        "2026-02-14 08:51:39 UTC: Post-release validation on 2026-02-14 found current workspace coverage regression (64.11% lines/statements). Since completed tasks are immutable, remediation tracked in new follow-up tasks.",
+        "2026-02-14 17:57:21 UTC: Validation checkpoint 2026-02-14: coverage gate regressed to 64.11% due missing test artifacts; follow-up recovery task opened as T159 under this epic."
       ],
       "depends": [
         "T039"
@@ -1818,7 +1819,13 @@
         "lastAgent": "coder",
         "lastUpdated": "2026-02-12T02:15:10Z",
         "failureLog": []
-      }
+      },
+      "relates": [
+        {
+          "taskId": "T159",
+          "type": "relates-to"
+        }
+      ]
     },
     {
       "id": "T050",
@@ -3085,12 +3092,12 @@
     {
       "id": "T086",
       "title": "Release Coverage Remediation to 80%",
-      "status": "active",
+      "status": "pending",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:42:54Z",
-      "updatedAt": "2026-02-14T17:57:10Z",
+      "updatedAt": "2026-02-14T17:57:37Z",
       "size": "large",
       "position": 13,
       "positionVersion": 0,
@@ -3500,12 +3507,12 @@
     {
       "id": "T094",
       "title": "Finalize coverage gate and evidence",
-      "status": "pending",
+      "status": "blocked",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-12T17:43:27Z",
-      "updatedAt": "2026-02-14T08:53:48Z",
+      "updatedAt": "2026-02-14T17:57:11Z",
       "size": "small",
       "position": 21,
       "positionVersion": 0,
@@ -3528,14 +3535,16 @@
         "T125"
       ],
       "notes": [
-        "2026-02-13 06:01:59 UTC: Upstream provenance: T089 added skills command-surface tests and passed targeted test/lint/typecheck gates; coverage evidence available in T089 notes."
+        "2026-02-13 06:01:59 UTC: Upstream provenance: T089 added skills command-surface tests and passed targeted test/lint/typecheck gates; coverage evidence available in T089 notes.",
+        "2026-02-14 17:57:11 UTC: Gate evidence invalidated by current workspace validation; last verified failure 64.11% lines/statements on 2026-02-14."
       ],
       "relates": [
         {
           "taskId": "T089",
           "type": "relates-to"
         }
-      ]
+      ],
+      "blockedBy": "Blocked by coverage regression and missing test artifacts; complete T159 then rerun npm run test:coverage."
     },
     {
       "id": "T095",
@@ -6321,12 +6330,12 @@
     {
       "id": "T159",
       "title": "Restore missing coverage artifacts and recover 80% gate",
-      "status": "pending",
+      "status": "active",
       "priority": "high",
       "type": "task",
       "parentId": "T049",
       "createdAt": "2026-02-14T17:57:00Z",
-      "updatedAt": "2026-02-14T17:57:00Z",
+      "updatedAt": "2026-02-15T03:18:05Z",
       "size": "medium",
       "position": 23,
       "positionVersion": 0,
