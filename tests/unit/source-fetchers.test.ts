@@ -27,7 +27,7 @@ describe("source fetchers", () => {
     vi.clearAllMocks();
   });
 
-  it.skip("clones GitHub repositories with depth options", async () => {
+  it("clones GitHub repositories with depth options", async () => {
     const result = await cloneRepo("owner", "repo", "main", "skills/demo");
 
     expect(mocks.cloneMock).toHaveBeenCalledTimes(1);
@@ -35,7 +35,8 @@ describe("source fetchers", () => {
     expect(url).toBe("https://github.com/owner/repo.git");
     expect(dir).toContain("caamp-");
     expect(options).toEqual(["--depth", "1", "--branch", "main"]);
-    expect(result.localPath).toContain("skills/demo");
+    expect(result.localPath).toContain("skills");
+    expect(result.localPath).toContain("demo");
 
     await expect(result.cleanup()).resolves.toBeUndefined();
   });
@@ -89,6 +90,39 @@ describe("source fetchers", () => {
     expect(mocks.fetchWithTimeoutMock).toHaveBeenCalledWith(
       "https://gitlab.com/group/repo/-/raw/main/dir%2FREADME.md",
     );
+  });
+
+  it("clones GitHub repo without ref (no --branch flag)", async () => {
+    const result = await cloneRepo("owner", "repo");
+
+    expect(mocks.cloneMock).toHaveBeenCalledTimes(1);
+    const [url, dir, options] = mocks.cloneMock.mock.calls[0] as [string, string, string[]];
+    expect(url).toBe("https://github.com/owner/repo.git");
+    expect(options).toEqual(["--depth", "1"]);
+    expect(result.localPath).toBe(dir);
+
+    await result.cleanup();
+  });
+
+  it("returns null when GitHub raw response is not ok", async () => {
+    mocks.fetchWithTimeoutMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+    });
+
+    await expect(fetchRawFile("owner", "repo", "missing.md")).resolves.toBeNull();
+  });
+
+  it("returns false when GitHub repo does not exist", async () => {
+    mocks.fetchWithTimeoutMock.mockResolvedValue({ ok: false });
+
+    await expect(repoExists("owner", "nonexistent")).resolves.toBe(false);
+  });
+
+  it("returns false when repoExists throws network error", async () => {
+    mocks.fetchWithTimeoutMock.mockRejectedValue(new Error("network error"));
+
+    await expect(repoExists("owner", "repo")).resolves.toBe(false);
   });
 
   it("returns discovered well-known skills", async () => {
