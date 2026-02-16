@@ -363,7 +363,7 @@ describe("doctor command", () => {
     // existsSync: true for canonical dir and provider skill dir, but false for
     // the broken symlink target (the joined fullPath)
     mocks.existsSync.mockImplementation((p: string) => {
-      const ps = String(p);
+      const ps = String(p).replace(/\\/g, "/");
       // The broken symlink: existsSync(join(skillDir, "skill1")) returns false
       if (ps.endsWith("/skill1") && ps.includes(".claude")) return false;
       // Everything else exists
@@ -372,7 +372,7 @@ describe("doctor command", () => {
 
     // readdirSync: path-aware so canonical dir returns [] and provider dir returns entries
     mocks.readdirSync.mockImplementation((p: string) => {
-      if (String(p) === providerSkillDir) return ["skill1"];
+      if (String(p).replace(/\\/g, "/").includes(".claude/skills")) return ["skill1"];
       return [];
     });
 
@@ -422,7 +422,7 @@ describe("doctor command", () => {
 
     // readdirSync: path-aware
     mocks.readdirSync.mockImplementation((p: string) => {
-      if (String(p) === providerSkillDir) return ["stale-skill"];
+      if (String(p).replace(/\\/g, "/").includes(".claude/skills")) return ["stale-skill"];
       return [];
     });
 
@@ -527,10 +527,11 @@ describe("doctor command", () => {
 
     // existsSync: canonical path exists, but the provider symlink path does NOT
     mocks.existsSync.mockImplementation((p: string) => {
+      const ps = String(p).replace(/\\/g, "/");
       // The canonical path for the skill exists (not orphaned)
-      if (String(p).includes("/home/user/.agents/skills/my-skill")) return true;
+      if (ps.includes(".agents/skills/my-skill")) return true;
       // The provider symlink path does NOT exist (agent-list mismatch)
-      if (String(p).includes("/home/user/.claude/skills/my-skill")) return false;
+      if (ps.includes(".claude/skills/my-skill")) return false;
       // Default: true for canonical dir checks, etc.
       return true;
     });
@@ -743,7 +744,7 @@ describe("doctor command", () => {
     mocks.existsSync.mockReturnValue(true);
 
     mocks.readdirSync.mockImplementation((p: string) => {
-      if (String(p) === providerSkillDir) return ["bad-entry"];
+      if (String(p).replace(/\\/g, "/").includes(".claude/skills")) return ["bad-entry"];
       return [];
     });
 
@@ -793,7 +794,7 @@ describe("doctor command", () => {
 
     // readdirSync throws for the provider skill dir (line 184 catch)
     mocks.readdirSync.mockImplementation((p: string) => {
-      if (String(p) === providerSkillDir) throw new Error("EACCES: permission denied");
+      if (String(p).replace(/\\/g, "/").includes(".claude/skills")) throw new Error("EACCES: permission denied");
       return [];
     });
 
@@ -913,8 +914,8 @@ describe("doctor command", () => {
 
     // All canonical paths exist but NO provider symlinks exist
     mocks.existsSync.mockImplementation((p: string) => {
-      const ps = String(p);
-      if (ps.includes(providerSkillDir)) return false;
+      const ps = String(p).replace(/\\/g, "/");
+      if (ps.includes(".claude/skills")) return false;
       return true;
     });
 
