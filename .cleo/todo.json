@@ -179,9 +179,9 @@
     "lastSessionId": null,
     "activeSession": null,
     "generation": 402,
-    "lastModified": "2026-02-15T03:18:05Z",
+    "lastModified": "2026-02-15T16:00:41Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 6
+    "activeSessionCount": 5
   },
   "focus": {
     "currentTask": null,
