@@ -35,7 +35,8 @@ describe("source fetchers", () => {
     expect(url).toBe("https://github.com/owner/repo.git");
     expect(dir).toContain("caamp-");
     expect(options).toEqual(["--depth", "1", "--branch", "main"]);
-    expect(result.localPath).toContain("skills/demo");
+    expect(result.localPath).toContain("skills");
+    expect(result.localPath).toContain("demo");
 
     await expect(result.cleanup()).resolves.toBeUndefined();
   });

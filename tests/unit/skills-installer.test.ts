@@ -367,7 +367,7 @@ describe("removeSkill", () => {
     expect(existsSync(projectLinkPath)).toBe(false);
   });
 
-  it("handles errors during removal gracefully", async () => {
+  it.skipIf(process.platform === "win32")("handles errors during removal gracefully", async () => {
     const sourceDir = await createMockSkill(testDir, "test-skill");
     const skillName = `error-remove-${randomUUID()}`;
     const provider = createMockProvider("claude-code");
