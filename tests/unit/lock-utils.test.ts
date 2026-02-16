@@ -16,7 +16,7 @@ vi.mock("../../src/core/paths/agents.js", () => ({
   LOCK_FILE_PATH: mockedPaths.LOCK_FILE_PATH,
 }));
 
-import { readLockFile, writeLockFile } from "../../src/core/lock-utils.js";
+import { readLockFile, updateLockFile, writeLockFile } from "../../src/core/lock-utils.js";
 
 describe("lock-utils", () => {
   beforeEach(async () => {
@@ -62,5 +62,83 @@ describe("lock-utils", () => {
 
     const lock = await readLockFile();
     expect(lock).toEqual({ version: 1, skills: {}, mcpServers: {} });
+  });
+
+  it("updateLockFile applies mutation and returns updated lock", async () => {
+    const result = await updateLockFile((lock) => {
+      lock.skills["alpha"] = {
+        name: "alpha",
+        scopedName: "@test/alpha",
+        source: "github",
+        sourceType: "github",
+        agents: ["claude-code"],
+        canonicalPath: "/tmp/alpha",
+        isGlobal: true,
+        installedAt: "2026-02-15T00:00:00.000Z",
+      };
+    });
+
+    expect(result.skills["alpha"]).toBeDefined();
+    expect(result.skills["alpha"].name).toBe("alpha");
+
+    const persisted = await readLockFile();
+    expect(persisted).toEqual(result);
+  });
+
+  it("updateLockFile creates lock file when none exists", async () => {
+    expect(existsSync(mockedPaths.LOCK_FILE_PATH)).toBe(false);
+
+    const result = await updateLockFile((lock) => {
+      lock.mcpServers["test-server"] = {
+        name: "test-server",
+        command: "node",
+        args: ["server.js"],
+      } as never;
+    });
+
+    expect(existsSync(mockedPaths.LOCK_FILE_PATH)).toBe(true);
+    expect(result.version).toBe(1);
+    expect(result.skills).toEqual({});
+    expect(result.mcpServers["test-server"]).toBeDefined();
+  });
+
+  it("updateLockFile properly modifies existing lock data", async () => {
+    const initial: CaampLockFile = {
+      version: 1,
+      skills: {
+        existing: {
+          name: "existing",
+          scopedName: "@test/existing",
+          source: "github",
+          sourceType: "github",
+          agents: ["claude-code"],
+          canonicalPath: "/tmp/existing",
+          isGlobal: true,
+          installedAt: "2026-01-01T00:00:00.000Z",
+        },
+      },
+      mcpServers: {},
+    };
+    await writeLockFile(initial);
+
+    const result = await updateLockFile((lock) => {
+      lock.skills["new-skill"] = {
+        name: "new-skill",
+        scopedName: "@test/new-skill",
+        source: "package",
+        sourceType: "package",
+        agents: ["claude-code"],
+        canonicalPath: "/tmp/new-skill",
+        isGlobal: false,
+        installedAt: "2026-02-15T12:00:00.000Z",
+      };
+    });
+
+    expect(Object.keys(result.skills)).toHaveLength(2);
+    expect(result.skills["existing"].name).toBe("existing");
+    expect(result.skills["new-skill"].name).toBe("new-skill");
+
+    const persisted = await readLockFile();
+    expect(persisted).toEqual(result);
   });
 });

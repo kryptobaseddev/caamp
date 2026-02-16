@@ -5,13 +5,12 @@
  * and symlinked to each target agent's skills directory.
  */
 
-import { mkdir, symlink, rm, cp } from "node:fs/promises";
 import { existsSync, lstatSync } from "node:fs";
+import { cp, mkdir, rm, symlink } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
-import type { Provider, SkillMetadata, ParsedSource } from "../../types.js";
+import type { ParsedSource, Provider, SkillMetadata } from "../../types.js";
+import { getCanonicalSkillsDir, resolveProviderSkillsDir } from "../paths/standard.js";
 import { discoverSkill } from "./discovery.js";
-import { CANONICAL_SKILLS_DIR } from "../paths/agents.js";
-import { resolveProviderSkillsDir } from "../paths/standard.js";
 
 /**
  * Result of installing a skill to the canonical location and linking to agents.
@@ -40,7 +39,7 @@ export interface SkillInstallResult {
 
 /** Ensure canonical skills directory exists */
 async function ensureCanonicalDir(): Promise<void> {
-  await mkdir(CANONICAL_SKILLS_DIR, { recursive: true });
+  await mkdir(getCanonicalSkillsDir(), { recursive: true });
 }
 
 /** Copy skill files to the canonical location */
@@ -50,14 +49,22 @@ export async function installToCanonical(
 ): Promise<string> {
   await ensureCanonicalDir();
 
-  const targetDir = join(CANONICAL_SKILLS_DIR, skillName);
+  const targetDir = join(getCanonicalSkillsDir(), skillName);
 
-  // Remove existing if it exists
-  if (existsSync(targetDir)) {
-    await rm(targetDir, { recursive: true });
+  // Remove existing (force: true ignores ENOENT if it doesn't exist)
+  await rm(targetDir, { recursive: true, force: true });
+
+  try {
+    await cp(sourcePath, targetDir, { recursive: true });
+  } catch (err: unknown) {
+    // Handle race condition: another concurrent install may have created the dir
+    if (err && typeof err === "object" && "code" in err && err.code === "EEXIST") {
+      await rm(targetDir, { recursive: true, force: true });
+      await cp(sourcePath, targetDir, { recursive: true });
+    } else {
+      throw err;
+    }
   }
-
-  await cp(sourcePath, targetDir, { recursive: true });
 
   return targetDir;
 }
@@ -211,7 +218,7 @@ export async function removeSkill(
   }
 
   // Remove canonical copy
-  const canonicalPath = join(CANONICAL_SKILLS_DIR, skillName);
+  const canonicalPath = join(getCanonicalSkillsDir(), skillName);
   if (existsSync(canonicalPath)) {
     try {
       await rm(canonicalPath, { recursive: true });
@@ -237,10 +244,10 @@ export async function removeSkill(
  * ```
  */
 export async function listCanonicalSkills(): Promise<string[]> {
-  if (!existsSync(CANONICAL_SKILLS_DIR)) return [];
+  if (!existsSync(getCanonicalSkillsDir())) return [];
 
   const { readdir } = await import("node:fs/promises");
-  const entries = await readdir(CANONICAL_SKILLS_DIR, { withFileTypes: true });
+  const entries = await readdir(getCanonicalSkillsDir(), { withFileTypes: true });
   return entries
     .filter((e) => e.isDirectory() || e.isSymbolicLink())
     .map((e) => e.name);

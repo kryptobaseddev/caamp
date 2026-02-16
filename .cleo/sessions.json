@@ -5,7 +5,7 @@
   "_meta": {
     "schemaVersion": "1.0.0",
     "checksum": "",
-    "lastModified": "2026-02-15T03:18:05Z",
+    "lastModified": "2026-02-15T16:00:41Z",
     "totalSessionsCreated": 18
   },
   "config": {
@@ -870,7 +870,7 @@
     },
     {
       "id": "session_20260212_220133_370bd1",
-      "status": "active",
+      "status": "ended",
       "name": "Doctor Skills Health Check + Release",
       "agentId": null,
       "scope": {
@@ -958,10 +958,10 @@
         ]
       },
       "focus": {
-        "currentTask": "T159",
+        "currentTask": null,
         "currentPhase": null,
-        "previousTask": "T125",
-        "sessionNote": null,
+        "previousTask": "T159",
+        "sessionNote": "v1.0.1 release completed. CodeQL check configuration fixed.",
         "nextAction": null,
         "focusHistory": [
           {
@@ -982,7 +982,7 @@
         ]
       },
       "startedAt": "2026-02-13T06:01:33Z",
-      "lastActivity": "2026-02-15T03:18:05Z",
+      "lastActivity": "2026-02-15T16:00:41Z",
       "suspendedAt": null,
       "stats": {
         "tasksCompleted": 0,
@@ -995,7 +995,8 @@
         "start_timestamp": "2026-02-13T06:01:33Z",
         "start_tokens": 0,
         "max_tokens": 200000
-      }
+      },
+      "endedAt": "2026-02-15T16:00:41Z"
     },
     {
       "id": "session_20260213_200307_24ffca",
