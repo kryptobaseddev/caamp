@@ -447,4 +447,365 @@ describe("integration: advanced command wrappers", () => {
     const envelope = parseEnvelope(errorSpy);
     expect((envelope["error"] as { message: string }).message).toContain("Unknown provider: ghost");
   });
+
+  // ── apply.ts uncovered paths ──────────────────────────────────────────
+
+  it("apply with --details flag emits full result", async () => {
+    const fullResult = {
+      conflicts: [],
+      applied: [{ providerId: "alpha", serverName: "filesystem", scope: "project", success: true }],
+      skipped: [],
+    };
+    mocks.applyMcpInstallWithPolicy.mockResolvedValueOnce(fullResult);
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "apply",
+      "--agent",
+      "alpha",
+      "--mcp-file",
+      "/tmp/mcp.json",
+      "--policy",
+      "skip",
+      "--details",
+    ]);
+
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+    const result = envelope["result"] as Record<string, unknown>;
+    // --details returns the full orchestration result in data, not summary counts
+    const data = result["data"] as Record<string, unknown>;
+    expect(data).toHaveProperty("applied");
+    expect(data).toHaveProperty("conflicts");
+    expect(data).toHaveProperty("skipped");
+    expect(Array.isArray(data["applied"])).toBe(true);
+  });
+
+  it("apply with fail policy and conflicts", async () => {
+    mocks.applyMcpInstallWithPolicy.mockResolvedValueOnce({
+      conflicts: [{ code: "existing-mismatch", providerId: "alpha" }],
+      applied: [],
+      skipped: [],
+    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "apply",
+        "--agent",
+        "alpha",
+        "--mcp-file",
+        "/tmp/mcp.json",
+        "--policy",
+        "fail",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toContain("Conflicts detected and policy is set to fail");
+  });
+
+  it("apply with failed writes", async () => {
+    mocks.applyMcpInstallWithPolicy.mockResolvedValueOnce({
+      conflicts: [],
+      applied: [{ providerId: "alpha", serverName: "filesystem", scope: "project", success: false }],
+      skipped: [],
+    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "apply",
+        "--agent",
+        "alpha",
+        "--mcp-file",
+        "/tmp/mcp.json",
+        "--policy",
+        "skip",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toContain("One or more MCP writes failed");
+  });
+
+  it("apply with no providers exits", async () => {
+    mocks.selectProvidersByMinimumPriority.mockReturnValueOnce([]);
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "apply",
+        "--agent",
+        "alpha",
+        "--mcp-file",
+        "/tmp/mcp.json",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toContain("No target providers resolved");
+  });
+
+  // ── instructions.ts uncovered paths ───────────────────────────────────
+
+  it("instructions with inline --content", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "instructions",
+      "--agent",
+      "alpha",
+      "--scope",
+      "global",
+      "--content",
+      "direct text",
+    ]);
+
+    expect(mocks.updateInstructionsSingleOperation).toHaveBeenCalledWith(
+      [alpha],
+      "direct text",
+      "global",
+      undefined,
+    );
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+  });
+
+  it("instructions fails when neither content nor content-file provided", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "instructions",
+        "--agent",
+        "alpha",
+        "--scope",
+        "project",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toContain("Instruction content is required");
+  });
+
+  it("instructions with --scope project --project-dir", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "instructions",
+      "--agent",
+      "alpha",
+      "--scope",
+      "project",
+      "--content",
+      "some instructions",
+      "--project-dir",
+      "/my/project",
+    ]);
+
+    expect(mocks.updateInstructionsSingleOperation).toHaveBeenCalledWith(
+      [alpha],
+      "some instructions",
+      "project",
+      "/my/project",
+    );
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+  });
+
+  // ── batch.ts uncovered paths ──────────────────────────────────────────
+
+  it("batch reports rollback when it occurs", async () => {
+    mocks.installBatchWithRollback.mockResolvedValueOnce({
+      success: false,
+      providerIds: ["alpha"],
+      mcpApplied: 0,
+      skillsApplied: 0,
+      rollbackPerformed: true,
+      rollbackErrors: [],
+      error: "MCP write failed mid-batch",
+    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "batch",
+        "--agent",
+        "alpha",
+        "--mcp-file",
+        "/tmp/mcp.json",
+        "--project-dir",
+        "/repo",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toBe("MCP write failed mid-batch");
+  });
+
+  it("batch with only mcp-file (no skills-file)", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "batch",
+      "--agent",
+      "alpha",
+      "--mcp-file",
+      "/tmp/mcp.json",
+    ]);
+
+    expect(mocks.installBatchWithRollback).toHaveBeenCalledWith({
+      providers: [alpha],
+      minimumPriority: "low",
+      mcp: [{ serverName: "filesystem", config: { command: "npx" } }],
+      skills: [],
+      projectDir: undefined,
+    });
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+  });
+
+  it("batch with only skills-file (no mcp-file)", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "batch",
+      "--agent",
+      "alpha",
+      "--skills-file",
+      "/tmp/skills.json",
+    ]);
+
+    expect(mocks.installBatchWithRollback).toHaveBeenCalledWith({
+      providers: [alpha],
+      minimumPriority: "low",
+      mcp: [],
+      skills: [{ sourcePath: "./skills/demo", skillName: "demo" }],
+      projectDir: undefined,
+    });
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+  });
+
+  // ── common.ts uncovered paths ─────────────────────────────────────────
+
+  it("resolves providers via --all flag", async () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const program = createProgram();
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "advanced",
+      "apply",
+      "--all",
+      "--mcp-file",
+      "/tmp/mcp.json",
+      "--policy",
+      "skip",
+    ]);
+
+    expect(mocks.getAllProviders).toHaveBeenCalled();
+    expect(mocks.getInstalledProviders).not.toHaveBeenCalled();
+    const envelope = parseEnvelope(logSpy);
+    expect(envelope["success"]).toBe(true);
+  });
+
+  it("handles getProvider returning undefined", async () => {
+    mocks.getProvider.mockImplementation((id: string) => {
+      if (id === "alpha") return alpha;
+      return undefined;
+    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit:1");
+    }) as never);
+    const program = createProgram();
+
+    await expect(
+      program.parseAsync([
+        "node",
+        "test",
+        "advanced",
+        "apply",
+        "--agent",
+        "alpha",
+        "--agent",
+        "nonexistent",
+        "--mcp-file",
+        "/tmp/mcp.json",
+      ]),
+    ).rejects.toThrow("process-exit:1");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    const envelope = parseEnvelope(errorSpy);
+    expect(envelope["success"]).toBe(false);
+    expect((envelope["error"] as { message: string }).message).toContain("nonexistent");
+  });
 });
