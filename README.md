@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/node/v/@cleocode/caamp" alt="node version" />
   <img src="https://img.shields.io/badge/providers-44-green" alt="providers" />
   <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="typescript" />
+  <a href="https://codluv.gitbook.io/caamp/"><img src="https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook" alt="docs" /></a>
 </p>
 
 # CAAMP - Central AI Agent Managed Packages
@@ -64,7 +65,7 @@ const installed = getInstalledProviders();
 const servers = await listAllMcpServers(installed, "global");
 ```
 
-See [API Reference](docs/API-REFERENCE.md) for full programmatic API documentation.
+See [API Reference](https://codluv.gitbook.io/caamp/api-and-reference/api-reference) for full programmatic API documentation.
 
 ## CLI Commands
 
@@ -209,23 +210,25 @@ Each provider uses a different key name for MCP server configuration:
 
 ## Documentation
 
+**[Read the full documentation on GitBook](https://codluv.gitbook.io/caamp/)**
+
 | Document | Description |
 |----------|-------------|
-| [API Reference](docs/API-REFERENCE.md) | Full library API (signatures and examples) |
-| [Advanced CLI](docs/ADVANCED-CLI.md) | LAFS-compliant advanced command wrappers and input/output schemas |
-| [Advanced Recipes](docs/ADVANCED-RECIPES.md) | Production TypeScript patterns for tier filtering, rollback, conflict handling, and dual-scope operations |
-| [Provider Configuration Guide](docs/PROVIDER-CONFIGURATION.md) | Config keys, formats, scopes, and provider mapping guidance |
-| [Migration Guide](docs/MIGRATION-v1.md) | Upgrade notes for moving to v1.0.0 |
-| [Troubleshooting](docs/TROUBLESHOOTING.md) | Common failure modes and remediation steps |
-| [CLI Help Examples](docs/CLI-HELP-EXAMPLES.md) | `--help` command examples for every command group |
-| [Contributing](CONTRIBUTING.md) | Development workflow and PR expectations |
-| [Security Policy](SECURITY.md) | Private vulnerability disclosure process |
-| [Generated API Docs](docs/api/) | Auto-generated from TSDoc (run `npm run docs:api`) |
-| [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
-| [Product Requirements](claudedocs/PRD.md) | Full PRD with user stories and feature requirements |
-| [Technical Specification](claudedocs/specs/CAAMP-SPEC.md) | RFC 2119 spec covering all subsystems |
+| [API Reference](https://codluv.gitbook.io/caamp/api-and-reference/api-reference) | Full library API (signatures and examples) |
+| [Advanced CLI](https://codluv.gitbook.io/caamp/advanced-usage/advanced-cli) | LAFS-compliant advanced command wrappers and input/output schemas |
+| [Advanced Recipes](https://codluv.gitbook.io/caamp/advanced-usage/advanced-recipes) | Production TypeScript patterns for tier filtering, rollback, conflict handling, and dual-scope operations |
+| [Provider Configuration Guide](https://codluv.gitbook.io/caamp/user-guides/provider-configuration) | Config keys, formats, scopes, and provider mapping guidance |
+| [Migration Guide](https://codluv.gitbook.io/caamp/getting-started/migration-v1) | Upgrade notes for moving to v1.0.0 |
+| [Troubleshooting](https://codluv.gitbook.io/caamp/user-guides/troubleshooting) | Common failure modes and remediation steps |
+| [CLI Help Examples](https://codluv.gitbook.io/caamp/user-guides/cli-help-examples) | `--help` command examples for every command group |
+| [Skills Recommendations](https://codluv.gitbook.io/caamp/advanced-usage/skills-recommendations) | Marketplace search and recommendation engine |
+| [Contributing](https://codluv.gitbook.io/caamp/contributing/contributing) | Development workflow and PR expectations |
+| [Security Policy](https://codluv.gitbook.io/caamp/contributing/security) | Private vulnerability disclosure process |
+| [LAFS Compliance Profile](https://codluv.gitbook.io/caamp/api-and-reference/lafs-compliance) | CAAMP-specific LAFS adoption scope and compliance mapping |
+| [Agents Directory Standard](https://codluv.gitbook.io/caamp/api-and-reference/agents-directory-standard) | `.agents/` standard directory structure |
 | [LAFS Specification](https://github.com/kryptobaseddev/lafs-protocol/blob/main/lafs.md) | Canonical cross-language LLM-agent-first protocol |
-| [LAFS Compliance Profile](docs/LAFS-COMPLIANCE.md) | CAAMP-specific LAFS adoption scope and compliance mapping |
+| [Technical Specification](claudedocs/specs/CAAMP-SPEC.md) | RFC 2119 spec covering all subsystems |
+| [Vision & Architecture](claudedocs/VISION.md) | Project vision, design philosophy, and architecture |
 | [Gap Analysis & Roadmap](claudedocs/GAP-ANALYSIS.md) | Current state vs plan, v0.2.0+ roadmap |
 
 ## Contributing
