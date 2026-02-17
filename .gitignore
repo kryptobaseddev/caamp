@@ -10,3 +10,4 @@ docs/api/
 .cleo/.current-session
 .cleo/backups/
 .cleo/context-states/
+.cleo/todo-log.jsonl

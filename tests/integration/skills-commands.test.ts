@@ -416,12 +416,12 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsList(program);
 
-      await program.parseAsync(["node", "test", "list"]);
+      await program.parseAsync(["node", "test", "list", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("2 skill(s) found"));
     });
 
-    it("outputs JSON when --json flag is provided", async () => {
+    it("outputs JSON (LAFS envelope) by default", async () => {
       const skills = [
         { name: "skill1", scopedName: "skill1", path: "/path", metadata: { name: "skill1", description: "Test" } },
       ];
@@ -432,10 +432,13 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsList(program);
 
-      await program.parseAsync(["node", "test", "list", "--json"]);
+      await program.parseAsync(["node", "test", "list"]);
 
-      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "[]"));
-      expect(output).toEqual(skills);
+      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
+      expect(output.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(output._meta.operation).toBe("skills.list");
+      expect(output.result.skills).toEqual(skills);
+      expect(output.result.count).toBe(1);
     });
 
     it.skip("lists global skills with --global flag", async () => {
@@ -478,7 +481,7 @@ describe("integration: skills command wrappers", () => {
       expect(exitSpy).toHaveBeenCalledWith(1);
     });
 
-    it("shows empty state when no skills found", async () => {
+    it("shows empty state in JSON by default when no skills found", async () => {
       mocks.resolveProviderSkillsDir.mockReturnValue("/skills");
       mocks.discoverSkillsMulti.mockResolvedValue([]);
 
@@ -487,6 +490,21 @@ describe("integration: skills command wrappers", () => {
       registerSkillsList(program);
 
       await program.parseAsync(["node", "test", "list"]);
+
+      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
+      expect(output.result.skills).toEqual([]);
+      expect(output.result.count).toBe(0);
+    });
+
+    it("shows empty state in human format with --human flag", async () => {
+      mocks.resolveProviderSkillsDir.mockReturnValue("/skills");
+      mocks.discoverSkillsMulti.mockResolvedValue([]);
+
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      const program = new Command();
+      registerSkillsList(program);
+
+      await program.parseAsync(["node", "test", "list", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No skills found"));
     });
