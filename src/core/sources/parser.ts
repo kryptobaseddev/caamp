@@ -8,8 +8,8 @@
 import type { ParsedSource, SourceType } from "../../types.js";
 
 const GITHUB_SHORTHAND = /^([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)(?:\/(.+))?$/;
-const GITHUB_URL = /^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+)(?:\/tree\/([^/]+)(?:\/(.+))?)?/;
-const GITLAB_URL = /^https?:\/\/(?:www\.)?gitlab\.com\/([^/]+)\/([^/]+)(?:\/-\/tree\/([^/]+)(?:\/(.+))?)?/;
+const GITHUB_URL = /^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+)(?:\/(?:tree|blob)\/([^/]+)(?:\/(.+))?)?/;
+const GITLAB_URL = /^https?:\/\/(?:www\.)?gitlab\.com\/([^/]+)\/([^/]+)(?:\/-\/(?:tree|blob)\/([^/]+)(?:\/(.+))?)?/;
 const HTTP_URL = /^https?:\/\//;
 const NPM_SCOPED = /^@[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/;
 const NPM_PACKAGE = /^[a-zA-Z0-9_.-]+$/;
@@ -98,17 +98,20 @@ export function parseSource(input: string): ParsedSource {
   if (ghUrlMatch) {
     const owner = ghUrlMatch[1];
     const repo = ghUrlMatch[2];
+    const path = ghUrlMatch[4];
     if (!owner || !repo) {
       return { type: "command", value: input, inferredName: inferName(input, "command") };
     }
+    // Use last path segment as name if subpath provided, otherwise use repo name
+    const inferredName = path ? path.split("/").pop() ?? repo : repo;
     return {
       type: "github",
       value: input,
-      inferredName: repo,
+      inferredName,
       owner,
       repo,
       ref: ghUrlMatch[3],
-      path: ghUrlMatch[4],
+      path,
     };
   }
 
@@ -117,17 +120,20 @@ export function parseSource(input: string): ParsedSource {
   if (glUrlMatch) {
     const owner = glUrlMatch[1];
     const repo = glUrlMatch[2];
+    const path = glUrlMatch[4];
     if (!owner || !repo) {
       return { type: "command", value: input, inferredName: inferName(input, "command") };
     }
+    // Use last path segment as name if subpath provided, otherwise use repo name
+    const inferredName = path ? path.split("/").pop() ?? repo : repo;
     return {
       type: "gitlab",
       value: input,
-      inferredName: repo,
+      inferredName,
       owner,
       repo,
       ref: glUrlMatch[3],
-      path: glUrlMatch[4],
+      path,
     };
   }
 
@@ -154,16 +160,19 @@ export function parseSource(input: string): ParsedSource {
   if (ghShorthand && !NPM_SCOPED.test(input)) {
     const owner = ghShorthand[1];
     const repo = ghShorthand[2];
+    const path = ghShorthand[3];
     if (!owner || !repo) {
       return { type: "command", value: input, inferredName: inferName(input, "command") };
     }
+    // Use last path segment as name if subpath provided, otherwise use repo name
+    const inferredName = path ? path.split("/").pop() ?? repo : repo;
     return {
       type: "github",
       value: `https://github.com/${owner}/${repo}`,
-      inferredName: repo,
+      inferredName,
       owner,
       repo,
-      path: ghShorthand[3],
+      path,
     };
   }
 
