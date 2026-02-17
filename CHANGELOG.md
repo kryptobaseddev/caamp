@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-02-17
+
+### Fixed
+- Fixed GitHub URL parser to handle both `/tree/` and `/blob/` URLs formats (skills now install correctly from file view URLs)
+- Fixed skill name inference to use subpath's last segment instead of repo name (e.g., `.../skills/game-development` now installs as `game-development` not `repo-name`)
+- Fixed version detection showing `0.0.0` in production builds by correcting package.json path resolution
+
+### Added
+- Added npm package metadata: `repository`, `homepage`, and `bugs` URLs in package.json
+
 ## [1.0.1] - 2026-02-15
 
 ### Fixed

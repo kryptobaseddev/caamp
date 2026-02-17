@@ -9,7 +9,7 @@ export function getCaampVersion(): string {
 
   try {
     const currentDir = dirname(fileURLToPath(import.meta.url));
-    const packageJsonPath = join(currentDir, "..", "..", "package.json");
+    const packageJsonPath = join(currentDir, "..", "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8")) as { version?: string };
     cachedVersion = packageJson.version ?? "0.0.0";
   } catch {
