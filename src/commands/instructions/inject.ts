@@ -38,7 +38,7 @@ export function registerInstructionsInject(parent: Command): void {
       human?: boolean;
     }) => {
       const operation = "instructions.inject";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

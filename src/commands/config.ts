@@ -31,7 +31,7 @@ export function registerConfigCommand(program: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (providerId: string, opts: { global?: boolean; json?: boolean; human?: boolean }) => {
       const operation = "config.show";
-      const mvi = true;
+      const mvi: import("../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

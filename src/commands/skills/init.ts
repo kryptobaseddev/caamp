@@ -26,7 +26,7 @@ export function registerSkillsInit(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (name: string | undefined, opts: { dir: string; json?: boolean; human?: boolean }) => {
       const operation = "skills.init";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

@@ -53,7 +53,7 @@ export function registerSkillsAudit(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (path: string, opts: SkillsAuditOptions) => {
       const operation = "skills.audit";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       // Check if path exists
       if (!existsSync(path)) {

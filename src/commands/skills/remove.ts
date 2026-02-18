@@ -27,7 +27,7 @@ export function registerSkillsRemove(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (name: string | undefined, opts: { global?: boolean; yes?: boolean; json?: boolean; human?: boolean }) => {
       const operation = "skills.remove";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

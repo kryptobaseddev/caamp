@@ -33,7 +33,7 @@ export function registerSkillsValidate(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (path: string, opts: { json?: boolean; human?: boolean }) => {
       const operation = "skills.validate";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

@@ -29,7 +29,7 @@ export function registerSkillsUpdate(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (opts: { yes?: boolean; json?: boolean; human?: boolean }) => {
       const operation = "skills.update";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

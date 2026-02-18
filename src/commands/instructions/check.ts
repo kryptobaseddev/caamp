@@ -33,7 +33,7 @@ export function registerInstructionsCheck(parent: Command): void {
       all?: boolean;
     }) => {
       const operation = "instructions.check";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {

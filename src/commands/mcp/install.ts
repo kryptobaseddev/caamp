@@ -47,7 +47,7 @@ export function registerMcpInstall(parent: Command): void {
       human?: boolean;
     }) => {
       const operation = "mcp.install";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {
