@@ -12,7 +12,12 @@
 import { randomUUID } from "node:crypto";
 import type { LAFSErrorCategory, LAFSPage } from "@cleocode/lafs-protocol";
 import { resolveOutputFormat } from "@cleocode/lafs-protocol";
-import { isHuman } from "./logger.js";
+import { isHuman, isQuiet } from "./logger.js";
+
+/**
+ * MVI (Minimum Viable Information) disclosure levels
+ */
+export type MVILevel = "minimal" | "standard" | "full" | "custom";
 
 /**
  * LAFS Error structure matching the protocol specification
@@ -27,6 +32,17 @@ export interface LAFSErrorShape {
 }
 
 /**
+ * LAFS Warning structure
+ */
+export interface LAFSWarning {
+  code: string;
+  message: string;
+  deprecated?: string;
+  replacement?: string;
+  removeBy?: string;
+}
+
+/**
  * LAFS Metadata structure
  */
 export interface LAFSMeta {
@@ -37,8 +53,11 @@ export interface LAFSMeta {
   requestId: string;
   transport: "cli" | "http" | "grpc" | "sdk";
   strict: boolean;
-  mvi: boolean;
+  mvi: "minimal" | "standard" | "full" | "custom";
   contextVersion: number;
+  /** Session identifier for correlating multi-step agent workflows */
+  sessionId?: string;
+  warnings?: LAFSWarning[];
 }
 
 /**
@@ -108,10 +127,12 @@ export function resolveFormat(options: FormatOptions): "json" | "human" {
  */
 export function buildEnvelope<T>(
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   result: T | null,
   error: LAFSErrorShape | null,
   page: LAFSPage | null = null,
+  sessionId?: string,
+  warnings?: LAFSWarning[],
 ): LAFSEnvelope<T> {
   return {
     $schema: "https://lafs.dev/schemas/v1/envelope.schema.json",
@@ -125,6 +146,8 @@ export function buildEnvelope<T>(
       strict: true,
       mvi,
       contextVersion: 0,
+      ...(sessionId && { sessionId }),
+      ...(warnings && warnings.length > 0 && { warnings }),
     },
     success: error === null,
     result,
@@ -158,7 +181,7 @@ export function buildEnvelope<T>(
  */
 export function emitError(
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   code: string,
   message: string,
   category: LAFSErrorCategory,
@@ -199,7 +222,7 @@ export function emitError(
  */
 export function emitJsonError(
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   code: string,
   message: string,
   category: LAFSErrorCategory,
@@ -231,11 +254,20 @@ export function emitJsonError(
  */
 export function outputSuccess<T>(
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   result: T,
   page?: LAFSPage,
+  sessionId?: string,
+  warnings?: LAFSWarning[],
 ): void {
-  const envelope = buildEnvelope(operation, mvi, result, null, page ?? null);
+  const envelope = buildEnvelope(operation, mvi, result, null, page ?? null, sessionId, warnings);
+  
+  // In quiet mode, only output if there's an error or if explicitly requested
+  if (isQuiet() && !envelope.error) {
+    // Suppress non-essential output in quiet mode
+    return;
+  }
+  
   console.log(JSON.stringify(envelope, null, 2));
 }
 
@@ -269,7 +301,7 @@ export interface LAFSCommandOptions {
 export function handleFormatError(
   error: unknown,
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   jsonFlag: boolean | undefined,
 ): never {
   const message = error instanceof Error ? error.message : String(error);
