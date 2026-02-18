@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-02-17
+
+### Changed
+- **BREAKING**: Default output is now JSON (LAFS-compliant envelopes) instead of human-readable
+- Added global `--human` flag for human-readable output
+- Updated `skills list` command: JSON-first with LAFS envelopes, selectable human output
+- Updated `skills find` command: JSON-first with LAFS envelopes, selectable human output
+- All commands are now fully pipable for agent workflows
+
 ## [1.0.2] - 2026-02-17
 
 ### Fixed
