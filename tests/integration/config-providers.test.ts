@@ -83,7 +83,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerConfigCommand(program);
 
-      await program.parseAsync(["node", "test", "config", "show", "claude-code"]);
+      await program.parseAsync(["node", "test", "config", "show", "claude-code", "--human"]);
 
       expect(mocks.getProvider).toHaveBeenCalledWith("claude-code");
       expect(mocks.readConfig).toHaveBeenCalledWith("/config/settings.json", "json");
@@ -103,8 +103,16 @@ describe("integration: config and providers commands", () => {
 
       await program.parseAsync(["node", "test", "config", "show", "claude-code", "--json"]);
 
-      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
-      expect(output).toEqual(config);
+      const envelope = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
+        $schema: string;
+        _meta: { operation: string };
+        success: boolean;
+        result: { config: Record<string, unknown> };
+      };
+      expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(envelope._meta.operation).toBe("config.show");
+      expect(envelope.success).toBe(true);
+      expect(envelope.result.config).toEqual(config);
     });
 
     it("shows global config with --global flag", async () => {
@@ -152,7 +160,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerConfigCommand(program);
 
-      await program.parseAsync(["node", "test", "config", "show", "claude-code"]);
+      await program.parseAsync(["node", "test", "config", "show", "claude-code", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No config file at"));
     });
@@ -268,8 +276,16 @@ describe("integration: config and providers commands", () => {
 
       await program.parseAsync(["node", "test", "providers", "list", "--json"]);
 
-      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "[]"));
-      expect(output).toEqual(providers);
+      const envelope = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
+        $schema: string;
+        _meta: { operation: string };
+        success: boolean;
+        result: { providers: unknown[] };
+      };
+      expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(envelope._meta.operation).toBe("providers.list");
+      expect(envelope.success).toBe(true);
+      expect(envelope.result.providers).toEqual(providers);
     });
 
     it("filters by priority tier", async () => {
@@ -363,9 +379,17 @@ describe("integration: config and providers commands", () => {
 
       await program.parseAsync(["node", "test", "providers", "detect", "--json"]);
 
-      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "[]"));
-      expect(output).toHaveLength(1);
-      expect(output[0]?.id).toBe("claude-code");
+      const envelope = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
+        $schema: string;
+        _meta: { operation: string };
+        success: boolean;
+        result: { results: Array<{ provider: { id: string } }> };
+      };
+      expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(envelope._meta.operation).toBe("providers.detect");
+      expect(envelope.success).toBe(true);
+      expect(envelope.result.results).toHaveLength(1);
+      expect(envelope.result.results[0]?.provider.id).toBe("claude-code");
     });
 
     it("includes project detection with --project flag", async () => {
@@ -436,8 +460,16 @@ describe("integration: config and providers commands", () => {
 
       await program.parseAsync(["node", "test", "providers", "show", "claude-code", "--json"]);
 
-      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
-      expect(output).toEqual(provider);
+      const envelope = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
+        $schema: string;
+        _meta: { operation: string };
+        success: boolean;
+        result: { provider: unknown };
+      };
+      expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(envelope._meta.operation).toBe("providers.show");
+      expect(envelope.success).toBe(true);
+      expect(envelope.result.provider).toEqual(provider);
     });
 
     it("exits with error when provider not found", async () => {

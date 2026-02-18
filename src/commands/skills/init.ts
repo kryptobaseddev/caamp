@@ -1,12 +1,20 @@
 /**
- * skills init command - scaffold a new skill
+ * skills init command - scaffold a new skill - LAFS-compliant with JSON-first output
  */
 
+import { existsSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import type { Command } from "commander";
 import pc from "picocolors";
-import { writeFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
+import { isHuman } from "../../core/logger.js";
 
 export function registerSkillsInit(parent: Command): void {
   parent
@@ -14,12 +22,37 @@ export function registerSkillsInit(parent: Command): void {
     .description("Create a new SKILL.md template")
     .argument("[name]", "Skill name")
     .option("-d, --dir <path>", "Output directory", ".")
-    .action(async (name: string | undefined, opts: { dir: string }) => {
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (name: string | undefined, opts: { dir: string; json?: boolean; human?: boolean }) => {
+      const operation = "skills.init";
+      const mvi = true;
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       const skillName = name ?? "my-skill";
       const skillDir = join(opts.dir, skillName);
 
       if (existsSync(skillDir)) {
-        console.error(pc.red(`Directory already exists: ${skillDir}`));
+        const message = `Directory already exists: ${skillDir}`;
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.INVALID_CONSTRAINT, message, ErrorCategories.CONFLICT, {
+            path: skillDir,
+          });
+        } else {
+          console.error(pc.red(message));
+        }
         process.exit(1);
       }
 
@@ -51,6 +84,19 @@ Show example inputs and expected outputs.
 
       await writeFile(join(skillDir, "SKILL.md"), template, "utf-8");
 
+      const result = {
+        name: skillName,
+        directory: skillDir,
+        template: "SKILL.md",
+        created: true,
+      };
+
+      if (format === "json") {
+        outputSuccess(operation, mvi, result);
+        return;
+      }
+
+      // Human-readable output
       console.log(pc.green(`✓ Created skill template: ${skillDir}/SKILL.md`));
       console.log(pc.dim("\nNext steps:"));
       console.log(pc.dim("  1. Edit SKILL.md with your instructions"));

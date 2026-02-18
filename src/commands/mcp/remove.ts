@@ -1,13 +1,21 @@
 /**
- * mcp remove command
+ * mcp remove command - LAFS-compliant with JSON-first output
  */
 
 import type { Command } from "commander";
 import pc from "picocolors";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
+import { isHuman } from "../../core/logger.js";
+import { removeMcpFromLock } from "../../core/mcp/lock.js";
+import { removeMcpServer } from "../../core/mcp/reader.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
-import { removeMcpServer } from "../../core/mcp/reader.js";
-import { removeMcpFromLock } from "../../core/mcp/lock.js";
 import type { Provider } from "../../types.js";
 
 export function registerMcpRemove(parent: Command): void {
@@ -18,11 +26,31 @@ export function registerMcpRemove(parent: Command): void {
     .option("-a, --agent <name>", "Target specific agent(s)", (v, prev: string[]) => [...prev, v], [])
     .option("-g, --global", "Remove from global config")
     .option("--all", "Remove from all detected agents")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
     .action(async (name: string, opts: {
       agent: string[];
       global?: boolean;
       all?: boolean;
+      json?: boolean;
+      human?: boolean;
     }) => {
+      const operation = "mcp.remove";
+      const mvi = true;
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       let providers: Provider[];
 
       if (opts.all) {
@@ -35,22 +63,48 @@ export function registerMcpRemove(parent: Command): void {
         providers = getInstalledProviders();
       }
 
+      if (providers.length === 0) {
+        const message = "No target providers found.";
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.PROVIDER_NOT_FOUND, message, ErrorCategories.NOT_FOUND);
+        } else {
+          console.error(pc.red(message));
+        }
+        process.exit(1);
+      }
+
       const scope = opts.global ? "global" as const : "project" as const;
-      let removed = 0;
+      const removed: string[] = [];
+      const notFound: string[] = [];
 
       for (const provider of providers) {
         const success = await removeMcpServer(provider, name, scope);
         if (success) {
-          console.log(`  ${pc.green("✓")} Removed from ${provider.toolName}`);
-          removed++;
+          removed.push(provider.id);
+          if (format === "human") {
+            console.log(`  ${pc.green("✓")} Removed from ${provider.toolName}`);
+          }
+        } else {
+          notFound.push(provider.id);
         }
       }
 
-      if (removed > 0) {
+      if (removed.length > 0) {
         await removeMcpFromLock(name);
-        console.log(pc.green(`\n✓ Removed "${name}" from ${removed} provider(s).`));
+      }
+
+      if (format === "json") {
+        outputSuccess(operation, mvi, {
+          removed,
+          providers: removed,
+          notFound: notFound.length > 0 ? notFound : undefined,
+        });
       } else {
-        console.log(pc.yellow(`Server "${name}" not found in any provider config.`));
+        if (removed.length > 0) {
+          console.log(pc.green(`\n✓ Removed "${name}" from ${removed.length} provider(s).`));
+        } else {
+          console.log(pc.yellow(`Server "${name}" not found in any provider config.`));
+        }
       }
     });
 }

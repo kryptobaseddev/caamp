@@ -88,14 +88,21 @@ describe("doctor command", () => {
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
     expect(logSpy).toHaveBeenCalled();
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      version: string;
-      sections: unknown[];
-      summary: { passed: number; warnings: number; errors: number };
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      $schema: string;
+      _meta: { operation: string };
+      success: boolean;
+      result: {
+        environment: { caamp: string };
+        checks: Array<{ label: string; status: string; message?: string }>;
+      };
     };
-    expect(output.version).toBe("0.3.0");
-    expect(Array.isArray(output.sections)).toBe(true);
-    expect(output.summary.errors).toBeGreaterThanOrEqual(0);
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope._meta.operation).toBe("doctor.check");
+    expect(envelope.success).toBe(true);
+    expect(envelope.result.environment.caamp).toBe("0.3.0");
+    expect(Array.isArray(envelope.result.checks)).toBe(true);
+    expect(envelope.result.checks.length).toBeGreaterThan(0);
   });
 
   it("exits non-zero when checks fail", async () => {
@@ -117,7 +124,7 @@ describe("doctor command", () => {
     const program = new Command();
     registerDoctorCommand(program);
 
-    await program.parseAsync(["node", "test", "doctor"]);
+    await program.parseAsync(["node", "test", "doctor", "--human"]);
 
     // Human-readable mode prints multiple console.log calls (sections + summary)
     expect(logSpy.mock.calls.length).toBeGreaterThan(1);
@@ -143,10 +150,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const envSection = output.sections.find((s) => s.name === "Environment");
+    expect(envelope.success).toBe(true);
+    const envSection = envelope.result.sections.find((s) => s.name === "Environment");
     expect(envSection).toBeDefined();
     const npmCheck = envSection!.checks.find((c) => c.label.includes("npm"));
     expect(npmCheck).toBeDefined();
@@ -198,10 +209,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const providersSection = output.sections.find((s) => s.name === "Installed Providers");
+    expect(envelope.success).toBe(true);
+    const providersSection = envelope.result.sections.find((s) => s.name === "Installed Providers");
     expect(providersSection).toBeDefined();
     const providerCheck = providersSection!.checks.find((c) => c.label.includes("Claude Code"));
     expect(providerCheck).toBeDefined();
@@ -224,10 +239,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     const canonicalCheck = skillsSection!.checks.find((c) => c.label.includes("canonical"));
     expect(canonicalCheck).toBeDefined();
@@ -264,10 +283,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const configSection = output.sections.find((s) => s.name === "Config Files");
+    expect(envelope.success).toBe(true);
+    const configSection = envelope.result.sections.find((s) => s.name === "Config Files");
     expect(configSection).toBeDefined();
     const configCheck = configSection!.checks.find((c) => c.label.includes("claude-code"));
     expect(configCheck).toBeDefined();
@@ -294,10 +317,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     const orphanedCheck = lockSection!.checks.find((c) => c.label.includes("orphaned"));
     expect(orphanedCheck).toBeDefined();
@@ -327,10 +354,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     const untrackedCheck = lockSection!.checks.find((c) => c.label.includes("untracked"));
     expect(untrackedCheck).toBeDefined();
@@ -386,10 +417,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     const brokenCheck = skillsSection!.checks.find((c) => c.label.includes("broken symlink"));
     expect(brokenCheck).toBeDefined();
@@ -439,10 +474,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     const staleCheck = skillsSection!.checks.find((c) => c.label.includes("stale symlink"));
     expect(staleCheck).toBeDefined();
@@ -484,10 +523,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const configSection = output.sections.find((s) => s.name === "Config Files");
+    expect(envelope.success).toBe(true);
+    const configSection = envelope.result.sections.find((s) => s.name === "Config Files");
     expect(configSection).toBeDefined();
     const parseErrorCheck = configSection!.checks.find((c) => c.label.includes("config parse error"));
     expect(parseErrorCheck).toBeDefined();
@@ -547,10 +590,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     const mismatchCheck = lockSection!.checks.find((c) => c.label.includes("agent-list mismatch"));
     expect(mismatchCheck).toBeDefined();
@@ -575,7 +622,7 @@ describe("doctor command", () => {
       throw new Error("process-exit");
     }) as never);
 
-    await expect(program.parseAsync(["node", "test", "doctor"])).rejects.toThrow("process-exit");
+    await expect(program.parseAsync(["node", "test", "doctor", "--human"])).rejects.toThrow("process-exit");
 
     const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
 
@@ -630,10 +677,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const configSection = output.sections.find((s) => s.name === "Config Files");
+    expect(envelope.success).toBe(true);
+    const configSection = envelope.result.sections.find((s) => s.name === "Config Files");
     expect(configSection).toBeDefined();
     const noConfigCheck = configSection!.checks.find((c) => c.label.includes("no config file found"));
     expect(noConfigCheck).toBeDefined();
@@ -661,17 +712,21 @@ describe("doctor command", () => {
     // In --json mode, the command returns after printing JSON (no process.exit)
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
-      summary: { passed: number; warnings: number; errors: number };
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+        summary: { passed: number; warnings: number; errors: number };
+      };
     };
-    const providersSection = output.sections.find((s) => s.name === "Installed Providers");
+    expect(envelope.success).toBe(true);
+    const providersSection = envelope.result.sections.find((s) => s.name === "Installed Providers");
     expect(providersSection).toBeDefined();
     const detectionFail = providersSection!.checks.find((c) => c.label.includes("Detection failed"));
     expect(detectionFail).toBeDefined();
     expect(detectionFail!.status).toBe("fail");
     expect(detectionFail!.detail).toContain("detection exploded");
-    expect(output.summary.errors).toBeGreaterThanOrEqual(1);
+    expect(envelope.result.summary.errors).toBeGreaterThanOrEqual(1);
   });
 
   it("reports registry load failure", async () => {
@@ -686,10 +741,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const registrySection = output.sections.find((s) => s.name === "Registry");
+    expect(envelope.success).toBe(true);
+    const registrySection = envelope.result.sections.find((s) => s.name === "Registry");
     expect(registrySection).toBeDefined();
     const failCheck = registrySection!.checks.find((c) => c.label.includes("Failed to load registry"));
     expect(failCheck).toBeDefined();
@@ -711,10 +770,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     const unreadableCheck = skillsSection!.checks.find((c) => c.label.includes("Cannot read skills directory"));
     expect(unreadableCheck).toBeDefined();
@@ -759,10 +822,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     // The unreadable entry is silently skipped; no broken/stale symlinks reported
     const brokenCheck = skillsSection!.checks.find((c) => c.label.includes("No broken symlinks"));
@@ -808,10 +875,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const skillsSection = output.sections.find((s) => s.name === "Skills");
+    expect(envelope.success).toBe(true);
+    const skillsSection = envelope.result.sections.find((s) => s.name === "Skills");
     expect(skillsSection).toBeDefined();
     // The unreadable dir is silently skipped; no broken/stale symlinks reported
     const brokenCheck = skillsSection!.checks.find((c) => c.label.includes("No broken symlinks"));
@@ -844,10 +915,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string }> }>;
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     // The entry is filtered out by the catch, so 0 untracked
     const untrackedCheck = lockSection!.checks.find((c) => c.label.includes("0 untracked"));
@@ -866,16 +941,20 @@ describe("doctor command", () => {
     // In --json mode, the command prints JSON and returns (no process.exit)
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
-      summary: { errors: number };
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+        summary: { errors: number };
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     const failCheck = lockSection!.checks.find((c) => c.label.includes("Failed to read lock file"));
     expect(failCheck).toBeDefined();
     expect(failCheck!.detail).toBe("string lock error");
-    expect(output.summary.errors).toBeGreaterThanOrEqual(1);
+    expect(envelope.result.summary.errors).toBeGreaterThanOrEqual(1);
   });
 
   it("reports more than 5 agent-list mismatches with truncation", async () => {
@@ -930,10 +1009,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const lockSection = output.sections.find((s) => s.name === "Lock File");
+    expect(envelope.success).toBe(true);
+    const lockSection = envelope.result.sections.find((s) => s.name === "Lock File");
     expect(lockSection).toBeDefined();
     const mismatchCheck = lockSection!.checks.find((c) => c.label.includes("agent-list mismatch"));
     expect(mismatchCheck).toBeDefined();
@@ -976,10 +1059,14 @@ describe("doctor command", () => {
 
     await program.parseAsync(["node", "test", "doctor", "--json"]);
 
-    const output = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
-      sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+    const envelope = JSON.parse(String(logSpy.mock.calls.at(-1)?.[0] ?? "{}")) as {
+      success: boolean;
+      result: {
+        sections: Array<{ name: string; checks: Array<{ label: string; status: string; detail?: string }> }>;
+      };
     };
-    const configSection = output.sections.find((s) => s.name === "Config Files");
+    expect(envelope.success).toBe(true);
+    const configSection = envelope.result.sections.find((s) => s.name === "Config Files");
     expect(configSection).toBeDefined();
     const parseErrorCheck = configSection!.checks.find((c) => c.label.includes("config parse error"));
     expect(parseErrorCheck).toBeDefined();
@@ -1014,7 +1101,7 @@ describe("doctor command", () => {
     const program = new Command();
     registerDoctorCommand(program);
 
-    await expect(program.parseAsync(["node", "test", "doctor"])).rejects.toThrow("process-exit");
+    await expect(program.parseAsync(["node", "test", "doctor", "--human"])).rejects.toThrow("process-exit");
 
     const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
 
@@ -1052,7 +1139,7 @@ describe("doctor command", () => {
     const program = new Command();
     registerDoctorCommand(program);
 
-    await program.parseAsync(["node", "test", "doctor"]);
+    await program.parseAsync(["node", "test", "doctor", "--human"]);
 
     const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
 

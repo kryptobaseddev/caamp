@@ -1,18 +1,29 @@
 /**
  * doctor command - diagnose configuration issues and health
+ * LAFS-compliant with JSON-first output
  */
 
-import type { Command } from "commander";
-import pc from "picocolors";
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, lstatSync, readlinkSync } from "node:fs";
+import { existsSync, lstatSync, readdirSync, readlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { CANONICAL_SKILLS_DIR } from "../core/paths/agents.js";
-import { getAllProviders, getProviderCount } from "../core/registry/providers.js";
-import { detectAllProviders } from "../core/registry/detection.js";
-import { readLockFile } from "../core/mcp/lock.js";
+import type { Command } from "commander";
+import pc from "picocolors";
 import { readConfig } from "../core/formats/index.js";
+import {
+  buildEnvelope,
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  handleFormatError,
+  type LAFSErrorShape,
+  outputSuccess,
+  resolveFormat,
+} from "../core/lafs.js";
+import { readLockFile } from "../core/mcp/lock.js";
+import { CANONICAL_SKILLS_DIR } from "../core/paths/agents.js";
+import { detectAllProviders } from "../core/registry/detection.js";
+import { getAllProviders, getProviderCount } from "../core/registry/providers.js";
 import { getCaampVersion } from "../core/version.js";
 import type { Provider } from "../types.js";
 
@@ -25,6 +36,34 @@ interface CheckResult {
 interface SectionResult {
   name: string;
   checks: CheckResult[];
+}
+
+interface DoctorResult {
+  environment: {
+    node: string;
+    npm: string;
+    caamp: string;
+    platform: string;
+  };
+  registry: {
+    loaded: boolean;
+    count: number;
+    valid: boolean;
+  };
+  providers: {
+    installed: number;
+    list: string[];
+  };
+  skills: {
+    canonical: number;
+    brokenLinks: number;
+    staleLinks: number;
+  };
+  checks: Array<{
+    label: string;
+    status: "pass" | "fail" | "warn";
+    message?: string;
+  }>;
 }
 
 function getNodeVersion(): string {
@@ -364,78 +403,196 @@ function formatSection(section: SectionResult): string {
   return lines.join("\n");
 }
 
-interface JsonOutput {
-  version: string;
-  sections: Array<{
-    name: string;
-    checks: CheckResult[];
-  }>;
-  summary: {
-    passed: number;
-    warnings: number;
-    errors: number;
-  };
-}
-
 export function registerDoctorCommand(program: Command): void {
   program
     .command("doctor")
     .description("Diagnose configuration issues and health")
-    .option("--json", "Output as JSON")
-    .action(async (opts: { json?: boolean }) => {
-      const sections: SectionResult[] = [];
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: { json?: boolean; human?: boolean }) => {
+      const operation = "doctor.check";
+      const mvi = true;
 
-      sections.push(checkEnvironment());
-      sections.push(checkRegistry());
-      sections.push(checkInstalledProviders());
-      sections.push(checkSkillSymlinks());
-      sections.push(await checkLockFile());
-      sections.push(await checkConfigFiles());
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: opts.human ?? false,
+          projectDefault: "json",
+        });
+      } catch (error) {
+        handleFormatError(error, operation, mvi, opts.json);
+      }
 
-      // Tally results
-      let passed = 0;
-      let warnings = 0;
-      let errors = 0;
+      try {
+        const sections: SectionResult[] = [];
 
-      for (const section of sections) {
-        for (const check of section.checks) {
-          if (check.status === "pass") passed++;
-          else if (check.status === "warn") warnings++;
-          else errors++;
+        sections.push(checkEnvironment());
+        sections.push(checkRegistry());
+        sections.push(checkInstalledProviders());
+        sections.push(checkSkillSymlinks());
+        sections.push(await checkLockFile());
+        sections.push(await checkConfigFiles());
+
+        // Tally results
+        let passed = 0;
+        let warnings = 0;
+        let errors = 0;
+
+        for (const section of sections) {
+          for (const check of section.checks) {
+            if (check.status === "pass") passed++;
+            else if (check.status === "warn") warnings++;
+            else errors++;
+          }
         }
-      }
 
-      if (opts.json) {
-        const output: JsonOutput = {
-          version: getCaampVersion(),
-          sections: sections.map((s) => ({
-            name: s.name,
-            checks: s.checks,
-          })),
-          summary: { passed, warnings, errors },
+        // Build result for LAFS envelope
+        const npmVersion = getNpmVersion() ?? "not found";
+        const allProviders = getAllProviders();
+        const malformedCount = allProviders.filter(
+          (p) => !p.id || !p.toolName || !p.configKey || !p.configFormat
+        ).length;
+        const detectionResults = detectAllProviders();
+        const installedProviders = detectionResults.filter((r) => r.installed);
+        const { canonicalCount, brokenCount, staleCount } = countSkillIssues();
+
+        const result: DoctorResult = {
+          environment: {
+            node: getNodeVersion(),
+            npm: npmVersion,
+            caamp: getCaampVersion(),
+            platform: `${process.platform} ${process.arch}`,
+          },
+          registry: {
+            loaded: true,
+            count: getProviderCount(),
+            valid: malformedCount === 0,
+          },
+          providers: {
+            installed: installedProviders.length,
+            list: installedProviders.map((r) => r.provider.id),
+          },
+          skills: {
+            canonical: canonicalCount,
+            brokenLinks: brokenCount,
+            staleLinks: staleCount,
+          },
+          checks: sections.flatMap((s) =>
+            s.checks.map((c) => ({
+              label: `${s.name}: ${c.label}`,
+              status: c.status,
+              message: c.detail,
+            }))
+          ),
         };
-        console.log(JSON.stringify(output, null, 2));
-        return;
-      }
 
-      console.log(pc.bold("\ncaamp doctor\n"));
+        if (format === "json") {
+          outputSuccess(operation, mvi, result);
+          
+          if (errors > 0) {
+            process.exit(1);
+          }
+          return;
+        }
 
-      for (const section of sections) {
-        console.log(formatSection(section));
+        // Human-readable output
+        console.log(pc.bold("\ncaamp doctor\n"));
+
+        for (const section of sections) {
+          console.log(formatSection(section));
+          console.log();
+        }
+
+        // Summary line
+        const parts: string[] = [];
+        parts.push(pc.green(`${passed} checks passed`));
+        if (warnings > 0) parts.push(pc.yellow(`${warnings} warning${warnings !== 1 ? "s" : ""}`));
+        if (errors > 0) parts.push(pc.red(`${errors} error${errors !== 1 ? "s" : ""}`));
+
+        console.log(`  ${pc.bold("Summary")}: ${parts.join(", ")}`);
         console.log();
-      }
 
-      // Summary line
-      const parts: string[] = [];
-      parts.push(pc.green(`${passed} checks passed`));
-      if (warnings > 0) parts.push(pc.yellow(`${warnings} warning${warnings !== 1 ? "s" : ""}`));
-      if (errors > 0) parts.push(pc.red(`${errors} error${errors !== 1 ? "s" : ""}`));
-
-      console.log(`  ${pc.bold("Summary")}: ${parts.join(", ")}`);
-      console.log();
-
-      if (errors > 0) {
+        if (errors > 0) {
+          process.exit(1);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (format === "json") {
+          emitJsonError(
+            operation,
+            mvi,
+            ErrorCodes.INTERNAL_ERROR,
+            message,
+            ErrorCategories.INTERNAL
+          );
+        } else {
+          console.error(pc.red(`Error: ${message}`));
+        }
         process.exit(1);
       }
     });
+}
+
+function countSkillIssues(): { canonicalCount: number; brokenCount: number; staleCount: number } {
+  const canonicalDir = CANONICAL_SKILLS_DIR;
+  let canonicalCount = 0;
+
+  if (existsSync(canonicalDir)) {
+    try {
+      const names = readdirSync(canonicalDir).filter((name) => {
+        const full = join(canonicalDir, name);
+        try {
+          const stat = lstatSync(full);
+          return stat.isDirectory() || stat.isSymbolicLink();
+        } catch {
+          return false;
+        }
+      });
+      canonicalCount = names.length;
+    } catch {
+      // ignore
+    }
+  }
+
+  let brokenCount = 0;
+  let staleCount = 0;
+
+  const results = detectAllProviders();
+  const installed = results.filter((r) => r.installed);
+
+  for (const r of installed) {
+    const provider = r.provider;
+    const skillDir = provider.pathSkills;
+    if (!existsSync(skillDir)) continue;
+
+    try {
+      const entries = readdirSync(skillDir);
+      for (const entry of entries) {
+        const fullPath = join(skillDir, entry);
+        try {
+          const stat = lstatSync(fullPath);
+          if (!stat.isSymbolicLink()) continue;
+
+          if (!existsSync(fullPath)) {
+            brokenCount++;
+          } else {
+            const target = readlinkSync(fullPath);
+            const isCanonical =
+              target.includes("/.agents/skills/") ||
+              target.includes("\\.agents\\skills\\");
+            if (!isCanonical) {
+              staleCount++;
+            }
+          }
+        } catch {
+          // skip unreadable entries
+        }
+      }
+    } catch {
+      // skip unreadable dirs
+    }
+  }
+
+  return { canonicalCount, brokenCount, staleCount };
 }

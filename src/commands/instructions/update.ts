@@ -1,11 +1,18 @@
 /**
- * instructions update command
+ * instructions update command - LAFS-compliant with JSON-first output
  */
 
 import type { Command } from "commander";
 import pc from "picocolors";
 import { checkAllInjections, injectAll } from "../../core/instructions/injector.js";
 import { generateInjectionContent } from "../../core/instructions/templates.js";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 
 export function registerInstructionsUpdate(parent: Command): void {
@@ -14,7 +21,25 @@ export function registerInstructionsUpdate(parent: Command): void {
     .description("Update all instruction file injections")
     .option("-g, --global", "Update global instruction files")
     .option("-y, --yes", "Skip confirmation")
-    .action(async (opts: { global?: boolean; yes?: boolean }) => {
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: { global?: boolean; yes?: boolean; json?: boolean; human?: boolean }) => {
+      const operation = "instructions.update";
+      const mvi = true;
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: opts.human ?? false,
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       const providers = getInstalledProviders();
       const scope = opts.global ? "global" as const : "project" as const;
       const content = generateInjectionContent();
@@ -24,13 +49,23 @@ export function registerInstructionsUpdate(parent: Command): void {
       const needsUpdate = checks.filter((c) => c.status !== "current");
 
       if (needsUpdate.length === 0) {
-        console.log(pc.green("All instruction files are up to date."));
+        if (format === "json") {
+          outputSuccess(operation, mvi, {
+            updated: [],
+            failed: [],
+            count: { updated: 0, failed: 0 },
+          });
+        } else {
+          console.log(pc.green("All instruction files are up to date."));
+        }
         return;
       }
 
-      console.log(pc.bold(`${needsUpdate.length} file(s) need updating:\n`));
-      for (const c of needsUpdate) {
-        console.log(`  ${c.file} (${c.status})`);
+      if (format === "human") {
+        console.log(pc.bold(`${needsUpdate.length} file(s) need updating:\n`));
+        for (const c of needsUpdate) {
+          console.log(`  ${c.file} (${c.status})`);
+        }
       }
 
       // Filter providers to only those needing updates
@@ -39,11 +74,25 @@ export function registerInstructionsUpdate(parent: Command): void {
 
       const results = await injectAll(toUpdate, process.cwd(), scope, content);
 
-      console.log();
-      for (const [file, action] of results) {
-        console.log(`  ${pc.green("✓")} ${file} (${action})`);
+      const updated: string[] = [];
+      for (const [file] of results) {
+        updated.push(file);
       }
 
-      console.log(pc.bold(`\n${results.size} file(s) updated.`));
+      if (format === "human") {
+        console.log();
+        for (const [file, action] of results) {
+          console.log(`  ${pc.green("✓")} ${file} (${action})`);
+        }
+        console.log(pc.bold(`\n${results.size} file(s) updated.`));
+      }
+
+      if (format === "json") {
+        outputSuccess(operation, mvi, {
+          updated,
+          failed: [],
+          count: { updated: updated.length, failed: 0 },
+        });
+      }
     });
 }
