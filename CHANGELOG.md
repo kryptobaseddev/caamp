@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-02-18
+
+### Changed
+- **LAFS v1.2.0 Compliance**: Updated to latest LAFS protocol version
+- **MVILevel Types**: Changed from boolean to proper LAFS disclosure levels ('minimal' | 'standard' | 'full' | 'custom')
+- All 17 command files updated to use standardized MVILevel type
+
+### Added
+- **Session Management**: Added `sessionId` support in `_meta` for correlating multi-step workflows
+- **Warnings Support**: Added `warnings` array in `_meta` for soft errors (deprecations, partial success)
+- **Quiet Mode**: Added `--quiet` flag to suppress non-essential output for scripting
+- **LAFS Compliance Documentation**: Added comprehensive guide at `docs/LAFS_COMPLIANCE.md`
+- **LLM Agent Guide**: Aligned with LAFS LLM Agent Guide for best practices
+
+### Fixed
+- Type consistency across all commands using LAFS envelope functions
+- All commands now properly typed with MVILevel instead of boolean
+
 ## [1.0.3] - 2026-02-17
 
 ### Changed
