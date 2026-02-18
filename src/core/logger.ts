@@ -7,6 +7,7 @@
 
 let verboseMode = false;
 let quietMode = false;
+let humanMode = false;
 
 /**
  * Enable or disable verbose (debug) logging mode.
@@ -86,4 +87,38 @@ export function isVerbose(): boolean {
  */
 export function isQuiet(): boolean {
   return quietMode;
+}
+
+/**
+ * Enable or disable human-readable output mode.
+ *
+ * When enabled, commands output human-readable format instead of JSON.
+ *
+ * @param h - `true` to enable human mode, `false` to disable
+ *
+ * @example
+ * ```typescript
+ * setHuman(true);
+ * ```
+ */
+export function setHuman(h: boolean): void {
+  humanMode = h;
+}
+
+/**
+ * Check if human-readable output mode is currently enabled.
+ *
+ * @returns `true` if human mode is active
+ *
+ * @example
+ * ```typescript
+ * if (isHuman()) {
+ *   console.log("Human readable output");
+ * } else {
+ *   console.log(JSON.stringify(data));
+ * }
+ * ```
+ */
+export function isHuman(): boolean {
+  return humanMode;
 }

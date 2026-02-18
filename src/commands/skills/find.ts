@@ -3,19 +3,20 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { Command } from "commander";
 import {
-  resolveOutputFormat,
   type LAFSErrorCategory,
+  resolveOutputFormat,
 } from "@cleocode/lafs-protocol";
+import { Command } from "commander";
 import pc from "picocolors";
+import { isHuman } from "../../core/logger.js";
 import { MarketplaceClient } from "../../core/marketplace/client.js";
-import { formatNetworkError } from "../../core/network/fetch.js";
 import type { MarketplaceResult } from "../../core/marketplace/types.js";
+import { formatNetworkError } from "../../core/network/fetch.js";
 import {
+  type RankedSkillRecommendation,
   RECOMMENDATION_ERROR_CODES,
   tokenizeCriteriaValue,
-  type RankedSkillRecommendation,
 } from "../../core/skills/recommendation.js";
 import {
   formatSkillRecommendations,
@@ -91,8 +92,8 @@ export function registerSkillsFind(parent: Command): void {
       try {
         format = resolveOutputFormat({
           jsonFlag: opts.json ?? false,
-          humanFlag: opts.human ?? false,
-          projectDefault: opts.recommend ? "json" : "human",
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
         }).format;
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
@@ -202,7 +203,10 @@ export function registerSkillsFind(parent: Command): void {
       } catch (error) {
         const message = formatNetworkError(error);
         if (format === "json") {
-          console.log(JSON.stringify({ error: message }));
+          emitJsonError(operation, mvi, "E_SEARCH_FAILED", message, "TRANSIENT", {
+            query,
+            limit,
+          });
         } else {
           console.error(pc.red(`Marketplace search failed: ${message}`));
         }
@@ -210,7 +214,18 @@ export function registerSkillsFind(parent: Command): void {
       }
 
       if (format === "json") {
-        console.log(JSON.stringify(results, null, 2));
+        const envelope = buildEnvelope(
+          operation,
+          mvi,
+          {
+            query,
+            results,
+            count: results.length,
+            limit,
+          },
+          null,
+        );
+        console.log(JSON.stringify(envelope, null, 2));
         return;
       }
 
@@ -219,15 +234,19 @@ export function registerSkillsFind(parent: Command): void {
         return;
       }
 
-      for (const skill of results) {
-        const stars = skill.stars > 0 ? pc.yellow(`★ ${formatStars(skill.stars)}`) : "";
-        console.log(`  ${pc.bold(skill.scopedName.padEnd(35))} ${stars}`);
-        console.log(`  ${pc.dim(skill.description?.slice(0, 80) ?? "")}`);
-        console.log(`  ${pc.dim(`from ${skill.source}`)}`);
-        console.log();
-      }
+      console.log(pc.dim(`Found ${results.length} result(s) for "${query}":\n`));
 
-      console.log(pc.dim("Install with: caamp skills install <scopedName>"));
+      results.forEach((skill, index) => {
+        const num = (index + 1).toString().padStart(2);
+        const stars = skill.stars > 0 ? pc.yellow(`★ ${formatStars(skill.stars)}`) : "";
+        console.log(`  ${pc.cyan(num)}. ${pc.bold(skill.scopedName)} ${stars}`);
+        console.log(`      ${pc.dim(skill.description?.slice(0, 80) ?? "")}`);
+        console.log(`      ${pc.dim(`from ${skill.source}`)}`);
+        console.log();
+      });
+
+      console.log(pc.dim("Install with: caamp skills install <name>"));
+      console.log(pc.dim("Or select by number: caamp skills install <n>"));
     });
 }
 
