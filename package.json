@@ -56,7 +56,6 @@
     "url": "https://github.com/kryptobaseddev/caamp/issues"
   },
   "dependencies": {
-    "@cleocode/ct-skills": "^2.0.0",
     "@cleocode/lafs-protocol": "^1.2.3",
     "@iarna/toml": "^2.2.5",
     "commander": "^14.0.0",

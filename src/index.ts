@@ -28,6 +28,16 @@ export type {
   InjectionStatus,
   InjectionCheckResult,
   GlobalOptions,
+  // Primary SkillLibrary types
+  SkillLibrary,
+  SkillLibraryEntry,
+  SkillLibraryValidationResult,
+  SkillLibraryValidationIssue,
+  SkillLibraryProfile,
+  SkillLibraryDispatchMatrix,
+  SkillLibraryManifest,
+  SkillLibraryManifestSkill,
+  // Backward-compat aliases (deprecated)
   CtSkillEntry,
   CtValidationResult,
   CtValidationIssue,
@@ -112,8 +122,21 @@ export {
 // Source parsing
 export { parseSource, isMarketplaceScoped } from "./core/sources/parser.js";
 
-// Skills catalog (ct-skills library)
+// Skills catalog (pluggable library)
 export * as catalog from "./core/skills/catalog.js";
+
+// Skills library registration
+export {
+  registerSkillLibrary,
+  registerSkillLibraryFromPath,
+  clearRegisteredLibrary,
+} from "./core/skills/catalog.js";
+
+// Skills library loaders
+export {
+  loadLibraryFromModule,
+  buildLibraryFromFiles,
+} from "./core/skills/library-loader.js";
 
 // Skills
 export { installSkill, removeSkill, listCanonicalSkills } from "./core/skills/installer.js";
@@ -161,7 +184,8 @@ export type { MarketplaceResult } from "./core/marketplace/types.js";
 
 // Instructions
 export { inject, checkInjection, removeInjection, checkAllInjections, injectAll } from "./core/instructions/injector.js";
-export { generateInjectionContent, groupByInstructFile } from "./core/instructions/templates.js";
+export { generateInjectionContent, generateSkillsSection, groupByInstructFile, buildInjectionContent, parseInjectionContent } from "./core/instructions/templates.js";
+export type { InjectionTemplate } from "./core/instructions/templates.js";
 
 // Advanced orchestration
 export {

@@ -56,13 +56,13 @@ interface InstallSummary {
 export function registerSkillsInstall(parent: Command): void {
   parent
     .command("install")
-    .description("Install a skill from GitHub, URL, marketplace, or ct-skills catalog")
+    .description("Install a skill from GitHub, URL, marketplace, or registered skill library")
     .argument("[source]", "Skill source (GitHub URL, owner/repo, @author/name, skill-name)")
     .option("-a, --agent <name>", "Target specific agent(s)", (v, prev: string[]) => [...prev, v], [])
     .option("-g, --global", "Install globally")
     .option("-y, --yes", "Skip confirmation")
     .option("--all", "Install to all detected agents")
-    .option("--profile <name>", "Install a ct-skills profile (minimal, core, recommended, full)")
+    .option("--profile <name>", "Install a skill library profile (minimal, core, recommended, full)")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
     .action(async (source: string | undefined, opts: {
@@ -112,7 +112,7 @@ export function registerSkillsInstall(parent: Command): void {
         process.exit(1);
       }
 
-      // Handle --profile: install an entire ct-skills profile
+      // Handle --profile: install an entire skill library profile
       if (opts.profile) {
         await handleProfileInstall(opts.profile, providers, opts.global ?? false, format, operation, mvi);
         return;
@@ -200,9 +200,9 @@ export function registerSkillsInstall(parent: Command): void {
             skillName = discovered.name;
           }
         } else if (parsed.type === "package") {
-          // Check ct-skills catalog for this package/skill name
+          // Check registered skill library for this skill name
           if (!catalog.isCatalogAvailable()) {
-            const message = "@cleocode/ct-skills is not installed. Run: npm install @cleocode/ct-skills";
+            const message = "No skill library registered. Register one with registerSkillLibraryFromPath() or set CAAMP_SKILL_LIBRARY env var.";
             if (format === "json") {
               emitJsonError(operation, mvi, ErrorCodes.INVALID_INPUT, message, ErrorCategories.VALIDATION);
             }
@@ -213,8 +213,8 @@ export function registerSkillsInstall(parent: Command): void {
           if (catalogSkill) {
             localPath = catalog.getSkillDir(catalogSkill.name);
             skillName = catalogSkill.name;
-            sourceValue = `@cleocode/ct-skills:${catalogSkill.name}`;
-            sourceType = "package";
+            sourceValue = `library:${catalogSkill.name}`;
+            sourceType = "library";
             if (format === "human") {
               console.log(`  Found in catalog: ${pc.bold(catalogSkill.name)} v${catalogSkill.version} (${pc.dim(catalogSkill.category)})`);
             }
@@ -258,7 +258,7 @@ export function registerSkillsInstall(parent: Command): void {
 
         if (result.success) {
           // Record in lock file
-          const isGlobal = sourceType === "package" ? true : (opts.global ?? false);
+          const isGlobal = (sourceType === "library" || sourceType === "package") ? true : (opts.global ?? false);
           await recordSkillInstall(
             skillName!,
             sourceValue,
@@ -348,7 +348,7 @@ async function handleProfileInstall(
   mvi: boolean,
 ): Promise<void> {
   if (!catalog.isCatalogAvailable()) {
-    const message = "@cleocode/ct-skills is not installed. Run: npm install @cleocode/ct-skills";
+    const message = "No skill library registered. Register one with registerSkillLibraryFromPath() or set CAAMP_SKILL_LIBRARY env var.";
     if (format === "json") {
       emitError(operation, mvi, ErrorCodes.INVALID_INPUT, message, ErrorCategories.VALIDATION);
     }
@@ -396,16 +396,16 @@ async function handleProfileInstall(
         }
         await recordSkillInstall(
           name,
-          `@cleocode/ct-skills:${name}`,
-          `@cleocode/ct-skills:${name}`,
-          "package",
+          `library:${name}`,
+          `library:${name}`,
+          "library",
           result.linkedAgents,
           result.canonicalPath,
           true,
         );
         installed.push({
           name,
-          scopedName: `@cleocode/ct-skills:${name}`,
+          scopedName: `library:${name}`,
           canonicalPath: result.canonicalPath,
           providers: result.linkedAgents,
         });

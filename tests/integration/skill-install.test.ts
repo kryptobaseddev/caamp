@@ -307,7 +307,7 @@ describe("integration: skills install command", () => {
     expect(mocks.recordSkillInstall).toHaveBeenCalled();
   });
 
-  it("installs from ct-skills catalog (package type)", async () => {
+  it("installs from registered library (package/library type)", async () => {
     mocks.parseSource.mockReturnValue({
       type: "package",
       inferredName: "ct-test",
@@ -331,9 +331,9 @@ describe("integration: skills install command", () => {
     expect(mocks.installSkill).toHaveBeenCalledWith("/tmp/ct-test", "ct-test", [provider], false);
     expect(mocks.recordSkillInstall).toHaveBeenCalledWith(
       "ct-test",
-      "@cleocode/ct-skills:ct-test",
-      "@cleocode/ct-skills:ct-test",
-      "package",
+      "library:ct-test",
+      "library:ct-test",
+      "library",
       ["claude-code"],
       "/tmp/canonical/demo",
       true,

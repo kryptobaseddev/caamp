@@ -2,9 +2,102 @@
  * Instruction template management
  *
  * Generates injection content based on provider capabilities.
+ * Includes structured InjectionTemplate API for project-level customization.
  */
 
 import type { Provider } from "../../types.js";
+
+// ── InjectionTemplate API ───────────────────────────────────────────
+
+/**
+ * Structured template for injection content.
+ *
+ * Projects use this to define what goes between CAAMP markers in
+ * instruction files, rather than passing ad-hoc strings.
+ */
+export interface InjectionTemplate {
+  /** @ references to include (e.g. `"@AGENTS.md"`, `"@.cleo/project-context.json"`). */
+  references: string[];
+  /** Inline content blocks (raw markdown/text). */
+  content?: string[];
+}
+
+/**
+ * Build injection content from a structured template.
+ *
+ * Produces a string suitable for injection between CAAMP markers.
+ * References are output as `@` lines, content blocks are appended as-is.
+ *
+ * @param template - Template defining references and content
+ * @returns Formatted injection content string
+ *
+ * @example
+ * ```typescript
+ * const content = buildInjectionContent({
+ *   references: ["@AGENTS.md"],
+ * });
+ * // Returns: "@AGENTS.md"
+ *
+ * const content2 = buildInjectionContent({
+ *   references: ["@AGENTS.md", "@.cleo/project-context.json"],
+ *   content: ["# Custom Section", "Some extra info"],
+ * });
+ * ```
+ */
+export function buildInjectionContent(template: InjectionTemplate): string {
+  const lines: string[] = [];
+
+  for (const ref of template.references) {
+    lines.push(ref);
+  }
+
+  if (template.content && template.content.length > 0) {
+    if (lines.length > 0) {
+      lines.push("");
+    }
+    lines.push(...template.content);
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Parse injection content back into template form.
+ *
+ * Lines starting with `@` are treated as references.
+ * All other non-empty lines are treated as content blocks.
+ *
+ * @param content - Raw injection content string
+ * @returns Parsed InjectionTemplate
+ *
+ * @example
+ * ```typescript
+ * const template = parseInjectionContent("@AGENTS.md\n@.cleo/config.json");
+ * // { references: ["@AGENTS.md", "@.cleo/config.json"], content: [] }
+ * ```
+ */
+export function parseInjectionContent(content: string): InjectionTemplate {
+  const references: string[] = [];
+  const contentLines: string[] = [];
+
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    if (trimmed.startsWith("@")) {
+      references.push(trimmed);
+    } else {
+      contentLines.push(line);
+    }
+  }
+
+  return {
+    references,
+    content: contentLines.length > 0 ? contentLines : undefined,
+  };
+}
+
+// ── Legacy API (preserved) ──────────────────────────────────────────
 
 /**
  * Generate a standard CAAMP injection block for instruction files.
