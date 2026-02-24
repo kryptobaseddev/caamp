@@ -80,7 +80,7 @@ export function loadLibraryFromModule(root: string): SkillLibrary {
  * - `profiles/*.json` for profile definitions
  * - `skills/<name>/SKILL.md` for skill content
  * - `skills/_shared/*.md` for shared resources
- * - `skills/protocols/*.md` for protocol files
+ * - `protocols/*.md` or `skills/protocols/*.md` for protocol files
  *
  * @param root - Absolute path to the library root directory
  * @returns A SkillLibrary instance backed by filesystem reads
@@ -260,12 +260,18 @@ export function buildLibraryFromFiles(root: string): SkillLibrary {
     },
 
     listProtocols(): string[] {
+      // Check root protocols/ first (ct-skills layout), fall back to skills/protocols/
+      const rootProtocols = discoverFiles(join(root, "protocols"), ".md");
+      if (rootProtocols.length > 0) return rootProtocols;
       return discoverFiles(join(root, "skills", "protocols"), ".md");
     },
 
     getProtocolPath(name: string): string | undefined {
-      const protocolPath = join(root, "skills", "protocols", `${name}.md`);
-      return existsSync(protocolPath) ? protocolPath : undefined;
+      // Check root protocols/ first, fall back to skills/protocols/
+      const rootPath = join(root, "protocols", `${name}.md`);
+      if (existsSync(rootPath)) return rootPath;
+      const skillsPath = join(root, "skills", "protocols", `${name}.md`);
+      return existsSync(skillsPath) ? skillsPath : undefined;
     },
 
     readProtocol(name: string): string | undefined {

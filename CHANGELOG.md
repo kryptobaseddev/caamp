@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-02-24
+
+### Fixed
+- **Protocol path discovery**: `buildLibraryFromFiles()` now checks root `protocols/` directory first, falling back to `skills/protocols/` — fixes discovery for libraries like ct-skills that place protocols at root level
+- Bumped `@cleocode/lafs-protocol` to ^1.3.2
+
+### Added
+- Test cases for root-level protocol discovery, fallback path, and precedence when both locations exist
+
 ## [1.1.0] - 2026-02-24
 
 ### Added
