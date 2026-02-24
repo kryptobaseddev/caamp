@@ -838,7 +838,8 @@ describe("coverage: standard.ts branch gaps", () => {
 
     process.env["AGENTS_HOME"] = "relative/path";
     const rel = getAgentsHome();
-    expect(rel).toContain("relative/path");
+    // On Windows, path.resolve converts forward slashes to backslashes
+    expect(rel).toMatch(/relative.path/);
 
     process.env["AGENTS_HOME"] = "~";
     const homeOnly = getAgentsHome();
