@@ -1,14 +1,22 @@
 /**
- * mcp install command
+ * mcp install command - LAFS-compliant with JSON-first output
  */
 
 import type { Command } from "commander";
 import pc from "picocolors";
-import { parseSource } from "../../core/sources/parser.js";
-import { installMcpServerToAll, buildServerConfig } from "../../core/mcp/installer.js";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
+import { isHuman } from "../../core/logger.js";
+import { buildServerConfig, installMcpServerToAll } from "../../core/mcp/installer.js";
 import { recordMcpInstall } from "../../core/mcp/lock.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
+import { parseSource } from "../../core/sources/parser.js";
 import type { Provider } from "../../types.js";
 
 export function registerMcpInstall(parent: Command): void {
@@ -24,6 +32,8 @@ export function registerMcpInstall(parent: Command): void {
     .option("-y, --yes", "Skip confirmation")
     .option("--all", "Install to all detected agents")
     .option("--dry-run", "Preview without writing")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
     .action(async (source: string, opts: {
       agent: string[];
       global?: boolean;
@@ -33,7 +43,25 @@ export function registerMcpInstall(parent: Command): void {
       yes?: boolean;
       all?: boolean;
       dryRun?: boolean;
+      json?: boolean;
+      human?: boolean;
     }) => {
+      const operation = "mcp.install";
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       const parsed = parseSource(source);
       const serverName = opts.name ?? parsed.inferredName;
 
@@ -62,22 +90,40 @@ export function registerMcpInstall(parent: Command): void {
       }
 
       if (providers.length === 0) {
-        console.error(pc.red("No target providers found."));
+        const message = "No target providers found.";
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.PROVIDER_NOT_FOUND, message, ErrorCategories.NOT_FOUND);
+        } else {
+          console.error(pc.red(message));
+        }
         process.exit(1);
       }
 
       const scope = opts.global ? "global" as const : "project" as const;
 
       if (opts.dryRun) {
-        console.log(pc.bold("Dry run - would install:"));
-        console.log(`  Server: ${pc.bold(serverName)}`);
-        console.log(`  Config: ${JSON.stringify(config, null, 2)}`);
-        console.log(`  Scope: ${scope}`);
-        console.log(`  Providers: ${providers.map((p) => p.id).join(", ")}`);
+        if (format === "json") {
+          outputSuccess(operation, mvi, {
+            installed: [{
+              name: serverName,
+              providers: providers.map((p) => p.id),
+              config,
+            }],
+            dryRun: true,
+          });
+        } else {
+          console.log(pc.bold("Dry run - would install:"));
+          console.log(`  Server: ${pc.bold(serverName)}`);
+          console.log(`  Config: ${JSON.stringify(config, null, 2)}`);
+          console.log(`  Scope: ${scope}`);
+          console.log(`  Providers: ${providers.map((p) => p.id).join(", ")}`);
+        }
         return;
       }
 
-      console.log(pc.dim(`Installing "${serverName}" to ${providers.length} provider(s)...\n`));
+      if (format === "human") {
+        console.log(pc.dim(`Installing "${serverName}" to ${providers.length} provider(s)...\n`));
+      }
 
       const results = await installMcpServerToAll(
         providers,
@@ -86,15 +132,19 @@ export function registerMcpInstall(parent: Command): void {
         scope,
       );
 
-      for (const r of results) {
-        if (r.success) {
-          console.log(`  ${pc.green("✓")} ${r.provider.toolName.padEnd(22)} ${pc.dim(r.configPath)}`);
-        } else {
-          console.log(`  ${pc.red("✗")} ${r.provider.toolName.padEnd(22)} ${pc.red(r.error ?? "failed")}`);
+      const succeeded = results.filter((r) => r.success);
+      const failed = results.filter((r) => !r.success);
+
+      if (format === "human") {
+        for (const r of results) {
+          if (r.success) {
+            console.log(`  ${pc.green("✓")} ${r.provider.toolName.padEnd(22)} ${pc.dim(r.configPath)}`);
+          } else {
+            console.log(`  ${pc.red("✗")} ${r.provider.toolName.padEnd(22)} ${pc.red(r.error ?? "failed")}`);
+          }
         }
       }
 
-      const succeeded = results.filter((r) => r.success);
       if (succeeded.length > 0) {
         await recordMcpInstall(
           serverName,
@@ -105,6 +155,17 @@ export function registerMcpInstall(parent: Command): void {
         );
       }
 
-      console.log(pc.bold(`\n${succeeded.length}/${results.length} providers configured.`));
+      if (format === "json") {
+        outputSuccess(operation, mvi, {
+          installed: succeeded.map((r) => ({
+            name: serverName,
+            providers: [r.provider.id],
+            config,
+          })),
+          dryRun: false,
+        });
+      } else {
+        console.log(pc.bold(`\n${succeeded.length}/${results.length} providers configured.`));
+      }
     });
 }

@@ -26,7 +26,7 @@ export function registerAdvancedBatch(parent: Command): void {
       skillsFile?: string;
       projectDir?: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.batch", !opts.details, async () => {
+    }) => runLafsCommand("advanced.batch", opts.details ? "full" : "standard", async () => {
       const baseProviders = resolveProviders({ all: opts.all, agent: opts.agent });
       const minimumPriority = parsePriority(opts.minTier);
       const providers = selectProvidersByMinimumPriority(baseProviders, minimumPriority);

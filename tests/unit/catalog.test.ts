@@ -1,264 +1,266 @@
-import { describe, expect, it } from "vitest";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as catalog from "../../src/core/skills/catalog.js";
+import { buildLibraryFromFiles } from "../../src/core/skills/library-loader.js";
+import type { SkillLibrary } from "../../src/core/skills/skill-library.js";
 
-describe("ct-skills catalog adapter", () => {
-  it("isCatalogAvailable returns true when ct-skills is installed", () => {
+describe("catalog - registration and delegation", () => {
+  let fixtureRoot: string;
+
+  beforeEach(() => {
+    catalog.clearRegisteredLibrary();
+
+    // Create a fixture skill library on disk
+    fixtureRoot = join(tmpdir(), `caamp-catalog-test-${Date.now()}`);
+    mkdirSync(fixtureRoot, { recursive: true });
+
+    writeFileSync(
+      join(fixtureRoot, "skills.json"),
+      JSON.stringify({
+        version: "2.0.0",
+        skills: [
+          {
+            name: "alpha-skill",
+            description: "Alpha skill for testing",
+            version: "1.0.0",
+            path: "skills/alpha-skill/SKILL.md",
+            references: [],
+            core: true,
+            category: "core",
+            tier: 0,
+            protocol: null,
+            dependencies: [],
+            sharedResources: [],
+            compatibility: ["claude-code"],
+            license: "MIT",
+            metadata: {},
+          },
+        ],
+      }),
+    );
+
+    mkdirSync(join(fixtureRoot, "skills", "alpha-skill"), { recursive: true });
+    writeFileSync(
+      join(fixtureRoot, "skills", "alpha-skill", "SKILL.md"),
+      "# Alpha Skill\nContent here.",
+    );
+
+    mkdirSync(join(fixtureRoot, "skills"), { recursive: true });
+    writeFileSync(
+      join(fixtureRoot, "skills", "manifest.json"),
+      JSON.stringify({
+        $schema: "",
+        _meta: {},
+        dispatch_matrix: { by_task_type: {}, by_keyword: {}, by_protocol: {} },
+        skills: [],
+      }),
+    );
+  });
+
+  afterEach(() => {
+    catalog.clearRegisteredLibrary();
+    if (existsSync(fixtureRoot)) {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+    }
+  });
+
+  // ── isCatalogAvailable ──────────────────────────────────────────
+
+  it("isCatalogAvailable returns false when no library registered", () => {
+    // Clear env to prevent auto-discovery
+    const orig = process.env["CAAMP_SKILL_LIBRARY"];
+    delete process.env["CAAMP_SKILL_LIBRARY"];
+    try {
+      expect(catalog.isCatalogAvailable()).toBe(false);
+    } finally {
+      if (orig !== undefined) process.env["CAAMP_SKILL_LIBRARY"] = orig;
+    }
+  });
+
+  it("isCatalogAvailable returns true after registerSkillLibrary", () => {
+    const library = buildLibraryFromFiles(fixtureRoot);
+    catalog.registerSkillLibrary(library);
     expect(catalog.isCatalogAvailable()).toBe(true);
   });
 
-  it("listSkills returns an array of skill names", () => {
+  // ── registerSkillLibrary ────────────────────────────────────────
+
+  it("registerSkillLibrary makes library available", () => {
+    const library = buildLibraryFromFiles(fixtureRoot);
+    catalog.registerSkillLibrary(library);
+
     const skills = catalog.listSkills();
-    expect(Array.isArray(skills)).toBe(true);
-    expect(skills.length).toBeGreaterThan(0);
-    expect(typeof skills[0]).toBe("string");
+    expect(skills).toContain("alpha-skill");
   });
 
-  it("getSkill returns a valid CtSkillEntry", () => {
-    const skills = catalog.listSkills();
-    const skill = catalog.getSkill(skills[0]!);
-    expect(skill).toBeDefined();
-    expect(skill!.name).toBe(skills[0]);
-    expect(typeof skill!.description).toBe("string");
-    expect(typeof skill!.version).toBe("string");
-    expect(typeof skill!.core).toBe("boolean");
+  // ── registerSkillLibraryFromPath ────────────────────────────────
+
+  it("registerSkillLibraryFromPath loads from directory with skills.json", () => {
+    catalog.registerSkillLibraryFromPath(fixtureRoot);
+
+    expect(catalog.isCatalogAvailable()).toBe(true);
+    expect(catalog.listSkills()).toContain("alpha-skill");
   });
 
-  it("getSkill returns undefined for nonexistent skill", () => {
-    expect(catalog.getSkill("nonexistent-skill-xyz")).toBeUndefined();
-  });
+  // ── clearRegisteredLibrary ──────────────────────────────────────
 
-  it("getCoreSkills returns only core skills", () => {
-    const core = catalog.getCoreSkills();
-    for (const skill of core) {
-      expect(skill.core).toBe(true);
+  it("clearRegisteredLibrary removes the library", () => {
+    catalog.registerSkillLibraryFromPath(fixtureRoot);
+    expect(catalog.isCatalogAvailable()).toBe(true);
+
+    catalog.clearRegisteredLibrary();
+
+    const orig = process.env["CAAMP_SKILL_LIBRARY"];
+    delete process.env["CAAMP_SKILL_LIBRARY"];
+    try {
+      expect(catalog.isCatalogAvailable()).toBe(false);
+    } finally {
+      if (orig !== undefined) process.env["CAAMP_SKILL_LIBRARY"] = orig;
     }
   });
 
-  it("getSkillDir returns a string path", () => {
-    const skills = catalog.listSkills();
-    const dir = catalog.getSkillDir(skills[0]!);
-    expect(typeof dir).toBe("string");
-    expect(dir.length).toBeGreaterThan(0);
-  });
+  // ── Auto-discovery via env var ──────────────────────────────────
 
-  it("resolveDependencyTree includes transitive deps", () => {
-    const skills = catalog.listSkills();
-    const resolved = catalog.resolveDependencyTree([skills[0]!]);
-    expect(Array.isArray(resolved)).toBe(true);
-    expect(resolved).toContain(skills[0]);
-  });
-
-  it("listProfiles returns profile names", () => {
-    const profiles = catalog.listProfiles();
-    expect(Array.isArray(profiles)).toBe(true);
-  });
-
-  it("getVersion returns a semver string", () => {
-    const version = catalog.getVersion();
-    expect(version).toMatch(/^\d+\.\d+\.\d+/);
-  });
-
-  it("getLibraryRoot returns a path", () => {
-    const root = catalog.getLibraryRoot();
-    expect(typeof root).toBe("string");
-    expect(root.length).toBeGreaterThan(0);
-  });
-
-  it("validateSkillFrontmatter returns validation result", () => {
-    const skills = catalog.listSkills();
-    const result = catalog.validateSkillFrontmatter(skills[0]!);
-    expect(typeof result.valid).toBe("boolean");
-    expect(Array.isArray(result.issues)).toBe(true);
-  });
-
-  // ── getSkills ────────────────────────────────────────────────────────
-
-  it("getSkills returns an array of CtSkillEntry objects", () => {
-    const skills = catalog.getSkills();
-    expect(Array.isArray(skills)).toBe(true);
-    expect(skills.length).toBeGreaterThan(0);
-    const first = skills[0]!;
-    expect(typeof first.name).toBe("string");
-    expect(typeof first.description).toBe("string");
-    expect(typeof first.version).toBe("string");
-    expect(typeof first.core).toBe("boolean");
-  });
-
-  // ── getManifest ──────────────────────────────────────────────────────
-
-  it("getManifest returns a manifest object", () => {
-    const manifest = catalog.getManifest();
-    expect(manifest).toBeDefined();
-    expect(typeof manifest).toBe("object");
-    expect(manifest).not.toBeNull();
-  });
-
-  // ── getSkillPath ─────────────────────────────────────────────────────
-
-  it("getSkillPath returns a string path ending in SKILL.md", () => {
-    const name = catalog.listSkills()[0]!;
-    const skillPath = catalog.getSkillPath(name);
-    expect(typeof skillPath).toBe("string");
-    expect(skillPath).toMatch(/SKILL\.md$/);
-  });
-
-  // ── readSkillContent ─────────────────────────────────────────────────
-
-  it("readSkillContent returns non-empty string content", () => {
-    const name = catalog.listSkills()[0]!;
-    const content = catalog.readSkillContent(name);
-    expect(typeof content).toBe("string");
-    expect(content.length).toBeGreaterThan(0);
-  });
-
-  // ── getSkillsByCategory ──────────────────────────────────────────────
-
-  it("getSkillsByCategory returns an array of CtSkillEntry", () => {
-    const allSkills = catalog.getSkills();
-    const category = allSkills[0]!.category;
-    const filtered = catalog.getSkillsByCategory(category);
-    expect(Array.isArray(filtered)).toBe(true);
-    for (const skill of filtered) {
-      expect(skill.category).toBe(category);
+  it("auto-discovers library from CAAMP_SKILL_LIBRARY env var", () => {
+    const orig = process.env["CAAMP_SKILL_LIBRARY"];
+    process.env["CAAMP_SKILL_LIBRARY"] = fixtureRoot;
+    try {
+      // No explicit registration, should auto-discover
+      expect(catalog.isCatalogAvailable()).toBe(true);
+      expect(catalog.listSkills()).toContain("alpha-skill");
+    } finally {
+      catalog.clearRegisteredLibrary();
+      if (orig !== undefined) {
+        process.env["CAAMP_SKILL_LIBRARY"] = orig;
+      } else {
+        delete process.env["CAAMP_SKILL_LIBRARY"];
+      }
     }
   });
 
-  // ── getSkillDependencies ─────────────────────────────────────────────
+  // ── Delegate functions ──────────────────────────────────────────
 
-  it("getSkillDependencies returns an array of strings", () => {
-    const name = catalog.listSkills()[0]!;
-    const deps = catalog.getSkillDependencies(name);
-    expect(Array.isArray(deps)).toBe(true);
-    for (const dep of deps) {
-      expect(typeof dep).toBe("string");
-    }
-  });
+  describe("delegates to registered library", () => {
+    beforeEach(() => {
+      catalog.registerSkillLibraryFromPath(fixtureRoot);
+    });
 
-  // ── resolveProfile ───────────────────────────────────────────────────
+    it("getSkills returns entries", () => {
+      const skills = catalog.getSkills();
+      expect(Array.isArray(skills)).toBe(true);
+      expect(skills.length).toBeGreaterThan(0);
+      expect(skills[0]!.name).toBe("alpha-skill");
+    });
 
-  it("resolveProfile returns an array of skill names", () => {
-    const profiles = catalog.listProfiles();
-    if (profiles.length === 0) return; // skip if no profiles
-    const resolved = catalog.resolveProfile(profiles[0]!);
-    expect(Array.isArray(resolved)).toBe(true);
-    for (const name of resolved) {
-      expect(typeof name).toBe("string");
-    }
-  });
+    it("getManifest returns manifest", () => {
+      const manifest = catalog.getManifest();
+      expect(manifest).toBeDefined();
+      expect(manifest.dispatch_matrix).toBeDefined();
+    });
 
-  // ── listSharedResources ──────────────────────────────────────────────
+    it("listSkills returns names", () => {
+      expect(catalog.listSkills()).toContain("alpha-skill");
+    });
 
-  it("listSharedResources returns an array of strings", () => {
-    const resources = catalog.listSharedResources();
-    expect(Array.isArray(resources)).toBe(true);
-    for (const r of resources) {
-      expect(typeof r).toBe("string");
-    }
-  });
+    it("getSkill returns entry", () => {
+      const skill = catalog.getSkill("alpha-skill");
+      expect(skill).toBeDefined();
+      expect(skill!.description).toBe("Alpha skill for testing");
+    });
 
-  // ── getSharedResourcePath ────────────────────────────────────────────
+    it("getSkill returns undefined for nonexistent", () => {
+      expect(catalog.getSkill("nonexistent")).toBeUndefined();
+    });
 
-  it("getSharedResourcePath returns a string or undefined", () => {
-    const resources = catalog.listSharedResources();
-    if (resources.length === 0) return; // skip if none
-    const resourcePath = catalog.getSharedResourcePath(resources[0]!);
-    expect(typeof resourcePath).toBe("string");
-    expect(resourcePath!.length).toBeGreaterThan(0);
-  });
+    it("getSkillPath returns path", () => {
+      const path = catalog.getSkillPath("alpha-skill");
+      expect(path).toMatch(/SKILL\.md$/);
+    });
 
-  it("getSharedResourcePath returns undefined for nonexistent resource", () => {
-    const result = catalog.getSharedResourcePath("nonexistent-resource-xyz");
-    expect(result).toBeUndefined();
-  });
+    it("getSkillDir returns directory path", () => {
+      const dir = catalog.getSkillDir("alpha-skill");
+      expect(dir).toContain("alpha-skill");
+    });
 
-  // ── readSharedResource ───────────────────────────────────────────────
+    it("readSkillContent returns content", () => {
+      const content = catalog.readSkillContent("alpha-skill");
+      expect(content).toContain("# Alpha Skill");
+    });
 
-  it("readSharedResource returns string content for existing resource", () => {
-    const resources = catalog.listSharedResources();
-    if (resources.length === 0) return; // skip if none
-    const content = catalog.readSharedResource(resources[0]!);
-    expect(typeof content).toBe("string");
-    expect(content!.length).toBeGreaterThan(0);
-  });
+    it("getCoreSkills returns core only", () => {
+      const core = catalog.getCoreSkills();
+      expect(core).toHaveLength(1);
+      expect(core[0]!.core).toBe(true);
+    });
 
-  it("readSharedResource returns undefined for nonexistent resource", () => {
-    const result = catalog.readSharedResource("nonexistent-resource-xyz");
-    expect(result).toBeUndefined();
-  });
+    it("getSkillsByCategory filters", () => {
+      const core = catalog.getSkillsByCategory("core");
+      expect(core.length).toBeGreaterThan(0);
+    });
 
-  // ── listProtocols ────────────────────────────────────────────────────
+    it("getSkillDependencies returns deps", () => {
+      const deps = catalog.getSkillDependencies("alpha-skill");
+      expect(Array.isArray(deps)).toBe(true);
+    });
 
-  it("listProtocols returns an array of strings", () => {
-    const protocols = catalog.listProtocols();
-    expect(Array.isArray(protocols)).toBe(true);
-    for (const p of protocols) {
-      expect(typeof p).toBe("string");
-    }
-  });
+    it("resolveDependencyTree resolves", () => {
+      const resolved = catalog.resolveDependencyTree(["alpha-skill"]);
+      expect(resolved).toContain("alpha-skill");
+    });
 
-  // ── getProtocolPath ──────────────────────────────────────────────────
+    it("listProfiles returns profiles", () => {
+      const profiles = catalog.listProfiles();
+      expect(Array.isArray(profiles)).toBe(true);
+    });
 
-  it("getProtocolPath returns a string for existing protocol", () => {
-    const protocols = catalog.listProtocols();
-    if (protocols.length === 0) return; // skip if none
-    const protocolPath = catalog.getProtocolPath(protocols[0]!);
-    expect(typeof protocolPath).toBe("string");
-    expect(protocolPath!.length).toBeGreaterThan(0);
-  });
+    it("listSharedResources returns resources", () => {
+      const resources = catalog.listSharedResources();
+      expect(Array.isArray(resources)).toBe(true);
+    });
 
-  it("getProtocolPath returns undefined for nonexistent protocol", () => {
-    const result = catalog.getProtocolPath("nonexistent-protocol-xyz");
-    expect(result).toBeUndefined();
-  });
+    it("listProtocols returns protocols", () => {
+      const protocols = catalog.listProtocols();
+      expect(Array.isArray(protocols)).toBe(true);
+    });
 
-  // ── readProtocol ─────────────────────────────────────────────────────
-
-  it("readProtocol returns string content for existing protocol", () => {
-    const protocols = catalog.listProtocols();
-    if (protocols.length === 0) return; // skip if none
-    const content = catalog.readProtocol(protocols[0]!);
-    expect(typeof content).toBe("string");
-    expect(content!.length).toBeGreaterThan(0);
-  });
-
-  it("readProtocol returns undefined for nonexistent protocol", () => {
-    const result = catalog.readProtocol("nonexistent-protocol-xyz");
-    expect(result).toBeUndefined();
-  });
-
-  // ── validateAll ──────────────────────────────────────────────────────
-
-  it("validateAll returns a Map of skill names to validation results", () => {
-    const results = catalog.validateAll();
-    expect(results).toBeInstanceOf(Map);
-    for (const [name, result] of results) {
-      expect(typeof name).toBe("string");
+    it("validateSkillFrontmatter validates", () => {
+      const result = catalog.validateSkillFrontmatter("alpha-skill");
       expect(typeof result.valid).toBe("boolean");
       expect(Array.isArray(result.issues)).toBe(true);
+    });
+
+    it("validateAll validates all", () => {
+      const results = catalog.validateAll();
+      expect(results).toBeInstanceOf(Map);
+      expect(results.has("alpha-skill")).toBe(true);
+    });
+
+    it("getDispatchMatrix returns matrix", () => {
+      const matrix = catalog.getDispatchMatrix();
+      expect(matrix).toBeDefined();
+      expect(typeof matrix.by_task_type).toBe("object");
+    });
+
+    it("getVersion returns version", () => {
+      expect(catalog.getVersion()).toBe("2.0.0");
+    });
+
+    it("getLibraryRoot returns path", () => {
+      expect(catalog.getLibraryRoot()).toBe(fixtureRoot);
+    });
+  });
+
+  // ── Error when no library ───────────────────────────────────────
+
+  it("throws descriptive error when calling functions without library", () => {
+    const orig = process.env["CAAMP_SKILL_LIBRARY"];
+    delete process.env["CAAMP_SKILL_LIBRARY"];
+    try {
+      expect(() => catalog.listSkills()).toThrow("No skill library registered");
+    } finally {
+      if (orig !== undefined) process.env["CAAMP_SKILL_LIBRARY"] = orig;
     }
-  });
-
-  // ── getDispatchMatrix ────────────────────────────────────────────────
-
-  it("getDispatchMatrix returns a dispatch matrix object", () => {
-    const matrix = catalog.getDispatchMatrix();
-    expect(matrix).toBeDefined();
-    expect(typeof matrix).toBe("object");
-    expect(matrix).not.toBeNull();
-  });
-
-  // ── getProfile ───────────────────────────────────────────────────────
-
-  it("getProfile returns a profile definition for existing profile", () => {
-    const profiles = catalog.listProfiles();
-    if (profiles.length === 0) return; // skip if none
-    const profile = catalog.getProfile(profiles[0]!);
-    expect(profile).toBeDefined();
-    expect(typeof profile).toBe("object");
-  });
-
-  it("getProfile returns undefined for nonexistent profile", () => {
-    const result = catalog.getProfile("nonexistent-profile-xyz");
-    expect(result).toBeUndefined();
   });
 });

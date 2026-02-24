@@ -7,6 +7,7 @@ import {
   type LAFSErrorCategory,
   resolveOutputFormat,
 } from "@cleocode/lafs-protocol";
+import type { MVILevel } from "../../core/lafs.js";
 import { Command } from "commander";
 import pc from "picocolors";
 import { isHuman } from "../../core/logger.js";
@@ -36,14 +37,7 @@ interface SkillsFindOptions {
   select?: string;
 }
 
-interface LAFSErrorShape {
-  code: string;
-  message: string;
-  category: LAFSErrorCategory;
-  retryable: boolean;
-  retryAfterMs: number | null;
-  details: Record<string, unknown>;
-}
+import type { LAFSErrorShape } from "../../core/lafs.js";
 
 class SkillsFindValidationError extends Error {
   code: string;
@@ -86,7 +80,7 @@ export function registerSkillsFind(parent: Command): void {
     .action(async (query: string | undefined, opts: SkillsFindOptions) => {
       const operation = opts.recommend ? "skills.find.recommend" : "skills.find.search";
       const details = Boolean(opts.details);
-      const mvi = !details;
+      const mvi: MVILevel = details ? "full" : "standard";
 
       let format: "json" | "human";
       try {
@@ -344,7 +338,7 @@ function validateSelectedRanks(selectedRanks: number[], total: number): void {
   }
 }
 
-function buildEnvelope<T>(operation: string, mvi: boolean, result: T | null, error: LAFSErrorShape | null) {
+function buildEnvelope<T>(operation: string, mvi: MVILevel, result: T | null, error: LAFSErrorShape | null) {
   return {
     $schema: "https://lafs.dev/schemas/v1/envelope.schema.json" as const,
     _meta: {
@@ -367,7 +361,7 @@ function buildEnvelope<T>(operation: string, mvi: boolean, result: T | null, err
 
 function emitJsonError(
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
   code: string,
   message: string,
   category: LAFSErrorCategory,

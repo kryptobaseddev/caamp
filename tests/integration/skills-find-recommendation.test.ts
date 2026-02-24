@@ -190,7 +190,7 @@ describe("integration: skills find recommend contract", () => {
     ]);
 
     const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
-      _meta: { mvi: boolean };
+      _meta: { mvi: string };
       result: {
         options: Array<{
           reasons: Array<{ code: string }>;
@@ -198,7 +198,7 @@ describe("integration: skills find recommend contract", () => {
       };
     };
 
-    expect(output._meta.mvi).toBe(false);
+    expect(output._meta.mvi).toBe("full");
     expect(output.result.options[0]?.reasons[0]?.code).toBe("MUST_HAVE_MATCH");
   });
 
@@ -271,7 +271,7 @@ describe("integration: skills find recommend contract", () => {
         "$schema": "https://lafs.dev/schemas/v1/envelope.schema.json",
         "_meta": {
           "contextVersion": 0,
-          "mvi": true,
+          "mvi": "standard",
           "operation": "skills.find.recommend",
           "requestId": "<request-id>",
           "schemaVersion": "1.0.0",
@@ -349,7 +349,7 @@ describe("integration: skills find recommend contract", () => {
         "$schema": "https://lafs.dev/schemas/v1/envelope.schema.json",
         "_meta": {
           "contextVersion": 0,
-          "mvi": false,
+          "mvi": "full",
           "operation": "skills.find.recommend",
           "requestId": "<request-id>",
           "schemaVersion": "1.0.0",

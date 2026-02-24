@@ -39,7 +39,7 @@ export function registerSkillsList(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (opts: SkillsListOptions) => {
       const operation = "skills.list";
-      const mvi = true;
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
       try {
@@ -119,7 +119,7 @@ export function registerSkillsList(parent: Command): void {
 
 function buildEnvelope<T>(
   operation: string,
-  mvi: boolean,
+  mvi: import("../../core/lafs.js").MVILevel,
   result: T | null,
   error: LAFSErrorShape | null,
 ) {
@@ -145,7 +145,7 @@ function buildEnvelope<T>(
 
 function emitJsonError(
   operation: string,
-  mvi: boolean,
+  mvi: import("../../core/lafs.js").MVILevel,
   code: string,
   message: string,
   category: LAFSErrorCategory,

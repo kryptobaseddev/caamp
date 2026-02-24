@@ -1,13 +1,21 @@
 /**
- * config show|path commands
+ * config show|path commands - LAFS-compliant with JSON-first output
  */
 
+import { existsSync } from "node:fs";
 import type { Command } from "commander";
 import pc from "picocolors";
-import { getProvider } from "../core/registry/providers.js";
-import { existsSync } from "node:fs";
 import { readConfig } from "../core/formats/index.js";
+import {
+  buildEnvelope,
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../core/lafs.js";
 import { resolveProviderConfigPath } from "../core/paths/standard.js";
+import { getProvider } from "../core/registry/providers.js";
 
 export function registerConfigCommand(program: Command): void {
   const config = program
@@ -19,46 +27,90 @@ export function registerConfigCommand(program: Command): void {
     .description("Show provider configuration")
     .argument("<provider>", "Provider ID or alias")
     .option("-g, --global", "Show global config")
-    .option("--json", "Output as JSON")
-    .action(async (providerId: string, opts: { global?: boolean; json?: boolean }) => {
-      const provider = getProvider(providerId);
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (providerId: string, opts: { global?: boolean; json?: boolean; human?: boolean }) => {
+      const operation = "config.show";
+      const mvi: import("../core/lafs.js").MVILevel = "standard";
 
-      if (!provider) {
-        console.error(pc.red(`Provider not found: ${providerId}`));
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: opts.human ?? false,
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
         process.exit(1);
       }
 
-      const configPath = resolveProviderConfigPath(
-        provider,
-        opts.global ? "global" : "project",
-      ) ?? provider.configPathGlobal;
+      const provider = getProvider(providerId);
+
+      if (!provider) {
+        const message = `Provider not found: ${providerId}`;
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.PROVIDER_NOT_FOUND, message, ErrorCategories.NOT_FOUND, {
+            providerId,
+          });
+        } else {
+          console.error(pc.red(message));
+        }
+        process.exit(1);
+      }
+
+      const scope = opts.global ? "global" : "project";
+      const configPath = resolveProviderConfigPath(provider, scope) ?? provider.configPathGlobal;
 
       if (!existsSync(configPath)) {
-        console.log(pc.dim(`No config file at: ${configPath}`));
-        return;
+        const message = `No config file at: ${configPath}`;
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.FILE_NOT_FOUND, message, ErrorCategories.NOT_FOUND, {
+            configPath,
+            scope,
+          });
+        } else {
+          console.log(pc.dim(message));
+        }
+        process.exit(1);
       }
 
       try {
         const data = await readConfig(configPath, provider.configFormat);
 
-        if (opts.json) {
-          console.log(JSON.stringify(data, null, 2));
-        } else {
-          console.log(pc.bold(`\n${provider.toolName} config (${configPath}):\n`));
-          console.log(JSON.stringify(data, null, 2));
+        if (format === "json") {
+          outputSuccess(operation, mvi, {
+            provider: provider.id,
+            config: data,
+            format: provider.configFormat,
+            scope,
+          });
+          return;
         }
+
+        // Human-readable output
+        console.log(pc.bold(`\n${provider.toolName} config (${configPath}):\n`));
+        console.log(JSON.stringify(data, null, 2));
       } catch (err) {
-        console.error(pc.red(`Error reading config: ${err instanceof Error ? err.message : String(err)}`));
+        const message = `Error reading config: ${err instanceof Error ? err.message : String(err)}`;
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.FILE_SYSTEM_ERROR, message, ErrorCategories.INTERNAL);
+        } else {
+          console.error(pc.red(message));
+        }
         process.exit(1);
       }
     });
 
   config
     .command("path")
-    .description("Show config file path")
+    .description("Show config file path (outputs raw path for piping)")
     .argument("<provider>", "Provider ID or alias")
     .argument("[scope]", "Scope: project (default) or global", "project")
     .action((providerId: string, scope: string) => {
+      // NOTE: This command intentionally outputs raw paths for shell scripting
+      // It does NOT use LAFS envelopes to remain pipe-friendly
       const provider = getProvider(providerId);
 
       if (!provider) {

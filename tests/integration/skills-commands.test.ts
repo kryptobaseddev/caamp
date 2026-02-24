@@ -129,7 +129,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsAudit(program);
 
-      await program.parseAsync(["node", "test", "audit", "/path/to/SKILL.md"]);
+      await program.parseAsync(["node", "test", "audit", "/path/to/SKILL.md", "--human"]);
 
       expect(mocks.scanFile).toHaveBeenCalledWith("/path/to/SKILL.md");
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
@@ -186,8 +186,15 @@ describe("integration: skills command wrappers", () => {
       await program.parseAsync(["node", "test", "audit", "--json", "test.md"]);
 
       const output = logSpy.mock.calls[0]?.[0];
-      // Audit command wraps single file results in an array
-      expect(JSON.parse(String(output))).toEqual([result]);
+      const envelope = JSON.parse(String(output));
+      // Audit command outputs LAFS envelope with summary in result
+      expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(envelope.success).toBe(true);
+      expect(envelope.result.scanned).toBe(1);
+      expect(envelope.result.findings).toBe(0);
+      expect(envelope.result.files).toHaveLength(1);
+      expect(envelope.result.files[0].path).toBe("test.md");
+      expect(envelope.result.files[0].score).toBe(100);
     });
 
     it("exits with error when path does not exist", async () => {
@@ -232,7 +239,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsAudit(program);
 
-      await program.parseAsync(["node", "test", "audit", "/empty"]);
+      await program.parseAsync(["node", "test", "audit", "/empty", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No SKILL.md files found"));
     });
@@ -263,7 +270,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsCheck(program);
 
-      await program.parseAsync(["node", "test", "check"]);
+      await program.parseAsync(["node", "test", "check", "--human"]);
 
       expect(mocks.checkSkillUpdate).toHaveBeenCalledWith("my-skill");
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
@@ -296,11 +303,12 @@ describe("integration: skills command wrappers", () => {
 
       await program.parseAsync(["node", "test", "check", "--json"]);
 
-      // First call is "Checking X skill(s)...", JSON is last call
-      const lastCall = logSpy.mock.calls[logSpy.mock.calls.length - 1]?.[0];
-      const output = JSON.parse(String(lastCall ?? "[]"));
-      expect(output).toHaveLength(1);
-      expect(output[0]?.status).toBe("up-to-date");
+      // In JSON mode, output is a LAFS envelope (no "Checking..." preamble)
+      const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
+      expect(output.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(output.result.skills).toHaveLength(1);
+      expect(output.result.skills[0]?.hasUpdate).toBe(false);
+      expect(output.result.outdated).toBe(0);
     });
 
     it("handles no tracked skills gracefully", async () => {
@@ -310,7 +318,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsCheck(program);
 
-      await program.parseAsync(["node", "test", "check"]);
+      await program.parseAsync(["node", "test", "check", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No tracked skills"));
     });
@@ -337,7 +345,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsCheck(program);
 
-      await program.parseAsync(["node", "test", "check"]);
+      await program.parseAsync(["node", "test", "check", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("All skills are up to date"));
     });
@@ -353,7 +361,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsInit(program);
 
-      await program.parseAsync(["node", "test", "init", "my-awesome-skill"]);
+      await program.parseAsync(["node", "test", "init", "my-awesome-skill", "--human"]);
 
       expect(mocks.mkdir).toHaveBeenCalledWith(expect.stringContaining("my-awesome-skill"), { recursive: true });
       expect(mocks.writeFile).toHaveBeenCalled();
@@ -532,7 +540,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsRemove(program);
 
-      await program.parseAsync(["node", "test", "remove", "missing-skill"]);
+      await program.parseAsync(["node", "test", "remove", "missing-skill", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("not found"));
     });
@@ -556,7 +564,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsRemove(program);
 
-      await program.parseAsync(["node", "test", "remove"]);
+      await program.parseAsync(["node", "test", "remove", "--human"]);
 
       expect(mocks.listCanonicalSkills).toHaveBeenCalled();
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Installed skills"));
@@ -569,7 +577,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsRemove(program);
 
-      await program.parseAsync(["node", "test", "remove"]);
+      await program.parseAsync(["node", "test", "remove", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No skills installed"));
     });
@@ -615,7 +623,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsUpdate(program);
 
-      await program.parseAsync(["node", "test", "update", "--yes"]);
+      await program.parseAsync(["node", "test", "update", "--yes", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("have updates available"));
     });
@@ -642,7 +650,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsUpdate(program);
 
-      await program.parseAsync(["node", "test", "update"])
+      await program.parseAsync(["node", "test", "update", "--human"])
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("All skills are up to date"));
     });
@@ -654,7 +662,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsUpdate(program);
 
-      await program.parseAsync(["node", "test", "update"]);
+      await program.parseAsync(["node", "test", "update", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No tracked skills to update"));
     });
@@ -715,7 +723,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsUpdate(program);
 
-      await program.parseAsync(["node", "test", "update", "--yes"]);
+      await program.parseAsync(["node", "test", "update", "--yes", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("does not support auto-update"));
     });
@@ -746,7 +754,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsUpdate(program);
 
-      await program.parseAsync(["node", "test", "update", "--yes"]);
+      await program.parseAsync(["node", "test", "update", "--yes", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to update"));
     });
@@ -795,7 +803,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsValidate(program);
 
-      await program.parseAsync(["node", "test", "validate", "/path/to/SKILL.md"]);
+      await program.parseAsync(["node", "test", "validate", "/path/to/SKILL.md", "--human"]);
 
       expect(mocks.validateSkill).toHaveBeenCalledWith("/path/to/SKILL.md");
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("is valid"));
@@ -818,7 +826,7 @@ describe("integration: skills command wrappers", () => {
       const program = new Command();
       registerSkillsValidate(program);
 
-      await expect(program.parseAsync(["node", "test", "validate", "/path/to/SKILL.md"])).rejects.toThrow("process-exit");
+      await expect(program.parseAsync(["node", "test", "validate", "/path/to/SKILL.md", "--human"])).rejects.toThrow("process-exit");
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("validation errors"));
       expect(exitSpy).toHaveBeenCalledWith(1);
     });
@@ -834,7 +842,12 @@ describe("integration: skills command wrappers", () => {
       await program.parseAsync(["node", "test", "validate", "--json", "/path/to/SKILL.md"]);
 
       const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}"));
-      expect(output).toEqual(result);
+      // Validate command outputs LAFS envelope wrapping the result
+      expect(output.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+      expect(output.success).toBe(true);
+      expect(output.result.valid).toBe(true);
+      expect(output.result.file).toBe("/path/to/SKILL.md");
+      expect(output.result.issues).toEqual([]);
     });
 
     it("uses default SKILL.md path when none provided", async () => {

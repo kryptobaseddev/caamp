@@ -20,7 +20,7 @@ export function registerAdvancedProviders(parent: Command): void {
       all?: boolean;
       minTier: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.providers", !opts.details, async () => {
+    }) => runLafsCommand("advanced.providers", opts.details ? "full" : "standard", async () => {
       const providers = resolveProviders({ all: opts.all, agent: opts.agent });
       const minTier = parsePriority(opts.minTier);
       const selected = selectProvidersByMinimumPriority(providers, minTier);

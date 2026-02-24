@@ -5,50 +5,24 @@
 import { randomUUID } from "node:crypto";
 import {
   isRegisteredErrorCode,
-  type LAFSEnvelope as ProtocolEnvelope,
   type LAFSErrorCategory,
+  type LAFSMeta,
+  type LAFSError,
+  type LAFSPage,
 } from "@cleocode/lafs-protocol";
+import type { MVILevel } from "../../core/lafs.js";
 
-interface LAFSErrorShape {
-  code: string;
-  message: string;
-  category: LAFSErrorCategory;
-  retryable: boolean;
-  retryAfterMs: number | null;
-  details: Record<string, unknown>;
-}
-
-interface LAFSPage {
-  mode: "offset" | "cursor" | "none";
-  limit: number;
-  offset: number;
-  nextCursor: string | null;
-  hasMore: boolean;
-  total: number;
-}
-
-export interface LAFSEnvelope<T> {
-  $schema: string;
-  _meta: {
-    specVersion: string;
-    schemaVersion: string;
-    timestamp: string;
-    operation: string;
-    requestId: string;
-    transport: "cli";
-    strict: true;
-    mvi: boolean;
-    contextVersion: number;
-  };
+/**
+ * Generic LAFS result envelope for advanced commands.
+ * Uses protocol types directly for full compliance.
+ */
+type LAFSResultEnvelope<T> = {
+  $schema: "https://lafs.dev/schemas/v1/envelope.schema.json";
+  _meta: LAFSMeta;
   success: boolean;
   result: T | null;
-  error: LAFSErrorShape | null;
+  error: LAFSError | null;
   page: LAFSPage | null;
-}
-
-type LAFSResultEnvelope<T> = Omit<ProtocolEnvelope, "result" | "error"> & {
-  result: T | null;
-  error: LAFSErrorShape | null;
 };
 
 export class LAFSCommandError extends Error {
@@ -89,21 +63,21 @@ function inferErrorCategory(code: string): LAFSErrorCategory {
   return "INTERNAL";
 }
 
-function baseMeta(operation: string, mvi: boolean) {
+function baseMeta(operation: string, mvi: MVILevel): LAFSMeta {
   return {
     specVersion: "1.0.0",
     schemaVersion: "1.0.0",
     timestamp: new Date().toISOString(),
     operation,
     requestId: randomUUID(),
-    transport: "cli" as const,
-    strict: true as const,
+    transport: "cli",
+    strict: true,
     mvi,
     contextVersion: 0,
   };
 }
 
-export function emitSuccess<T>(operation: string, result: T, mvi = true): void {
+export function emitSuccess<T>(operation: string, result: T, mvi: MVILevel = "standard"): void {
   const envelope: LAFSResultEnvelope<T> = {
     $schema: "https://lafs.dev/schemas/v1/envelope.schema.json",
     _meta: {
@@ -117,7 +91,7 @@ export function emitSuccess<T>(operation: string, result: T, mvi = true): void {
   console.log(JSON.stringify(envelope, null, 2));
 }
 
-export function emitError(operation: string, error: unknown, mvi = true): void {
+export function emitError(operation: string, error: unknown, mvi: MVILevel = "standard"): void {
   let envelope: LAFSResultEnvelope<null>;
 
   if (error instanceof LAFSCommandError) {
@@ -168,7 +142,7 @@ export function emitError(operation: string, error: unknown, mvi = true): void {
 
 export async function runLafsCommand<T>(
   command: string,
-  mvi: boolean,
+  mvi: MVILevel,
   action: () => Promise<T>,
 ): Promise<void> {
   try {

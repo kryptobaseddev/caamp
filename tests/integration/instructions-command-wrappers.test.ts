@@ -31,9 +31,9 @@ vi.mock("../../src/core/registry/providers.js", () => ({
 }));
 
 import { registerInstructionsCheck } from "../../src/commands/instructions/check.js";
+import { registerInstructionsCommands } from "../../src/commands/instructions/index.js";
 import { registerInstructionsInject } from "../../src/commands/instructions/inject.js";
 import { registerInstructionsUpdate } from "../../src/commands/instructions/update.js";
-import { registerInstructionsCommands } from "../../src/commands/instructions/index.js";
 
 const providerA = { id: "claude-code", instructFile: "CLAUDE.md" };
 const providerB = { id: "cursor", instructFile: "AGENTS.md" };
@@ -82,9 +82,20 @@ describe("integration: instructions command wrappers", () => {
     await program.parseAsync(["node", "test", "check", "--agent", "claude-code", "--json"]);
 
     expect(mocks.checkAllInjections).toHaveBeenCalledWith([providerA], process.cwd(), "project");
-    const output = String(logSpy.mock.calls[0]?.[0] ?? "[]");
-    const parsed = JSON.parse(output) as Array<{ provider: string; status: string }>;
-    expect(parsed).toEqual([{ provider: "claude-code", file: "CLAUDE.md", status: "current", fileExists: true }]);
+    const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output) as {
+      $schema: string;
+      _meta: { operation: string };
+      success: boolean;
+      result: { providers: Array<{ id: string; status: string; path: string; present: boolean }>; present: number; missing: number };
+    };
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope._meta.operation).toBe("instructions.check");
+    expect(envelope.success).toBe(true);
+    expect(envelope.result.providers).toHaveLength(1);
+    expect(envelope.result.providers[0]?.id).toBe("claude-code");
+    expect(envelope.result.present).toBe(1);
+    expect(envelope.result.missing).toBe(0);
   });
 
   it("prints human-readable check output for all providers", async () => {
@@ -101,7 +112,7 @@ describe("integration: instructions command wrappers", () => {
     const program = new Command();
     registerInstructionsCheck(program);
 
-    await program.parseAsync(["node", "test", "check", "--all", "--global"]);
+    await program.parseAsync(["node", "test", "check", "--all", "--global", "--human"]);
 
     expect(mocks.checkAllInjections).toHaveBeenCalledWith([providerA, providerB], process.cwd(), "global");
     const lines = logSpy.mock.calls.map((call) => String(call[0] ?? ""));
@@ -114,7 +125,7 @@ describe("integration: instructions command wrappers", () => {
     const program = new Command();
     registerInstructionsInject(program);
 
-    await program.parseAsync(["node", "test", "inject", "--all", "--dry-run", "--content", "custom content"]);
+    await program.parseAsync(["node", "test", "inject", "--all", "--dry-run", "--content", "custom content", "--human"]);
 
     expect(mocks.injectAll).not.toHaveBeenCalled();
     const lines = logSpy.mock.calls.map((call) => String(call[0] ?? ""));
@@ -129,7 +140,7 @@ describe("integration: instructions command wrappers", () => {
     const program = new Command();
     registerInstructionsInject(program);
 
-    await program.parseAsync(["node", "test", "inject", "--agent", "claude-code"]);
+    await program.parseAsync(["node", "test", "inject", "--agent", "claude-code", "--human"]);
 
     expect(mocks.injectAll).toHaveBeenCalledWith(
       [providerA],
@@ -177,7 +188,7 @@ describe("integration: instructions command wrappers", () => {
     const program = new Command();
     registerInstructionsUpdate(program);
 
-    await program.parseAsync(["node", "test", "update"]);
+    await program.parseAsync(["node", "test", "update", "--human"]);
 
     expect(mocks.injectAll).not.toHaveBeenCalled();
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("All instruction files are up to date."));
@@ -204,7 +215,7 @@ describe("integration: instructions command wrappers", () => {
     const program = new Command();
     registerInstructionsUpdate(program);
 
-    await program.parseAsync(["node", "test", "update", "--global"]);
+    await program.parseAsync(["node", "test", "update", "--global", "--human"]);
 
     expect(mocks.injectAll).toHaveBeenCalledWith(
       [providerA],

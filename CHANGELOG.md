@@ -4,6 +4,51 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-02-24
+
+### Added
+- **Pluggable SkillLibrary SDK**: Decoupled from `@cleocode/ct-skills` with a new abstract `SkillLibrary` interface and dynamic library loader, enabling any skill catalog backend to be used
+- **Library Loader**: Runtime resolution of skill library implementations via `src/core/skills/library-loader.ts`
+- **Abstract SkillLibrary Interface**: `src/core/skills/skill-library.ts` defining the contract for skill catalog adapters
+
+### Changed
+- **MVILevel Type**: Replaced boolean `mvi` parameter with `MVILevel` string union (`'minimal' | 'standard' | 'full' | 'custom'`) from LAFS protocol across all commands
+- Skills install command refactored to use pluggable library SDK instead of hardcoded `@cleocode/ct-skills`
+- LAFS helper functions updated to use proper `MVILevel` type signatures
+
+### Fixed
+- Type safety for MVI disclosure levels now enforced at compile time
+
+## [1.0.5] - 2026-02-18
+
+### Changed
+- **LAFS Protocol**: Updated `@cleocode/lafs-protocol` dependency to v1.2.3
+
+### Added
+- **LLM Agent Guide**: Comprehensive guide at `docs/LLM-AGENT-GUIDE.md` aligned with LAFS best practices
+- **caamp.md Specification**: Machine-readable project specification document
+
+### Removed
+- Cleaned up old and temporary documentation files (`.research-api-surface.md`, `.validation-report.md`, duplicate LAFS docs)
+
+## [1.0.4] - 2026-02-18
+
+### Changed
+- **LAFS v1.2.0 Compliance**: Updated to latest LAFS protocol version
+- **MVILevel Types**: Changed from boolean to proper LAFS disclosure levels ('minimal' | 'standard' | 'full' | 'custom')
+- All 17 command files updated to use standardized MVILevel type
+
+### Added
+- **Session Management**: Added `sessionId` support in `_meta` for correlating multi-step workflows
+- **Warnings Support**: Added `warnings` array in `_meta` for soft errors (deprecations, partial success)
+- **Quiet Mode**: Added `--quiet` flag to suppress non-essential output for scripting
+- **LAFS Compliance Documentation**: Added comprehensive guide at `docs/LAFS_COMPLIANCE.md`
+- **LLM Agent Guide**: Aligned with LAFS LLM Agent Guide for best practices
+
+### Fixed
+- Type consistency across all commands using LAFS envelope functions
+- All commands now properly typed with MVILevel instead of boolean
+
 ## [1.0.3] - 2026-02-17
 
 ### Changed

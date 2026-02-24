@@ -1,12 +1,20 @@
 /**
- * skills remove command
+ * skills remove command - LAFS-compliant with JSON-first output
  */
 
 import type { Command } from "commander";
 import pc from "picocolors";
-import { removeSkill, listCanonicalSkills } from "../../core/skills/installer.js";
-import { removeSkillFromLock } from "../../core/skills/lock.js";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
+import { isHuman } from "../../core/logger.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
+import { listCanonicalSkills, removeSkill } from "../../core/skills/installer.js";
+import { removeSkillFromLock } from "../../core/skills/lock.js";
 
 export function registerSkillsRemove(parent: Command): void {
   parent
@@ -15,14 +23,57 @@ export function registerSkillsRemove(parent: Command): void {
     .argument("[name]", "Skill name to remove")
     .option("-g, --global", "Remove from global scope")
     .option("-y, --yes", "Skip confirmation")
-    .action(async (name: string | undefined, opts: { global?: boolean; yes?: boolean }) => {
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (name: string | undefined, opts: { global?: boolean; yes?: boolean; json?: boolean; human?: boolean }) => {
+      const operation = "skills.remove";
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       const providers = getInstalledProviders();
 
       if (name) {
         const result = await removeSkill(name, providers, opts.global ?? false);
 
-        if (result.removed.length > 0) {
-          console.log(pc.green(`✓ Removed ${pc.bold(name)} from: ${result.removed.join(", ")}`));
+        const removed = result.removed;
+        const count = {
+          removed: removed.length,
+          total: providers.length,
+        };
+
+        if (format === "json") {
+          if (removed.length > 0) {
+            await removeSkillFromLock(name);
+          }
+
+          const errors = result.errors.length > 0
+            ? result.errors.map((err) => ({ message: err }))
+            : undefined;
+
+          outputSuccess(operation, mvi, {
+            removed,
+            providers: providers.map((p) => p.id),
+            count,
+            ...(errors && { errors }),
+          });
+          return;
+        }
+
+        // Human-readable output
+        if (removed.length > 0) {
+          console.log(pc.green(`✓ Removed ${pc.bold(name)} from: ${removed.join(", ")}`));
           await removeSkillFromLock(name);
         } else {
           console.log(pc.yellow(`Skill ${name} not found in any provider.`));
@@ -37,10 +88,29 @@ export function registerSkillsRemove(parent: Command): void {
         // Interactive mode - list and select
         const skills = await listCanonicalSkills();
         if (skills.length === 0) {
-          console.log(pc.dim("No skills installed."));
+          if (format === "json") {
+            outputSuccess(operation, mvi, {
+              removed: [],
+              providers: [],
+              count: { removed: 0, total: 0 },
+            });
+          } else {
+            console.log(pc.dim("No skills installed."));
+          }
           return;
         }
 
+        if (format === "json") {
+          outputSuccess(operation, mvi, {
+            removed: [],
+            providers: [],
+            count: { removed: 0, total: 0 },
+            available: skills,
+          });
+          return;
+        }
+
+        // Human-readable output
         console.log(pc.bold("Installed skills:"));
         for (const s of skills) {
           console.log(`  ${s}`);

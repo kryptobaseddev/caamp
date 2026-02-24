@@ -35,7 +35,7 @@ export function registerAdvancedConfigure(parent: Command): void {
       instructionProjectFile?: string;
       projectDir?: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.configure", !opts.details, async () => {
+    }) => runLafsCommand("advanced.configure", opts.details ? "full" : "standard", async () => {
       const provider = getProvider(opts.agent);
       if (!provider) {
         throw new LAFSCommandError(

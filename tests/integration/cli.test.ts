@@ -14,11 +14,19 @@ describe("integration: cli command behavior", () => {
 
     await program.parseAsync(["node", "test", "providers", "list", "--json"]);
 
-    const output = String(logSpy.mock.calls[0]?.[0] ?? "[]");
-    const parsed = JSON.parse(output) as Array<{ id: string }>;
-    expect(Array.isArray(parsed)).toBe(true);
-    expect(parsed.length).toBeGreaterThan(0);
-    expect(parsed[0]?.id).toBeTypeOf("string");
+    const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output) as {
+      $schema: string;
+      _meta: { operation: string };
+      success: boolean;
+      result: { providers: Array<{ id: string }> };
+    };
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope._meta.operation).toBe("providers.list");
+    expect(envelope.success).toBe(true);
+    expect(Array.isArray(envelope.result.providers)).toBe(true);
+    expect(envelope.result.providers.length).toBeGreaterThan(0);
+    expect(envelope.result.providers[0]?.id).toBeTypeOf("string");
   });
 
   it("returns parseable json for providers show --json", async () => {
@@ -29,9 +37,17 @@ describe("integration: cli command behavior", () => {
     await program.parseAsync(["node", "test", "providers", "show", "claude-code", "--json"]);
 
     const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
-    const parsed = JSON.parse(output) as { id: string; toolName: string };
-    expect(parsed.id).toBe("claude-code");
-    expect(parsed.toolName).toBeTypeOf("string");
+    const envelope = JSON.parse(output) as {
+      $schema: string;
+      _meta: { operation: string };
+      success: boolean;
+      result: { provider: { id: string; toolName: string } };
+    };
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope._meta.operation).toBe("providers.show");
+    expect(envelope.success).toBe(true);
+    expect(envelope.result.provider.id).toBe("claude-code");
+    expect(envelope.result.provider.toolName).toBeTypeOf("string");
   });
 
   it("exits non-zero for unknown provider on show", async () => {

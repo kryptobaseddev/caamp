@@ -1,6 +1,6 @@
 {
   "name": "@cleocode/caamp",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Central AI Agent Managed Packages - unified provider registry and package manager for AI coding agents",
   "type": "module",
   "bin": {
@@ -56,8 +56,7 @@
     "url": "https://github.com/kryptobaseddev/caamp/issues"
   },
   "dependencies": {
-    "@cleocode/ct-skills": "^2.0.0",
-    "@cleocode/lafs-protocol": "^0.1.1",
+    "@cleocode/lafs-protocol": "^1.2.3",
     "@iarna/toml": "^2.2.5",
     "commander": "^14.0.0",
     "gray-matter": "^4.0.3",
@@ -82,5 +81,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "overrides": {
+    "minimatch": ">=10.2.1"
   }
 }

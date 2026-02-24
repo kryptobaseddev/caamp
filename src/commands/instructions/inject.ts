@@ -1,11 +1,18 @@
 /**
- * instructions inject command
+ * instructions inject command - LAFS-compliant with JSON-first output
  */
 
 import type { Command } from "commander";
 import pc from "picocolors";
 import { injectAll } from "../../core/instructions/injector.js";
 import { generateInjectionContent, groupByInstructFile } from "../../core/instructions/templates.js";
+import {
+  ErrorCategories,
+  ErrorCodes,
+  emitJsonError,
+  outputSuccess,
+  resolveFormat,
+} from "../../core/lafs.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getAllProviders, getProvider } from "../../core/registry/providers.js";
 import type { Provider } from "../../types.js";
@@ -19,13 +26,33 @@ export function registerInstructionsInject(parent: Command): void {
     .option("--content <text>", "Custom content to inject")
     .option("--dry-run", "Preview without writing")
     .option("--all", "Target all known providers")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
     .action(async (opts: {
       agent: string[];
       global?: boolean;
       content?: string;
       dryRun?: boolean;
       all?: boolean;
+      json?: boolean;
+      human?: boolean;
     }) => {
+      const operation = "instructions.inject";
+      const mvi: import("../../core/lafs.js").MVILevel = "standard";
+
+      let format: "json" | "human";
+      try {
+        format = resolveFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: opts.human ?? false,
+          projectDefault: "json",
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+        process.exit(1);
+      }
+
       let providers: Provider[];
 
       if (opts.all) {
@@ -39,7 +66,12 @@ export function registerInstructionsInject(parent: Command): void {
       }
 
       if (providers.length === 0) {
-        console.error(pc.red("No providers found."));
+        const message = "No providers found.";
+        if (format === "json") {
+          emitJsonError(operation, mvi, ErrorCodes.PROVIDER_NOT_FOUND, message, ErrorCategories.NOT_FOUND);
+        } else {
+          console.error(pc.red(message));
+        }
         process.exit(1);
       }
 
@@ -50,24 +82,49 @@ export function registerInstructionsInject(parent: Command): void {
       const groups = groupByInstructFile(providers);
 
       if (opts.dryRun) {
-        console.log(pc.bold("Dry run - would inject into:\n"));
-        for (const [file, group] of groups) {
-          console.log(`  ${pc.bold(file)}: ${group.map((p) => p.id).join(", ")}`);
+        if (format === "json") {
+          outputSuccess(operation, mvi, {
+            injected: [],
+            providers: providers.map((p) => p.id),
+            count: 0,
+            dryRun: true,
+            wouldInject: Array.from(groups.entries()).map(([file, group]) => ({
+              file,
+              providers: group.map((p) => p.id),
+            })),
+          });
+        } else {
+          console.log(pc.bold("Dry run - would inject into:\n"));
+          for (const [file, group] of groups) {
+            console.log(`  ${pc.bold(file)}: ${group.map((p) => p.id).join(", ")}`);
+          }
+          console.log(pc.dim(`\n  Scope: ${scope}`));
+          console.log(pc.dim(`  Content length: ${content.length} chars`));
         }
-        console.log(pc.dim(`\n  Scope: ${scope}`));
-        console.log(pc.dim(`  Content length: ${content.length} chars`));
         return;
       }
 
       const results = await injectAll(providers, process.cwd(), scope, content);
 
-      for (const [file, action] of results) {
-        const icon = action === "created" ? pc.green("+")
-          : action === "updated" ? pc.yellow("~")
-            : pc.blue("^");
-        console.log(`  ${icon} ${file} (${action})`);
+      const injected: string[] = [];
+      for (const [file] of results) {
+        injected.push(file);
       }
 
-      console.log(pc.bold(`\n${results.size} file(s) processed.`));
+      if (format === "json") {
+        outputSuccess(operation, mvi, {
+          injected,
+          providers: providers.map((p) => p.id),
+          count: results.size,
+        });
+      } else {
+        for (const [file, action] of results) {
+          const icon = action === "created" ? pc.green("+")
+            : action === "updated" ? pc.yellow("~")
+              : pc.blue("^");
+          console.log(`  ${icon} ${file} (${action})`);
+        }
+        console.log(pc.bold(`\n${results.size} file(s) processed.`));
+      }
     });
 }

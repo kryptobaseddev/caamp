@@ -24,7 +24,7 @@ export function registerAdvancedConflicts(parent: Command): void {
       minTier: string;
       projectDir?: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.conflicts", !opts.details, async () => {
+    }) => runLafsCommand("advanced.conflicts", opts.details ? "full" : "standard", async () => {
       const baseProviders = resolveProviders({ all: opts.all, agent: opts.agent });
       const minimumPriority = parsePriority(opts.minTier);
       const providers = selectProvidersByMinimumPriority(baseProviders, minimumPriority);
