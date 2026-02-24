@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-02-24
+
+### Changed
+- Bump `simple-git` from 3.31.1 to 3.32.1
+- Bump `@biomejs/biome` from 2.3.15 to 2.4.4
+- Bump `@types/node` from 25.2.3 to 25.3.0
+
 ## [1.1.1] - 2026-02-24
 
 ### Fixed
