@@ -311,6 +311,111 @@ describe("SkillLibrary via buildLibraryFromFiles", () => {
   });
 });
 
+describe("SkillLibrary protocol path discovery", () => {
+  let fixtureRoot: string;
+
+  afterEach(() => {
+    if (existsSync(fixtureRoot)) {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("discovers protocols at root protocols/ directory", () => {
+    fixtureRoot = join(tmpdir(), `caamp-test-root-protocols-${Date.now()}`);
+    mkdirSync(fixtureRoot, { recursive: true });
+
+    // Minimal skills.json
+    writeFileSync(
+      join(fixtureRoot, "skills.json"),
+      JSON.stringify({ version: "1.0.0", skills: [] }),
+    );
+
+    // Protocols at root level (ct-skills layout)
+    mkdirSync(join(fixtureRoot, "protocols"), { recursive: true });
+    writeFileSync(
+      join(fixtureRoot, "protocols", "research.md"),
+      "# Research Protocol",
+    );
+    writeFileSync(
+      join(fixtureRoot, "protocols", "implementation.md"),
+      "# Implementation Protocol",
+    );
+
+    const library = buildLibraryFromFiles(fixtureRoot);
+
+    const protocols = library.listProtocols();
+    expect(protocols).toContain("research");
+    expect(protocols).toContain("implementation");
+    expect(protocols).toHaveLength(2);
+
+    const path = library.getProtocolPath("research");
+    expect(path).toBeDefined();
+    expect(path).toContain(join("protocols", "research.md"));
+    expect(existsSync(path!)).toBe(true);
+
+    const content = library.readProtocol("research");
+    expect(content).toContain("# Research Protocol");
+  });
+
+  it("falls back to skills/protocols/ when root protocols/ is absent", () => {
+    fixtureRoot = join(tmpdir(), `caamp-test-fallback-protocols-${Date.now()}`);
+    mkdirSync(fixtureRoot, { recursive: true });
+
+    writeFileSync(
+      join(fixtureRoot, "skills.json"),
+      JSON.stringify({ version: "1.0.0", skills: [] }),
+    );
+
+    // Protocols under skills/ (legacy layout)
+    mkdirSync(join(fixtureRoot, "skills", "protocols"), { recursive: true });
+    writeFileSync(
+      join(fixtureRoot, "skills", "protocols", "consensus.md"),
+      "# Consensus Protocol",
+    );
+
+    const library = buildLibraryFromFiles(fixtureRoot);
+
+    const protocols = library.listProtocols();
+    expect(protocols).toContain("consensus");
+    expect(protocols).toHaveLength(1);
+
+    const path = library.getProtocolPath("consensus");
+    expect(path).toBeDefined();
+    expect(path).toContain(join("skills", "protocols", "consensus.md"));
+  });
+
+  it("prefers root protocols/ over skills/protocols/ when both exist", () => {
+    fixtureRoot = join(tmpdir(), `caamp-test-prefer-root-${Date.now()}`);
+    mkdirSync(fixtureRoot, { recursive: true });
+
+    writeFileSync(
+      join(fixtureRoot, "skills.json"),
+      JSON.stringify({ version: "1.0.0", skills: [] }),
+    );
+
+    // Both locations exist
+    mkdirSync(join(fixtureRoot, "protocols"), { recursive: true });
+    writeFileSync(join(fixtureRoot, "protocols", "research.md"), "# Root Research");
+
+    mkdirSync(join(fixtureRoot, "skills", "protocols"), { recursive: true });
+    writeFileSync(join(fixtureRoot, "skills", "protocols", "research.md"), "# Skills Research");
+
+    const library = buildLibraryFromFiles(fixtureRoot);
+
+    // listProtocols should return from root
+    const protocols = library.listProtocols();
+    expect(protocols).toContain("research");
+
+    // getProtocolPath should prefer root
+    const path = library.getProtocolPath("research");
+    expect(path).toContain(join(fixtureRoot, "protocols", "research.md"));
+
+    // Content should be from root
+    const content = library.readProtocol("research");
+    expect(content).toContain("# Root Research");
+  });
+});
+
 describe("buildLibraryFromFiles error cases", () => {
   it("throws when skills.json is missing", () => {
     const noSkillsDir = join(tmpdir(), `caamp-no-skills-${Date.now()}`);
