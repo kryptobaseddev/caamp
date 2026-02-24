@@ -15,14 +15,16 @@ import type {
   LAFSError,
   LAFSMeta,
   LAFSPage,
-  MVILevel,
   Warning,
 } from "@cleocode/lafs-protocol";
 import { resolveOutputFormat } from "@cleocode/lafs-protocol";
 import { isHuman, isQuiet } from "./logger.js";
 
+/** LAFS MVI disclosure level - defined locally to avoid CI module resolution issues with re-exported types */
+export type MVILevel = "minimal" | "standard" | "full" | "custom";
+
 // Re-export protocol types under CAAMP's naming conventions
-export type { MVILevel, LAFSMeta };
+export type { LAFSMeta };
 
 /** LAFS Error structure - re-exported from protocol as LAFSErrorShape for CAAMP compatibility */
 export type LAFSErrorShape = LAFSError;
