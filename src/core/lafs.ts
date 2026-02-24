@@ -10,58 +10,30 @@
  */
 
 import { randomUUID } from "node:crypto";
-import type { LAFSErrorCategory, LAFSPage } from "@cleocode/lafs-protocol";
+import type {
+  LAFSErrorCategory,
+  LAFSError,
+  LAFSMeta,
+  LAFSPage,
+  MVILevel,
+  Warning,
+} from "@cleocode/lafs-protocol";
 import { resolveOutputFormat } from "@cleocode/lafs-protocol";
 import { isHuman, isQuiet } from "./logger.js";
 
-/**
- * MVI (Minimum Viable Information) disclosure levels
- */
-export type MVILevel = "minimal" | "standard" | "full" | "custom";
+// Re-export protocol types under CAAMP's naming conventions
+export type { MVILevel } from "@cleocode/lafs-protocol";
+export type { LAFSMeta } from "@cleocode/lafs-protocol";
+
+/** LAFS Error structure - re-exported from protocol as LAFSErrorShape for CAAMP compatibility */
+export type LAFSErrorShape = LAFSError;
+
+/** LAFS Warning structure - re-exported from protocol */
+export type LAFSWarning = Warning;
 
 /**
- * LAFS Error structure matching the protocol specification
- */
-export interface LAFSErrorShape {
-  code: string;
-  message: string;
-  category: LAFSErrorCategory;
-  retryable: boolean;
-  retryAfterMs: number | null;
-  details: Record<string, unknown>;
-}
-
-/**
- * LAFS Warning structure
- */
-export interface LAFSWarning {
-  code: string;
-  message: string;
-  deprecated?: string;
-  replacement?: string;
-  removeBy?: string;
-}
-
-/**
- * LAFS Metadata structure
- */
-export interface LAFSMeta {
-  specVersion: string;
-  schemaVersion: string;
-  timestamp: string;
-  operation: string;
-  requestId: string;
-  transport: "cli" | "http" | "grpc" | "sdk";
-  strict: boolean;
-  mvi: "minimal" | "standard" | "full" | "custom";
-  contextVersion: number;
-  /** Session identifier for correlating multi-step agent workflows */
-  sessionId?: string;
-  warnings?: LAFSWarning[];
-}
-
-/**
- * Complete LAFS Envelope structure
+ * Generic LAFS Envelope structure for type-safe command results.
+ * Extends the protocol's envelope with TypeScript generics.
  */
 export interface LAFSEnvelope<T> {
   $schema: "https://lafs.dev/schemas/v1/envelope.schema.json";

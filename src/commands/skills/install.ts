@@ -15,6 +15,7 @@ import {
   emitJsonError,
   outputSuccess,
   resolveFormat,
+  type MVILevel,
 } from "../../core/lafs.js";
 import { MarketplaceClient } from "../../core/marketplace/client.js";
 import type { MarketplaceResult } from "../../core/marketplace/types.js";
@@ -345,7 +346,7 @@ async function handleProfileInstall(
   isGlobal: boolean,
   format: "json" | "human",
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
 ): Promise<void> {
   if (!catalog.isCatalogAvailable()) {
     const message = "No skill library registered. Register one with registerSkillLibraryFromPath() or set CAAMP_SKILL_LIBRARY env var.";
@@ -484,7 +485,7 @@ async function handleMarketplaceSource(
   _isGlobal: boolean,
   format: "json" | "human",
   operation: string,
-  mvi: boolean,
+  mvi: MVILevel,
 ): Promise<MarketplaceSourceResult> {
   if (format === "human") {
     console.log(pc.dim(`Searching marketplace for ${source}...`));

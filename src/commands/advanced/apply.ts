@@ -43,7 +43,7 @@ export function registerAdvancedApply(parent: Command): void {
       minTier: string;
       projectDir?: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.apply", !opts.details, async () => {
+    }) => runLafsCommand("advanced.apply", opts.details ? "full" : "standard", async () => {
       const baseProviders = resolveProviders({ all: opts.all, agent: opts.agent });
       const minimumPriority = parsePriority(opts.minTier);
       const providers = selectProvidersByMinimumPriority(baseProviders, minimumPriority);

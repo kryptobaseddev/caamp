@@ -51,13 +51,13 @@ describe("advanced/lafs", () => {
   it("emits a success envelope with deterministic metadata", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    emitSuccess("advanced.batch", { applied: 2 }, false);
+    emitSuccess("advanced.batch", { applied: 2 }, "minimal");
 
     const output = JSON.parse(String(logSpy.mock.calls[0]?.[0] ?? "{}")) as {
       success: boolean;
       result: { applied: number };
       error: null;
-      _meta: { requestId: string; timestamp: string; operation: string; mvi: boolean };
+      _meta: { requestId: string; timestamp: string; operation: string; mvi: string };
     };
 
     expect(output.success).toBe(true);
@@ -66,7 +66,7 @@ describe("advanced/lafs", () => {
     expect(output._meta.requestId).toBe("test-request-id");
     expect(output._meta.timestamp).toBe("2026-02-12T10:00:00.000Z");
     expect(output._meta.operation).toBe("advanced.batch");
-    expect(output._meta.mvi).toBe(false);
+    expect(output._meta.mvi).toBe("minimal");
   });
 
   it("emits structured registered LAFS errors", () => {
@@ -141,13 +141,13 @@ describe("advanced/lafs", () => {
       throw new Error("process-exit");
     }) as never);
 
-    await runLafsCommand("advanced.batch", true, async () => ({ ok: true }));
+    await runLafsCommand("advanced.batch", "standard", async () => ({ ok: true }));
     expect(logSpy).toHaveBeenCalledTimes(1);
 
     await expect(
       runLafsCommand(
         "advanced.batch",
-        true,
+        "standard",
         async () => Promise.reject(new LAFSCommandError("E_ADVANCED_CONFLICT", "conflict", "retry", false)),
       ),
     ).rejects.toThrow("process-exit");

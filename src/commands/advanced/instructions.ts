@@ -31,7 +31,7 @@ export function registerAdvancedInstructions(parent: Command): void {
       contentFile?: string;
       projectDir?: string;
       details?: boolean;
-    }) => runLafsCommand("advanced.instructions", !opts.details, async () => {
+    }) => runLafsCommand("advanced.instructions", opts.details ? "full" : "standard", async () => {
       const minimumPriority = parsePriority(opts.minTier);
       const baseProviders = resolveProviders({ all: opts.all, agent: opts.agent });
       const providers = selectProvidersByMinimumPriority(baseProviders, minimumPriority);
