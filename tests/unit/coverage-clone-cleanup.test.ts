@@ -74,7 +74,9 @@ describe("coverage: github.ts cloneRepo cleanup error (line 46)", () => {
 
     const { cloneRepo } = await import("../../src/core/sources/github.js");
     const result = await cloneRepo("owner", "repo", undefined, "skills/my-skill");
-    expect(result.localPath).toContain("skills/my-skill");
+    // On Windows, path.join uses backslashes
+    expect(result.localPath).toContain("my-skill");
+    expect(result.localPath).toMatch(/skills.my-skill/);
   });
 
   it("cloneRepo without subPath returns tmpDir directly", async () => {
@@ -129,6 +131,8 @@ describe("coverage: gitlab.ts cloneGitLabRepo cleanup error (line 40)", () => {
 
     const { cloneGitLabRepo } = await import("../../src/core/sources/gitlab.js");
     const result = await cloneGitLabRepo("owner", "repo", undefined, "skills/my-skill");
-    expect(result.localPath).toContain("skills/my-skill");
+    // On Windows, path.join uses backslashes
+    expect(result.localPath).toContain("my-skill");
+    expect(result.localPath).toMatch(/skills.my-skill/);
   });
 });

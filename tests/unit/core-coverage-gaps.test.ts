@@ -1991,6 +1991,7 @@ describe("core/paths/standard - resolveProviderSkillsDir branches", () => {
   });
 
   it("resolveProviderSkillsDir returns project skills path with projectDir", async () => {
+    const { join } = await import("node:path");
     const { resolveProviderSkillsDir } = await import("../../src/core/paths/standard.js");
 
     const provider = {
@@ -1998,7 +1999,7 @@ describe("core/paths/standard - resolveProviderSkillsDir branches", () => {
       pathProjectSkills: ".local/skills",
     } as any;
 
-    expect(resolveProviderSkillsDir(provider, "project", "/my/project")).toBe("/my/project/.local/skills");
+    expect(resolveProviderSkillsDir(provider, "project", "/my/project")).toBe(join("/my/project", ".local/skills"));
   });
 
   it("resolveProviderSkillsDir returns empty string when pathSkills is empty and scope is global", async () => {
@@ -2170,8 +2171,9 @@ describe("core/skills/catalog - discoverLibrary catch paths", () => {
 
 describe("core/paths/standard - getProjectAgentsDir", () => {
   it("returns .agents subdir of project root", async () => {
+    const { join } = await import("node:path");
     const { getProjectAgentsDir } = await import("../../src/core/paths/standard.js");
-    expect(getProjectAgentsDir("/my/project")).toBe("/my/project/.agents");
+    expect(getProjectAgentsDir("/my/project")).toBe(join("/my/project", ".agents"));
   });
 
   it("uses cwd as default", async () => {
