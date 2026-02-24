@@ -22,8 +22,7 @@ import { resolveOutputFormat } from "@cleocode/lafs-protocol";
 import { isHuman, isQuiet } from "./logger.js";
 
 // Re-export protocol types under CAAMP's naming conventions
-export type { MVILevel } from "@cleocode/lafs-protocol";
-export type { LAFSMeta } from "@cleocode/lafs-protocol";
+export type { MVILevel, LAFSMeta };
 
 /** LAFS Error structure - re-exported from protocol as LAFSErrorShape for CAAMP compatibility */
 export type LAFSErrorShape = LAFSError;

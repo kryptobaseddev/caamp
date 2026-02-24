@@ -9,8 +9,8 @@ import {
   type LAFSMeta,
   type LAFSError,
   type LAFSPage,
-  type MVILevel,
 } from "@cleocode/lafs-protocol";
+import type { MVILevel } from "../../core/lafs.js";
 
 /**
  * Generic LAFS result envelope for advanced commands.

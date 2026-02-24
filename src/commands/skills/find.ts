@@ -5,9 +5,9 @@
 import { randomUUID } from "node:crypto";
 import {
   type LAFSErrorCategory,
-  type MVILevel,
   resolveOutputFormat,
 } from "@cleocode/lafs-protocol";
+import type { MVILevel } from "../../core/lafs.js";
 import { Command } from "commander";
 import pc from "picocolors";
 import { isHuman } from "../../core/logger.js";

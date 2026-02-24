@@ -85,9 +85,12 @@ describe("integration: mcp command wrappers", () => {
     await program.parseAsync(["node", "test", "list", "--agent", "claude-code", "--json"]);
 
     expect(mocks.listMcpServers).toHaveBeenCalledWith(providerA, "project");
-    const output = String(logSpy.mock.calls[0]?.[0] ?? "[]");
-    const parsed = JSON.parse(output) as Array<{ provider: string; name: string }>;
-    expect(parsed).toEqual([{ provider: "claude-code", name: "filesystem", config: { command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem"] } }]);
+    const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output);
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope.success).toBe(true);
+    expect(envelope.result.servers).toEqual([{ name: "filesystem", command: "npx", scope: "project" }]);
+    expect(envelope.result.count).toBe(1);
   });
 
   it("shows empty-state message when no servers are configured", async () => {
@@ -97,7 +100,7 @@ describe("integration: mcp command wrappers", () => {
     const program = new Command();
     registerMcpList(program);
 
-    await program.parseAsync(["node", "test", "list"]);
+    await program.parseAsync(["node", "test", "list", "--human"]);
 
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No MCP servers configured."));
   });
@@ -118,15 +121,23 @@ describe("integration: mcp command wrappers", () => {
   it("reports not found when no provider removal succeeds", async () => {
     mocks.removeMcpServer.mockResolvedValue(false);
 
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit");
+    }) as never);
     const program = new Command();
     registerMcpRemove(program);
 
-    await program.parseAsync(["node", "test", "remove", "missing", "--agent", "unknown-agent"]);
+    await expect(program.parseAsync(["node", "test", "remove", "missing", "--agent", "unknown-agent"])).rejects.toThrow("process-exit");
 
     expect(mocks.removeMcpServer).not.toHaveBeenCalled();
     expect(mocks.removeMcpFromLock).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("not found"));
+    // In JSON mode (default), error goes to stderr as LAFS envelope
+    const output = String(errorSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output);
+    expect(envelope.success).toBe(false);
+    expect(envelope.error.code).toBe("E_PROVIDER_NOT_FOUND");
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
   it("detects provider MCP state and outputs json", async () => {
@@ -149,23 +160,18 @@ describe("integration: mcp command wrappers", () => {
 
     await program.parseAsync(["node", "test", "detect", "--json"]);
 
-    const output = String(logSpy.mock.calls[0]?.[0] ?? "[]");
-    const parsed = JSON.parse(output) as Array<{
-      provider: string;
-      hasGlobalConfig: boolean;
-      hasProjectConfig: boolean;
-      globalServers: string[];
-      projectServers: string[];
-    }>;
-    expect(parsed).toEqual([
+    const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output);
+    expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
+    expect(envelope.success).toBe(true);
+    expect(envelope.result.providers).toEqual([
       {
-        provider: "claude-code",
-        hasGlobalConfig: true,
-        hasProjectConfig: false,
-        globalServers: ["claude-code-global"],
-        projectServers: ["claude-code-project"],
+        id: "claude-code",
+        configsFound: 1,
+        servers: ["claude-code-global", "claude-code-project"],
       },
     ]);
+    expect(envelope.result.totalConfigs).toBe(1);
   });
 
   it("prints human readable detect output when no configs exist", async () => {
@@ -178,7 +184,7 @@ describe("integration: mcp command wrappers", () => {
     const program = new Command();
     registerMcpDetect(program);
 
-    await program.parseAsync(["node", "test", "detect"]);
+    await program.parseAsync(["node", "test", "detect", "--human"]);
 
     const lines = logSpy.mock.calls.map((call) => String(call[0] ?? ""));
     expect(lines.some((line) => line.includes("no servers"))).toBe(true);

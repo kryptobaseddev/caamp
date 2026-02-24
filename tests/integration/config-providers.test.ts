@@ -157,12 +157,18 @@ describe("integration: config and providers commands", () => {
       mocks.existsSync.mockReturnValue(false);
 
       const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+        throw new Error("process-exit");
+      }) as never);
       const program = new Command();
       registerConfigCommand(program);
 
-      await program.parseAsync(["node", "test", "config", "show", "claude-code", "--human"]);
+      await expect(
+        program.parseAsync(["node", "test", "config", "show", "claude-code", "--human"])
+      ).rejects.toThrow("process-exit");
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("No config file at"));
+      expect(exitSpy).toHaveBeenCalledWith(1);
     });
 
     it("exits with error when config read fails", async () => {
@@ -260,7 +266,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "list"]);
+      await program.parseAsync(["node", "test", "providers", "list", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Provider Registry"));
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("44 providers"));
@@ -316,7 +322,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "list"]);
+      await program.parseAsync(["node", "test", "providers", "list", "--human"]);
 
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
       expect(output).toContain("HIGH");
@@ -338,7 +344,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "list"]);
+      await program.parseAsync(["node", "test", "providers", "list", "--human"]);
 
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
       expect(output).toContain("active");
@@ -357,7 +363,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "detect"]);
+      await program.parseAsync(["node", "test", "providers", "detect", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Detected"));
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Claude Code"));
@@ -383,13 +389,17 @@ describe("integration: config and providers commands", () => {
         $schema: string;
         _meta: { operation: string };
         success: boolean;
-        result: { results: Array<{ provider: { id: string } }> };
+        result: {
+          installed: Array<{ id: string; toolName: string; methods: string[]; projectDetected: boolean }>;
+          notInstalled: string[];
+          count: { installed: number; total: number };
+        };
       };
       expect(envelope.$schema).toBe("https://lafs.dev/schemas/v1/envelope.schema.json");
       expect(envelope._meta.operation).toBe("providers.detect");
       expect(envelope.success).toBe(true);
-      expect(envelope.result.results).toHaveLength(1);
-      expect(envelope.result.results[0]?.provider.id).toBe("claude-code");
+      expect(envelope.result.installed).toHaveLength(1);
+      expect(envelope.result.installed[0]?.id).toBe("claude-code");
     });
 
     it("includes project detection with --project flag", async () => {
@@ -416,7 +426,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "detect"]);
+      await program.parseAsync(["node", "test", "providers", "detect", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("1 providers not detected"));
     });
@@ -430,7 +440,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "detect"]);
+      await program.parseAsync(["node", "test", "providers", "detect", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Detected 0 installed providers"));
     });
@@ -444,7 +454,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "show", "claude-code"]);
+      await program.parseAsync(["node", "test", "providers", "show", "claude-code", "--human"]);
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Claude Code"));
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("by Anthropic"));
@@ -502,7 +512,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "show", "claude-code"]);
+      await program.parseAsync(["node", "test", "providers", "show", "claude-code", "--human"]);
 
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
       expect(output).toContain("Aliases");
@@ -525,7 +535,7 @@ describe("integration: config and providers commands", () => {
       const program = new Command();
       registerProvidersCommand(program);
 
-      await program.parseAsync(["node", "test", "providers", "show", "claude-code"]);
+      await program.parseAsync(["node", "test", "providers", "show", "claude-code", "--human"]);
 
       const output = logSpy.mock.calls.map((call) => String(call[0] ?? "")).join("\n");
       expect(output).toContain("(none)");

@@ -353,7 +353,7 @@ describe("integration: skills install command", () => {
     const program = new Command();
     registerSkillsInstall(program);
 
-    await program.parseAsync(["node", "test", "install", "./skill", "--all"]);
+    await program.parseAsync(["node", "test", "install", "./skill", "--all", "--human"]);
 
     const output = consoleSpy.mock.calls.map((c) => c.join(" ")).join("\n");
     expect(output).toContain("Warnings");
@@ -373,15 +373,24 @@ describe("integration: skills install command", () => {
       })
       .mockRejectedValueOnce(new Error("install exploded"));
 
-    const consoleSpy = vi.spyOn(console, "log");
+    // In JSON mode (default), profile failures output error envelope to stderr
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("process-exit");
+    }) as never);
 
     const program = new Command();
     registerSkillsInstall(program);
 
-    await program.parseAsync(["node", "test", "install", "--profile", "core", "--all"]);
+    await expect(
+      program.parseAsync(["node", "test", "install", "--profile", "core", "--all"]),
+    ).rejects.toThrow("process-exit");
 
-    const output = consoleSpy.mock.calls.map((c) => c.join(" ")).join("\n");
-    expect(output).toContain("1 installed");
-    expect(output).toContain("1 failed");
+    // Verify the error envelope contains the summary with 1 installed and 1 failed
+    const output = String(errorSpy.mock.calls[0]?.[0] ?? "{}");
+    const envelope = JSON.parse(output);
+    expect(envelope.result.count.installed).toBe(1);
+    expect(envelope.result.count.failed).toBe(1);
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 });
