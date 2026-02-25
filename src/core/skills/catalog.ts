@@ -1,17 +1,15 @@
 /**
  * Skill catalog - registry pattern for pluggable skill libraries.
  *
- * Projects register their skill library via registerSkillLibrary() or
- * registerSkillLibraryFromPath(). If no library is registered, CAAMP
- * attempts auto-discovery via CAAMP_SKILL_LIBRARY env var or the
- * canonical ~/.agents/skill-library/ location.
+ * Projects MUST register their skill library via registerSkillLibrary() or
+ * registerSkillLibraryFromPath(). CAAMP no longer auto-discovers from
+ * ~/.agents/skill-library/ - explicit registration is required.
  *
  * All public functions delegate to the registered SkillLibrary instance.
  */
 
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { getAgentsHome } from "../paths/standard.js";
 import { buildLibraryFromFiles, loadLibraryFromModule } from "./library-loader.js";
 import type {
   SkillLibrary,
@@ -71,7 +69,6 @@ export function clearRegisteredLibrary(): void {
  *
  * Discovery order:
  * 1. CAAMP_SKILL_LIBRARY env var (path to library root)
- * 2. ~/.agents/skill-library/ (canonical location for default library)
  */
 function discoverLibrary(): SkillLibrary | null {
   // 1. Environment variable
@@ -86,23 +83,7 @@ function discoverLibrary(): SkillLibrary | null {
         return buildLibraryFromFiles(envPath);
       }
     } catch {
-      // Fall through to next strategy
-    }
-  }
-
-  // 2. Canonical location
-  const canonicalPath = join(getAgentsHome(), "skill-library");
-  if (existsSync(canonicalPath)) {
-    try {
-      const indexPath = join(canonicalPath, "index.js");
-      if (existsSync(indexPath)) {
-        return loadLibraryFromModule(canonicalPath);
-      }
-      if (existsSync(join(canonicalPath, "skills.json"))) {
-        return buildLibraryFromFiles(canonicalPath);
-      }
-    } catch {
-      // No library available
+      // Fall through
     }
   }
 

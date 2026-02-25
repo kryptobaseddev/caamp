@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-02-25
+
+### Added
+- **Library Source Type**: Added support for `library` source type in `parseSource` to properly parse `package:skill` formats (e.g., `@cleocode/ct-skills:ct-research-agent`).
+- **Package Freshness Checking**: Enhanced `checkSkillUpdate()` to support package-type skills. It now uses `npm view` to compare installed versions against the latest published version on the npm registry.
+- **Bulk Update API**: Added `checkAllSkillUpdates()` to check for updates across all tracked skills simultaneously.
+
+### Removed
+- **`skill-library` Fallback**: Removed the `~/.agents/skill-library` fallback from catalog discovery. Projects using CAAMP for skill catalog resolution (like CLEO) must now explicitly register their library via `CAAMP_SKILL_LIBRARY` or `registerSkillLibraryFromPath()`.
+
 ## [1.1.3] - 2026-02-24
 
 ### Changed

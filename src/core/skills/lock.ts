@@ -8,6 +8,10 @@ import type { LockEntry, SourceType } from "../../types.js";
 import { readLockFile, updateLockFile } from "../lock-utils.js";
 import { parseSource } from "../sources/parser.js";
 import { simpleGit } from "simple-git";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 /**
  * Record a skill installation in the lock file.
@@ -128,11 +132,21 @@ async function fetchLatestSha(
   }
 }
 
+/** Fetch the latest version for an npm package via npm view */
+async function fetchLatestPackageVersion(packageName: string): Promise<string | null> {
+  try {
+    const { stdout } = await execFileAsync("npm", ["view", packageName, "version"]);
+    return stdout.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Check if a skill has updates available by comparing the installed version
  * against the latest remote commit SHA.
  *
- * Only supports GitHub and GitLab sources. Returns `"unknown"` for local,
+ * Only supports GitHub, GitLab, and library (package-based) sources. Returns `"unknown"` for local,
  * package, or other source types.
  *
  * @param skillName - Name of the installed skill to check
@@ -158,8 +172,8 @@ export async function checkSkillUpdate(skillName: string): Promise<{
     return { hasUpdate: false, status: "unknown" };
   }
 
-  // Only GitHub and GitLab sources support remote checking
-  if (entry.sourceType !== "github" && entry.sourceType !== "gitlab") {
+  // Only GitHub, GitLab, and library sources support remote checking
+  if (entry.sourceType !== "github" && entry.sourceType !== "gitlab" && entry.sourceType !== "library") {
     return {
       hasUpdate: false,
       currentVersion: entry.version,
@@ -168,7 +182,35 @@ export async function checkSkillUpdate(skillName: string): Promise<{
   }
 
   const parsed = parseSource(entry.source);
-  if (!parsed.owner || !parsed.repo) {
+  if (!parsed.owner) {
+    return {
+      hasUpdate: false,
+      currentVersion: entry.version,
+      status: "unknown",
+    };
+  }
+
+  if (entry.sourceType === "library") {
+    const packageName = parsed.owner; // owner holds the package name for library type
+    const latestVersion = await fetchLatestPackageVersion(packageName);
+    if (!latestVersion) {
+      return {
+        hasUpdate: false,
+        currentVersion: entry.version,
+        status: "unknown",
+      };
+    }
+    const currentVersion = entry.version;
+    const hasUpdate = !currentVersion || currentVersion !== latestVersion;
+    return {
+      hasUpdate,
+      currentVersion: currentVersion ?? "unknown",
+      latestVersion,
+      status: hasUpdate ? "update-available" : "up-to-date",
+    };
+  }
+
+  if (!parsed.repo) {
     return {
       hasUpdate: false,
       currentVersion: entry.version,
@@ -197,4 +239,26 @@ export async function checkSkillUpdate(skillName: string): Promise<{
     latestVersion: latestSha.slice(0, 12),
     status: hasUpdate ? "update-available" : "up-to-date",
   };
+}
+
+/**
+ * Check for updates across all tracked skills.
+ *
+ * @returns Object mapping skill names to their update status
+ */
+export async function checkAllSkillUpdates(): Promise<Record<string, {
+  hasUpdate: boolean;
+  currentVersion?: string;
+  latestVersion?: string;
+  status: "up-to-date" | "update-available" | "unknown";
+}>> {
+  const lock = await readLockFile();
+  const skillNames = Object.keys(lock.skills);
+  
+  const results: Record<string, any> = {};
+  await Promise.all(skillNames.map(async (name) => {
+    results[name] = await checkSkillUpdate(name);
+  }));
+  
+  return results;
 }

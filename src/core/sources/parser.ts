@@ -13,9 +13,15 @@ const GITLAB_URL = /^https?:\/\/(?:www\.)?gitlab\.com\/([^/]+)\/([^/]+)(?:\/-\/(
 const HTTP_URL = /^https?:\/\//;
 const NPM_SCOPED = /^@[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/;
 const NPM_PACKAGE = /^[a-zA-Z0-9_.-]+$/;
+const LIBRARY_SKILL = /^(@[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+|[a-zA-Z0-9_.-]+):([a-zA-Z0-9_.-]+)$/;
 
 /** Infer a display name from a source */
 function inferName(source: string, type: SourceType): string {
+  if (type === "library") {
+    const match = source.match(LIBRARY_SKILL);
+    return match?.[2] ?? source;
+  }
+
   if (type === "remote") {
     try {
       const url = new URL(source);
@@ -173,6 +179,18 @@ export function parseSource(input: string): ParsedSource {
       owner,
       repo,
       path,
+    };
+  }
+
+  // Library skill: package:skill or @scope/package:skill
+  const libraryMatch = input.match(LIBRARY_SKILL);
+  if (libraryMatch) {
+    return {
+      type: "library",
+      value: input,
+      inferredName: inferName(input, "library"),
+      owner: libraryMatch[1], // This will be the package name, e.g. @cleocode/ct-skills
+      repo: libraryMatch[2],  // This will be the skill name, e.g. ct-research-agent
     };
   }
 

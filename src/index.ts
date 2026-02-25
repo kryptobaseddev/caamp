@@ -176,6 +176,7 @@ export {
   removeSkillFromLock,
   getTrackedSkills,
   checkSkillUpdate,
+  checkAllSkillUpdates,
 } from "./core/skills/lock.js";
 
 // Marketplace
