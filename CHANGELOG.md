@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-02-24
+
+### Changed
+- Bump `@cleocode/lafs-protocol` from ^1.3.2 to ^1.4.1 (health checks, circuit breaker, graceful shutdown, A2A transport mapping)
+
 ## [1.1.2] - 2026-02-24
 
 ### Changed
