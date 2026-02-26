@@ -23,10 +23,11 @@ export function registerMcpList(parent: Command): void {
     .command("list")
     .description("List configured MCP servers")
     .option("-a, --agent <name>", "List for specific agent")
+    .option("--provider <id>", "Provider ID alias for --agent")
     .option("-g, --global", "List global config")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
-    .action(async (opts: { agent?: string; global?: boolean; json?: boolean; human?: boolean }) => {
+    .action(async (opts: { agent?: string; provider?: string; global?: boolean; json?: boolean; human?: boolean }) => {
       const operation = "mcp.list";
       const mvi: import("../../core/lafs.js").MVILevel = "standard";
 
@@ -43,15 +44,17 @@ export function registerMcpList(parent: Command): void {
         process.exit(1);
       }
 
-      const providers = opts.agent
-        ? [getProvider(opts.agent)].filter((p): p is NonNullable<typeof p> => p !== undefined)
+      const selectedProvider = opts.provider ?? opts.agent;
+
+      const providers = selectedProvider
+        ? [getProvider(selectedProvider)].filter((p): p is NonNullable<typeof p> => p !== undefined)
         : getInstalledProviders();
 
-      if (opts.agent && providers.length === 0) {
-        const message = `Provider not found: ${opts.agent}`;
+      if (selectedProvider && providers.length === 0) {
+        const message = `Provider not found: ${selectedProvider}`;
         if (format === "json") {
           emitJsonError(operation, mvi, ErrorCodes.PROVIDER_NOT_FOUND, message, ErrorCategories.NOT_FOUND, {
-            agent: opts.agent,
+            provider: selectedProvider,
           });
         } else {
           console.error(pc.red(message));
@@ -82,7 +85,7 @@ export function registerMcpList(parent: Command): void {
         outputSuccess(operation, mvi, {
           servers: allEntries,
           count: allEntries.length,
-          scope: opts.global ? "global" : opts.agent ? `agent:${opts.agent}` : "project",
+          scope: opts.global ? "global" : selectedProvider ? `agent:${selectedProvider}` : "project",
         });
         return;
       }

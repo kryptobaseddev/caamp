@@ -6,6 +6,8 @@ const mocks = vi.hoisted(() => ({
   registerMcpRemove: vi.fn(),
   registerMcpList: vi.fn(),
   registerMcpDetect: vi.fn(),
+  registerMcpCleoCommands: vi.fn(),
+  registerMcpCleoCompatibilityCommands: vi.fn(),
 }));
 
 vi.mock("../../src/commands/mcp/install.js", () => ({
@@ -24,6 +26,11 @@ vi.mock("../../src/commands/mcp/detect.js", () => ({
   registerMcpDetect: mocks.registerMcpDetect,
 }));
 
+vi.mock("../../src/commands/mcp/cleo.js", () => ({
+  registerMcpCleoCommands: mocks.registerMcpCleoCommands,
+  registerMcpCleoCompatibilityCommands: mocks.registerMcpCleoCompatibilityCommands,
+}));
+
 import { registerMcpCommands } from "../../src/commands/mcp/index.js";
 
 describe("mcp command index", () => {
@@ -36,6 +43,8 @@ describe("mcp command index", () => {
     expect(mocks.registerMcpRemove).toHaveBeenCalledTimes(1);
     expect(mocks.registerMcpList).toHaveBeenCalledTimes(1);
     expect(mocks.registerMcpDetect).toHaveBeenCalledTimes(1);
+    expect(mocks.registerMcpCleoCommands).toHaveBeenCalledTimes(1);
+    expect(mocks.registerMcpCleoCompatibilityCommands).toHaveBeenCalledTimes(1);
 
     const mcpCommand = mocks.registerMcpInstall.mock.calls[0]?.[0] as Command;
     expect(mcpCommand.name()).toBe("mcp");

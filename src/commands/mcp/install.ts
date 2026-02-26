@@ -18,6 +18,11 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
 import { parseSource } from "../../core/sources/parser.js";
 import type { Provider } from "../../types.js";
+import {
+  executeCleoInstall,
+  mapCompatibilityInstallOptions,
+  shouldUseCleoCompatibilityInstall,
+} from "./cleo.js";
 
 export function registerMcpInstall(parent: Command): void {
   parent
@@ -25,23 +30,39 @@ export function registerMcpInstall(parent: Command): void {
     .description("Install MCP server to agent configs")
     .argument("<source>", "MCP server source (URL, npm package, or command)")
     .option("-a, --agent <name>", "Target specific agent(s)", (v, prev: string[]) => [...prev, v], [])
+    .option("--provider <id>", "Target provider ID (alias for --agent)", (v, prev: string[]) => [...prev, v], [])
     .option("-g, --global", "Install to global/user config")
     .option("-n, --name <name>", "Override inferred server name")
+    .option("--channel <channel>", "Managed channel profile (stable|beta|dev)")
+    .option("--version <tag>", "Managed profile tag/version for stable or beta")
+    .option("--command <command>", "Managed dev profile command")
+    .option("--arg <arg>", "Managed dev command arg (repeatable)", (v, prev: string[]) => [...prev, v], [])
+    .option("--env <kv>", "Managed env assignment KEY=value (repeatable)", (v, prev: string[]) => [...prev, v], [])
+    .option("--cleo-dir <path>", "Managed dev CLEO_DIR override")
     .option("-t, --transport <type>", "Transport type: http (default) or sse", "http")
     .option("--header <header>", "HTTP header (Key: Value)", (v, prev: string[]) => [...prev, v], [])
     .option("-y, --yes", "Skip confirmation")
     .option("--all", "Install to all detected agents")
+    .option("--interactive", "Guided interactive setup for managed profiles")
     .option("--dry-run", "Preview without writing")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
     .action(async (source: string, opts: {
       agent: string[];
+      provider: string[];
       global?: boolean;
       name?: string;
+      channel?: string;
+      version?: string;
+      command?: string;
+      arg: string[];
+      env: string[];
+      cleoDir?: string;
       transport: string;
       header: string[];
       yes?: boolean;
       all?: boolean;
+      interactive?: boolean;
       dryRun?: boolean;
       json?: boolean;
       human?: boolean;
@@ -60,6 +81,12 @@ export function registerMcpInstall(parent: Command): void {
         const message = error instanceof Error ? error.message : String(error);
         emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
         process.exit(1);
+      }
+
+      if (shouldUseCleoCompatibilityInstall(source, opts.channel)) {
+        const cleoOpts = mapCompatibilityInstallOptions(opts);
+        await executeCleoInstall("install", cleoOpts, operation);
+        return;
       }
 
       const parsed = parseSource(source);
@@ -83,6 +110,10 @@ export function registerMcpInstall(parent: Command): void {
         providers = getInstalledProviders();
       } else if (opts.agent.length > 0) {
         providers = opts.agent
+          .map((a) => getProvider(a))
+          .filter((p): p is Provider => p !== undefined);
+      } else if (opts.provider.length > 0) {
+        providers = opts.provider
           .map((a) => getProvider(a))
           .filter((p): p is Provider => p !== undefined);
       } else {

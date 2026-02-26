@@ -24,12 +24,14 @@ export function registerMcpRemove(parent: Command): void {
     .description("Remove MCP server from agent configs")
     .argument("<name>", "MCP server name to remove")
     .option("-a, --agent <name>", "Target specific agent(s)", (v, prev: string[]) => [...prev, v], [])
+    .option("--provider <id>", "Target provider ID (alias for --agent)", (v, prev: string[]) => [...prev, v], [])
     .option("-g, --global", "Remove from global config")
     .option("--all", "Remove from all detected agents")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
     .action(async (name: string, opts: {
       agent: string[];
+      provider: string[];
       global?: boolean;
       all?: boolean;
       json?: boolean;
@@ -57,6 +59,10 @@ export function registerMcpRemove(parent: Command): void {
         providers = getInstalledProviders();
       } else if (opts.agent.length > 0) {
         providers = opts.agent
+          .map((a) => getProvider(a))
+          .filter((p): p is Provider => p !== undefined);
+      } else if (opts.provider.length > 0) {
+        providers = opts.provider
           .map((a) => getProvider(a))
           .filter((p): p is Provider => p !== undefined);
       } else {

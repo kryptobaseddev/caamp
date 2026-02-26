@@ -93,6 +93,23 @@ describe("integration: mcp command wrappers", () => {
     expect(envelope.result.count).toBe(1);
   });
 
+  it("lists entries with provider alias", async () => {
+    mocks.listMcpServers.mockResolvedValue([
+      {
+        providerId: "claude-code",
+        name: "filesystem",
+        config: { command: "npx" },
+      },
+    ]);
+
+    const program = new Command();
+    registerMcpList(program);
+
+    await program.parseAsync(["node", "test", "list", "--provider", "claude-code", "--json"]);
+
+    expect(mocks.listMcpServers).toHaveBeenCalledWith(providerA, "project");
+  });
+
   it("shows empty-state message when no servers are configured", async () => {
     mocks.listMcpServers.mockResolvedValue([]);
 
@@ -116,6 +133,17 @@ describe("integration: mcp command wrappers", () => {
     expect(mocks.removeMcpServer).toHaveBeenNthCalledWith(1, providerA, "filesystem", "global");
     expect(mocks.removeMcpServer).toHaveBeenNthCalledWith(2, providerB, "filesystem", "global");
     expect(mocks.removeMcpFromLock).toHaveBeenCalledWith("filesystem");
+  });
+
+  it("removes server via provider alias", async () => {
+    mocks.removeMcpServer.mockResolvedValue(true);
+
+    const program = new Command();
+    registerMcpRemove(program);
+
+    await program.parseAsync(["node", "test", "remove", "filesystem", "--provider", "claude-code", "--json"]);
+
+    expect(mocks.removeMcpServer).toHaveBeenCalledWith(providerA, "filesystem", "project");
   });
 
   it("reports not found when no provider removal succeeds", async () => {

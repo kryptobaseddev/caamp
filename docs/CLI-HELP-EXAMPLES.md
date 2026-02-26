@@ -71,6 +71,45 @@ caamp mcp install --help
 caamp mcp remove --help
 caamp mcp list --help
 caamp mcp detect --help
+caamp mcp cleo --help
+caamp mcp cleo install --help
+caamp mcp cleo update --help
+caamp mcp cleo uninstall --help
+caamp mcp cleo show --help
+```
+
+### CLEO MCP channel workflows
+
+Install stable channel to one provider:
+
+```bash
+caamp mcp install cleo --channel stable --provider claude-code --json
+```
+
+Install beta channel alongside stable:
+
+```bash
+caamp mcp install cleo --channel beta --provider claude-code --json
+```
+
+Install dev channel with isolated CLEO_DIR:
+
+```bash
+caamp mcp install cleo --channel dev --provider claude-code --command ./dist/mcp/index.js --arg --stdio --env CLEO_DIR=~/.cleo-dev --json
+```
+
+Update/uninstall/show compatibility commands:
+
+```bash
+caamp mcp update cleo --channel beta --provider claude-code --json
+caamp mcp uninstall cleo --channel dev --provider claude-code --json
+caamp mcp show cleo --provider claude-code --json
+```
+
+Interactive human flow (bridge TUI for CLEO installs):
+
+```bash
+caamp mcp cleo install --interactive --human
 ```
 
 ## Instructions

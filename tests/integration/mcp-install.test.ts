@@ -8,6 +8,9 @@ const mocks = vi.hoisted(() => ({
   recordMcpInstall: vi.fn(),
   getInstalledProviders: vi.fn(),
   getProvider: vi.fn(),
+  executeCleoInstall: vi.fn(),
+  mapCompatibilityInstallOptions: vi.fn(),
+  shouldUseCleoCompatibilityInstall: vi.fn(),
 }));
 
 vi.mock("../../src/core/sources/parser.js", () => ({
@@ -31,6 +34,12 @@ vi.mock("../../src/core/registry/providers.js", () => ({
   getProvider: mocks.getProvider,
 }));
 
+vi.mock("../../src/commands/mcp/cleo.js", () => ({
+  executeCleoInstall: mocks.executeCleoInstall,
+  mapCompatibilityInstallOptions: mocks.mapCompatibilityInstallOptions,
+  shouldUseCleoCompatibilityInstall: mocks.shouldUseCleoCompatibilityInstall,
+}));
+
 import { registerMcpInstall } from "../../src/commands/mcp/install.js";
 
 const provider = {
@@ -46,6 +55,9 @@ describe("integration: mcp install command", () => {
     mocks.recordMcpInstall.mockReset();
     mocks.getInstalledProviders.mockReset();
     mocks.getProvider.mockReset();
+    mocks.executeCleoInstall.mockReset();
+    mocks.mapCompatibilityInstallOptions.mockReset();
+    mocks.shouldUseCleoCompatibilityInstall.mockReset();
 
     mocks.parseSource.mockReturnValue({ type: "package", value: "@acme/mcp", inferredName: "acme" });
     mocks.buildServerConfig.mockReturnValue({ command: "npx", args: ["-y", "@acme/mcp"] });
@@ -54,6 +66,9 @@ describe("integration: mcp install command", () => {
       { provider, success: true, scope: "project", configPath: "/tmp/config.json" },
     ]);
     mocks.recordMcpInstall.mockResolvedValue(undefined);
+    mocks.shouldUseCleoCompatibilityInstall.mockReturnValue(false);
+    mocks.mapCompatibilityInstallOptions.mockImplementation((value: unknown) => value);
+    mocks.executeCleoInstall.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -97,5 +112,30 @@ describe("integration: mcp install command", () => {
 
     await expect(program.parseAsync(["node", "test", "install", "@acme/mcp", "--all"])).rejects.toThrow("process-exit");
     expect(exitSpy).toHaveBeenCalledWith(1);
+  });
+
+  it("routes to CLEO compatibility install when source is managed profile", async () => {
+    mocks.shouldUseCleoCompatibilityInstall.mockReturnValue(true);
+
+    const program = new Command();
+    registerMcpInstall(program);
+
+    await program.parseAsync([
+      "node",
+      "test",
+      "install",
+      "cleo",
+      "--channel",
+      "stable",
+      "--provider",
+      "claude-code",
+    ]);
+
+    expect(mocks.executeCleoInstall).toHaveBeenCalledWith(
+      "install",
+      expect.anything(),
+      "mcp.install",
+    );
+    expect(mocks.parseSource).not.toHaveBeenCalled();
   });
 });
