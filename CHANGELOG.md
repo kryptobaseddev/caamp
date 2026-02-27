@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-02-27
+
+### Fixed
+- **Lock file timeout on MCP install**: Added stale lock detection to `acquireLockGuard()`. Lock guard files older than 5 seconds (from crashed or interrupted processes) are now automatically removed before retrying, preventing false "Timed out waiting for lock file guard" errors after successful config writes.
+
+### Added
+- **CLEO channel-managed MCP install workflows**: Support for `--channel` option with managed profiles (stable, beta, dev) for streamlined MCP server installation.
+
 ## [1.2.0] - 2026-02-25
 
 ### Added

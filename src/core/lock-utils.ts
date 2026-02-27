@@ -5,15 +5,29 @@
  * Both MCP and skills lock modules import from here.
  */
 
-import { open, readFile, writeFile, mkdir, rm, rename } from "node:fs/promises";
+import { open, readFile, writeFile, mkdir, rm, rename, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import type { CaampLockFile } from "../types.js";
 import { AGENTS_HOME, LOCK_FILE_PATH } from "./paths/agents.js";
 
 const LOCK_GUARD_PATH = `${LOCK_FILE_PATH}.lock`;
+const STALE_LOCK_MS = 5_000;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function removeStaleLock(): Promise<boolean> {
+  try {
+    const info = await stat(LOCK_GUARD_PATH);
+    if (Date.now() - info.mtimeMs > STALE_LOCK_MS) {
+      await rm(LOCK_GUARD_PATH, { force: true });
+      return true;
+    }
+  } catch {
+    // Lock file doesn't exist or can't be stat'd — not stale
+  }
+  return false;
 }
 
 async function acquireLockGuard(retries = 40, delayMs = 25): Promise<void> {
@@ -27,6 +41,11 @@ async function acquireLockGuard(retries = 40, delayMs = 25): Promise<void> {
     } catch (error) {
       if (!(error instanceof Error) || !("code" in error) || (error as NodeJS.ErrnoException).code !== "EEXIST") {
         throw error;
+      }
+      // On first retry failure, check for stale lock from a crashed process
+      if (attempt === 0) {
+        const removed = await removeStaleLock();
+        if (removed) continue;
       }
       await sleep(delayMs);
     }

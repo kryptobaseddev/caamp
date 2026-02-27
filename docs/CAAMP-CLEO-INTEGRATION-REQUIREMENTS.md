@@ -33,9 +33,9 @@ Make CLEO first-class in CAAMP by supporting one-command installation and manage
 - `caamp mcp uninstall cleo --channel <channel> --provider <provider>`
 - `caamp mcp show cleo --provider <provider>`
 
-### API
+### Library API (Programmatic)
 
-Expose equivalent operations through CAAMP API endpoints already used by provider integration flows, returning:
+Expose equivalent operations through CAAMP's exported library functions used by provider integration flows, returning:
 
 - target provider
 - installed server name
