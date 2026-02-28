@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-02-28
+
+### Fixed
+- **OpenCode MCP transform**: `command` field now emits an array (`["npx", "-y", "pkg"]`) instead of a string with separate `args` — matches OpenCode's required schema and fixes "Invalid input mcp.cleo" config validation error
+
 ## [1.5.0] - 2026-02-28
 
 ### Added

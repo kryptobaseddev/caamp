@@ -54,8 +54,7 @@ describe("mcp transforms", () => {
 
     expect(transformOpenCode("srv", { command: "node", args: ["server.js"], env: { A: "1" } })).toEqual({
       type: "local",
-      command: "node",
-      args: ["server.js"],
+      command: ["node", "server.js"],
       enabled: true,
       environment: { A: "1" },
     });

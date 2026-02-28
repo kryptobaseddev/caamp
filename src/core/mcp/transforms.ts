@@ -66,8 +66,7 @@ export function transformOpenCode(_serverName: string, config: McpServerConfig):
 
   return {
     type: "local",
-    command: config.command,
-    args: config.args ?? [],
+    command: [config.command, ...(config.args ?? [])],
     enabled: true,
     ...(config.env ? { environment: config.env } : {}),
   };

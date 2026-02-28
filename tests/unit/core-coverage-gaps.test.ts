@@ -1276,7 +1276,7 @@ describe("core/mcp/transforms - missing branch coverage", () => {
     const { transformOpenCode } = await import("../../src/core/mcp/transforms.js");
     const result = transformOpenCode("srv", { command: "node" }) as any;
     expect(result.environment).toBeUndefined();
-    expect(result.args).toEqual([]);
+    expect(result.command).toEqual(["node"]);
   });
 
   it("codex remote without headers and type", async () => {
