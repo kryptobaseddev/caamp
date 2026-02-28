@@ -17,13 +17,14 @@ import {
   buildCleoProfile,
   type CleoChannel,
   checkCommandReachability,
+  extractVersionTag,
   normalizeCleoChannel,
   parseEnvAssignments,
   resolveChannelFromServerName,
   resolveCleoServerName,
 } from "../../core/mcp/cleo.js";
 import { installMcpServerToAll } from "../../core/mcp/installer.js";
-import { recordMcpInstall, removeMcpFromLock } from "../../core/mcp/lock.js";
+import { getTrackedMcpServers, recordMcpInstall, removeMcpFromLock } from "../../core/mcp/lock.js";
 import { listMcpServers, removeMcpServer } from "../../core/mcp/reader.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
@@ -60,6 +61,7 @@ interface CleoShowOptions {
   provider: string[];
   all?: boolean;
   global?: boolean;
+  project?: boolean;
   channel?: string;
   json?: boolean;
   human?: boolean;
@@ -354,6 +356,7 @@ export async function executeCleoInstall(
       channel === "dev" ? "command" : "package",
       succeeded.map((result) => result.provider.id),
       resolvedOpts.global ?? false,
+      resolvedOpts.version ?? extractVersionTag(profile.packageSpec),
     );
   }
 
@@ -486,6 +489,50 @@ export async function executeCleoUninstall(
   }
 }
 
+export type CleoHealthStatus = "healthy" | "degraded" | "broken";
+
+export interface CleoEntryHealth {
+  commandReachable: boolean;
+  commandDetail: string;
+  configPresent: boolean;
+  lockTracked: boolean;
+  status: CleoHealthStatus;
+}
+
+export function checkCleoEntryHealth(
+  command: string | undefined,
+  lockTracked: boolean,
+): CleoEntryHealth {
+  if (!command) {
+    return {
+      commandReachable: true,
+      commandDetail: "(no command)",
+      configPresent: true,
+      lockTracked,
+      status: lockTracked ? "healthy" : "degraded",
+    };
+  }
+
+  const reachability = checkCommandReachability(command);
+  if (!reachability.reachable) {
+    return {
+      commandReachable: false,
+      commandDetail: reachability.detail,
+      configPresent: true,
+      lockTracked,
+      status: "broken",
+    };
+  }
+
+  return {
+    commandReachable: true,
+    commandDetail: reachability.detail,
+    configPresent: true,
+    lockTracked,
+    status: lockTracked ? "healthy" : "degraded",
+  };
+}
+
 export async function executeCleoShow(
   opts: CleoShowOptions,
   operation: string,
@@ -517,55 +564,167 @@ export async function executeCleoShow(
   }
 
   const channelFilter = opts.channel ? normalizeCleoChannel(opts.channel) : null;
-  const scope = opts.global ? "global" as const : "project" as const;
-  const entries: Array<{
+
+  // Determine which scopes to scan
+  const scopes: Array<"project" | "global"> = [];
+  if (opts.global && !opts.project) {
+    scopes.push("global");
+  } else if (opts.project && !opts.global) {
+    scopes.push("project");
+  } else {
+    scopes.push("project", "global");
+  }
+
+  // Load lock file data
+  const lockEntries = await getTrackedMcpServers();
+
+  interface EnrichedProfile {
     provider: string;
+    providerName: string;
     serverName: string;
     channel: CleoChannel;
+    scope: "project" | "global";
     command?: string;
     args: string[];
     env: Record<string, string>;
-  }> = [];
+    version: string | null;
+    source: string | null;
+    sourceType: string | null;
+    installedAt: string | null;
+    updatedAt: string | null;
+    health: CleoEntryHealth;
+  }
 
-  for (const provider of providers) {
-    const providerEntries = await listMcpServers(provider, scope);
-    for (const entry of providerEntries) {
-      const channel = resolveChannelFromServerName(entry.name);
-      if (!channel) continue;
-      if (channelFilter && channel !== channelFilter) continue;
-      entries.push({
-        provider: provider.id,
-        serverName: entry.name,
-        channel,
-        command: typeof entry.config.command === "string" ? entry.config.command : undefined,
-        args: Array.isArray(entry.config.args)
+  const entries: EnrichedProfile[] = [];
+  const warnings: import("../../core/lafs.js").LAFSWarning[] = [];
+
+  for (const scope of scopes) {
+    for (const provider of providers) {
+      const providerEntries = await listMcpServers(provider, scope);
+      for (const entry of providerEntries) {
+        const channel = resolveChannelFromServerName(entry.name);
+        if (!channel) continue;
+        if (channelFilter && channel !== channelFilter) continue;
+
+        const command = typeof entry.config.command === "string" ? entry.config.command : undefined;
+        const args = Array.isArray(entry.config.args)
           ? entry.config.args.filter((value): value is string => typeof value === "string")
-          : [],
-        env: typeof entry.config.env === "object" && entry.config.env !== null
+          : [];
+        const env = typeof entry.config.env === "object" && entry.config.env !== null
           ? entry.config.env as Record<string, string>
-          : {},
-      });
+          : {};
+
+        const lockEntry = lockEntries[entry.name];
+        const lockTracked = lockEntry !== undefined;
+        const health = checkCleoEntryHealth(command, lockTracked);
+
+        entries.push({
+          provider: provider.id,
+          providerName: provider.toolName,
+          serverName: entry.name,
+          channel,
+          scope,
+          command,
+          args,
+          env,
+          version: lockEntry?.version ?? null,
+          source: lockEntry?.source ?? null,
+          sourceType: lockEntry?.sourceType ?? null,
+          installedAt: lockEntry?.installedAt ?? null,
+          updatedAt: lockEntry?.updatedAt ?? null,
+          health,
+        });
+
+        if (health.status === "broken") {
+          warnings.push({
+            code: "W_COMMAND_UNREACHABLE",
+            message: `${entry.name} command not reachable on ${provider.toolName} (${health.commandDetail})`,
+          });
+        } else if (health.status === "degraded") {
+          warnings.push({
+            code: "W_NOT_TRACKED",
+            message: `${entry.name} on ${provider.toolName} is not tracked in lock file`,
+          });
+        }
+      }
     }
   }
 
+  const issueCount = entries.filter((e) => e.health.status !== "healthy").length;
+
   if (format === "human") {
     if (entries.length === 0) {
-      console.log(pc.dim("No CLEO MCP profiles found."));
+      console.log(pc.dim("No CLEO channel profiles found."));
     } else {
+      console.log(pc.bold("CLEO Channel Profiles"));
+      console.log();
+
+      // Column headers
+      const header = [
+        "Channel".padEnd(10),
+        "Version".padEnd(10),
+        "Provider".padEnd(15),
+        "Scope".padEnd(9),
+        "Command".padEnd(33),
+        "Status".padEnd(10),
+        "Installed".padEnd(12),
+      ].join("");
+      console.log(`  ${pc.dim(header)}`);
+      console.log(`  ${pc.dim("-".repeat(99))}`);
+
       for (const entry of entries) {
-        console.log(`${pc.bold(entry.provider.padEnd(22))} ${entry.serverName.padEnd(10)} ${pc.dim(entry.channel)}`);
+        const commandStr = entry.command
+          ? `${entry.command} ${entry.args.join(" ")}`.slice(0, 31).padEnd(33)
+          : pc.dim("-").padEnd(33);
+        const versionStr = (entry.version ?? "-").padEnd(10);
+        const installedStr = entry.installedAt
+          ? entry.installedAt.slice(0, 10).padEnd(12)
+          : "-".padEnd(12);
+
+        let statusStr: string;
+        if (entry.health.status === "healthy") {
+          statusStr = pc.green("healthy".padEnd(10));
+        } else if (entry.health.status === "degraded") {
+          statusStr = pc.yellow("degraded".padEnd(10));
+        } else {
+          statusStr = pc.red("broken".padEnd(10));
+        }
+
+        console.log(
+          `  ${entry.channel.padEnd(10)}${versionStr}${entry.providerName.padEnd(15)}${entry.scope.padEnd(9)}${commandStr}${statusStr}${installedStr}`,
+        );
+      }
+
+      console.log();
+      const summary = `  ${entries.length} profile${entries.length !== 1 ? "s" : ""}`;
+      if (issueCount > 0) {
+        console.log(`${summary}  |  ${pc.yellow(`${issueCount} issue${issueCount !== 1 ? "s" : ""}`)}`);
+        console.log();
+        console.log("  Issues:");
+        for (const w of warnings) {
+          console.log(`    ${pc.yellow("!")} ${w.message}`);
+        }
+      } else {
+        console.log(summary);
       }
     }
   }
 
   if (format === "json") {
-    outputSuccess(operation, mvi, {
-      providers: providers.map((provider) => provider.id),
-      scope,
-      channel: channelFilter,
-      profiles: entries,
-      count: entries.length,
-    });
+    outputSuccess(
+      operation,
+      mvi,
+      {
+        providers: providers.map((provider) => provider.id),
+        scopes,
+        channel: channelFilter,
+        profiles: entries,
+        count: entries.length,
+      },
+      undefined,
+      undefined,
+      warnings.length > 0 ? warnings : undefined,
+    );
   }
 }
 
@@ -627,7 +786,8 @@ export function registerMcpCleoCommands(parent: Command): void {
     .description("Show installed CLEO MCP channel profiles")
     .option("--provider <id>", "Target provider (repeatable)", collect, [])
     .option("--all", "Inspect all detected providers")
-    .option("-g, --global", "Use global scope")
+    .option("-g, --global", "Global scope only")
+    .option("-p, --project", "Project scope only")
     .option("--channel <channel>", "Filter channel: stable|beta|dev")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
@@ -686,7 +846,8 @@ export function registerMcpCleoCompatibilityCommands(parent: Command): void {
     .argument("<name>", "Managed MCP profile name (cleo)")
     .option("--provider <id>", "Target provider (repeatable)", collect, [])
     .option("--all", "Inspect all detected providers")
-    .option("-g, --global", "Use global scope")
+    .option("-g, --global", "Global scope only")
+    .option("-p, --project", "Project scope only")
     .option("--channel <channel>", "Filter channel: stable|beta|dev")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
@@ -781,7 +942,8 @@ export function registerCleoCommands(program: Command): void {
     .description("Show installed CLEO channel profiles")
     .option("--provider <id>", "Target provider (repeatable)", collect, [])
     .option("--all", "Inspect all detected providers")
-    .option("-g, --global", "Use global scope")
+    .option("-g, --global", "Global scope only")
+    .option("-p, --project", "Project scope only")
     .option("--channel <channel>", "Filter channel: stable|beta|dev")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")

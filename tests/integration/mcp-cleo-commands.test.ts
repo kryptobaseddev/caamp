@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   installMcpServerToAll: vi.fn(),
   recordMcpInstall: vi.fn(),
   removeMcpFromLock: vi.fn(),
+  getTrackedMcpServers: vi.fn(),
   listMcpServers: vi.fn(),
   removeMcpServer: vi.fn(),
   getInstalledProviders: vi.fn(),
@@ -18,6 +19,7 @@ vi.mock("../../src/core/mcp/installer.js", () => ({
 vi.mock("../../src/core/mcp/lock.js", () => ({
   recordMcpInstall: mocks.recordMcpInstall,
   removeMcpFromLock: mocks.removeMcpFromLock,
+  getTrackedMcpServers: mocks.getTrackedMcpServers,
 }));
 
 vi.mock("../../src/core/mcp/reader.js", () => ({
@@ -49,6 +51,7 @@ describe("integration: mcp cleo commands", () => {
     ]);
     mocks.recordMcpInstall.mockResolvedValue(undefined);
     mocks.removeMcpFromLock.mockResolvedValue(true);
+    mocks.getTrackedMcpServers.mockResolvedValue({});
     mocks.removeMcpServer.mockResolvedValue(true);
     mocks.listMcpServers.mockResolvedValue([
       { name: "cleo-beta", config: { command: "node", args: ["-v"] } },
@@ -131,8 +134,10 @@ describe("integration: mcp cleo commands", () => {
     const output = String(logSpy.mock.calls[0]?.[0] ?? "{}");
     const envelope = JSON.parse(output);
     expect(envelope.success).toBe(true);
-    expect(envelope.result.count).toBe(1);
+    // Scans both project and global scopes, finding "cleo" in each
+    expect(envelope.result.count).toBe(2);
     expect(envelope.result.profiles[0].serverName).toBe("cleo");
     expect(envelope.result.profiles[0].channel).toBe("stable");
+    expect(envelope.result.scopes).toEqual(["project", "global"]);
   });
 });

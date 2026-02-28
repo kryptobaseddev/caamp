@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   installMcpServerToAll: vi.fn(),
   recordMcpInstall: vi.fn(),
   removeMcpFromLock: vi.fn(),
+  getTrackedMcpServers: vi.fn(),
   listMcpServers: vi.fn(),
   removeMcpServer: vi.fn(),
   getInstalledProviders: vi.fn(),
@@ -24,6 +25,7 @@ vi.mock("../../src/core/mcp/installer.js", () => ({
 vi.mock("../../src/core/mcp/lock.js", () => ({
   recordMcpInstall: mocks.recordMcpInstall,
   removeMcpFromLock: mocks.removeMcpFromLock,
+  getTrackedMcpServers: mocks.getTrackedMcpServers,
 }));
 
 vi.mock("../../src/core/mcp/reader.js", () => ({
@@ -128,6 +130,7 @@ describe("commands/mcp/cleo", () => {
     ]);
     mocks.recordMcpInstall.mockResolvedValue(undefined);
     mocks.removeMcpFromLock.mockResolvedValue(true);
+    mocks.getTrackedMcpServers.mockResolvedValue({});
     mocks.removeMcpServer.mockResolvedValue(true);
     mocks.listMcpServers.mockResolvedValue([]);
     mocks.checkCommandReachability.mockReturnValue({
@@ -586,12 +589,15 @@ describe("commands/mcp/cleo", () => {
   // ── executeCleoShow ─────────────────────────────────────────────
 
   describe("executeCleoShow", () => {
-    it("shows profiles in json mode", async () => {
+    it("shows profiles in json mode (both scopes by default)", async () => {
       mocks.listMcpServers.mockResolvedValue([
         { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest"] } },
         { name: "cleo-beta", config: { command: "npx", args: ["-y", "@cleocode/cleo@beta"] } },
         { name: "other-server", config: { command: "node" } },
       ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({
+        cleo: { name: "cleo", version: "latest", source: "@cleocode/cleo@latest", sourceType: "package", installedAt: "2026-02-15T00:00:00.000Z" },
+      });
 
       await executeCleoShow(
         { provider: ["claude-code"], json: true },
@@ -600,7 +606,9 @@ describe("commands/mcp/cleo", () => {
 
       expect(mocks.outputSuccess).toHaveBeenCalled();
       const call = mocks.outputSuccess.mock.calls[0];
-      expect(call[2].count).toBe(2); // Only cleo servers, not "other-server"
+      // Both project and global scopes scanned, 2 cleo entries per scope = 4 total
+      expect(call[2].count).toBe(4);
+      expect(call[2].scopes).toEqual(["project", "global"]);
     });
 
     it("shows profiles filtered by channel", async () => {
@@ -610,7 +618,7 @@ describe("commands/mcp/cleo", () => {
       ]);
 
       await executeCleoShow(
-        { provider: ["claude-code"], channel: "stable", json: true },
+        { provider: ["claude-code"], channel: "stable", json: true, project: true },
         "mcp.cleo.show",
       );
 
@@ -624,14 +632,20 @@ describe("commands/mcp/cleo", () => {
       mocks.listMcpServers.mockResolvedValue([
         { name: "cleo", config: { command: "npx", args: ["arg1"], env: { KEY: "val" } } },
       ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({
+        cleo: { name: "cleo", version: "latest", source: "@cleocode/cleo@latest", sourceType: "package", installedAt: "2026-02-15T00:00:00.000Z" },
+      });
       const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
       await executeCleoShow(
-        { provider: ["claude-code"], human: true },
+        { provider: ["claude-code"], human: true, project: true },
         "mcp.cleo.show",
       );
 
       expect(logSpy).toHaveBeenCalled();
+      const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(allOutput).toContain("CLEO Channel Profiles");
+      expect(allOutput).toContain("healthy");
     });
 
     it("shows 'no profiles found' in human mode when empty", async () => {
@@ -645,12 +659,12 @@ describe("commands/mcp/cleo", () => {
       );
 
       const noProfilesLog = logSpy.mock.calls.find((call) =>
-        String(call[0]).includes("No CLEO MCP profiles found"),
+        String(call[0]).includes("No CLEO channel profiles found"),
       );
       expect(noProfilesLog).toBeDefined();
     });
 
-    it("handles global scope", async () => {
+    it("--global scans only global scope", async () => {
       mocks.listMcpServers.mockResolvedValue([]);
 
       await executeCleoShow(
@@ -659,6 +673,171 @@ describe("commands/mcp/cleo", () => {
       );
 
       expect(mocks.listMcpServers).toHaveBeenCalledWith(provider, "global");
+      expect(mocks.listMcpServers).not.toHaveBeenCalledWith(provider, "project");
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].scopes).toEqual(["global"]);
+    });
+
+    it("--project scans only project scope", async () => {
+      mocks.listMcpServers.mockResolvedValue([]);
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      expect(mocks.listMcpServers).toHaveBeenCalledWith(provider, "project");
+      expect(mocks.listMcpServers).not.toHaveBeenCalledWith(provider, "global");
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].scopes).toEqual(["project"]);
+    });
+
+    it("merges lock file data into profiles", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest"] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({
+        cleo: {
+          name: "cleo",
+          version: "latest",
+          source: "@cleocode/cleo@latest",
+          sourceType: "package",
+          installedAt: "2026-02-15T00:00:00.000Z",
+          updatedAt: "2026-02-20T00:00:00.000Z",
+        },
+      });
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      const call = mocks.outputSuccess.mock.calls[0];
+      const profile = call[2].profiles[0];
+      expect(profile.version).toBe("latest");
+      expect(profile.source).toBe("@cleocode/cleo@latest");
+      expect(profile.sourceType).toBe("package");
+      expect(profile.installedAt).toBe("2026-02-15T00:00:00.000Z");
+      expect(profile.updatedAt).toBe("2026-02-20T00:00:00.000Z");
+    });
+
+    it("sets null for lock data when entry not in lock file", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx", args: [] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({});
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      const call = mocks.outputSuccess.mock.calls[0];
+      const profile = call[2].profiles[0];
+      expect(profile.version).toBeNull();
+      expect(profile.installedAt).toBeNull();
+      expect(profile.source).toBeNull();
+    });
+
+    it("health: command reachable + lock tracked = healthy", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx", args: [] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({
+        cleo: { name: "cleo", version: "latest", installedAt: "2026-02-15T00:00:00.000Z" },
+      });
+      mocks.checkCommandReachability.mockReturnValue({ reachable: true, method: "lookup", detail: "npx" });
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].profiles[0].health.status).toBe("healthy");
+    });
+
+    it("health: command not reachable = broken", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo-dev", config: { command: "./dist/mcp/index.js", args: [] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({
+        "cleo-dev": { name: "cleo-dev", version: undefined, installedAt: "2026-02-20T00:00:00.000Z" },
+      });
+      mocks.checkCommandReachability.mockReturnValue({ reachable: false, method: "path", detail: "./dist/mcp/index.js" });
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].profiles[0].health.status).toBe("broken");
+    });
+
+    it("health: reachable but not in lock = degraded", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx", args: [] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({});
+      mocks.checkCommandReachability.mockReturnValue({ reachable: true, method: "lookup", detail: "npx" });
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].profiles[0].health.status).toBe("degraded");
+    });
+
+    it("emits LAFS warnings for broken and degraded entries", async () => {
+      mocks.listMcpServers.mockImplementation((_provider: Provider, scope: string) => {
+        if (scope === "project") {
+          return Promise.resolve([
+            { name: "cleo-dev", config: { command: "./dist/mcp/index.js", args: [] } },
+            { name: "cleo", config: { command: "npx", args: [] } },
+          ]);
+        }
+        return Promise.resolve([]);
+      });
+      mocks.getTrackedMcpServers.mockResolvedValue({});
+      mocks.checkCommandReachability.mockImplementation((cmd: string) => {
+        if (cmd === "./dist/mcp/index.js") return { reachable: false, method: "path", detail: "./dist/mcp/index.js" };
+        return { reachable: true, method: "lookup", detail: cmd };
+      });
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, json: true },
+        "mcp.cleo.show",
+      );
+
+      // outputSuccess is called with warnings as 6th arg
+      const call = mocks.outputSuccess.mock.calls[0];
+      const warnings = call[5];
+      expect(warnings).toBeDefined();
+      expect(warnings.length).toBe(2);
+      expect(warnings[0].code).toBe("W_COMMAND_UNREACHABLE");
+      expect(warnings[1].code).toBe("W_NOT_TRACKED");
+    });
+
+    it("human table output shows issues section for broken entries", async () => {
+      mocks.resolveFormat.mockReturnValue("human");
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo-dev", config: { command: "./dist/mcp/index.js", args: [] } },
+      ]);
+      mocks.getTrackedMcpServers.mockResolvedValue({});
+      mocks.checkCommandReachability.mockReturnValue({ reachable: false, method: "path", detail: "./dist/mcp/index.js" });
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await executeCleoShow(
+        { provider: ["claude-code"], project: true, human: true },
+        "mcp.cleo.show",
+      );
+
+      const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(allOutput).toContain("Issues:");
+      expect(allOutput).toContain("command not reachable");
     });
 
     it("exits when no providers found in json mode", async () => {
@@ -710,7 +889,7 @@ describe("commands/mcp/cleo", () => {
       ]);
 
       await executeCleoShow(
-        { provider: ["claude-code"], json: true },
+        { provider: ["claude-code"], project: true, json: true },
         "mcp.cleo.show",
       );
 
@@ -1134,11 +1313,11 @@ describe("commands/mcp/cleo", () => {
         "--json",
       ]);
 
-      expect(mocks.outputSuccess).toHaveBeenCalledWith(
-        "cleo.show",
-        "standard",
-        expect.any(Object),
-      );
+      expect(mocks.outputSuccess).toHaveBeenCalled();
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[0]).toBe("cleo.show");
+      expect(call[1]).toBe("standard");
+      expect(call[2]).toEqual(expect.objectContaining({ profiles: [], count: 0 }));
     });
   });
 

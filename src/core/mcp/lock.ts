@@ -47,6 +47,7 @@ export async function recordMcpInstall(
   sourceType: SourceType,
   agents: string[],
   isGlobal: boolean,
+  version?: string,
 ): Promise<void> {
   await updateLockFile((lock) => {
     const now = new Date().toISOString();
@@ -57,6 +58,7 @@ export async function recordMcpInstall(
       scopedName: serverName,
       source,
       sourceType,
+      version: version ?? existing?.version,
       installedAt: existing?.installedAt ?? now,
       updatedAt: now,
       agents: [...new Set([...(existing?.agents ?? []), ...agents])],

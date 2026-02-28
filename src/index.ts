@@ -161,6 +161,7 @@ export {
   resolveCleoServerName,
   resolveChannelFromServerName,
   checkCommandReachability,
+  extractVersionTag,
   parseEnvAssignments,
   isCleoSource,
 } from "./core/mcp/cleo.js";

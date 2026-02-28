@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   buildCleoProfile,
   checkCommandReachability,
+  extractVersionTag,
   isCleoSource,
   normalizeCleoChannel,
   parseEnvAssignments,
@@ -283,6 +284,38 @@ describe("core: mcp cleo", () => {
       expect(() => parseEnvAssignments(["  =value"])).toThrow(
         'Invalid --env value "  =value". Key cannot be empty.',
       );
+    });
+  });
+
+  // ── extractVersionTag ───────────────────────────────────────────────
+
+  describe("extractVersionTag", () => {
+    it("extracts 'latest' from '@cleocode/cleo@latest'", () => {
+      expect(extractVersionTag("@cleocode/cleo@latest")).toBe("latest");
+    });
+
+    it("extracts '1.2.3' from '@cleocode/cleo@1.2.3'", () => {
+      expect(extractVersionTag("@cleocode/cleo@1.2.3")).toBe("1.2.3");
+    });
+
+    it("extracts 'beta' from '@cleocode/cleo@beta'", () => {
+      expect(extractVersionTag("@cleocode/cleo@beta")).toBe("beta");
+    });
+
+    it("returns undefined for undefined input", () => {
+      expect(extractVersionTag(undefined)).toBeUndefined();
+    });
+
+    it("returns undefined for '@cleocode/cleo' (no version)", () => {
+      expect(extractVersionTag("@cleocode/cleo")).toBeUndefined();
+    });
+
+    it("returns undefined for empty string", () => {
+      expect(extractVersionTag("")).toBeUndefined();
+    });
+
+    it("handles non-scoped package 'pkg@2.0.0'", () => {
+      expect(extractVersionTag("pkg@2.0.0")).toBe("2.0.0");
     });
   });
 

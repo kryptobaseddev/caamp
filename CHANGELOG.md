@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-02-28
+
+### Added
+- **Enhanced `cleo show` command**: Rewrote to scan both project and global scopes by default, merge lock file metadata (version, source, installedAt, updatedAt), and run health checks on every entry
+- **Health status per profile**: Each CLEO profile now reports `healthy` (reachable + lock tracked), `degraded` (reachable but untracked), or `broken` (command unreachable)
+- **Rich table output**: Human-readable mode shows a formatted table with Channel, Version, Provider, Scope, Command, Status, and Installed columns, plus an Issues section for broken/degraded entries
+- **`--project` flag**: New scope filter for `cleo show` and `mcp cleo show` — use `--project` for project only, `--global` for global only, or neither for both
+- **Version tracking in lock file**: `recordMcpInstall` now stores version from package spec; `extractVersionTag` helper exported from library
+- **LAFS warnings**: JSON output includes `W_COMMAND_UNREACHABLE` and `W_NOT_TRACKED` warnings in the `_meta.warnings` array for broken/degraded entries
+- **Enriched JSON envelope**: Profiles now include `scope`, `version`, `source`, `sourceType`, `installedAt`, `updatedAt`, and `health` object; top-level `scopes` array replaces singular `scope`
+
+### Changed
+- `cleo show` default behavior scans both project and global scopes (previously project only)
+- Human output message changed from "No CLEO MCP profiles found" to "No CLEO channel profiles found"
+
+## [1.3.1] - 2026-02-27
+
+### Fixed
+- **CLEO MCP subcommand**: Corrected MCP command from `cleo-mcp` to `mcp` in `buildCleoProfile`
+
+## [1.3.0] - 2026-02-27
+
+### Added
+- **Top-level `caamp cleo` command**: Promoted CLEO to first-class CLI status with `cleo.install`, `cleo.update`, `cleo.uninstall`, `cleo.show` operation IDs
+- Both `caamp cleo ...` and `caamp mcp cleo ...` work (backward compatible)
+
+### Changed
+- Moved project documentation from CLAUDE.md to AGENTS.md with `@AGENTS.md` reference for canonical source
+
+### Fixed
+- CI: Fixed OIDC trusted publishing by removing `registry-url`, clearing `.npmrc` token, and unsetting `NODE_AUTH_TOKEN`
+
 ## [1.2.1] - 2026-02-27
 
 ### Fixed

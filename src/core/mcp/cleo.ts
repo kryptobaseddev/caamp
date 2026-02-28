@@ -172,6 +172,13 @@ export function parseEnvAssignments(values: string[]): Record<string, string> {
   return env;
 }
 
+export function extractVersionTag(packageSpec?: string): string | undefined {
+  if (!packageSpec) return undefined;
+  const atIndex = packageSpec.lastIndexOf("@");
+  if (atIndex <= 0) return undefined;
+  return packageSpec.slice(atIndex + 1);
+}
+
 export function isCleoSource(source: string): boolean {
   return source.trim().toLowerCase() === "cleo";
 }
