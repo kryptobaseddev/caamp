@@ -20,7 +20,9 @@ import {
   outputSuccess,
   resolveFormat,
 } from "../core/lafs.js";
+import { resolveChannelFromServerName } from "../core/mcp/cleo.js";
 import { readLockFile } from "../core/mcp/lock.js";
+import { listMcpServers } from "../core/mcp/reader.js";
 import { CANONICAL_SKILLS_DIR } from "../core/paths/agents.js";
 import { detectAllProviders } from "../core/registry/detection.js";
 import { getAllProviders, getProviderCount } from "../core/registry/providers.js";
@@ -58,6 +60,11 @@ interface DoctorResult {
     canonical: number;
     brokenLinks: number;
     staleLinks: number;
+  };
+  mcpServers: {
+    tracked: number;
+    untracked: number;
+    orphaned: number;
   };
   checks: Array<{
     label: string;
@@ -339,6 +346,83 @@ async function checkLockFile(): Promise<SectionResult> {
   return { name: "Lock File", checks };
 }
 
+async function checkMcpLockEntries(): Promise<SectionResult> {
+  const checks: CheckResult[] = [];
+
+  try {
+    const lock = await readLockFile();
+    const lockNames = Object.keys(lock.mcpServers);
+    checks.push({ label: `${lockNames.length} MCP server entries in lock`, status: "pass" });
+
+    // Detect untracked CLEO servers (in config, not in lock)
+    const results = detectAllProviders();
+    const installed = results.filter((r) => r.installed);
+    const liveCleoNames = new Set<string>();
+    let untrackedCount = 0;
+
+    for (const scope of ["project", "global"] as const) {
+      for (const r of installed) {
+        try {
+          const entries = await listMcpServers(r.provider, scope);
+          for (const entry of entries) {
+            const channel = resolveChannelFromServerName(entry.name);
+            if (!channel) continue;
+            liveCleoNames.add(entry.name);
+
+            if (!lock.mcpServers[entry.name]) {
+              untrackedCount++;
+            }
+          }
+        } catch {
+          // skip unreadable configs
+        }
+      }
+    }
+
+    if (untrackedCount === 0) {
+      checks.push({ label: "All CLEO servers tracked in lock", status: "pass" });
+    } else {
+      checks.push({
+        label: `${untrackedCount} untracked CLEO server${untrackedCount !== 1 ? "s" : ""} (in config, not in lock)`,
+        status: "warn",
+        detail: "Run `caamp cleo repair` to backfill lock entries",
+      });
+    }
+
+    // Detect orphaned CLEO entries (in lock, not in any config)
+    let orphanedCount = 0;
+    const orphanedNames: string[] = [];
+
+    for (const serverName of lockNames) {
+      const channel = resolveChannelFromServerName(serverName);
+      if (!channel) continue;
+
+      if (!liveCleoNames.has(serverName)) {
+        orphanedCount++;
+        orphanedNames.push(serverName);
+      }
+    }
+
+    if (orphanedCount === 0) {
+      checks.push({ label: "No orphaned CLEO lock entries", status: "pass" });
+    } else {
+      checks.push({
+        label: `${orphanedCount} orphaned CLEO lock entr${orphanedCount !== 1 ? "ies" : "y"} (in lock, not in any config)`,
+        status: "warn",
+        detail: orphanedNames.join(", ") + " — Run `caamp cleo repair --prune` to clean up",
+      });
+    }
+  } catch (err) {
+    checks.push({
+      label: "Failed to check MCP lock entries",
+      status: "fail",
+      detail: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  return { name: "MCP Lock", checks };
+}
+
 async function checkConfigFiles(): Promise<SectionResult> {
   const checks: CheckResult[] = [];
 
@@ -432,6 +516,7 @@ export function registerDoctorCommand(program: Command): void {
         sections.push(checkInstalledProviders());
         sections.push(checkSkillSymlinks());
         sections.push(await checkLockFile());
+        sections.push(await checkMcpLockEntries());
         sections.push(await checkConfigFiles());
 
         // Tally results
@@ -457,6 +542,8 @@ export function registerDoctorCommand(program: Command): void {
         const installedProviders = detectionResults.filter((r) => r.installed);
         const { canonicalCount, brokenCount, staleCount } = countSkillIssues();
 
+        const { tracked: mcpTracked, untracked: mcpUntracked, orphaned: mcpOrphaned } = countMcpLockIssues(sections);
+
         const result: DoctorResult = {
           environment: {
             node: getNodeVersion(),
@@ -477,6 +564,11 @@ export function registerDoctorCommand(program: Command): void {
             canonical: canonicalCount,
             brokenLinks: brokenCount,
             staleLinks: staleCount,
+          },
+          mcpServers: {
+            tracked: mcpTracked,
+            untracked: mcpUntracked,
+            orphaned: mcpOrphaned,
           },
           checks: sections.flatMap((s) =>
             s.checks.map((c) => ({
@@ -595,4 +687,33 @@ function countSkillIssues(): { canonicalCount: number; brokenCount: number; stal
   }
 
   return { canonicalCount, brokenCount, staleCount };
+}
+
+function countMcpLockIssues(sections: SectionResult[]): {
+  tracked: number;
+  untracked: number;
+  orphaned: number;
+} {
+  const mcpSection = sections.find((s) => s.name === "MCP Lock");
+  if (!mcpSection) return { tracked: 0, untracked: 0, orphaned: 0 };
+
+  let tracked = 0;
+  let untracked = 0;
+  let orphaned = 0;
+
+  for (const check of mcpSection.checks) {
+    const countMatch = check.label.match(/^(\d+)/);
+    if (!countMatch?.[1]) continue;
+
+    const count = Number.parseInt(countMatch[1], 10);
+    if (check.label.includes("MCP server entries in lock")) {
+      tracked = count;
+    } else if (check.label.includes("untracked")) {
+      untracked = count;
+    } else if (check.label.includes("orphaned")) {
+      orphaned = count;
+    }
+  }
+
+  return { tracked, untracked, orphaned };
 }

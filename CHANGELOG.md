@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-02-28
+
+### Added
+- **`caamp cleo repair` command**: Backfills missing lock file entries for CLEO servers installed before lock tracking existed. Supports `--prune` to remove orphaned entries, `--dry-run` for preview, and scope/provider filters
+- **`reconcileCleoLock()` API**: Programmatic reconciliation of CLEO lock entries with live provider configs, exported from library
+- **`inferCleoLockData()` API**: Infers source, sourceType, and version from a live MCP config entry
+- **Doctor MCP lock checks**: New "MCP Lock" section in `caamp doctor` detects untracked CLEO servers and orphaned lock entries, with actionable repair guidance
+
+### Fixed
+- **Table overflow in `cleo show`**: Provider column now uses `padEnd(22)` (was 15), matching other commands — fixes truncation for long provider names like "Amazon Q Developer"
+
 ## [1.4.0] - 2026-02-28
 
 ### Added

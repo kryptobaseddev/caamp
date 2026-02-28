@@ -183,6 +183,10 @@ export {
   getLastSelectedAgents,
 } from "./core/mcp/lock.js";
 
+// MCP reconcile
+export type { InferredLockData, ReconcileOptions, ReconcileResult } from "./core/mcp/reconcile.js";
+export { inferCleoLockData, reconcileCleoLock } from "./core/mcp/reconcile.js";
+
 // Skills lock
 export {
   recordSkillInstall,

@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   isHuman: vi.fn(),
   checkCommandReachability: vi.fn(),
   createInterface: vi.fn(),
+  reconcileCleoLock: vi.fn(),
 }));
 
 vi.mock("../../src/core/mcp/installer.js", () => ({
@@ -72,10 +73,15 @@ vi.mock("node:readline/promises", () => ({
   createInterface: mocks.createInterface,
 }));
 
+vi.mock("../../src/core/mcp/reconcile.js", () => ({
+  reconcileCleoLock: mocks.reconcileCleoLock,
+}));
+
 import {
   executeCleoInstall,
   executeCleoUninstall,
   executeCleoShow,
+  executeCleoRepair,
   mapCompatibilityInstallOptions,
   shouldUseCleoCompatibilityInstall,
   registerMcpCleoCommands,
@@ -137,6 +143,12 @@ describe("commands/mcp/cleo", () => {
       reachable: true,
       method: "lookup",
       detail: "npx",
+    });
+    mocks.reconcileCleoLock.mockResolvedValue({
+      backfilled: [],
+      pruned: [],
+      alreadyTracked: 0,
+      errors: [],
     });
 
     // Prevent actual process.exit
@@ -1318,6 +1330,159 @@ describe("commands/mcp/cleo", () => {
       expect(call[0]).toBe("cleo.show");
       expect(call[1]).toBe("standard");
       expect(call[2]).toEqual(expect.objectContaining({ profiles: [], count: 0 }));
+    });
+  });
+
+  // ── executeCleoRepair ────────────────────────────────────────────
+
+  describe("executeCleoRepair", () => {
+    it("outputs JSON with backfilled entries", async () => {
+      mocks.reconcileCleoLock.mockResolvedValue({
+        backfilled: [
+          {
+            serverName: "cleo",
+            channel: "stable",
+            scope: "project",
+            agents: ["claude-code", "cursor"],
+            source: "@cleocode/cleo@latest",
+            sourceType: "package",
+            version: "latest",
+          },
+        ],
+        pruned: [],
+        alreadyTracked: 3,
+        errors: [],
+      });
+
+      await executeCleoRepair(
+        { provider: [], json: true },
+        "cleo.repair",
+      );
+
+      expect(mocks.outputSuccess).toHaveBeenCalledWith(
+        "cleo.repair",
+        "standard",
+        expect.objectContaining({
+          backfilled: expect.arrayContaining([
+            expect.objectContaining({ serverName: "cleo", channel: "stable" }),
+          ]),
+          alreadyTracked: 3,
+          dryRun: false,
+        }),
+      );
+    });
+
+    it("passes dry-run flag through to reconcileCleoLock", async () => {
+      await executeCleoRepair(
+        { provider: [], dryRun: true, json: true },
+        "cleo.repair",
+      );
+
+      expect(mocks.reconcileCleoLock).toHaveBeenCalledWith(
+        expect.objectContaining({ dryRun: true }),
+      );
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].dryRun).toBe(true);
+    });
+
+    it("passes prune flag through to reconcileCleoLock", async () => {
+      mocks.reconcileCleoLock.mockResolvedValue({
+        backfilled: [],
+        pruned: ["cleo-beta"],
+        alreadyTracked: 2,
+        errors: [],
+      });
+
+      await executeCleoRepair(
+        { provider: [], prune: true, json: true },
+        "cleo.repair",
+      );
+
+      expect(mocks.reconcileCleoLock).toHaveBeenCalledWith(
+        expect.objectContaining({ prune: true }),
+      );
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[2].pruned).toEqual(["cleo-beta"]);
+    });
+
+    it("shows human-readable output with backfill summary", async () => {
+      mocks.resolveFormat.mockReturnValue("human");
+      mocks.reconcileCleoLock.mockResolvedValue({
+        backfilled: [
+          {
+            serverName: "cleo",
+            channel: "stable",
+            scope: "project",
+            agents: ["claude-code"],
+            source: "@cleocode/cleo@latest",
+            sourceType: "package",
+            version: "latest",
+          },
+        ],
+        pruned: [],
+        alreadyTracked: 0,
+        errors: [],
+      });
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await executeCleoRepair(
+        { provider: [], human: true },
+        "cleo.repair",
+      );
+
+      const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(allOutput).toContain("CLEO Lock Repair");
+      expect(allOutput).toContain("1 backfilled");
+      expect(allOutput).toContain("0 pruned");
+    });
+
+    it("shows 'no changes needed' when all tracked", async () => {
+      mocks.resolveFormat.mockReturnValue("human");
+      mocks.reconcileCleoLock.mockResolvedValue({
+        backfilled: [],
+        pruned: [],
+        alreadyTracked: 5,
+        errors: [],
+      });
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await executeCleoRepair(
+        { provider: [], human: true },
+        "cleo.repair",
+      );
+
+      const allOutput = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(allOutput).toContain("No changes needed");
+    });
+
+    it("registers repair via registerMcpCleoCommands", async () => {
+      const program = new Command();
+      registerMcpCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "repair",
+        "--json",
+      ]);
+
+      expect(mocks.reconcileCleoLock).toHaveBeenCalled();
+      expect(mocks.outputSuccess).toHaveBeenCalled();
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[0]).toBe("mcp.cleo.repair");
+    });
+
+    it("registers repair via registerCleoCommands", async () => {
+      const program = new Command();
+      registerCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "repair",
+        "--json",
+      ]);
+
+      expect(mocks.reconcileCleoLock).toHaveBeenCalled();
+      expect(mocks.outputSuccess).toHaveBeenCalled();
+      const call = mocks.outputSuccess.mock.calls[0];
+      expect(call[0]).toBe("cleo.repair");
     });
   });
 

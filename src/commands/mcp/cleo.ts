@@ -26,6 +26,7 @@ import {
 import { installMcpServerToAll } from "../../core/mcp/installer.js";
 import { getTrackedMcpServers, recordMcpInstall, removeMcpFromLock } from "../../core/mcp/lock.js";
 import { listMcpServers, removeMcpServer } from "../../core/mcp/reader.js";
+import { reconcileCleoLock } from "../../core/mcp/reconcile.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
 import type { Provider } from "../../types.js";
@@ -63,6 +64,17 @@ interface CleoShowOptions {
   global?: boolean;
   project?: boolean;
   channel?: string;
+  json?: boolean;
+  human?: boolean;
+}
+
+interface CleoRepairOptions {
+  provider: string[];
+  all?: boolean;
+  global?: boolean;
+  project?: boolean;
+  prune?: boolean;
+  dryRun?: boolean;
   json?: boolean;
   human?: boolean;
 }
@@ -663,14 +675,14 @@ export async function executeCleoShow(
       const header = [
         "Channel".padEnd(10),
         "Version".padEnd(10),
-        "Provider".padEnd(15),
+        "Provider".padEnd(22),
         "Scope".padEnd(9),
         "Command".padEnd(33),
         "Status".padEnd(10),
         "Installed".padEnd(12),
       ].join("");
       console.log(`  ${pc.dim(header)}`);
-      console.log(`  ${pc.dim("-".repeat(99))}`);
+      console.log(`  ${pc.dim("-".repeat(106))}`);
 
       for (const entry of entries) {
         const commandStr = entry.command
@@ -691,7 +703,7 @@ export async function executeCleoShow(
         }
 
         console.log(
-          `  ${entry.channel.padEnd(10)}${versionStr}${entry.providerName.padEnd(15)}${entry.scope.padEnd(9)}${commandStr}${statusStr}${installedStr}`,
+          `  ${entry.channel.padEnd(10)}${versionStr}${entry.providerName.padEnd(22)}${entry.scope.padEnd(9)}${commandStr}${statusStr}${installedStr}`,
         );
       }
 
@@ -725,6 +737,85 @@ export async function executeCleoShow(
       undefined,
       warnings.length > 0 ? warnings : undefined,
     );
+  }
+}
+
+export async function executeCleoRepair(
+  opts: CleoRepairOptions,
+  operation: string,
+): Promise<void> {
+  const mvi: import("../../core/lafs.js").MVILevel = "standard";
+
+  let format: "json" | "human";
+  try {
+    format = resolveFormat({
+      jsonFlag: opts.json ?? false,
+      humanFlag: (opts.human ?? false) || isHuman(),
+      projectDefault: "json",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    emitJsonError(operation, mvi, ErrorCodes.FORMAT_CONFLICT, message, ErrorCategories.VALIDATION);
+    process.exit(1);
+  }
+
+  const providerIds = opts.provider.length > 0 ? opts.provider : undefined;
+
+  const result = await reconcileCleoLock({
+    providerIds,
+    all: opts.all,
+    global: opts.global,
+    project: opts.project,
+    prune: opts.prune,
+    dryRun: opts.dryRun,
+  });
+
+  if (format === "human") {
+    const prefix = opts.dryRun ? "CLEO Lock Repair (dry run)" : "CLEO Lock Repair";
+    console.log(pc.bold(prefix));
+    console.log();
+
+    if (result.backfilled.length > 0) {
+      for (const entry of result.backfilled) {
+        const agents = entry.agents.join(", ");
+        const versionStr = entry.version ? `(${entry.version})` : "";
+        console.log(
+          `  ${pc.green("+")} ${entry.serverName.padEnd(12)}${entry.channel.padEnd(10)}${agents.padEnd(22)}${entry.scope.padEnd(10)}${entry.source}  ${pc.dim(versionStr)}`,
+        );
+      }
+    }
+
+    if (result.pruned.length > 0) {
+      for (const name of result.pruned) {
+        console.log(`  ${pc.red("-")} ${name} (removed from lock)`);
+      }
+    }
+
+    if (result.backfilled.length === 0 && result.pruned.length === 0) {
+      console.log(pc.dim("  No changes needed. All CLEO entries are tracked."));
+    }
+
+    console.log();
+    console.log(
+      `  ${result.backfilled.length} backfilled  |  ${result.pruned.length} pruned  |  ${result.alreadyTracked} already tracked`,
+    );
+
+    if (result.errors.length > 0) {
+      console.log();
+      for (const err of result.errors) {
+        console.log(`  ${pc.red("!")} ${err.message}`);
+      }
+    }
+  }
+
+  if (format === "json") {
+    outputSuccess(operation, mvi, {
+      backfilled: result.backfilled,
+      pruned: result.pruned,
+      alreadyTracked: result.alreadyTracked,
+      dryRun: opts.dryRun ?? false,
+      errors: result.errors,
+    });
   }
 }
 
@@ -793,6 +884,21 @@ export function registerMcpCleoCommands(parent: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (opts: CleoShowOptions) => {
       await executeCleoShow(opts, "mcp.cleo.show");
+    });
+
+  cleo
+    .command("repair")
+    .description("Repair lock file by backfilling untracked CLEO entries")
+    .option("--provider <id>", "Target provider (repeatable)", collect, [])
+    .option("--all", "Scan all detected providers")
+    .option("-g, --global", "Global scope only")
+    .option("-p, --project", "Project scope only")
+    .option("--prune", "Remove orphaned lock entries not in any config")
+    .option("--dry-run", "Preview without writing")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: CleoRepairOptions) => {
+      await executeCleoRepair(opts, "mcp.cleo.repair");
     });
 }
 
@@ -949,6 +1055,21 @@ export function registerCleoCommands(program: Command): void {
     .option("--human", "Output in human-readable format")
     .action(async (opts: CleoShowOptions) => {
       await executeCleoShow(opts, "cleo.show");
+    });
+
+  cleo
+    .command("repair")
+    .description("Repair lock file by backfilling untracked CLEO entries")
+    .option("--provider <id>", "Target provider (repeatable)", collect, [])
+    .option("--all", "Scan all detected providers")
+    .option("-g, --global", "Global scope only")
+    .option("-p, --project", "Project scope only")
+    .option("--prune", "Remove orphaned lock entries not in any config")
+    .option("--dry-run", "Preview without writing")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: CleoRepairOptions) => {
+      await executeCleoRepair(opts, "cleo.repair");
     });
 }
 
