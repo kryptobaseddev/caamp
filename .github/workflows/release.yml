@@ -26,7 +26,9 @@ jobs:
 
       - run: npm test
 
-      - name: Clear .npmrc token for OIDC
-        run: echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
-
-      - run: npm publish --provenance --access public
+      - name: Publish to npm via OIDC trusted publishing
+        run: |
+          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+          unset NODE_AUTH_TOKEN
+          unset NPM_CONFIG_USERCONFIG
+          npm publish --provenance --access public
