@@ -78,6 +78,7 @@ import {
   shouldUseCleoCompatibilityInstall,
   registerMcpCleoCommands,
   registerMcpCleoCompatibilityCommands,
+  registerCleoCommands,
 } from "../../src/commands/mcp/cleo.js";
 import type { Provider } from "../../src/types.js";
 
@@ -1050,6 +1051,94 @@ describe("commands/mcp/cleo", () => {
       ]);
 
       expect(mocks.outputSuccess).toHaveBeenCalled();
+    });
+  });
+
+  // ── registerCleoCommands (top-level) ────────────────────────────
+
+  describe("registerCleoCommands", () => {
+    it("registers install action callback with cleo.* operation IDs", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx" } },
+      ]);
+
+      const program = new Command();
+      registerCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "install",
+        "--channel", "stable",
+        "--provider", "claude-code",
+        "--json",
+      ]);
+
+      expect(mocks.installMcpServerToAll).toHaveBeenCalled();
+      expect(mocks.outputSuccess).toHaveBeenCalledWith(
+        "cleo.install",
+        "standard",
+        expect.any(Object),
+      );
+    });
+
+    it("registers update action callback", async () => {
+      mocks.listMcpServers.mockResolvedValue([
+        { name: "cleo", config: { command: "npx" } },
+      ]);
+
+      const program = new Command();
+      registerCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "update",
+        "--channel", "stable",
+        "--provider", "claude-code",
+        "--json",
+      ]);
+
+      expect(mocks.installMcpServerToAll).toHaveBeenCalled();
+      expect(mocks.outputSuccess).toHaveBeenCalledWith(
+        "cleo.update",
+        "standard",
+        expect.any(Object),
+      );
+    });
+
+    it("registers uninstall action callback", async () => {
+      const program = new Command();
+      registerCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "uninstall",
+        "--channel", "stable",
+        "--provider", "claude-code",
+        "--json",
+      ]);
+
+      expect(mocks.removeMcpServer).toHaveBeenCalled();
+      expect(mocks.outputSuccess).toHaveBeenCalledWith(
+        "cleo.uninstall",
+        "standard",
+        expect.any(Object),
+      );
+    });
+
+    it("registers show action callback", async () => {
+      mocks.listMcpServers.mockResolvedValue([]);
+
+      const program = new Command();
+      registerCleoCommands(program);
+
+      await program.parseAsync([
+        "node", "test", "cleo", "show",
+        "--provider", "claude-code",
+        "--json",
+      ]);
+
+      expect(mocks.outputSuccess).toHaveBeenCalledWith(
+        "cleo.show",
+        "standard",
+        expect.any(Object),
+      );
     });
   });
 

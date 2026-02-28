@@ -153,6 +153,18 @@ export {
 export { searchSkills, recommendSkills, formatSkillRecommendations } from "./core/skills/recommendation-api.js";
 export { scanFile, scanDirectory, toSarif } from "./core/skills/audit/scanner.js";
 
+// CLEO core
+export type { CleoChannel, CleoProfileBuildResult } from "./core/mcp/cleo.js";
+export {
+  buildCleoProfile,
+  normalizeCleoChannel,
+  resolveCleoServerName,
+  resolveChannelFromServerName,
+  checkCommandReachability,
+  parseEnvAssignments,
+  isCleoSource,
+} from "./core/mcp/cleo.js";
+
 // MCP install
 export { installMcpServer, installMcpServerToAll, buildServerConfig } from "./core/mcp/installer.js";
 export { getTransform } from "./core/mcp/transforms.js";

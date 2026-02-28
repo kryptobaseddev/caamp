@@ -741,4 +741,53 @@ export function shouldUseCleoCompatibilityInstall(source: string, channel?: stri
   return typeof channel === "string" && channel.trim() !== "";
 }
 
+export function registerCleoCommands(program: Command): void {
+  const cleo = program
+    .command("cleo")
+    .description("Manage CLEO channel profiles");
+
+  buildInstallOptions(
+    cleo
+      .command("install")
+      .description("Install CLEO profile by channel"),
+  ).action(async (opts: CleoInstallOptions) => {
+    await executeCleoInstall("install", opts, "cleo.install");
+  });
+
+  buildInstallOptions(
+    cleo
+      .command("update")
+      .description("Update CLEO profile by channel"),
+  ).action(async (opts: CleoInstallOptions) => {
+    await executeCleoInstall("update", opts, "cleo.update");
+  });
+
+  cleo
+    .command("uninstall")
+    .description("Uninstall CLEO profile for a channel")
+    .requiredOption("--channel <channel>", "CLEO channel: stable|beta|dev")
+    .option("--provider <id>", "Target provider (repeatable)", collect, [])
+    .option("--all", "Apply to all detected providers")
+    .option("-g, --global", "Use global scope")
+    .option("--dry-run", "Preview without writing")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: CleoUninstallOptions) => {
+      await executeCleoUninstall(opts, "cleo.uninstall");
+    });
+
+  cleo
+    .command("show")
+    .description("Show installed CLEO channel profiles")
+    .option("--provider <id>", "Target provider (repeatable)", collect, [])
+    .option("--all", "Inspect all detected providers")
+    .option("-g, --global", "Use global scope")
+    .option("--channel <channel>", "Filter channel: stable|beta|dev")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (opts: CleoShowOptions) => {
+      await executeCleoShow(opts, "cleo.show");
+    });
+}
+
 export { resolveCleoServerName };
