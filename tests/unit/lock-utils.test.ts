@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, rm, writeFile } from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CaampLockFile } from "../../src/types.js";
 
@@ -140,5 +140,49 @@ describe("lock-utils", () => {
 
     const persisted = await readLockFile();
     expect(persisted).toEqual(result);
+  });
+
+  describe("stale lock removal", () => {
+    it("removes stale lock guard and allows acquisition", async () => {
+      // Create the directory
+      await mkdir(mockedPaths.AGENTS_HOME, { recursive: true });
+
+      // Create a lock guard file with an old timestamp
+      const lockGuardPath = `${mockedPaths.LOCK_FILE_PATH}.lock`;
+      await writeFile(lockGuardPath, "", "utf-8");
+
+      // Backdate the file's mtime to make it stale (>5 seconds old)
+      const { utimes } = await import("node:fs/promises");
+      const oldTime = new Date(Date.now() - 10_000);
+      await utimes(lockGuardPath, oldTime, oldTime);
+
+      // Now updateLockFile should succeed because it detects the stale lock and removes it
+      const result = await updateLockFile((lock) => {
+        lock.skills["stale-test"] = {
+          name: "stale-test",
+          scopedName: "@test/stale-test",
+          source: "github",
+          sourceType: "github",
+          agents: ["claude-code"],
+          canonicalPath: "/tmp/stale-test",
+          isGlobal: true,
+          installedAt: "2026-02-15T00:00:00.000Z",
+        };
+      });
+
+      expect(result.skills["stale-test"]).toBeDefined();
+    });
+
+    it("acquireLockGuard succeeds when lock guard does not exist", async () => {
+      // Simply calling writeLockFile should work when no lock guard exists
+      const lock: CaampLockFile = {
+        version: 1,
+        skills: {},
+        mcpServers: {},
+      };
+      await writeLockFile(lock);
+      const loaded = await readLockFile();
+      expect(loaded).toEqual(lock);
+    });
   });
 });

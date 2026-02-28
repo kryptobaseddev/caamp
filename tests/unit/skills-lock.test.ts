@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   open: vi.fn(),
   rm: vi.fn(),
   rename: vi.fn(),
+  execFileAsync: vi.fn(),
 }));
 
 vi.mock("../../src/core/lock-utils.js", () => ({
@@ -42,7 +43,19 @@ vi.mock("node:fs/promises", () => ({
   rename: mocks.rename,
 }));
 
+vi.mock("node:child_process", () => ({
+  // execFile needs to be a function that, when promisified, returns execFileAsync.
+  // promisify calls the function with (...args, callback), so we create a wrapper.
+  execFile: (...args: unknown[]) => {
+    const callback = args[args.length - 1] as (err: Error | null, result?: { stdout: string }) => void;
+    mocks.execFileAsync(args[0], args[1])
+      .then((result: { stdout: string }) => callback(null, result))
+      .catch((err: Error) => callback(err));
+  },
+}));
+
 import {
+  checkAllSkillUpdates,
   checkSkillUpdate,
   getTrackedSkills,
   recordSkillInstall,
@@ -569,6 +582,167 @@ describe("skills lock", () => {
       const result = await checkSkillUpdate("long-sha");
 
       expect(result.latestVersion?.length).toBe(12);
+    });
+
+    it("checks library sourceType and detects update available", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile({
+        skills: {
+          "lib-skill": mockSkillEntry({
+            name: "lib-skill",
+            sourceType: "library",
+            source: "@cleocode/ct-skills:ct-research",
+            version: "1.0.0",
+          }),
+        },
+      }));
+      mocks.parseSource.mockReturnValue({
+        type: "library",
+        owner: "@cleocode/ct-skills",
+        repo: "ct-research",
+      });
+      mocks.execFileAsync.mockResolvedValue({ stdout: "2.0.0\n" });
+
+      const result = await checkSkillUpdate("lib-skill");
+
+      expect(result.hasUpdate).toBe(true);
+      expect(result.status).toBe("update-available");
+      expect(result.currentVersion).toBe("1.0.0");
+      expect(result.latestVersion).toBe("2.0.0");
+    });
+
+    it("library sourceType is up-to-date when versions match", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile({
+        skills: {
+          "lib-current": mockSkillEntry({
+            name: "lib-current",
+            sourceType: "library",
+            source: "@cleocode/ct-skills:ct-research",
+            version: "1.5.0",
+          }),
+        },
+      }));
+      mocks.parseSource.mockReturnValue({
+        type: "library",
+        owner: "@cleocode/ct-skills",
+        repo: "ct-research",
+      });
+      mocks.execFileAsync.mockResolvedValue({ stdout: "1.5.0\n" });
+
+      const result = await checkSkillUpdate("lib-current");
+
+      expect(result.hasUpdate).toBe(false);
+      expect(result.status).toBe("up-to-date");
+    });
+
+    it("library sourceType returns unknown when npm view fails", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile({
+        skills: {
+          "lib-fail": mockSkillEntry({
+            name: "lib-fail",
+            sourceType: "library",
+            source: "@cleocode/ct-skills:ct-research",
+            version: "1.0.0",
+          }),
+        },
+      }));
+      mocks.parseSource.mockReturnValue({
+        type: "library",
+        owner: "@cleocode/ct-skills",
+        repo: "ct-research",
+      });
+      mocks.execFileAsync.mockRejectedValue(new Error("npm view failed"));
+
+      const result = await checkSkillUpdate("lib-fail");
+
+      expect(result.hasUpdate).toBe(false);
+      expect(result.status).toBe("unknown");
+    });
+
+    it("library sourceType with no current version shows update available", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile({
+        skills: {
+          "lib-no-ver": mockSkillEntry({
+            name: "lib-no-ver",
+            sourceType: "library",
+            source: "@cleocode/ct-skills:ct-research",
+            version: undefined,
+          }),
+        },
+      }));
+      mocks.parseSource.mockReturnValue({
+        type: "library",
+        owner: "@cleocode/ct-skills",
+        repo: "ct-research",
+      });
+      mocks.execFileAsync.mockResolvedValue({ stdout: "1.0.0\n" });
+
+      const result = await checkSkillUpdate("lib-no-ver");
+
+      expect(result.hasUpdate).toBe(true);
+      expect(result.currentVersion).toBe("unknown");
+      expect(result.latestVersion).toBe("1.0.0");
+    });
+
+    it("returns unknown for github sourceType where parsed.repo is null", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile({
+        skills: {
+          "no-repo": mockSkillEntry({
+            name: "no-repo",
+            sourceType: "github",
+            source: "some-source",
+            version: "abc123",
+          }),
+        },
+      }));
+      mocks.parseSource.mockReturnValue({ type: "github", owner: "owner", repo: undefined });
+
+      const result = await checkSkillUpdate("no-repo");
+
+      expect(result.hasUpdate).toBe(false);
+      expect(result.status).toBe("unknown");
+    });
+  });
+
+  describe("checkAllSkillUpdates", () => {
+    it("checks all tracked skills for updates", async () => {
+      const lock = mockLockFile({
+        skills: {
+          "skill-a": mockSkillEntry({
+            name: "skill-a",
+            sourceType: "github",
+            source: "owner/repo-a",
+            version: "abc123",
+          }),
+          "skill-b": mockSkillEntry({
+            name: "skill-b",
+            sourceType: "local",
+            source: "./local-skill",
+            version: "def456",
+          }),
+        },
+      });
+      // readLockFile is called by checkAllSkillUpdates AND by each checkSkillUpdate call
+      mocks.readLockFile.mockResolvedValue(lock);
+      mocks.parseSource.mockReturnValue({ type: "github", owner: "owner", repo: "repo-a" });
+      mocks.simpleGit.mockReturnValue({
+        listRemote: vi.fn().mockResolvedValue("newsha123456 HEAD"),
+      });
+
+      const results = await checkAllSkillUpdates();
+
+      expect(Object.keys(results)).toHaveLength(2);
+      expect(results["skill-a"]).toBeDefined();
+      expect(results["skill-b"]).toBeDefined();
+      // local sourceType should be unknown
+      expect(results["skill-b"]?.status).toBe("unknown");
+    });
+
+    it("returns empty object when no skills tracked", async () => {
+      mocks.readLockFile.mockResolvedValue(mockLockFile());
+
+      const results = await checkAllSkillUpdates();
+
+      expect(results).toEqual({});
     });
   });
 });
