@@ -122,7 +122,7 @@ export function buildCleoProfile(options: CleoProfileBuildOptions): CleoProfileB
     packageSpec,
     config: {
       command: "npx",
-      args: ["-y", packageSpec, "cleo-mcp"],
+      args: ["-y", packageSpec, "mcp"],
     },
   };
 }

@@ -98,7 +98,7 @@ describe("core: mcp cleo", () => {
       expect(profile.serverName).toBe("cleo");
       expect(profile.packageSpec).toBe("@cleocode/cleo@latest");
       expect(profile.config.command).toBe("npx");
-      expect(profile.config.args).toEqual(["-y", "@cleocode/cleo@latest", "cleo-mcp"]);
+      expect(profile.config.args).toEqual(["-y", "@cleocode/cleo@latest", "mcp"]);
     });
 
     it("builds stable profile with no version (defaults to latest tag)", () => {

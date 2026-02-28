@@ -147,7 +147,7 @@ describe("commands/mcp/cleo", () => {
   describe("executeCleoInstall", () => {
     it("installs stable channel in json mode", async () => {
       mocks.listMcpServers.mockResolvedValue([
-        { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest", "cleo-mcp"] } },
+        { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest", "mcp"] } },
       ]);
 
       await executeCleoInstall(
