@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-02-28
+
+### Fixed
+- **OpenCode provider registry paths**: `configPathProject` corrected from `.opencode.json` to `opencode.json` (OpenCode reads project root, not dot-prefixed); `pathGlobal` and `pathSkills` corrected from `$CONFIG/.opencode` to `$CONFIG/opencode` (dot-prefixed `.opencode/` is the project agents/plugins directory, not config)
+
 ## [1.5.1] - 2026-02-28
 
 ### Fixed
