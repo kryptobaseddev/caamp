@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-03-03
+
+### Fixed
+- **Gemini CLI hooks**: Added session lifecycle hooks (`onSessionStart`, `onSessionEnd`) and corrected hook configuration path to `$HOME/.gemini/settings.json` based on official documentation
+- **Provider hook data**: Expanded hook support for Codex CLI, Gemini CLI, OpenCode, and Kimi Coding (5 providers total with hooks)
+
 ## [1.6.0] - 2026-03-03
 
 ### Added
