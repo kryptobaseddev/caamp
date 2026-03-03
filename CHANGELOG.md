@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - **SpawnAdapter interface**: Provider-neutral interface for subagent orchestration (`SpawnOptions`, `SpawnResult`, `SpawnAdapter`)
 - **Precedence-aware skill installation**: Skills installer now creates symlinks in all precedence-based directories (e.g., both `.agents/skills` and vendor dir for `agents-first` providers)
 - **Dev script: `npm run research`**: Provider data research tool that fetches capabilities from aggregate sources (Vercel Skills, Neon add-mcp) and compares against registry.json
+- **Hook data for additional providers**: Added `capabilities.hooks` for OpenCode, Codex CLI, Gemini CLI, and Kimi Coding with their supported lifecycle events
 
 ### Changed
 - **Registry version**: Bumped from `1.0.0` to `1.1.0` (additive schema extension)

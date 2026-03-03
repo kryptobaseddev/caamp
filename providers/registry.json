@@ -132,6 +132,11 @@
           "agentsGlobalPath": "$HOME/.agents/skills",
           "agentsProjectPath": ".agents/skills"
         },
+        "hooks": {
+          "supported": ["onToolStart", "onToolComplete", "onSessionStart", "onSessionEnd"],
+          "hookConfigPath": null,
+          "hookFormat": "json"
+        },
         "spawn": {
           "supportsSubagents": true,
           "supportsProgrammaticSpawn": true,
@@ -171,6 +176,11 @@
           "precedence": "agents-first",
           "agentsGlobalPath": "$HOME/.agents/skills",
           "agentsProjectPath": ".agents/skills"
+        },
+        "hooks": {
+          "supported": ["onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
+          "hookConfigPath": null,
+          "hookFormat": "json"
         },
         "spawn": {
           "supportsSubagents": true,
@@ -243,6 +253,11 @@
           "agentsGlobalPath": "$HOME/.agents/skills",
           "agentsProjectPath": ".agents/skills"
         },
+        "hooks": {
+          "supported": ["onToolStart", "onToolComplete", "onSessionStart", "onSessionEnd", "onPromptSubmit", "onResponseComplete"],
+          "hookConfigPath": null,
+          "hookFormat": "json"
+        },
         "spawn": {
           "supportsSubagents": true,
           "supportsProgrammaticSpawn": true,
@@ -301,7 +316,26 @@
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
-      "agentSkillsCompatible": true
+      "agentSkillsCompatible": true,
+      "capabilities": {
+        "skills": {
+          "precedence": "vendor-only",
+          "agentsGlobalPath": null,
+          "agentsProjectPath": null
+        },
+        "hooks": {
+          "supported": ["onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
+          "hookConfigPath": null,
+          "hookFormat": "json"
+        },
+        "spawn": {
+          "supportsSubagents": false,
+          "supportsProgrammaticSpawn": false,
+          "supportsInterAgentComms": false,
+          "supportsParallelSpawn": false,
+          "spawnMechanism": null
+        }
+      }
     },
     "vscode": {
       "id": "vscode",
