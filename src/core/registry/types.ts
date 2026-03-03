@@ -42,6 +42,55 @@ export interface RegistryProvider {
   priority: string;
   status: string;
   agentSkillsCompatible: boolean;
+
+  capabilities?: RegistryCapabilities;
+}
+
+// ── Capability Types (raw JSON schema) ─────────────────────────────
+
+export type SkillsPrecedence =
+  | "vendor-only"
+  | "agents-canonical"
+  | "agents-first"
+  | "agents-supported"
+  | "vendor-global-agents-project";
+
+export interface RegistrySkillsCapability {
+  agentsGlobalPath: string | null;
+  agentsProjectPath: string | null;
+  precedence: SkillsPrecedence;
+}
+
+export type HookEvent =
+  | "onSessionStart"
+  | "onSessionEnd"
+  | "onToolStart"
+  | "onToolComplete"
+  | "onFileChange"
+  | "onError"
+  | "onPromptSubmit"
+  | "onResponseComplete";
+
+export interface RegistryHooksCapability {
+  supported: string[];
+  hookConfigPath: string | null;
+  hookFormat: string | null;
+}
+
+export type SpawnMechanism = "native" | "mcp" | "cli" | "api";
+
+export interface RegistrySpawnCapability {
+  supportsSubagents: boolean;
+  supportsProgrammaticSpawn: boolean;
+  supportsInterAgentComms: boolean;
+  supportsParallelSpawn: boolean;
+  spawnMechanism: string | null;
+}
+
+export interface RegistryCapabilities {
+  skills?: RegistrySkillsCapability;
+  hooks?: RegistryHooksCapability;
+  spawn?: RegistrySpawnCapability;
 }
 
 export interface ProviderRegistry {

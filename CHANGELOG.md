@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-03-03
+
+### Added
+- **Provider Capability Registry Extension**: New `capabilities` object on every provider with three domains:
+  - **Skills precedence** (`capabilities.skills`): Tracks how each provider resolves skill files — `vendor-only`, `agents-canonical`, `agents-first`, `agents-supported`, or `vendor-global-agents-project`
+  - **Hook/lifecycle events** (`capabilities.hooks`): Lists supported lifecycle events per provider (e.g., `onToolStart`, `onSessionEnd`)
+  - **Spawn/subagent support** (`capabilities.spawn`): Tracks subagent spawning capabilities, mechanism (`native`/`cli`/`mcp`/`api`), and inter-agent communication support
+- **CLI: `caamp providers skills-map`**: Shows skills precedence and paths for all providers (`--json`/`--human`, `--provider <id>`)
+- **CLI: `caamp providers hooks`**: Query hook/lifecycle event support across providers (`--event <name>`, `--common`)
+- **CLI: `caamp providers capabilities`**: Capability matrix across all providers (`--filter <dot.path>`)
+- **API: Skills query functions**: `getProvidersBySkillsPrecedence()`, `getEffectiveSkillsPaths()`, `buildSkillsMap()`, `getProviderCapabilities()`, `providerSupports()`
+- **API: Hooks query functions**: `getProvidersByHookEvent()`, `getCommonHookEvents()`
+- **API: Spawn query functions**: `getSpawnCapableProviders()`, `getProvidersBySpawnCapability()`
+- **SpawnAdapter interface**: Provider-neutral interface for subagent orchestration (`SpawnOptions`, `SpawnResult`, `SpawnAdapter`)
+- **Precedence-aware skill installation**: Skills installer now creates symlinks in all precedence-based directories (e.g., both `.agents/skills` and vendor dir for `agents-first` providers)
+- **Dev script: `npm run research`**: Provider data research tool that fetches capabilities from aggregate sources (Vercel Skills, Neon add-mcp) and compares against registry.json
+
+### Changed
+- **Registry version**: Bumped from `1.0.0` to `1.1.0` (additive schema extension)
+- **`resolveProviderSkillsDirs()`** replaces single-path resolution with precedence-aware multi-path resolution
+
 ## [1.5.2] - 2026-02-28
 
 ### Fixed

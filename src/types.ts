@@ -114,6 +114,51 @@ export interface DetectionConfig {
   flatpakId?: string;
 }
 
+// ── Provider Capabilities ────────────────────────────────────────────
+
+// Re-export capability enums from registry types for convenience
+export type { SkillsPrecedence, HookEvent, SpawnMechanism } from "./core/registry/types.js";
+
+export interface ProviderSkillsCapability {
+  /** Resolved global `.agents/skills` path, or `null` if unsupported. */
+  agentsGlobalPath: string | null;
+  /** Project-relative `.agents/skills` path, or `null` if unsupported. */
+  agentsProjectPath: string | null;
+  /** How this provider resolves skill file precedence. */
+  precedence: import("./core/registry/types.js").SkillsPrecedence;
+}
+
+export interface ProviderHooksCapability {
+  /** Hook lifecycle events this provider supports. */
+  supported: import("./core/registry/types.js").HookEvent[];
+  /** Resolved path to hook configuration file, or `null`. */
+  hookConfigPath: string | null;
+  /** Format of the hook config file. */
+  hookFormat: "json" | "yaml" | "toml" | "javascript" | null;
+}
+
+export interface ProviderSpawnCapability {
+  /** Whether the provider supports spawning subagents. */
+  supportsSubagents: boolean;
+  /** Whether subagents can be spawned programmatically. */
+  supportsProgrammaticSpawn: boolean;
+  /** Whether spawned agents can communicate with each other. */
+  supportsInterAgentComms: boolean;
+  /** Whether multiple agents can be spawned in parallel. */
+  supportsParallelSpawn: boolean;
+  /** Mechanism used for spawning. */
+  spawnMechanism: import("./core/registry/types.js").SpawnMechanism | null;
+}
+
+export interface ProviderCapabilities {
+  /** Skills path resolution and precedence. */
+  skills: ProviderSkillsCapability;
+  /** Hook/lifecycle event support. */
+  hooks: ProviderHooksCapability;
+  /** Subagent spawn capabilities. */
+  spawn: ProviderSpawnCapability;
+}
+
 // ── Provider ────────────────────────────────────────────────────────
 
 /**
@@ -197,6 +242,9 @@ export interface Provider {
   status: ProviderStatus;
   /** Whether the provider is compatible with the Agent Skills standard. */
   agentSkillsCompatible: boolean;
+
+  /** Provider capabilities for skills, hooks, and spawn. Always populated at runtime. */
+  capabilities: ProviderCapabilities;
 }
 
 // ── MCP Server Config (Canonical) ───────────────────────────────────

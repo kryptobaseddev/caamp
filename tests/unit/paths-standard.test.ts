@@ -15,9 +15,10 @@ import {
   normalizeSkillSubPath,
   resolveProviderConfigPath,
   resolveProviderSkillsDir,
+  resolveProviderSkillsDirs,
   resolveRegistryTemplatePath,
 } from "../../src/core/paths/standard.js";
-import type { Provider } from "../../src/types.js";
+import type { Provider, ProviderCapabilities } from "../../src/types.js";
 
 const originalAgentsHome = process.env["AGENTS_HOME"];
 
@@ -267,6 +268,135 @@ describe("paths standard", () => {
 
     it("normalizes backslashes to forward slashes", () => {
       expect(normalizeSkillSubPath("skills\\foo\\bar")).toBe("skills/foo/bar");
+    });
+  });
+
+  describe("resolveProviderSkillsDirs", () => {
+    function makeCapabilities(
+      precedence: string,
+      agentsGlobalPath: string | null = null,
+      agentsProjectPath: string | null = null,
+    ): ProviderCapabilities {
+      return {
+        skills: {
+          precedence: precedence as ProviderCapabilities["skills"]["precedence"],
+          agentsGlobalPath,
+          agentsProjectPath,
+        },
+        hooks: { supported: [], hookConfigPath: null, hookFormat: null },
+        spawn: {
+          supportsSubagents: false,
+          supportsProgrammaticSpawn: false,
+          supportsInterAgentComms: false,
+          supportsParallelSpawn: false,
+          spawnMechanism: null,
+        },
+      };
+    }
+
+    const baseProvider = {
+      pathSkills: "/home/user/.claude/skills",
+      pathProjectSkills: ".claude/skills",
+    } as Provider;
+
+    it("vendor-only returns 1 path (vendor)", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("vendor-only"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.claude/skills");
+    });
+
+    it("agents-canonical returns 1 path (agents) when agents path exists", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-canonical", "/home/user/.agents/skills", ".agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.agents/skills");
+    });
+
+    it("agents-canonical falls back to vendor when agents path is null", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-canonical", null, null),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.claude/skills");
+    });
+
+    it("agents-first returns 2 paths (agents, vendor) when agents path exists", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-first", "/home/user/.agents/skills", ".agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(2);
+      expect(result[0]).toBe("/home/user/.agents/skills");
+      expect(result[1]).toBe("/home/user/.claude/skills");
+    });
+
+    it("agents-first returns 1 path (vendor) when agents path is null", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-first", null),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.claude/skills");
+    });
+
+    it("agents-supported returns 2 paths (vendor, agents) when agents path exists", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-supported", "/home/user/.agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(2);
+      expect(result[0]).toBe("/home/user/.claude/skills");
+      expect(result[1]).toBe("/home/user/.agents/skills");
+    });
+
+    it("vendor-global-agents-project with global scope returns 1 path (vendor)", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("vendor-global-agents-project", "/home/user/.agents/skills", ".agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.claude/skills");
+    });
+
+    it("vendor-global-agents-project with project scope returns 2 paths (agents, vendor)", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("vendor-global-agents-project", "/home/user/.agents/skills", ".agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "project", "/my/project");
+      expect(result).toHaveLength(2);
+      expect(result[0]).toContain(".agents/skills");
+      expect(result[1]).toContain(".claude/skills");
+    });
+
+    it("project scope resolves agentsProjectPath relative to projectDir", () => {
+      const provider = {
+        ...baseProvider,
+        capabilities: makeCapabilities("agents-canonical", "/home/user/.agents/skills", ".agents/skills"),
+      };
+      const result = resolveProviderSkillsDirs(provider, "project", "/my/project");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/my/project/.agents/skills");
+    });
+
+    it("falls back to vendor-only when capabilities are undefined", () => {
+      const provider = { ...baseProvider } as Provider;
+      const result = resolveProviderSkillsDirs(provider, "global");
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe("/home/user/.claude/skills");
     });
   });
 });

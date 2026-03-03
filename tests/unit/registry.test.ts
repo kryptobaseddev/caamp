@@ -1,13 +1,22 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  buildSkillsMap,
   getAllProviders,
+  getCommonHookEvents,
   getInstructionFiles,
   getProvider,
+  getProviderCapabilities,
   getProviderCount,
+  getProvidersByHookEvent,
   getProvidersByInstructFile,
   getProvidersByPriority,
+  getProvidersBySkillsPrecedence,
+  getProvidersBySpawnCapability,
   getProvidersByStatus,
   getRegistryVersion,
+  getSpawnCapableProviders,
+  providerSupports,
+  providerSupportsById,
   resetRegistry,
   resolveAlias,
 } from "../../src/core/registry/providers.js";
@@ -27,7 +36,7 @@ describe("Provider Registry", () => {
   });
 
   it("returns registry version", () => {
-    expect(getRegistryVersion()).toBe("1.0.0");
+    expect(getRegistryVersion()).toBe("1.1.0");
   });
 
   it("gets provider by ID", () => {
@@ -116,5 +125,135 @@ describe("Provider Registry", () => {
     expect(getProvider("goose")?.configFormat).toBe("yaml");
     expect(getProvider("codex")?.configFormat).toBe("toml");
     expect(getProvider("zed")?.configFormat).toBe("jsonc");
+  });
+
+  describe("capabilities", () => {
+    it("always defines capabilities on resolved providers", () => {
+      const providers = getAllProviders();
+      for (const p of providers) {
+        expect(p.capabilities).toBeDefined();
+        expect(p.capabilities.skills).toBeDefined();
+        expect(p.capabilities.hooks).toBeDefined();
+        expect(p.capabilities.spawn).toBeDefined();
+      }
+    });
+
+    it("applies default skills capability when not specified in JSON", () => {
+      // windsurf has no capabilities in registry.json yet
+      const ws = getProvider("windsurf");
+      expect(ws?.capabilities.skills.precedence).toBe("vendor-only");
+      expect(ws?.capabilities.skills.agentsGlobalPath).toBeNull();
+      expect(ws?.capabilities.skills.agentsProjectPath).toBeNull();
+    });
+
+    it("applies default hooks capability when not specified in JSON", () => {
+      const ws = getProvider("windsurf");
+      expect(ws?.capabilities.hooks.supported).toEqual([]);
+      expect(ws?.capabilities.hooks.hookConfigPath).toBeNull();
+      expect(ws?.capabilities.hooks.hookFormat).toBeNull();
+    });
+
+    it("applies default spawn capability when not specified in JSON", () => {
+      const ws = getProvider("windsurf");
+      expect(ws?.capabilities.spawn.supportsSubagents).toBe(false);
+      expect(ws?.capabilities.spawn.supportsProgrammaticSpawn).toBe(false);
+      expect(ws?.capabilities.spawn.supportsInterAgentComms).toBe(false);
+      expect(ws?.capabilities.spawn.supportsParallelSpawn).toBe(false);
+      expect(ws?.capabilities.spawn.spawnMechanism).toBeNull();
+    });
+  });
+
+  describe("hooks query functions", () => {
+    it("getProvidersByHookEvent includes claude-code for onToolComplete", () => {
+      const providers = getProvidersByHookEvent("onToolComplete");
+      expect(providers.some((p) => p.id === "claude-code")).toBe(true);
+    });
+
+    it("getProvidersByHookEvent does NOT include windsurf (no hooks)", () => {
+      const providers = getProvidersByHookEvent("onToolComplete");
+      expect(providers.some((p) => p.id === "windsurf")).toBe(false);
+    });
+
+    it("getCommonHookEvents returns empty array across all providers", () => {
+      const common = getCommonHookEvents();
+      expect(common).toEqual([]);
+    });
+
+    it("getCommonHookEvents for claude-code returns its 6 events", () => {
+      const common = getCommonHookEvents(["claude-code"]);
+      expect(common).toHaveLength(6);
+      expect(common).toContain("onSessionStart");
+      expect(common).toContain("onSessionEnd");
+      expect(common).toContain("onToolStart");
+      expect(common).toContain("onToolComplete");
+      expect(common).toContain("onPromptSubmit");
+      expect(common).toContain("onResponseComplete");
+    });
+  });
+
+  describe("spawn query functions", () => {
+    it("getSpawnCapableProviders includes claude-code", () => {
+      const providers = getSpawnCapableProviders();
+      expect(providers.some((p) => p.id === "claude-code")).toBe(true);
+    });
+
+    it("getSpawnCapableProviders does NOT include windsurf", () => {
+      const providers = getSpawnCapableProviders();
+      expect(providers.some((p) => p.id === "windsurf")).toBe(false);
+    });
+
+    it("getProvidersBySpawnCapability supportsParallelSpawn includes claude-code and codex", () => {
+      const providers = getProvidersBySpawnCapability("supportsParallelSpawn");
+      expect(providers.some((p) => p.id === "claude-code")).toBe(true);
+      expect(providers.some((p) => p.id === "codex")).toBe(true);
+    });
+
+    it("getProvidersBySpawnCapability supportsInterAgentComms includes claude-code but NOT codex", () => {
+      const providers = getProvidersBySpawnCapability("supportsInterAgentComms");
+      expect(providers.some((p) => p.id === "claude-code")).toBe(true);
+      expect(providers.some((p) => p.id === "codex")).toBe(false);
+    });
+  });
+
+  describe("skills query functions", () => {
+    it("getProvidersBySkillsPrecedence vendor-only returns array with windsurf", () => {
+      const providers = getProvidersBySkillsPrecedence("vendor-only");
+      expect(providers.length).toBeGreaterThan(0);
+      expect(providers.some((p) => p.id === "windsurf")).toBe(true);
+    });
+
+    it("getProvidersBySkillsPrecedence agents-canonical returns array with codex", () => {
+      const providers = getProvidersBySkillsPrecedence("agents-canonical");
+      expect(providers.length).toBeGreaterThan(0);
+      expect(providers.some((p) => p.id === "codex")).toBe(true);
+    });
+
+    it("getProviderCapabilities returns defined capabilities for claude-code", () => {
+      const caps = getProviderCapabilities("claude-code");
+      expect(caps).toBeDefined();
+      expect(caps?.skills).toBeDefined();
+      expect(caps?.hooks).toBeDefined();
+      expect(caps?.spawn).toBeDefined();
+    });
+
+    it("providerSupports returns true for claude-code spawn.supportsSubagents", () => {
+      const claude = getProvider("claude-code")!;
+      expect(providerSupports(claude, "spawn.supportsSubagents")).toBe(true);
+    });
+
+    it("providerSupportsById returns false for windsurf spawn.supportsSubagents", () => {
+      expect(providerSupportsById("windsurf", "spawn.supportsSubagents")).toBe(false);
+    });
+
+    it("buildSkillsMap returns array with correct shape", () => {
+      const map = buildSkillsMap();
+      expect(map.length).toBeGreaterThan(0);
+      const entry = map.find((e) => e.providerId === "claude-code");
+      expect(entry).toBeDefined();
+      expect(entry?.toolName).toBe("Claude Code");
+      expect(entry?.precedence).toBeDefined();
+      expect(entry?.paths).toHaveProperty("global");
+      expect(entry?.paths).toHaveProperty("project");
+    });
   });
 });

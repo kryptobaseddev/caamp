@@ -10,7 +10,7 @@ import {
   listCanonicalSkills,
   removeSkill,
 } from "../../src/core/skills/installer.js";
-import type { Provider } from "../../src/types.js";
+import type { Provider, ProviderCapabilities } from "../../src/types.js";
 
 let testDir: string;
 let mockAgentsHome: string;
@@ -580,5 +580,160 @@ describe("edge cases", () => {
     }
     // If neither produced a valid path, that's OK for a race condition test -
     // the important thing is no unhandled exceptions were thrown
+  });
+});
+
+describe("precedence-aware installation", () => {
+  function makeCapabilities(
+    precedence: string,
+    agentsGlobalPath: string | null = null,
+    agentsProjectPath: string | null = null,
+  ): ProviderCapabilities {
+    return {
+      skills: {
+        precedence: precedence as ProviderCapabilities["skills"]["precedence"],
+        agentsGlobalPath,
+        agentsProjectPath,
+      },
+      hooks: { supported: [], hookConfigPath: null, hookFormat: null },
+      spawn: {
+        supportsSubagents: false,
+        supportsProgrammaticSpawn: false,
+        supportsInterAgentComms: false,
+        supportsParallelSpawn: false,
+        spawnMechanism: null,
+      },
+    };
+  }
+
+  it("vendor-only provider gets symlink in vendor dir only", async () => {
+    const sourceDir = await createMockSkill(testDir, "vendor-skill");
+    const skillName = `vendor-only-${randomUUID()}`;
+    const provider = createMockProvider("vendor-agent");
+    provider.capabilities = makeCapabilities("vendor-only");
+
+    const result = await installSkill(sourceDir, skillName, [provider], true);
+
+    expect(result.success).toBe(true);
+    expect(result.linkedAgents).toContain("vendor-agent");
+
+    // Vendor path should have symlink
+    const vendorLink = join(provider.pathSkills, skillName);
+    expect(existsSync(vendorLink)).toBe(true);
+  });
+
+  it("agents-first provider gets symlinks in BOTH agents and vendor dirs", async () => {
+    const sourceDir = await createMockSkill(testDir, "agents-first-skill");
+    const skillName = `agents-first-${randomUUID()}`;
+    const agentsDir = join(testDir, "agents-first-agents-skills");
+    const provider = createMockProvider("agents-first-agent");
+    provider.capabilities = makeCapabilities("agents-first", agentsDir);
+
+    const result = await installSkill(sourceDir, skillName, [provider], true);
+
+    expect(result.success).toBe(true);
+    expect(result.linkedAgents).toContain("agents-first-agent");
+
+    // Both paths should have symlinks
+    const vendorLink = join(provider.pathSkills, skillName);
+    const agentsLink = join(agentsDir, skillName);
+    expect(existsSync(vendorLink)).toBe(true);
+    expect(existsSync(agentsLink)).toBe(true);
+  });
+
+  it("agents-canonical provider only gets symlink in agents dir", async () => {
+    const sourceDir = await createMockSkill(testDir, "canonical-skill");
+    const skillName = `agents-canonical-${randomUUID()}`;
+    const agentsDir = join(testDir, "canonical-agents-skills");
+    const provider = createMockProvider("canonical-agent");
+    provider.capabilities = makeCapabilities("agents-canonical", agentsDir);
+
+    const result = await installSkill(sourceDir, skillName, [provider], true);
+
+    expect(result.success).toBe(true);
+    expect(result.linkedAgents).toContain("canonical-agent");
+
+    // Only agents path should have symlink
+    const agentsLink = join(agentsDir, skillName);
+    expect(existsSync(agentsLink)).toBe(true);
+
+    // Vendor path should NOT have symlink
+    const vendorLink = join(provider.pathSkills, skillName);
+    expect(existsSync(vendorLink)).toBe(false);
+  });
+
+  it("agents-supported provider gets symlinks in vendor then agents", async () => {
+    const sourceDir = await createMockSkill(testDir, "supported-skill");
+    const skillName = `agents-supported-${randomUUID()}`;
+    const agentsDir = join(testDir, "supported-agents-skills");
+    const provider = createMockProvider("supported-agent");
+    provider.capabilities = makeCapabilities("agents-supported", agentsDir);
+
+    const result = await installSkill(sourceDir, skillName, [provider], true);
+
+    expect(result.success).toBe(true);
+
+    const vendorLink = join(provider.pathSkills, skillName);
+    const agentsLink = join(agentsDir, skillName);
+    expect(existsSync(vendorLink)).toBe(true);
+    expect(existsSync(agentsLink)).toBe(true);
+  });
+
+  it("vendor-global-agents-project creates vendor-only for global scope", async () => {
+    const sourceDir = await createMockSkill(testDir, "vgap-skill");
+    const skillName = `vgap-global-${randomUUID()}`;
+    const agentsDir = join(testDir, "vgap-agents-skills");
+    const provider = createMockProvider("vgap-agent");
+    provider.capabilities = makeCapabilities("vendor-global-agents-project", agentsDir, ".agents-proj/skills");
+
+    const result = await installSkill(sourceDir, skillName, [provider], true);
+
+    expect(result.success).toBe(true);
+
+    const vendorLink = join(provider.pathSkills, skillName);
+    expect(existsSync(vendorLink)).toBe(true);
+
+    // Agents dir should NOT be used for global scope
+    const agentsLink = join(agentsDir, skillName);
+    expect(existsSync(agentsLink)).toBe(false);
+  });
+
+  it("vendor-global-agents-project creates both for project scope", async () => {
+    const sourceDir = await createMockSkill(testDir, "vgap-proj-skill");
+    const skillName = `vgap-project-${randomUUID()}`;
+    const provider = createMockProvider("vgap-proj-agent");
+    provider.capabilities = makeCapabilities("vendor-global-agents-project", null, ".agents-proj/skills");
+
+    const result = await installSkill(sourceDir, skillName, [provider], false, testDir);
+
+    expect(result.success).toBe(true);
+
+    // Project vendor path
+    const vendorLink = join(testDir, provider.pathProjectSkills, skillName);
+    expect(existsSync(vendorLink)).toBe(true);
+
+    // Project agents path
+    const agentsLink = join(testDir, ".agents-proj/skills", skillName);
+    expect(existsSync(agentsLink)).toBe(true);
+  });
+
+  it("removeSkill cleans up all precedence-aware paths", async () => {
+    const sourceDir = await createMockSkill(testDir, "remove-prec-skill");
+    const skillName = `remove-prec-${randomUUID()}`;
+    const agentsDir = join(testDir, "remove-prec-agents-skills");
+    const provider = createMockProvider("remove-prec-agent");
+    provider.capabilities = makeCapabilities("agents-first", agentsDir);
+
+    await installSkill(sourceDir, skillName, [provider], true);
+
+    // Verify both links exist
+    expect(existsSync(join(agentsDir, skillName))).toBe(true);
+    expect(existsSync(join(provider.pathSkills, skillName))).toBe(true);
+
+    const result = await removeSkill(skillName, [provider], true);
+
+    expect(result.removed).toContain("remove-prec-agent");
+    expect(existsSync(join(agentsDir, skillName))).toBe(false);
+    expect(existsSync(join(provider.pathSkills, skillName))).toBe(false);
   });
 });

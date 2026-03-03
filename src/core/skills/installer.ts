@@ -9,7 +9,7 @@ import { existsSync, lstatSync } from "node:fs";
 import { cp, mkdir, rm, symlink } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import type { ParsedSource, Provider, SkillMetadata } from "../../types.js";
-import { getCanonicalSkillsDir, resolveProviderSkillsDir } from "../paths/standard.js";
+import { getCanonicalSkillsDir, resolveProviderSkillsDirs } from "../paths/standard.js";
 import { discoverSkill } from "./discovery.js";
 
 /**
@@ -69,7 +69,7 @@ export async function installToCanonical(
   return targetDir;
 }
 
-/** Create a symlink from an agent's skills directory to the canonical location */
+/** Create symlinks from an agent's skills directories to the canonical location */
 async function linkToAgent(
   canonicalPath: string,
   provider: Provider,
@@ -77,47 +77,56 @@ async function linkToAgent(
   isGlobal: boolean,
   projectDir?: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const targetSkillsDir = resolveProviderSkillsDir(
-    provider,
-    isGlobal ? "global" : "project",
-    projectDir,
-  );
+  const scope = isGlobal ? "global" : "project";
+  const targetDirs = resolveProviderSkillsDirs(provider, scope, projectDir);
 
-  if (!targetSkillsDir) {
+  if (targetDirs.length === 0) {
     return { success: false, error: `Provider ${provider.id} has no skills directory` };
   }
 
-  try {
-    await mkdir(targetSkillsDir, { recursive: true });
+  const errors: string[] = [];
+  let anySuccess = false;
 
-    const linkPath = join(targetSkillsDir, skillName);
+  for (const targetSkillsDir of targetDirs) {
+    if (!targetSkillsDir) continue;
 
-    // Remove existing link/directory
-    if (existsSync(linkPath)) {
-      const stat = lstatSync(linkPath);
-      if (stat.isSymbolicLink()) {
-        await rm(linkPath);
-      } else {
-        await rm(linkPath, { recursive: true });
-      }
-    }
-
-    // Create symlink (junction on Windows for compat)
-    const symlinkType = process.platform === "win32" ? "junction" : "dir";
     try {
-      await symlink(canonicalPath, linkPath, symlinkType);
-    } catch {
-      // Fallback to copy if symlinks not supported
-      await cp(canonicalPath, linkPath, { recursive: true });
-    }
+      await mkdir(targetSkillsDir, { recursive: true });
 
-    return { success: true };
-  } catch (err) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+      const linkPath = join(targetSkillsDir, skillName);
+
+      // Remove existing link/directory
+      if (existsSync(linkPath)) {
+        const stat = lstatSync(linkPath);
+        if (stat.isSymbolicLink()) {
+          await rm(linkPath);
+        } else {
+          await rm(linkPath, { recursive: true });
+        }
+      }
+
+      // Create symlink (junction on Windows for compat)
+      const symlinkType = process.platform === "win32" ? "junction" : "dir";
+      try {
+        await symlink(canonicalPath, linkPath, symlinkType);
+      } catch {
+        // Fallback to copy if symlinks not supported
+        await cp(canonicalPath, linkPath, { recursive: true });
+      }
+
+      anySuccess = true;
+    } catch (err) {
+      errors.push(err instanceof Error ? err.message : String(err));
+    }
   }
+
+  if (anySuccess) {
+    return { success: true };
+  }
+  return {
+    success: false,
+    error: errors.join("; ") || `Provider ${provider.id} has no skills directory`,
+  };
 }
 
 /**
@@ -196,24 +205,28 @@ export async function removeSkill(
   const removed: string[] = [];
   const errors: string[] = [];
 
-  // Remove symlinks from each agent
+  // Remove symlinks from each agent (all precedence-aware paths)
   for (const provider of providers) {
-    const skillsDir = resolveProviderSkillsDir(
-      provider,
-      isGlobal ? "global" : "project",
-      projectDir,
-    );
+    const scope = isGlobal ? "global" : "project";
+    const targetDirs = resolveProviderSkillsDirs(provider, scope, projectDir);
+    let providerRemoved = false;
 
-    if (!skillsDir) continue;
+    for (const skillsDir of targetDirs) {
+      if (!skillsDir) continue;
 
-    const linkPath = join(skillsDir, skillName);
-    if (existsSync(linkPath)) {
-      try {
-        await rm(linkPath, { recursive: true });
-        removed.push(provider.id);
-      } catch (err) {
-        errors.push(`${provider.id}: ${err instanceof Error ? err.message : String(err)}`);
+      const linkPath = join(skillsDir, skillName);
+      if (existsSync(linkPath)) {
+        try {
+          await rm(linkPath, { recursive: true });
+          providerRemoved = true;
+        } catch (err) {
+          errors.push(`${provider.id}: ${err instanceof Error ? err.message : String(err)}`);
+        }
       }
+    }
+
+    if (providerRemoved) {
+      removed.push(provider.id);
     }
   }
 

@@ -17,6 +17,36 @@ caamp providers detect --help
 caamp providers show --help
 ```
 
+### Provider capabilities
+
+```bash
+caamp providers skills-map --help
+caamp providers hooks --help
+caamp providers capabilities --help
+```
+
+Query skills precedence across providers:
+
+```bash
+caamp providers skills-map --human
+caamp providers skills-map --provider codex --json
+```
+
+Query hook support:
+
+```bash
+caamp providers hooks --human
+caamp providers hooks --event onToolComplete --json
+caamp providers hooks --common
+```
+
+Full capability matrix:
+
+```bash
+caamp providers capabilities --human
+caamp providers capabilities --filter spawn.supportsSubagents --json
+```
+
 ## Skills
 
 ```bash

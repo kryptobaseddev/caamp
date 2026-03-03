@@ -216,6 +216,63 @@ export function resolveProviderSkillsDir(
   return resolveProjectPath(provider.pathProjectSkills, projectDir);
 }
 
+/**
+ * Get ALL target directories for skill installation based on the provider's
+ * skills precedence setting.
+ *
+ * @param provider - Provider to resolve paths for
+ * @param scope - Whether to resolve global or project paths
+ * @param projectDir - Project directory for project-scope resolution
+ * @returns Array of target directories for symlink creation
+ */
+export function resolveProviderSkillsDirs(
+  provider: Provider,
+  scope: PathScope,
+  projectDir = process.cwd(),
+): string[] {
+  const vendorPath = resolveProviderSkillsDir(provider, scope, projectDir);
+  const precedence = provider.capabilities?.skills?.precedence ?? "vendor-only";
+
+  const resolveAgentsPath = (): string | null => {
+    if (scope === "global") {
+      return provider.capabilities?.skills?.agentsGlobalPath ?? null;
+    }
+    const projectRelative = provider.capabilities?.skills?.agentsProjectPath ?? null;
+    return projectRelative ? join(projectDir, projectRelative) : null;
+  };
+
+  switch (precedence) {
+    case "vendor-only":
+      return [vendorPath];
+
+    case "agents-canonical": {
+      const agentsPath = resolveAgentsPath();
+      return agentsPath ? [agentsPath] : [vendorPath];
+    }
+
+    case "agents-first": {
+      const agentsPath = resolveAgentsPath();
+      return agentsPath ? [agentsPath, vendorPath] : [vendorPath];
+    }
+
+    case "agents-supported": {
+      const agentsPath = resolveAgentsPath();
+      return agentsPath ? [vendorPath, agentsPath] : [vendorPath];
+    }
+
+    case "vendor-global-agents-project": {
+      if (scope === "global") {
+        return [vendorPath];
+      }
+      const agentsPath = resolveAgentsPath();
+      return agentsPath ? [agentsPath, vendorPath] : [vendorPath];
+    }
+
+    default:
+      return [vendorPath];
+  }
+}
+
 export function resolveProviderProjectPath(provider: Provider, projectDir = process.cwd()): string {
   return resolveProjectPath(provider.pathProject, projectDir);
 }

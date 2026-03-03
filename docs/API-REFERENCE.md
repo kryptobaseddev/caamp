@@ -47,6 +47,7 @@ const servers = await listAllMcpServers(installed, "global");
   - [Result Types](#result-types)
   - [Data Types](#data-types)
 - [Provider Registry](#provider-registry)
+- [Provider Capabilities](#provider-capabilities)
 - [Detection](#detection)
 - [Source Parsing](#source-parsing)
 - [MCP -- Installation](#mcp--installation)
@@ -143,6 +144,7 @@ interface Provider {
   priority: ProviderPriority;
   status: ProviderStatus;
   agentSkillsCompatible: boolean;
+  capabilities: ProviderCapabilities;
 }
 ```
 
@@ -168,6 +170,170 @@ interface Provider {
 | `priority` | `ProviderPriority` | Priority tier (`"high"` \| `"medium"` \| `"low"`) |
 | `status` | `ProviderStatus` | Lifecycle status (`"active"` \| `"beta"` \| `"deprecated"` \| `"planned"`) |
 | `agentSkillsCompatible` | `boolean` | Whether provider supports agent skills |
+| `capabilities` | `ProviderCapabilities` | Provider capabilities for skills, hooks, and spawn (always populated at runtime) |
+
+#### `SkillsPrecedence`
+
+How a provider resolves skill file lookup order.
+
+```typescript
+type SkillsPrecedence =
+  | "vendor-only"           // Uses only provider's native skills dir
+  | "agents-canonical"      // Uses only .agents/skills
+  | "agents-first"          // .agents/skills first, then vendor
+  | "agents-supported"      // Vendor first, .agents/skills as fallback
+  | "vendor-global-agents-project"; // Global=vendor, project=.agents+vendor
+```
+
+#### `HookEvent`
+
+Lifecycle events a provider can trigger hooks for.
+
+```typescript
+type HookEvent =
+  | "onSessionStart" | "onSessionEnd"
+  | "onToolStart" | "onToolComplete"
+  | "onFileChange" | "onError"
+  | "onPromptSubmit" | "onResponseComplete";
+```
+
+#### `SpawnMechanism`
+
+How a provider spawns subagents.
+
+```typescript
+type SpawnMechanism = "native" | "mcp" | "cli" | "api";
+```
+
+#### `ProviderCapabilities`
+
+Unified capabilities object present on every resolved `Provider`.
+
+```typescript
+interface ProviderCapabilities {
+  skills: ProviderSkillsCapability;
+  hooks: ProviderHooksCapability;
+  spawn: ProviderSpawnCapability;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `skills` | `ProviderSkillsCapability` | Skills path resolution and precedence |
+| `hooks` | `ProviderHooksCapability` | Hook/lifecycle event support |
+| `spawn` | `ProviderSpawnCapability` | Subagent spawn capabilities |
+
+#### `ProviderSkillsCapability`
+
+Skills path resolution and precedence configuration.
+
+```typescript
+interface ProviderSkillsCapability {
+  agentsGlobalPath: string | null;
+  agentsProjectPath: string | null;
+  precedence: SkillsPrecedence;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `agentsGlobalPath` | `string \| null` | Resolved global `.agents/skills` path, or `null` if unsupported |
+| `agentsProjectPath` | `string \| null` | Project-relative `.agents/skills` path, or `null` if unsupported |
+| `precedence` | `SkillsPrecedence` | How this provider resolves skill file precedence |
+
+#### `ProviderHooksCapability`
+
+Hook/lifecycle event support configuration.
+
+```typescript
+interface ProviderHooksCapability {
+  supported: HookEvent[];
+  hookConfigPath: string | null;
+  hookFormat: "json" | "yaml" | "toml" | "javascript" | null;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `supported` | `HookEvent[]` | Hook lifecycle events this provider supports |
+| `hookConfigPath` | `string \| null` | Resolved path to hook configuration file, or `null` |
+| `hookFormat` | `"json" \| "yaml" \| "toml" \| "javascript" \| null` | Format of the hook config file |
+
+#### `ProviderSpawnCapability`
+
+Subagent spawn capability configuration.
+
+```typescript
+interface ProviderSpawnCapability {
+  supportsSubagents: boolean;
+  supportsProgrammaticSpawn: boolean;
+  supportsInterAgentComms: boolean;
+  supportsParallelSpawn: boolean;
+  spawnMechanism: SpawnMechanism | null;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `supportsSubagents` | `boolean` | Whether the provider supports spawning subagents |
+| `supportsProgrammaticSpawn` | `boolean` | Whether subagents can be spawned programmatically |
+| `supportsInterAgentComms` | `boolean` | Whether spawned agents can communicate with each other |
+| `supportsParallelSpawn` | `boolean` | Whether multiple agents can be spawned in parallel |
+| `spawnMechanism` | `SpawnMechanism \| null` | Mechanism used for spawning |
+
+#### `SpawnAdapter`
+
+Provider-neutral interface for subagent orchestration (interface only -- no concrete implementations).
+
+```typescript
+interface SpawnOptions {
+  prompt: string;
+  model?: string;
+  tools?: string[];
+  timeout?: number;
+  isolate?: boolean;
+}
+
+interface SpawnResult {
+  instanceId: string;
+  status: "running" | "completed" | "failed";
+  output?: string;
+}
+
+interface SpawnAdapter {
+  canSpawn(provider: Provider): boolean;
+  spawn(provider: Provider, options: SpawnOptions): Promise<SpawnResult>;
+  listRunning(provider: Provider): Promise<SpawnResult[]>;
+  terminate(provider: Provider, instanceId: string): Promise<void>;
+}
+```
+
+**`SpawnOptions`**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `prompt` | `string` | The prompt or instruction to give the spawned agent |
+| `model` | `string` | Model to use for the spawned agent (optional) |
+| `tools` | `string[]` | Tools to make available to the spawned agent (optional) |
+| `timeout` | `number` | Timeout in milliseconds for the spawned agent (optional) |
+| `isolate` | `boolean` | Whether to isolate the spawned agent, e.g. in a worktree (optional) |
+
+**`SpawnResult`**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `instanceId` | `string` | Unique identifier for the spawned agent instance |
+| `status` | `"running" \| "completed" \| "failed"` | Current status of the spawned agent |
+| `output` | `string` | Output produced by the spawned agent (optional) |
+
+**`SpawnAdapter`**
+
+| Method | Parameters | Returns | Description |
+|--------|-----------|---------|-------------|
+| `canSpawn` | `provider: Provider` | `boolean` | Check if a provider supports spawning via this adapter |
+| `spawn` | `provider: Provider, options: SpawnOptions` | `Promise<SpawnResult>` | Spawn a new subagent for the given provider |
+| `listRunning` | `provider: Provider` | `Promise<SpawnResult[]>` | List currently running subagent instances |
+| `terminate` | `provider: Provider, instanceId: string` | `Promise<void>` | Terminate a running subagent instance |
 
 #### `McpServerConfig`
 
@@ -876,6 +1042,304 @@ function getRegistryVersion(): string
 import { getRegistryVersion } from "@cleocode/caamp";
 
 console.log(getRegistryVersion()); // "1.0.0"
+```
+
+---
+
+## Provider Capabilities
+
+Functions for querying provider capabilities -- skills precedence, hook events, spawn support, and cross-provider capability comparison.
+
+### `getProviderCapabilities()`
+
+Get the full capabilities object for a provider by ID or alias.
+
+```typescript
+function getProviderCapabilities(idOrAlias: string): ProviderCapabilities | undefined
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `idOrAlias` | `string` | Provider ID or alias |
+
+**Returns**: `ProviderCapabilities | undefined` -- The provider's capabilities, or `undefined` if not found.
+
+```typescript
+import { getProviderCapabilities } from "@cleocode/caamp";
+
+const caps = getProviderCapabilities("claude-code");
+if (caps) {
+  console.log(caps.skills.precedence); // "vendor-global-agents-project"
+  console.log(caps.spawn.supportsSubagents); // true
+}
+```
+
+---
+
+### `providerSupports()`
+
+Check if a provider supports a capability via dot-path query. For boolean fields, the provider "supports" the capability when the value is `true`. For non-boolean fields, the provider "supports" it when the value is neither `null` nor `undefined` (and, for arrays, non-empty).
+
+```typescript
+function providerSupports(provider: Provider, dotPath: string): boolean
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `provider` | `Provider` | Provider to inspect |
+| `dotPath` | `string` | Dot-delimited capability path (e.g., `"spawn.supportsSubagents"`, `"hooks.supported"`) |
+
+**Returns**: `boolean` -- `true` when the provider has the specified capability.
+
+```typescript
+import { getProvider, providerSupports } from "@cleocode/caamp";
+
+const claude = getProvider("claude-code");
+providerSupports(claude!, "spawn.supportsSubagents"); // true
+providerSupports(claude!, "hooks.supported"); // true (non-empty array)
+providerSupports(claude!, "spawn.spawnMechanism"); // true (non-null value)
+```
+
+---
+
+### `providerSupportsById()`
+
+Convenience wrapper that resolves the provider by ID/alias first, then delegates to `providerSupports`.
+
+```typescript
+function providerSupportsById(idOrAlias: string, capabilityPath: string): boolean
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `idOrAlias` | `string` | Provider ID or alias |
+| `capabilityPath` | `string` | Dot-delimited capability path |
+
+**Returns**: `boolean` -- `true` if the provider supports the capability, `false` otherwise.
+
+```typescript
+import { providerSupportsById } from "@cleocode/caamp";
+
+providerSupportsById("claude", "spawn.supportsSubagents"); // true
+providerSupportsById("unknown-provider", "spawn.supportsSubagents"); // false
+```
+
+---
+
+### `getProvidersBySkillsPrecedence()`
+
+Filter providers by their skills precedence setting.
+
+```typescript
+function getProvidersBySkillsPrecedence(precedence: SkillsPrecedence): Provider[]
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `precedence` | `SkillsPrecedence` | Skills precedence to filter by |
+
+**Returns**: `Provider[]` -- Providers matching the given precedence.
+
+```typescript
+import { getProvidersBySkillsPrecedence } from "@cleocode/caamp";
+
+const agentsFirst = getProvidersBySkillsPrecedence("agents-first");
+```
+
+---
+
+### `getEffectiveSkillsPaths()`
+
+Get ordered skills paths for a provider based on its precedence setting. The `scope` parameter is `"global" | "project"`.
+
+```typescript
+function getEffectiveSkillsPaths(
+  provider: Provider,
+  scope: "global" | "project",
+  projectDir?: string
+): Array<{ path: string; source: string; scope: string }>
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `provider` | `Provider` | Provider to resolve paths for |
+| `scope` | `"global" \| "project"` | Whether to resolve global or project paths |
+| `projectDir` | `string` | Project directory for project-scope resolution (optional) |
+
+**Returns**: `Array<{ path: string; source: string; scope: string }>` -- Ordered array of paths with source (`"vendor"` or `"agents"`) and scope metadata.
+
+```typescript
+import { getProvider, getEffectiveSkillsPaths } from "@cleocode/caamp";
+
+const claude = getProvider("claude-code")!;
+const paths = getEffectiveSkillsPaths(claude, "global");
+// [{ path: "/home/user/.claude/skills", source: "vendor", scope: "global" }]
+```
+
+---
+
+### `buildSkillsMap()`
+
+Build a full skills precedence map for all providers.
+
+```typescript
+function buildSkillsMap(): Array<{
+  providerId: string;
+  toolName: string;
+  precedence: SkillsPrecedence;
+  paths: { global: string | null; project: string | null };
+}>
+```
+
+**Parameters**: None
+
+**Returns**: `Array<{ providerId, toolName, precedence, paths }>` -- Skills map entries for every provider.
+
+```typescript
+import { buildSkillsMap } from "@cleocode/caamp";
+
+const map = buildSkillsMap();
+for (const entry of map) {
+  console.log(`${entry.toolName}: ${entry.precedence}`);
+}
+```
+
+---
+
+### `getProvidersByHookEvent()`
+
+Filter providers that support a specific hook event.
+
+```typescript
+function getProvidersByHookEvent(event: HookEvent): Provider[]
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `event` | `HookEvent` | Hook event to filter by |
+
+**Returns**: `Provider[]` -- Providers whose hooks capability includes the given event.
+
+```typescript
+import { getProvidersByHookEvent } from "@cleocode/caamp";
+
+const providers = getProvidersByHookEvent("onToolComplete");
+```
+
+---
+
+### `getCommonHookEvents()`
+
+Get hook events common to all specified providers (intersection). If `providerIds` is undefined or empty, uses all providers.
+
+```typescript
+function getCommonHookEvents(providerIds?: string[]): HookEvent[]
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `providerIds` | `string[]` | Provider IDs to intersect (optional; defaults to all providers) |
+
+**Returns**: `HookEvent[]` -- Hook events supported by ALL specified providers.
+
+```typescript
+import { getCommonHookEvents } from "@cleocode/caamp";
+
+const common = getCommonHookEvents(["claude-code", "gemini-cli"]);
+// Returns only events both providers support
+```
+
+---
+
+### `getSpawnCapableProviders()`
+
+Get providers that support spawning subagents.
+
+```typescript
+function getSpawnCapableProviders(): Provider[]
+```
+
+**Parameters**: None
+
+**Returns**: `Provider[]` -- Providers where `capabilities.spawn.supportsSubagents === true`.
+
+```typescript
+import { getSpawnCapableProviders } from "@cleocode/caamp";
+
+const spawnCapable = getSpawnCapableProviders();
+console.log(spawnCapable.map(p => p.id));
+```
+
+---
+
+### `getProvidersBySpawnCapability()`
+
+Filter providers by a specific boolean spawn capability flag.
+
+```typescript
+function getProvidersBySpawnCapability(
+  flag: keyof Omit<ProviderSpawnCapability, "spawnMechanism">
+): Provider[]
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `flag` | `keyof Omit<ProviderSpawnCapability, "spawnMechanism">` | One of `"supportsSubagents"`, `"supportsProgrammaticSpawn"`, `"supportsInterAgentComms"`, `"supportsParallelSpawn"` |
+
+**Returns**: `Provider[]` -- Providers where the specified flag is `true`.
+
+```typescript
+import { getProvidersBySpawnCapability } from "@cleocode/caamp";
+
+const parallel = getProvidersBySpawnCapability("supportsParallelSpawn");
+```
+
+---
+
+### `resolveProviderSkillsDirs()`
+
+Get ALL target directories for skill installation based on the provider's skills precedence setting.
+
+```typescript
+function resolveProviderSkillsDirs(
+  provider: Provider,
+  scope: "global" | "project",
+  projectDir?: string
+): string[]
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `provider` | `Provider` | Provider to resolve paths for |
+| `scope` | `"global" \| "project"` | Whether to resolve global or project paths |
+| `projectDir` | `string` | Project directory for project-scope resolution (optional; defaults to `process.cwd()`) |
+
+**Returns**: `string[]` -- Array of target directories for symlink creation.
+
+```typescript
+import { getProvider, resolveProviderSkillsDirs } from "@cleocode/caamp";
+
+const claude = getProvider("claude-code")!;
+const dirs = resolveProviderSkillsDirs(claude, "global");
+// ["/home/user/.claude/skills"]
 ```
 
 ---
@@ -2774,6 +3238,7 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `DualScopeConfigureOptions`
 - [ ] `DualScopeConfigureResult`
 - [ ] `GlobalOptions`
+- [ ] `HookEvent`
 - [ ] `InjectionCheckResult`
 - [ ] `InjectionStatus`
 - [ ] `InstructionUpdateSummary`
@@ -2790,13 +3255,22 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `McpPlanApplyResult`
 - [ ] `ParsedSource`
 - [ ] `Provider`
+- [ ] `ProviderCapabilities`
+- [ ] `ProviderHooksCapability`
 - [ ] `ProviderPriority`
+- [ ] `ProviderSkillsCapability`
+- [ ] `ProviderSpawnCapability`
 - [ ] `ProviderStatus`
 - [ ] `SkillEntry`
 - [ ] `SkillInstallResult`
 - [ ] `SkillMetadata`
 - [ ] `SkillBatchOperation`
+- [ ] `SkillsPrecedence`
 - [ ] `SourceType`
+- [ ] `SpawnAdapter`
+- [ ] `SpawnMechanism`
+- [ ] `SpawnOptions`
+- [ ] `SpawnResult`
 - [ ] `TransportType`
 - [ ] `ValidationIssue`
 - [ ] `ValidationResult`
@@ -2804,6 +3278,7 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 ### Functions
 
 - [ ] `applyMcpInstallWithPolicy`
+- [ ] `buildSkillsMap`
 - [ ] `buildServerConfig`
 - [ ] `checkAllInjections`
 - [ ] `checkInjection`
@@ -2818,17 +3293,24 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `discoverSkills`
 - [ ] `ensureDir`
 - [ ] `generateInjectionContent`
+- [ ] `getCommonHookEvents`
+- [ ] `getEffectiveSkillsPaths`
 - [ ] `getAllProviders`
 - [ ] `getInstalledProviders`
 - [ ] `getInstructionFiles`
 - [ ] `getLastSelectedAgents`
 - [ ] `getNestedValue`
 - [ ] `getProvider`
+- [ ] `getProviderCapabilities`
 - [ ] `getProviderCount`
+- [ ] `getProvidersByHookEvent`
 - [ ] `getProvidersByInstructFile`
 - [ ] `getProvidersByPriority`
+- [ ] `getProvidersBySkillsPrecedence`
+- [ ] `getProvidersBySpawnCapability`
 - [ ] `getProvidersByStatus`
 - [ ] `getRegistryVersion`
+- [ ] `getSpawnCapableProviders`
 - [ ] `getTrackedMcpServers`
 - [ ] `getTrackedSkills`
 - [ ] `getTransform`
@@ -2847,6 +3329,8 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `listMcpServers`
 - [ ] `parseSkillFile`
 - [ ] `parseSource`
+- [ ] `providerSupports`
+- [ ] `providerSupportsById`
 - [ ] `readConfig`
 - [ ] `readLockFile`
 - [ ] `recordMcpInstall`
@@ -2859,6 +3343,7 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `removeSkillFromLock`
 - [ ] `resolveAlias`
 - [ ] `resolveConfigPath`
+- [ ] `resolveProviderSkillsDirs`
 - [ ] `saveLastSelectedAgents`
 - [ ] `scanDirectory`
 - [ ] `scanFile`

@@ -6,11 +6,78 @@
  */
 
 import { readFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { ConfigFormat, DetectionMethod, Provider, ProviderPriority, ProviderStatus, TransportType } from "../../types.js";
-import { resolveProvidersRegistryPath, resolveRegistryTemplatePath } from "../paths/standard.js";
-import type { ProviderRegistry, RegistryProvider } from "./types.js";
+import type {
+  ConfigFormat,
+  DetectionMethod,
+  Provider,
+  ProviderCapabilities,
+  ProviderHooksCapability,
+  ProviderPriority,
+  ProviderSkillsCapability,
+  ProviderSpawnCapability,
+  ProviderStatus,
+  TransportType,
+} from "../../types.js";
+import { type PathScope, resolveProvidersRegistryPath, resolveProviderSkillsDir, resolveRegistryTemplatePath } from "../paths/standard.js";
+import type { HookEvent, ProviderRegistry, RegistryCapabilities, RegistryProvider, SkillsPrecedence, SpawnMechanism } from "./types.js";
+
+// ── Capability Defaults ──────────────────────────────────────────────
+
+const DEFAULT_SKILLS_CAPABILITY: ProviderSkillsCapability = {
+  agentsGlobalPath: null,
+  agentsProjectPath: null,
+  precedence: "vendor-only",
+};
+
+const DEFAULT_HOOKS_CAPABILITY: ProviderHooksCapability = {
+  supported: [],
+  hookConfigPath: null,
+  hookFormat: null,
+};
+
+const DEFAULT_SPAWN_CAPABILITY: ProviderSpawnCapability = {
+  supportsSubagents: false,
+  supportsProgrammaticSpawn: false,
+  supportsInterAgentComms: false,
+  supportsParallelSpawn: false,
+  spawnMechanism: null,
+};
+
+function resolveCapabilities(raw?: RegistryCapabilities): ProviderCapabilities {
+  const skills: ProviderSkillsCapability = raw?.skills
+    ? {
+        agentsGlobalPath: raw.skills.agentsGlobalPath
+          ? resolveRegistryTemplatePath(raw.skills.agentsGlobalPath)
+          : null,
+        agentsProjectPath: raw.skills.agentsProjectPath,
+        precedence: raw.skills.precedence,
+      }
+    : { ...DEFAULT_SKILLS_CAPABILITY };
+
+  const hooks: ProviderHooksCapability = raw?.hooks
+    ? {
+        supported: raw.hooks.supported as HookEvent[],
+        hookConfigPath: raw.hooks.hookConfigPath
+          ? resolveRegistryTemplatePath(raw.hooks.hookConfigPath)
+          : null,
+        hookFormat: raw.hooks.hookFormat as ProviderHooksCapability["hookFormat"],
+      }
+    : { ...DEFAULT_HOOKS_CAPABILITY, supported: [] };
+
+  const spawn: ProviderSpawnCapability = raw?.spawn
+    ? {
+        supportsSubagents: raw.spawn.supportsSubagents,
+        supportsProgrammaticSpawn: raw.spawn.supportsProgrammaticSpawn,
+        supportsInterAgentComms: raw.spawn.supportsInterAgentComms,
+        supportsParallelSpawn: raw.spawn.supportsParallelSpawn,
+        spawnMechanism: raw.spawn.spawnMechanism as SpawnMechanism | null,
+      }
+    : { ...DEFAULT_SPAWN_CAPABILITY };
+
+  return { skills, hooks, spawn };
+}
 
 function findRegistryPath(): string {
   const thisDir = dirname(fileURLToPath(import.meta.url));
@@ -49,6 +116,7 @@ function resolveProvider(raw: RegistryProvider): Provider {
     priority: raw.priority as ProviderPriority,
     status: raw.status as ProviderStatus,
     agentSkillsCompatible: raw.agentSkillsCompatible,
+    capabilities: resolveCapabilities(raw.capabilities),
   };
 }
 
@@ -232,9 +300,234 @@ export function getRegistryVersion(): string {
   return loadRegistry().version;
 }
 
+/**
+ * Filter providers that support a specific hook event.
+ *
+ * @param event - Hook event to filter by (e.g. `"onToolComplete"`)
+ * @returns Array of providers whose hooks capability includes the given event
+ *
+ * @example
+ * ```typescript
+ * const providers = getProvidersByHookEvent("onToolComplete");
+ * ```
+ */
+export function getProvidersByHookEvent(event: HookEvent): Provider[] {
+  return getAllProviders().filter((p) => p.capabilities.hooks.supported.includes(event));
+}
+
+/**
+ * Get hook events common to all specified providers.
+ *
+ * If providerIds is provided, returns the intersection of their supported events.
+ * If providerIds is undefined or empty, uses all providers.
+ *
+ * @param providerIds - Optional array of provider IDs to intersect
+ * @returns Array of hook events supported by ALL specified providers
+ *
+ * @example
+ * ```typescript
+ * const common = getCommonHookEvents(["claude-code", "gemini-cli"]);
+ * ```
+ */
+export function getCommonHookEvents(providerIds?: string[]): HookEvent[] {
+  const providers = providerIds && providerIds.length > 0
+    ? providerIds.map((id) => getProvider(id)).filter((p): p is Provider => p !== undefined)
+    : getAllProviders();
+
+  if (providers.length === 0) return [];
+
+  const first = providers[0]!.capabilities.hooks.supported as HookEvent[];
+  return first.filter((event) =>
+    providers.every((p) => p.capabilities.hooks.supported.includes(event)),
+  );
+}
+
+/**
+ * Check whether a provider supports a specific capability via dot-path query.
+ *
+ * The dot-path addresses a value inside `provider.capabilities`. For boolean
+ * fields the provider "supports" the capability when the value is `true`.
+ * For non-boolean fields the provider "supports" it when the value is neither
+ * `null` nor `undefined` (and, for arrays, non-empty).
+ *
+ * @param provider - Provider to inspect
+ * @param dotPath  - Dot-delimited capability path (e.g. `"spawn.supportsSubagents"`, `"hooks.supported"`)
+ * @returns `true` when the provider has the specified capability
+ *
+ * @example
+ * ```typescript
+ * const claude = getProvider("claude-code");
+ * providerSupports(claude!, "spawn.supportsSubagents"); // true
+ * ```
+ */
+export function providerSupports(provider: Provider, dotPath: string): boolean {
+  const parts = dotPath.split(".");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let current: any = provider.capabilities;
+  for (const part of parts) {
+    if (current == null || typeof current !== "object") return false;
+    current = current[part];
+  }
+  if (typeof current === "boolean") return current;
+  if (Array.isArray(current)) return current.length > 0;
+  return current != null;
+}
+
+/**
+ * Filter providers that support spawning subagents.
+ *
+ * @returns Array of providers where `capabilities.spawn.supportsSubagents === true`
+ *
+ * @example
+ * ```typescript
+ * const spawnCapable = getSpawnCapableProviders();
+ * ```
+ */
+export function getSpawnCapableProviders(): Provider[] {
+  return getAllProviders().filter((p) => p.capabilities.spawn.supportsSubagents);
+}
+
+/**
+ * Filter providers by a specific boolean spawn capability flag.
+ *
+ * @param flag - One of the four boolean flags on {@link ProviderSpawnCapability}
+ *              (`"supportsSubagents"`, `"supportsProgrammaticSpawn"`,
+ *               `"supportsInterAgentComms"`, `"supportsParallelSpawn"`)
+ * @returns Array of providers where the specified flag is `true`
+ *
+ * @example
+ * ```typescript
+ * const parallel = getProvidersBySpawnCapability("supportsParallelSpawn");
+ * ```
+ */
+export function getProvidersBySpawnCapability(
+  flag: keyof Omit<ProviderSpawnCapability, "spawnMechanism">,
+): Provider[] {
+  return getAllProviders().filter((p) => p.capabilities.spawn[flag] === true);
+}
+
 /** Reset cached data (for testing) */
 export function resetRegistry(): void {
   _registry = null;
   _providers = null;
   _aliasMap = null;
+}
+
+// ── Skills Query Functions ──────────────────────────────────────────
+
+/**
+ * Filter providers by their skills precedence value.
+ *
+ * @param precedence - Skills precedence to filter by
+ * @returns Array of providers matching the given precedence
+ */
+export function getProvidersBySkillsPrecedence(precedence: SkillsPrecedence): Provider[] {
+  return getAllProviders().filter((p) => p.capabilities.skills.precedence === precedence);
+}
+
+/**
+ * Get the effective skills paths for a provider, ordered by precedence.
+ *
+ * @param provider - Provider to resolve paths for
+ * @param scope - Whether to resolve global or project paths
+ * @param projectDir - Project directory for project-scope resolution
+ * @returns Ordered array of paths with source and scope metadata
+ */
+export function getEffectiveSkillsPaths(
+  provider: Provider,
+  scope: PathScope,
+  projectDir?: string,
+): Array<{ path: string; source: string; scope: string }> {
+  const vendorPath = resolveProviderSkillsDir(provider, scope, projectDir);
+  const { precedence, agentsGlobalPath, agentsProjectPath } = provider.capabilities.skills;
+
+  const resolveAgentsPath = (): string | null => {
+    if (scope === "global" && agentsGlobalPath) return agentsGlobalPath;
+    if (scope === "project" && agentsProjectPath && projectDir) {
+      return join(projectDir, agentsProjectPath);
+    }
+    return null;
+  };
+
+  const agentsPath = resolveAgentsPath();
+  const scopeLabel = scope === "global" ? "global" : "project";
+
+  switch (precedence) {
+    case "vendor-only":
+      return [{ path: vendorPath, source: "vendor", scope: scopeLabel }];
+    case "agents-canonical":
+      return agentsPath ? [{ path: agentsPath, source: "agents", scope: scopeLabel }] : [];
+    case "agents-first":
+      return [
+        ...(agentsPath ? [{ path: agentsPath, source: "agents", scope: scopeLabel }] : []),
+        { path: vendorPath, source: "vendor", scope: scopeLabel },
+      ];
+    case "agents-supported":
+      return [
+        { path: vendorPath, source: "vendor", scope: scopeLabel },
+        ...(agentsPath ? [{ path: agentsPath, source: "agents", scope: scopeLabel }] : []),
+      ];
+    case "vendor-global-agents-project":
+      if (scope === "global") {
+        return [{ path: vendorPath, source: "vendor", scope: "global" }];
+      }
+      return [
+        ...(agentsPath ? [{ path: agentsPath, source: "agents", scope: "project" }] : []),
+        { path: vendorPath, source: "vendor", scope: "project" },
+      ];
+    default:
+      return [{ path: vendorPath, source: "vendor", scope: scopeLabel }];
+  }
+}
+
+/**
+ * Build a full skills map for all providers.
+ *
+ * @returns Array of skills map entries with provider ID, tool name, precedence, and paths
+ */
+export function buildSkillsMap(): Array<{
+  providerId: string;
+  toolName: string;
+  precedence: SkillsPrecedence;
+  paths: { global: string | null; project: string | null };
+}> {
+  return getAllProviders().map((p) => {
+    const { precedence, agentsGlobalPath, agentsProjectPath } = p.capabilities.skills;
+    const isVendorOnly = precedence === "vendor-only";
+    return {
+      providerId: p.id,
+      toolName: p.toolName,
+      precedence,
+      paths: {
+        global: isVendorOnly ? p.pathSkills : (agentsGlobalPath ?? null),
+        project: isVendorOnly ? p.pathProjectSkills : (agentsProjectPath ?? null),
+      },
+    };
+  });
+}
+
+/**
+ * Get capabilities for a provider by ID or alias.
+ *
+ * @param idOrAlias - Provider ID or alias
+ * @returns The provider's capabilities, or undefined if not found
+ */
+export function getProviderCapabilities(idOrAlias: string): ProviderCapabilities | undefined {
+  return getProvider(idOrAlias)?.capabilities;
+}
+
+/**
+ * Check if a provider supports a capability using ID/alias lookup.
+ *
+ * Convenience wrapper that resolves the provider first, then delegates
+ * to the provider-level {@link providerSupports}.
+ *
+ * @param idOrAlias - Provider ID or alias
+ * @param capabilityPath - Dot-path into capabilities (e.g. "spawn.supportsSubagents")
+ * @returns true if the provider supports the capability, false otherwise
+ */
+export function providerSupportsById(idOrAlias: string, capabilityPath: string): boolean {
+  const provider = getProvider(idOrAlias);
+  if (!provider) return false;
+  return providerSupports(provider, capabilityPath);
 }

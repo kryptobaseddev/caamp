@@ -65,6 +65,31 @@ const installed = getInstalledProviders();
 const servers = await listAllMcpServers(installed, "global");
 ```
 
+### Querying Provider Capabilities
+
+```typescript
+import {
+  getProviderCapabilities,
+  getSpawnCapableProviders,
+  getProvidersByHookEvent,
+  buildSkillsMap,
+} from "@cleocode/caamp";
+
+// Get capabilities for a specific provider
+const caps = getProviderCapabilities("claude-code");
+console.log(caps?.spawn.supportsSubagents); // true
+console.log(caps?.hooks.supported); // ["onSessionStart", ...]
+
+// Find all providers that support spawning subagents
+const spawnCapable = getSpawnCapableProviders();
+
+// Find providers supporting a specific hook event
+const hookProviders = getProvidersByHookEvent("onToolComplete");
+
+// Get full skills precedence map
+const skillsMap = buildSkillsMap();
+```
+
 See [API Reference](https://codluv.gitbook.io/caamp/api-and-reference/api-reference) for full programmatic API documentation.
 
 ## CLI Commands

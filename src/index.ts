@@ -28,6 +28,14 @@ export type {
   InjectionStatus,
   InjectionCheckResult,
   GlobalOptions,
+  // Capability types
+  SkillsPrecedence,
+  ProviderSkillsCapability,
+  ProviderHooksCapability,
+  ProviderSpawnCapability,
+  ProviderCapabilities,
+  HookEvent,
+  SpawnMechanism,
   // Primary SkillLibrary types
   SkillLibrary,
   SkillLibraryEntry,
@@ -46,6 +54,9 @@ export type {
   CtManifest,
   CtManifestSkill,
 } from "./types.js";
+
+// Spawn adapter
+export type { SpawnOptions, SpawnResult, SpawnAdapter } from "./core/registry/spawn-adapter.js";
 
 // Result types from core modules
 export type { DetectionResult, DetectionCacheOptions } from "./core/registry/detection.js";
@@ -91,6 +102,16 @@ export {
   getInstructionFiles,
   getProviderCount,
   getRegistryVersion,
+  getProvidersByHookEvent,
+  getCommonHookEvents,
+  providerSupports,
+  getSpawnCapableProviders,
+  getProvidersBySpawnCapability,
+  getProvidersBySkillsPrecedence,
+  getEffectiveSkillsPaths,
+  buildSkillsMap,
+  getProviderCapabilities,
+  providerSupportsById,
 } from "./core/registry/providers.js";
 
 // Detection
@@ -117,6 +138,7 @@ export {
   getAgentsWikiDir,
   getAgentsSpecDir,
   getAgentsLinksDir,
+  resolveProviderSkillsDirs,
 } from "./core/paths/standard.js";
 
 // Source parsing

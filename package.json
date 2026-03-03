@@ -1,6 +1,6 @@
 {
   "name": "@cleocode/caamp",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Central AI Agent Managed Packages - unified provider registry and package manager for AI coding agents",
   "type": "module",
   "bin": {
@@ -31,6 +31,7 @@
     "lint:fix": "biome lint --write src tests",
     "docs:api": "typedoc",
     "docs:api:check": "typedoc --emit none",
+    "research": "tsx scripts/provider-research.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
