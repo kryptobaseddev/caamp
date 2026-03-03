@@ -54,6 +54,8 @@ const servers = await listAllMcpServers(installed, "global");
 - [MCP -- Reading & Listing](#mcp--reading--listing)
 - [MCP -- Lock File](#mcp--lock-file)
 - [MCP -- Transforms](#mcp--transforms)
+- [MCP -- CLEO](#mcp--cleo)
+- [Skills -- Recommendation](#skills--recommendation)
 - [Skills -- Installation](#skills--installation)
 - [Skills -- Discovery](#skills--discovery)
 - [Skills -- Validation](#skills--validation)
@@ -1990,6 +1992,114 @@ if (transform) {
     args: ["-y", "my-mcp-server"],
   });
 }
+```
+
+---
+
+## MCP -- CLEO
+
+CLEO (Canonical Library for Extensible Orchestration) helpers for MCP server management and version handling.
+
+### `extractVersionTag()`
+
+Extracts a version tag from a package specification string (e.g., `package@1.2.3`). Returns the version portion after the `@` symbol, or `undefined` if no version tag is present.
+
+```typescript
+function extractVersionTag(packageSpec?: string): string | undefined
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `packageSpec` | `string` | Package specification string (e.g., `"my-package@1.2.3"`) |
+
+**Returns**: `string | undefined` -- Version tag (e.g., `"1.2.3"`) or `undefined` if no version found.
+
+```typescript
+import { extractVersionTag } from "@cleocode/caamp";
+
+const version1 = extractVersionTag("my-mcp-server@1.2.3");
+console.log(version1); // "1.2.3"
+
+const version2 = extractVersionTag("my-mcp-server");
+console.log(version2); // undefined
+
+const version3 = extractVersionTag("@scope/package@2.0.0");
+console.log(version3); // "2.0.0"
+```
+
+---
+
+## Skills -- Recommendation
+
+Functions for skill discovery, recommendation, and ranking based on criteria matching.
+
+### `formatSkillRecommendations()`
+
+Formats skill recommendation results for display or JSON output. Supports human-readable text mode (with numbered list and CHOOSE prompt) or structured JSON mode with optional detailed evidence fields.
+
+```typescript
+function formatSkillRecommendations(
+  result: RecommendSkillsResult,
+  opts: { mode: "human" | "json"; details?: boolean }
+): string | Record<string, unknown>
+```
+
+**Parameters**:
+
+| Name | Type | Description |
+|------|------|-------------|
+| `result` | `RecommendSkillsResult` | Recommendation result from `recommendSkills()` |
+| `opts.mode` | `"human" \| "json"` | Output format mode |
+| `opts.details` | `boolean` | Include detailed evidence fields in JSON mode (optional) |
+
+**Returns**: `string | Record<string, unknown>` -- Formatted recommendations as human-readable string or JSON object.
+
+**Human Mode Output**:
+```
+Recommended skills:
+
+1) @scope/skill-name (Recommended)
+   why: security, performance
+   tradeoff: increases bundle size
+
+CHOOSE: 1,2,3
+```
+
+**JSON Mode Output** (with `details: true`):
+```json
+{
+  "options": [
+    {
+      "rank": 1,
+      "scopedName": "@scope/skill-name",
+      "score": 0.95,
+      "reasons": [{"code": "security", "weight": 0.3}],
+      "tradeoffs": ["increases bundle size"],
+      "description": "Skill description",
+      "source": "github:user/repo",
+      "evidence": { ... }
+    }
+  ]
+}
+```
+
+```typescript
+import { recommendSkills, formatSkillRecommendations } from "@cleocode/caamp";
+
+const result = await recommendSkills("auth", {
+  criteria: { mustHave: ["security"] },
+  limit: 5
+});
+
+// Human-readable format for CLI display
+const human = formatSkillRecommendations(result, { mode: "human" });
+console.log(human);
+
+// JSON format for programmatic use
+const json = formatSkillRecommendations(result, { mode: "json", details: true });
+console.log(JSON.stringify(json, null, 2));
 ```
 
 ---
