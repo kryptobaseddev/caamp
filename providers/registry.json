@@ -178,8 +178,8 @@
           "agentsProjectPath": ".agents/skills"
         },
         "hooks": {
-          "supported": ["onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
-          "hookConfigPath": null,
+          "supported": ["onSessionStart", "onSessionEnd", "onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
+          "hookConfigPath": "$HOME/.gemini/settings.json",
           "hookFormat": "json"
         },
         "spawn": {
