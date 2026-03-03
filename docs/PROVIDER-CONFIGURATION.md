@@ -86,6 +86,34 @@ Query spawn support:
 caamp providers capabilities --filter spawn.supportsSubagents --json
 ```
 
+## Programmatic API
+
+All capabilities can be queried programmatically:
+
+```typescript
+import {
+  getProviderCapabilities,
+  getProvidersBySkillsPrecedence,
+  getProvidersByHookEvent,
+  getSpawnCapableProviders,
+  providerSupportsById,
+} from "@cleocode/caamp";
+
+// Get full capabilities for a provider
+const caps = getProviderCapabilities("claude-code");
+console.log(caps?.skills.precedence);     // "vendor-only"
+console.log(caps?.hooks.supported);       // ["onSessionStart", ...]
+console.log(caps?.spawn.spawnMechanism);  // "native"
+
+// Filter providers by capability
+const agentsFirst = getProvidersBySkillsPrecedence("agents-first");
+const hookProviders = getProvidersByHookEvent("onToolComplete");
+const spawnCapable = getSpawnCapableProviders();
+
+// Check specific capability
+const supportsSpawn = providerSupportsById("codex", "spawn.supportsSubagents");
+```
+
 ## Per-Provider Details
 
 Use `caamp providers show <id>` for exact paths, key names, and transport capabilities.

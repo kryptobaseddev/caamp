@@ -3278,7 +3278,7 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 ### Functions
 
 - [ ] `applyMcpInstallWithPolicy`
-- [ ] `buildSkillsMap`
+- [x] `buildSkillsMap`
 - [ ] `buildServerConfig`
 - [ ] `checkAllInjections`
 - [ ] `checkInjection`
@@ -3288,29 +3288,29 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `detectMcpConfigConflicts`
 - [ ] `detectAllProviders`
 - [ ] `detectProjectProviders`
-- [ ] `detectProvider`
+- [x] `detectProvider`
 - [ ] `discoverSkill`
 - [ ] `discoverSkills`
 - [ ] `ensureDir`
 - [ ] `generateInjectionContent`
-- [ ] `getCommonHookEvents`
-- [ ] `getEffectiveSkillsPaths`
-- [ ] `getAllProviders`
-- [ ] `getInstalledProviders`
+- [x] `getCommonHookEvents`
+- [x] `getEffectiveSkillsPaths`
+- [x] `getAllProviders`
+- [x] `getInstalledProviders`
 - [ ] `getInstructionFiles`
 - [ ] `getLastSelectedAgents`
 - [ ] `getNestedValue`
-- [ ] `getProvider`
-- [ ] `getProviderCapabilities`
+- [x] `getProvider`
+- [x] `getProviderCapabilities`
 - [ ] `getProviderCount`
-- [ ] `getProvidersByHookEvent`
-- [ ] `getProvidersByInstructFile`
-- [ ] `getProvidersByPriority`
-- [ ] `getProvidersBySkillsPrecedence`
-- [ ] `getProvidersBySpawnCapability`
-- [ ] `getProvidersByStatus`
+- [x] `getProvidersByHookEvent`
+- [x] `getProvidersByInstructFile`
+- [x] `getProvidersByPriority`
+- [x] `getProvidersBySkillsPrecedence`
+- [x] `getProvidersBySpawnCapability`
+- [x] `getProvidersByStatus`
 - [ ] `getRegistryVersion`
-- [ ] `getSpawnCapableProviders`
+- [x] `getSpawnCapableProviders`
 - [ ] `getTrackedMcpServers`
 - [ ] `getTrackedSkills`
 - [ ] `getTransform`
@@ -3329,8 +3329,8 @@ Alphabetical checklist of exported symbols from `src/index.ts`.
 - [ ] `listMcpServers`
 - [ ] `parseSkillFile`
 - [ ] `parseSource`
-- [ ] `providerSupports`
-- [ ] `providerSupportsById`
+- [x] `providerSupports`
+- [x] `providerSupportsById`
 - [ ] `readConfig`
 - [ ] `readLockFile`
 - [ ] `recordMcpInstall`
