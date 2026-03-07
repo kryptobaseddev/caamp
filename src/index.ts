@@ -141,6 +141,10 @@ export {
   resolveProviderSkillsDirs,
 } from "./core/paths/standard.js";
 
+// Platform path resolution
+export type { PlatformPaths, SystemInfo } from "./core/platform-paths.js";
+export { getPlatformPaths, getSystemInfo, _resetPlatformPathsCache } from "./core/platform-paths.js";
+
 // Source parsing
 export { parseSource, isMarketplaceScoped } from "./core/sources/parser.js";
 

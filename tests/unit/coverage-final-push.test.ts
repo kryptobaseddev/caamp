@@ -34,6 +34,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import envPaths from "env-paths";
 
 // ══════════════════════════════════════════════════════════════════════════════
 // 1. src/core/sources/parser.ts - lines 102-103, 125-126, 165-166 + branches
@@ -847,8 +848,8 @@ describe("coverage: standard.ts branch gaps", () => {
 
     process.env["AGENTS_HOME"] = "  ";
     const blank = getAgentsHome();
-    // blank trim has length 0, so should use default
-    expect(blank).toContain(".agents");
+    // blank trim has length 0, so should use OS-appropriate default
+    expect(blank).toBe(envPaths("agents", { suffix: "" }).data);
 
     if (saved !== undefined) process.env["AGENTS_HOME"] = saved;
     else delete process.env["AGENTS_HOME"];

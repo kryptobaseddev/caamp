@@ -1,5 +1,6 @@
 import { homedir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
+import envPaths from "env-paths";
 import {
   buildSkillSubPathCandidates,
   getAgentsConfigPath,
@@ -136,25 +137,25 @@ describe("paths standard", () => {
   });
 
   describe("getAgentsHome default behavior", () => {
-    it("returns ~/.agents when AGENTS_HOME is unset", () => {
+    it("returns OS-appropriate data dir when AGENTS_HOME is unset", () => {
       delete process.env["AGENTS_HOME"];
       const result = getAgentsHome();
-      expect(result).toContain(homedir());
-      expect(result).toContain(".agents");
+      const expectedDefault = envPaths("agents", { suffix: "" }).data;
+      expect(result).toBe(expectedDefault);
     });
 
-    it("returns ~/.agents when AGENTS_HOME is empty string", () => {
+    it("returns OS-appropriate data dir when AGENTS_HOME is empty string", () => {
       process.env["AGENTS_HOME"] = "";
       const result = getAgentsHome();
-      expect(result).toContain(homedir());
-      expect(result).toContain(".agents");
+      const expectedDefault = envPaths("agents", { suffix: "" }).data;
+      expect(result).toBe(expectedDefault);
     });
 
-    it("returns ~/.agents when AGENTS_HOME is whitespace only", () => {
+    it("returns OS-appropriate data dir when AGENTS_HOME is whitespace only", () => {
       process.env["AGENTS_HOME"] = "   ";
       const result = getAgentsHome();
-      expect(result).toContain(homedir());
-      expect(result).toContain(".agents");
+      const expectedDefault = envPaths("agents", { suffix: "" }).data;
+      expect(result).toBe(expectedDefault);
     });
   });
 

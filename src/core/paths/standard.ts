@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import type { Provider } from "../../types.js";
+import { getPlatformPaths } from "../platform-paths.js";
 
 export type PathScope = "project" | "global";
 
@@ -69,11 +70,7 @@ function normalizeHomeOverride(value: string): string {
 }
 
 export function getAgentsHome(): string {
-  const override = process.env["AGENTS_HOME"];
-  if (override && override.trim().length > 0) {
-    return normalizeHomeOverride(override);
-  }
-  return join(homedir(), ".agents");
+  return getPlatformPaths().data;
 }
 
 export function getProjectAgentsDir(projectRoot = process.cwd()): string {
