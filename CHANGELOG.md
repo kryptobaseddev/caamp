@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-03-06
+
+### Added
+- **OS-aware path resolution via env-paths**: `getAgentsHome()` now returns platform-appropriate directories instead of always defaulting to `~/.agents`
+  - Linux: `~/.local/share/agents` (XDG Base Directory spec)
+  - macOS: `~/Library/Application Support/agents` (Apple standard)
+  - Windows: `%LOCALAPPDATA%\agents\Data` (Windows standard)
+  - `AGENTS_HOME` environment variable continues to override for backward compatibility
+- **New module `platform-paths`**: Centralized OS-aware path resolution
+  - `getPlatformPaths()` — returns `{ data, config, cache, log, temp }` using env-paths; cache auto-invalidates when `AGENTS_HOME` changes; full normalization of tilde, relative, and whitespace values
+  - `getSystemInfo()` — cached system snapshot (`platform`, `arch`, `release`, `hostname`, `nodeVersion`, `paths`)
+  - `_resetPlatformPathsCache()` — for test isolation after env var mutation
+  - `PlatformPaths` and `SystemInfo` interfaces
+- **Public API exports**: `getPlatformPaths`, `getSystemInfo`, `_resetPlatformPathsCache`, `PlatformPaths`, `SystemInfo` now exported from the package root
+- **`env-paths` dependency**: Added as a runtime dependency for cross-platform path detection
+
 ## [1.6.1] - 2026-03-03
 
 ### Fixed
