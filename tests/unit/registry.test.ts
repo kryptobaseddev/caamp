@@ -18,6 +18,7 @@ import {
   providerSupports,
   providerSupportsById,
   resetRegistry,
+  getEffectiveSkillsPaths,
   resolveAlias,
 } from "../../src/core/registry/providers.js";
 
@@ -255,5 +256,200 @@ describe("Provider Registry", () => {
       expect(entry?.paths).toHaveProperty("global");
       expect(entry?.paths).toHaveProperty("project");
     });
+  });
+});
+
+describe("getEffectiveSkillsPaths", () => {
+  it("vendor-only returns single vendor entry for global scope", () => {
+    const provider = getProvider("claude-code")!;
+    const paths = getEffectiveSkillsPaths(provider, "global");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
+    expect(paths[0]?.scope).toBe("global");
+  });
+
+  it("vendor-only returns single vendor entry for project scope", () => {
+    const provider = getProvider("claude-code")!;
+    const paths = getEffectiveSkillsPaths(provider, "project", "/my/project");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
+    expect(paths[0]?.scope).toBe("project");
+  });
+
+  it("returns agents entry when precedence is agents-canonical and agentsGlobalPath set", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "agents-canonical" as const,
+          agentsGlobalPath: "/home/user/.agents/skills",
+          agentsProjectPath: ".agents/skills",
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("agents");
+    expect(paths[0]?.path).toBe("/home/user/.agents/skills");
+  });
+
+  it("agents-canonical returns empty array when agentsGlobalPath is null", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "agents-canonical" as const,
+          agentsGlobalPath: null,
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(0);
+  });
+
+  it("agents-first returns agents then vendor when agentsGlobalPath set", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "agents-first" as const,
+          agentsGlobalPath: "/home/user/.agents/skills",
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(2);
+    expect(paths[0]?.source).toBe("agents");
+    expect(paths[1]?.source).toBe("vendor");
+  });
+
+  it("agents-first returns only vendor when agentsGlobalPath is null", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "agents-first" as const,
+          agentsGlobalPath: null,
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
+  });
+
+  it("agents-supported returns vendor then agents when agentsGlobalPath set", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "agents-supported" as const,
+          agentsGlobalPath: "/home/user/.agents/skills",
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(2);
+    expect(paths[0]?.source).toBe("vendor");
+    expect(paths[1]?.source).toBe("agents");
+  });
+
+  it("vendor-global-agents-project returns only vendor for global scope", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "vendor-global-agents-project" as const,
+          agentsGlobalPath: "/home/user/.agents/skills",
+          agentsProjectPath: ".agents/skills",
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
+    expect(paths[0]?.scope).toBe("global");
+  });
+
+  it("vendor-global-agents-project returns agents+vendor for project scope", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "vendor-global-agents-project" as const,
+          agentsGlobalPath: null,
+          agentsProjectPath: ".agents/skills",
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "project", "/my/project");
+    expect(paths).toHaveLength(2);
+    expect(paths[0]?.source).toBe("agents");
+    expect(paths[0]?.scope).toBe("project");
+    expect(paths[1]?.source).toBe("vendor");
+    expect(paths[1]?.scope).toBe("project");
+  });
+
+  it("vendor-global-agents-project returns only vendor for project scope when agentsProjectPath is null", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "vendor-global-agents-project" as const,
+          agentsGlobalPath: null,
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "project", "/my/project");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
+  });
+
+  it("falls back to vendor-only for unknown precedence", () => {
+    const provider = getProvider("claude-code")!;
+    const modified = {
+      ...provider,
+      capabilities: {
+        ...provider.capabilities,
+        skills: {
+          ...provider.capabilities.skills,
+          precedence: "unknown-precedence" as "vendor-only",
+          agentsGlobalPath: null,
+          agentsProjectPath: null,
+        },
+      },
+    };
+    const paths = getEffectiveSkillsPaths(modified, "global");
+    expect(paths).toHaveLength(1);
+    expect(paths[0]?.source).toBe("vendor");
   });
 });

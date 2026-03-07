@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import type { Provider } from "../../types.js";
 import { getPlatformPaths } from "../platform-paths.js";
 
@@ -52,21 +52,6 @@ export function getPlatformLocations(): PlatformLocations {
     claudeDesktopConfig: join(config, "Claude"),
     applications: [],
   };
-}
-
-function normalizeHomeOverride(value: string): string {
-  const home = homedir();
-  const trimmed = value.trim();
-  if (trimmed.startsWith("~/")) {
-    return join(home, trimmed.slice(2));
-  }
-  if (trimmed === "~") {
-    return home;
-  }
-  if (isAbsolute(trimmed)) {
-    return resolve(trimmed);
-  }
-  return resolve(home, trimmed);
 }
 
 export function getAgentsHome(): string {

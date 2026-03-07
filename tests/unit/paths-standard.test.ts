@@ -1,4 +1,5 @@
 import { homedir } from "node:os";
+import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import envPaths from "env-paths";
 import {
@@ -379,8 +380,8 @@ describe("paths standard", () => {
       };
       const result = resolveProviderSkillsDirs(provider, "project", "/my/project");
       expect(result).toHaveLength(2);
-      expect(result[0]).toContain(".agents/skills");
-      expect(result[1]).toContain(".claude/skills");
+      expect(result[0]).toContain(join(".agents", "skills"));
+      expect(result[1]).toContain(join(".claude", "skills"));
     });
 
     it("project scope resolves agentsProjectPath relative to projectDir", () => {
@@ -390,7 +391,7 @@ describe("paths standard", () => {
       };
       const result = resolveProviderSkillsDirs(provider, "project", "/my/project");
       expect(result).toHaveLength(1);
-      expect(result[0]).toBe("/my/project/.agents/skills");
+      expect(result[0]).toBe(join("/my/project", ".agents", "skills"));
     });
 
     it("falls back to vendor-only when capabilities are undefined", () => {
