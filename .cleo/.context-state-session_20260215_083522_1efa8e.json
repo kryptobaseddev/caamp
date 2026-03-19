@@ -1,13 +1,13 @@
 {
   "version": "1.0.0",
-  "timestamp": "2026-02-24T21:40:59Z",
+  "timestamp": "2026-03-07T05:26:12Z",
   "staleAfterMs": 5000,
   "contextWindow": {
     "maxTokens": 200000,
-    "currentTokens": 165835,
-    "percentage": 82
+    "currentTokens": 84169,
+    "percentage": 42
   },
-  "status": "warning",
+  "status": "ok",
   "sessionId": "session_20260215_083522_1efa8e",
   "workspace": "/mnt/projects/caamp"
 }

@@ -1,0 +1,11 @@
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","version":"2026.3.15","projectHash":"01a4cde42bd1","logLevel":"info","msg":"CLEO MCP server starting"}
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","enableMetrics":false,"msg":"Metrics: disabled"}
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","msg":"Initializing dispatch layer"}
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","msg":"Dispatch layer initialized"}
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","maxJobs":10,"retentionMs":3600000,"msg":"Background job manager initialized"}
+{"level":"INFO","time":"2026-03-07T03:24:08.291Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","enabled":true,"ttlMs":30000,"msg":"Query cache: enabled"}
+{"level":"INFO","time":"2026-03-07T03:24:08.292Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","msg":"Connecting to stdio transport"}
+{"level":"INFO","time":"2026-03-07T03:24:08.292Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","transport":"stdio","msg":"Server started successfully"}
+{"level":"INFO","time":"2026-03-07T03:24:08.292Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","msg":"Ready for requests"}
+{"level":"INFO","time":"2026-03-07T04:46:44.157Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","signal":"SIGTERM","msg":"Received shutdown signal"}
+{"level":"INFO","time":"2026-03-07T04:46:44.158Z","projectHash":"01a4cde42bd1","subsystem":"mcp:startup","signal":"SIGTERM","msg":"Server closed"}

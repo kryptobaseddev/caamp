@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-03-19
+
+### Fixed
+- **Missing export**: Added `checkAllSkillUpdates` to package exports (was defined in `lock.ts` but not exported from `index.ts`)
+- **Complete API surface**: All skill lock functions now properly exported for programmatic usage
+
 ## [1.7.0] - 2026-03-06
 
 ### Added
