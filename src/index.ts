@@ -222,12 +222,34 @@ export {
   checkAllSkillUpdates,
 } from "./core/skills/lock.js";
 
+// Skills integrity
+export type { SkillIntegrityStatus, SkillIntegrityResult } from "./core/skills/integrity.js";
+export {
+  isCaampOwnedSkill,
+  checkSkillIntegrity,
+  checkAllSkillIntegrity,
+  shouldOverrideSkill,
+  validateInstructionIntegrity,
+} from "./core/skills/integrity.js";
+
 // Marketplace
 export { MarketplaceClient } from "./core/marketplace/client.js";
 export type { MarketplaceResult } from "./core/marketplace/types.js";
 
 // Instructions
-export { inject, checkInjection, removeInjection, checkAllInjections, injectAll } from "./core/instructions/injector.js";
+export {
+  inject,
+  checkInjection,
+  removeInjection,
+  checkAllInjections,
+  injectAll,
+  ensureProviderInstructionFile,
+  ensureAllProviderInstructionFiles,
+} from "./core/instructions/injector.js";
+export type {
+  EnsureProviderInstructionFileOptions,
+  EnsureProviderInstructionFileResult,
+} from "./core/instructions/injector.js";
 export { generateInjectionContent, generateSkillsSection, groupByInstructFile, buildInjectionContent, parseInjectionContent } from "./core/instructions/templates.js";
 export type { InjectionTemplate } from "./core/instructions/templates.js";
 

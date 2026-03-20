@@ -557,7 +557,7 @@ export interface InstructionUpdateSummary {
   updatedFiles: number;
   actions: Array<{
     file: string;
-    action: "created" | "added" | "updated";
+    action: "created" | "added" | "updated" | "intact";
     providers: string[];
     configFormats: ConfigFormat[];
   }>;
@@ -630,8 +630,8 @@ export interface DualScopeConfigureResult {
     project: InstallResult[];
   };
   instructions: {
-    global?: Map<string, "created" | "added" | "updated">;
-    project?: Map<string, "created" | "added" | "updated">;
+    global?: Map<string, "created" | "added" | "updated" | "intact">;
+    project?: Map<string, "created" | "added" | "updated" | "intact">;
   };
 }
 

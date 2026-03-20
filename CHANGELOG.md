@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-03-20
+
+### Added
+- **Idempotent `inject()`**: Now returns `"intact"` when existing CAAMP block content already matches, preventing unnecessary file writes and duplicate blocks (fixes [#47](https://github.com/kryptobaseddev/caamp/issues/47) Problem 1)
+- **`ensureProviderInstructionFile()` API**: Canonical API for adapters to delegate instruction file management to CAAMP. Resolves instruction file names from the provider registry (SSoT) instead of hardcoding. Supports both project and global scope ([#47](https://github.com/kryptobaseddev/caamp/issues/47) Problem 2/3)
+- **`ensureAllProviderInstructionFiles()`**: Batch version that deduplicates providers sharing the same instruction file
+- **Skill integrity checking module** (`src/core/skills/integrity.ts`):
+  - `checkSkillIntegrity()` — validates canonical paths, symlinks, and lock file consistency
+  - `checkAllSkillIntegrity()` — batch integrity check across all tracked skills
+  - `isCaampOwnedSkill()` — identifies `ct-*` prefixed CAAMP-reserved skills
+  - `shouldOverrideSkill()` — enforces `ct-*` prefix priority for CAAMP-shipped skills
+  - `validateInstructionIntegrity()` — validates CAAMP blocks across provider instruction files
+- **New exported types**: `EnsureProviderInstructionFileOptions`, `EnsureProviderInstructionFileResult`, `SkillIntegrityStatus`, `SkillIntegrityResult`
+
+### Changed
+- `inject()` return type widened from `"created" | "added" | "updated"` to include `"intact"` (backward-compatible)
+- `injectAll()` return type updated to match
+- `InstructionUpdateSummary.actions[].action` and `DualScopeConfigureResult.instructions` types updated to include `"intact"`
+
 ## [1.7.1] - 2026-03-19
 
 ### Fixed

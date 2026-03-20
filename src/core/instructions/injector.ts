@@ -10,6 +10,8 @@ import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { mkdir } from "node:fs/promises";
 import type { InjectionStatus, InjectionCheckResult, Provider } from "../../types.js";
+import { buildInjectionContent, type InjectionTemplate } from "./templates.js";
+import { getProvider } from "../registry/providers.js";
 
 const MARKER_START = "<!-- CAAMP:START -->";
 const MARKER_END = "<!-- CAAMP:END -->";
@@ -77,24 +79,28 @@ function buildBlock(content: string): string {
  * Inject content into an instruction file between CAAMP markers.
  *
  * Behavior depends on the file state:
- * - File does not exist: creates the file with the injection block
- * - File exists without markers: prepends the injection block
- * - File exists with markers: replaces the existing injection block
+ * - File does not exist: creates the file with the injection block → `"created"`
+ * - File exists without markers: prepends the injection block → `"added"`
+ * - File exists with markers, content differs: replaces the block → `"updated"`
+ * - File exists with markers, content matches: no-op → `"intact"`
+ *
+ * This function is **idempotent** — calling it multiple times with the same
+ * content will not modify the file after the first write.
  *
  * @param filePath - Absolute path to the instruction file
  * @param content - Content to inject between CAAMP markers
- * @returns Action taken: `"created"`, `"added"`, or `"updated"`
+ * @returns Action taken: `"created"`, `"added"`, `"updated"`, or `"intact"`
  *
  * @example
  * ```typescript
  * const action = await inject("/project/CLAUDE.md", "## My Config\nSome content");
- * console.log(`File ${action}`);
+ * console.log(`File ${action}`); // "created" on first call, "intact" on subsequent
  * ```
  */
 export async function inject(
   filePath: string,
   content: string,
-): Promise<"created" | "added" | "updated"> {
+): Promise<"created" | "added" | "updated" | "intact"> {
   const block = buildBlock(content);
 
   // Ensure parent directory exists
@@ -109,7 +115,13 @@ export async function inject(
   const existing = await readFile(filePath, "utf-8");
 
   if (MARKER_PATTERN.test(existing)) {
-    // Replace existing block
+    // Check if existing content already matches (idempotency)
+    const existingBlock = extractBlock(existing);
+    if (existingBlock !== null && existingBlock.trim() === content.trim()) {
+      return "intact";
+    }
+
+    // Replace existing block with new content
     const updated = existing.replace(MARKER_PATTERN, block);
     await writeFile(filePath, updated, "utf-8");
     return "updated";
@@ -214,7 +226,7 @@ export async function checkAllInjections(
  * @param projectDir - Absolute path to the project directory
  * @param scope - Whether to target project or global instruction files
  * @param content - Content to inject between CAAMP markers
- * @returns Map of file path to action taken (`"created"`, `"added"`, or `"updated"`)
+ * @returns Map of file path to action taken (`"created"`, `"added"`, `"updated"`, or `"intact"`)
  *
  * @example
  * ```typescript
@@ -229,8 +241,8 @@ export async function injectAll(
   projectDir: string,
   scope: "project" | "global",
   content: string,
-): Promise<Map<string, "created" | "added" | "updated">> {
-  const results = new Map<string, "created" | "added" | "updated">();
+): Promise<Map<string, "created" | "added" | "updated" | "intact">> {
+  const results = new Map<string, "created" | "added" | "updated" | "intact">();
   const injected = new Set<string>();
 
   for (const provider of providers) {
@@ -244,6 +256,161 @@ export async function injectAll(
 
     const action = await inject(filePath, content);
     results.set(filePath, action);
+  }
+
+  return results;
+}
+
+// ── Provider Instruction File API ─────────────────────────────────
+
+/**
+ * Options for ensuring a provider instruction file.
+ */
+export interface EnsureProviderInstructionFileOptions {
+  /** `@` references to inject (e.g. `["@AGENTS.md"]`). */
+  references: string[];
+  /** Optional inline content blocks. */
+  content?: string[];
+  /** Whether this is a global or project-level file. Defaults to `"project"`. */
+  scope?: "project" | "global";
+}
+
+/**
+ * Result of ensuring a provider instruction file.
+ */
+export interface EnsureProviderInstructionFileResult {
+  /** Absolute path to the instruction file. */
+  filePath: string;
+  /** Instruction file name from the provider registry. */
+  instructFile: string;
+  /** Action taken. */
+  action: "created" | "added" | "updated" | "intact";
+  /** Provider ID. */
+  providerId: string;
+}
+
+/**
+ * Ensure a provider's instruction file exists with the correct CAAMP block.
+ *
+ * This is the canonical API for adapters and external packages to manage
+ * provider instruction files. Instead of directly creating/modifying
+ * CLAUDE.md, GEMINI.md, etc., callers should use this function to
+ * delegate instruction file management to CAAMP.
+ *
+ * The instruction file name is resolved from CAAMP's provider registry
+ * (single source of truth), not hardcoded by the caller.
+ *
+ * @param providerId - Provider ID from the registry (e.g. `"claude-code"`, `"gemini-cli"`)
+ * @param projectDir - Absolute path to the project directory
+ * @param options - References, content, and scope configuration
+ * @returns Result with file path, action taken, and provider metadata
+ * @throws {Error} If the provider ID is not found in the registry
+ *
+ * @example
+ * ```typescript
+ * // Adapter delegates instruction file creation to CAAMP:
+ * const result = await ensureProviderInstructionFile("claude-code", "/project", {
+ *   references: ["@AGENTS.md"],
+ * });
+ * // result.filePath → "/project/CLAUDE.md"
+ * // result.action → "created" | "added" | "updated" | "intact"
+ *
+ * // Global scope:
+ * const globalResult = await ensureProviderInstructionFile("claude-code", homedir(), {
+ *   references: ["@~/.agents/AGENTS.md"],
+ *   scope: "global",
+ * });
+ * ```
+ */
+export async function ensureProviderInstructionFile(
+  providerId: string,
+  projectDir: string,
+  options: EnsureProviderInstructionFileOptions,
+): Promise<EnsureProviderInstructionFileResult> {
+  const provider = getProvider(providerId);
+  if (!provider) {
+    throw new Error(`Unknown provider: "${providerId}". Check CAAMP provider registry.`);
+  }
+
+  const scope = options.scope ?? "project";
+  const filePath = scope === "global"
+    ? join(provider.pathGlobal, provider.instructFile)
+    : join(projectDir, provider.instructFile);
+
+  const template: InjectionTemplate = {
+    references: options.references,
+    content: options.content,
+  };
+
+  const injectionContent = buildInjectionContent(template);
+  const action = await inject(filePath, injectionContent);
+
+  return {
+    filePath,
+    instructFile: provider.instructFile,
+    action,
+    providerId: provider.id,
+  };
+}
+
+/**
+ * Ensure instruction files for multiple providers at once.
+ *
+ * Deduplicates by file path — providers sharing the same instruction file
+ * (e.g. many providers use AGENTS.md) are only written once.
+ *
+ * @param providerIds - Array of provider IDs from the registry
+ * @param projectDir - Absolute path to the project directory
+ * @param options - References, content, and scope configuration
+ * @returns Array of results, one per unique instruction file
+ * @throws {Error} If any provider ID is not found in the registry
+ *
+ * @example
+ * ```typescript
+ * const results = await ensureAllProviderInstructionFiles(
+ *   ["claude-code", "cursor", "gemini-cli"],
+ *   "/project",
+ *   { references: ["@AGENTS.md"] },
+ * );
+ * ```
+ */
+export async function ensureAllProviderInstructionFiles(
+  providerIds: string[],
+  projectDir: string,
+  options: EnsureProviderInstructionFileOptions,
+): Promise<EnsureProviderInstructionFileResult[]> {
+  const results: EnsureProviderInstructionFileResult[] = [];
+  const processed = new Set<string>();
+
+  for (const providerId of providerIds) {
+    const provider = getProvider(providerId);
+    if (!provider) {
+      throw new Error(`Unknown provider: "${providerId}". Check CAAMP provider registry.`);
+    }
+
+    const scope = options.scope ?? "project";
+    const filePath = scope === "global"
+      ? join(provider.pathGlobal, provider.instructFile)
+      : join(projectDir, provider.instructFile);
+
+    // Skip duplicates (multiple providers may share the same instruction file)
+    if (processed.has(filePath)) continue;
+    processed.add(filePath);
+
+    const template: InjectionTemplate = {
+      references: options.references,
+      content: options.content,
+    };
+
+    const injectionContent = buildInjectionContent(template);
+    const action = await inject(filePath, injectionContent);
+
+    results.push({
+      filePath,
+      instructFile: provider.instructFile,
+      action,
+      providerId: provider.id,
+    });
   }
 
   return results;
