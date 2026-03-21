@@ -46,6 +46,21 @@ const provider: Provider = {
   priority: "high",
   status: "active",
   agentSkillsCompatible: true,
+  capabilities: {
+    skills: {
+      agentsGlobalPath: "/global/skills",
+      agentsProjectPath: ".skills",
+      precedence: "agents-canonical",
+    },
+    hooks: { supported: [], hookConfigPath: null, hookFormat: null },
+    spawn: {
+      supportsSubagents: false,
+      supportsProgrammaticSpawn: false,
+      supportsInterAgentComms: false,
+      supportsParallelSpawn: false,
+      spawnMechanism: null,
+    },
+  },
 };
 
 const provider2: Provider = {
@@ -258,5 +273,41 @@ describe("reconcileCleoLock", () => {
     for (const call of mocks.listMcpServers.mock.calls) {
       expect(call[1]).toBe("project");
     }
+  });
+
+  it("handles errors during backfill gracefully", async () => {
+    mocks.listMcpServers.mockResolvedValue([
+      { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest", "mcp"] } },
+    ]);
+    mocks.recordMcpInstall.mockRejectedValue(new Error("Lock file write failed"));
+
+    const result = await reconcileCleoLock({ project: true });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]?.message).toContain("Failed to backfill cleo");
+    expect(result.errors[0]?.message).toContain("Lock file write failed");
+    expect(result.backfilled).toHaveLength(0);
+  });
+
+  it("handles non-Error exceptions during backfill", async () => {
+    mocks.listMcpServers.mockResolvedValue([
+      { name: "cleo", config: { command: "npx", args: ["-y", "@cleocode/cleo@latest", "mcp"] } },
+    ]);
+    mocks.recordMcpInstall.mockRejectedValue("String error");
+
+    const result = await reconcileCleoLock({ project: true });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]?.message).toContain("String error");
+  });
+
+  it("handles listMcpServers errors for each provider", async () => {
+    mocks.listMcpServers.mockRejectedValue(new Error("Config read error"));
+
+    const result = await reconcileCleoLock({});
+
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors[0]?.message).toContain("Failed to read config");
+    expect(result.backfilled).toHaveLength(0);
   });
 });
