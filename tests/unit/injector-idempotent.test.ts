@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { writeFile, readFile, rm, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  inject,
-  ensureProviderInstructionFile,
   ensureAllProviderInstructionFiles,
+  ensureProviderInstructionFile,
+  inject,
 } from "../../src/core/instructions/injector.js";
 
 let testDir: string;
@@ -126,6 +126,105 @@ describe("inject() idempotency", () => {
     expect(content).toContain("# Footer");
     expect(content).toContain("new");
     expect(content).not.toContain("old");
+  });
+
+  it("consolidates multiple duplicate CAAMP blocks", async () => {
+    const filePath = join(testDir, "CONSOLIDATE.md");
+    
+    // Simulate pre-existing duplicate blocks from v1.7.0
+    await writeFile(
+      filePath,
+      "<!-- CAAMP:START -->\n@~/.cleo/templates/CLEO-INJECTION.md\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\n@~/.cleo/templates/CLEO-INJECTION.md\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\n@~/.cleo/templates/CLEO-INJECTION.md\n<!-- CAAMP:END -->",
+    );
+
+    const result = await inject(filePath, "@~/.cleo/templates/CLEO-INJECTION.md");
+    expect(result).toBe("consolidated");
+
+    const content = await readFile(filePath, "utf-8");
+    const startCount = (content.match(/<!-- CAAMP:START -->/g) || []).length;
+    const endCount = (content.match(/<!-- CAAMP:END -->/g) || []).length;
+
+    expect(startCount).toBe(1);
+    expect(endCount).toBe(1);
+    expect(content).toContain("@~/.cleo/templates/CLEO-INJECTION.md");
+  });
+
+  it("returns 'intact' after consolidation when called again", async () => {
+    const filePath = join(testDir, "CONSOLIDATE-IDEMPOTENT.md");
+    
+    // Create multiple duplicate blocks
+    await writeFile(
+      filePath,
+      "<!-- CAAMP:START -->\ncontent\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\ncontent\n<!-- CAAMP:END -->",
+    );
+
+    // First call consolidates
+    const first = await inject(filePath, "content");
+    expect(first).toBe("consolidated");
+
+    // Second call should be intact
+    const second = await inject(filePath, "content");
+    expect(second).toBe("intact");
+
+    // Verify still only one block
+    const content = await readFile(filePath, "utf-8");
+    expect((content.match(/<!-- CAAMP:START -->/g) || []).length).toBe(1);
+  });
+
+  it("consolidates multiple blocks with different content and applies new content", async () => {
+    const filePath = join(testDir, "CONSOLIDATE-UPDATE.md");
+    
+    // Multiple blocks with different content
+    await writeFile(
+      filePath,
+      "<!-- CAAMP:START -->\nold content 1\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\nold content 2\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\nold content 3\n<!-- CAAMP:END -->",
+    );
+
+    const result = await inject(filePath, "new unified content");
+    expect(result).toBe("consolidated");
+
+    const content = await readFile(filePath, "utf-8");
+    expect((content.match(/<!-- CAAMP:START -->/g) || []).length).toBe(1);
+    expect(content).toContain("new unified content");
+    expect(content).not.toContain("old content 1");
+    expect(content).not.toContain("old content 2");
+    expect(content).not.toContain("old content 3");
+  });
+
+  it("preserves surrounding content when consolidating duplicates", async () => {
+    const filePath = join(testDir, "CONSOLIDATE-PRESERVE.md");
+    
+    await writeFile(
+      filePath,
+      "# Header\n\n<!-- CAAMP:START -->\ncontent\n<!-- CAAMP:END -->\n<!-- CAAMP:START -->\ncontent\n<!-- CAAMP:END -->\n\n# Footer",
+    );
+
+    const result = await inject(filePath, "content");
+    expect(result).toBe("consolidated");
+
+    const fileContent = await readFile(filePath, "utf-8");
+    expect(fileContent).toContain("# Header");
+    expect(fileContent).toContain("# Footer");
+    expect((fileContent.match(/<!-- CAAMP:START -->/g) || []).length).toBe(1);
+  });
+
+  it("handles 69 duplicate blocks (real-world scenario)", async () => {
+    const filePath = join(testDir, "MANY-DUPLICATES.md");
+    
+    // Create 69 duplicate blocks
+    const blocks = Array(69)
+      .fill(null)
+      .map(() => "<!-- CAAMP:START -->\n@~/.cleo/templates/CLEO-INJECTION.md\n<!-- CAAMP:END -->")
+      .join("\n");
+    
+    await writeFile(filePath, blocks);
+
+    const result = await inject(filePath, "@~/.cleo/templates/CLEO-INJECTION.md");
+    expect(result).toBe("consolidated");
+
+    const content = await readFile(filePath, "utf-8");
+    expect((content.match(/<!-- CAAMP:START -->/g) || []).length).toBe(1);
+    expect((content.match(/<!-- CAAMP:END -->/g) || []).length).toBe(1);
   });
 });
 

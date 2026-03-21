@@ -5,17 +5,17 @@
  * (CLAUDE.md, AGENTS.md, GEMINI.md).
  */
 
-import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { mkdir } from "node:fs/promises";
-import type { InjectionStatus, InjectionCheckResult, Provider } from "../../types.js";
-import { buildInjectionContent, type InjectionTemplate } from "./templates.js";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import type { InjectionCheckResult, InjectionStatus, Provider } from "../../types.js";
 import { getProvider } from "../registry/providers.js";
+import { buildInjectionContent, type InjectionTemplate } from "./templates.js";
 
 const MARKER_START = "<!-- CAAMP:START -->";
 const MARKER_END = "<!-- CAAMP:END -->";
-const MARKER_PATTERN = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/;
+const MARKER_PATTERN = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/g;
+const MARKER_PATTERN_SINGLE = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/;
 
 /**
  * Check the status of a CAAMP injection block in an instruction file.
@@ -46,7 +46,7 @@ export async function checkInjection(
 
   const content = await readFile(filePath, "utf-8");
 
-  if (!MARKER_PATTERN.test(content)) return "none";
+  if (!MARKER_PATTERN_SINGLE.test(content)) return "none";
 
   if (expectedContent) {
     const blockContent = extractBlock(content);
@@ -61,7 +61,7 @@ export async function checkInjection(
 
 /** Extract the content between CAAMP markers */
 function extractBlock(content: string): string | null {
-  const match = content.match(MARKER_PATTERN);
+  const match = content.match(MARKER_PATTERN_SINGLE);
   if (!match) return null;
 
   return match[0]
@@ -81,6 +81,7 @@ function buildBlock(content: string): string {
  * Behavior depends on the file state:
  * - File does not exist: creates the file with the injection block → `"created"`
  * - File exists without markers: prepends the injection block → `"added"`
+ * - File exists with multiple markers (duplicates): consolidates into single block → `"consolidated"`
  * - File exists with markers, content differs: replaces the block → `"updated"`
  * - File exists with markers, content matches: no-op → `"intact"`
  *
@@ -89,7 +90,7 @@ function buildBlock(content: string): string {
  *
  * @param filePath - Absolute path to the instruction file
  * @param content - Content to inject between CAAMP markers
- * @returns Action taken: `"created"`, `"added"`, `"updated"`, or `"intact"`
+ * @returns Action taken: `"created"`, `"added"`, `"consolidated"`, `"updated"`, or `"intact"`
  *
  * @example
  * ```typescript
@@ -100,7 +101,7 @@ function buildBlock(content: string): string {
 export async function inject(
   filePath: string,
   content: string,
-): Promise<"created" | "added" | "updated" | "intact"> {
+): Promise<"created" | "added" | "consolidated" | "updated" | "intact"> {
   const block = buildBlock(content);
 
   // Ensure parent directory exists
@@ -114,7 +115,26 @@ export async function inject(
 
   const existing = await readFile(filePath, "utf-8");
 
-  if (MARKER_PATTERN.test(existing)) {
+  // Find all CAAMP blocks in the file
+  const matches = existing.match(MARKER_PATTERN);
+
+  if (matches && matches.length > 0) {
+    // Check if there are multiple duplicate blocks
+    if (matches.length > 1) {
+      // Consolidate all blocks into a single clean block
+      const updated = existing
+        .replace(MARKER_PATTERN, "")
+        .replace(/^\n{2,}/, "\n")
+        .trim();
+      
+      // Write the clean content with a single block
+      const finalContent = updated 
+        ? `${block}\n\n${updated}`
+        : `${block}\n`;
+      await writeFile(filePath, finalContent, "utf-8");
+      return "consolidated";
+    }
+
     // Check if existing content already matches (idempotency)
     const existingBlock = extractBlock(existing);
     if (existingBlock !== null && existingBlock.trim() === content.trim()) {
@@ -122,7 +142,7 @@ export async function inject(
     }
 
     // Replace existing block with new content
-    const updated = existing.replace(MARKER_PATTERN, block);
+    const updated = existing.replace(MARKER_PATTERN_SINGLE, block);
     await writeFile(filePath, updated, "utf-8");
     return "updated";
   }
@@ -226,7 +246,7 @@ export async function checkAllInjections(
  * @param projectDir - Absolute path to the project directory
  * @param scope - Whether to target project or global instruction files
  * @param content - Content to inject between CAAMP markers
- * @returns Map of file path to action taken (`"created"`, `"added"`, `"updated"`, or `"intact"`)
+ * @returns Map of file path to action taken (`"created"`, `"added"`, `"consolidated"`, `"updated"`, or `"intact"`)
  *
  * @example
  * ```typescript
@@ -241,8 +261,8 @@ export async function injectAll(
   projectDir: string,
   scope: "project" | "global",
   content: string,
-): Promise<Map<string, "created" | "added" | "updated" | "intact">> {
-  const results = new Map<string, "created" | "added" | "updated" | "intact">();
+): Promise<Map<string, "created" | "added" | "consolidated" | "updated" | "intact">> {
+  const results = new Map<string, "created" | "added" | "consolidated" | "updated" | "intact">();
   const injected = new Set<string>();
 
   for (const provider of providers) {
@@ -284,7 +304,7 @@ export interface EnsureProviderInstructionFileResult {
   /** Instruction file name from the provider registry. */
   instructFile: string;
   /** Action taken. */
-  action: "created" | "added" | "updated" | "intact";
+  action: "created" | "added" | "consolidated" | "updated" | "intact";
   /** Provider ID. */
   providerId: string;
 }
@@ -313,7 +333,7 @@ export interface EnsureProviderInstructionFileResult {
  *   references: ["@AGENTS.md"],
  * });
  * // result.filePath → "/project/CLAUDE.md"
- * // result.action → "created" | "added" | "updated" | "intact"
+   * // result.action → "created" | "added" | "consolidated" | "updated" | "intact"
  *
  * // Global scope:
  * const globalResult = await ensureProviderInstructionFile("claude-code", homedir(), {

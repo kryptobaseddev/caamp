@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-03-21
+
+### Fixed
+- **`inject()` now consolidates pre-existing duplicate CAAMP blocks** (fixes [#48](https://github.com/kryptobaseddev/caamp/issues/48)): 
+  - Detects and consolidates multiple CAAMP blocks created by v1.7.0 and earlier
+  - New return value `"consolidated"` when duplicates are removed
+  - Handles real-world scenarios with 69+ duplicate blocks (as reported in issue)
+  - Preserves surrounding content during consolidation
+  - Fully idempotent - calling again after consolidation returns `"intact"`
+
+### Changed
+- `inject()` return type widened to include `"consolidated"` (backward-compatible)
+- `injectAll()`, `EnsureProviderInstructionFileResult`, `InstructionUpdateSummary`, and `DualScopeConfigureResult` types updated to include `"consolidated"`
+
 ## [1.8.0] - 2026-03-20
 
 ### Added

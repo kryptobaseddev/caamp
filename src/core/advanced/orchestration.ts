@@ -25,10 +25,10 @@ import type {
 } from "../../types.js";
 import { injectAll } from "../instructions/injector.js";
 import { groupByInstructFile } from "../instructions/templates.js";
-import { installMcpServer, type InstallResult } from "../mcp/installer.js";
+import { type InstallResult, installMcpServer } from "../mcp/installer.js";
 import { listMcpServers, resolveConfigPath } from "../mcp/reader.js";
-import { CANONICAL_SKILLS_DIR } from "../paths/agents.js";
 import { getTransform } from "../mcp/transforms.js";
+import { CANONICAL_SKILLS_DIR } from "../paths/agents.js";
 import { getInstalledProviders } from "../registry/detection.js";
 import { installSkill, removeSkill } from "../skills/installer.js";
 
@@ -557,7 +557,7 @@ export interface InstructionUpdateSummary {
   updatedFiles: number;
   actions: Array<{
     file: string;
-    action: "created" | "added" | "updated" | "intact";
+    action: "created" | "added" | "consolidated" | "updated" | "intact";
     providers: string[];
     configFormats: ConfigFormat[];
   }>;
@@ -630,8 +630,8 @@ export interface DualScopeConfigureResult {
     project: InstallResult[];
   };
   instructions: {
-    global?: Map<string, "created" | "added" | "updated" | "intact">;
-    project?: Map<string, "created" | "added" | "updated" | "intact">;
+    global?: Map<string, "created" | "added" | "consolidated" | "updated" | "intact">;
+    project?: Map<string, "created" | "added" | "consolidated" | "updated" | "intact">;
   };
 }
 
