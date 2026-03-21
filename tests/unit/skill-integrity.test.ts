@@ -1,20 +1,38 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { writeFile, rm, mkdir, symlink } from "node:fs/promises";
+import { mkdir, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  isCaampOwnedSkill,
-  shouldOverrideSkill,
-  checkSkillIntegrity,
-  checkAllSkillIntegrity,
-} from "../../src/core/skills/integrity.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LockEntry, Provider } from "../../src/types.js";
+
+// Mock dependencies
+vi.mock("../../src/core/lock-utils.js", () => ({
+  readLockFile: vi.fn(),
+  updateLockFile: vi.fn(),
+}));
+
+vi.mock("../../src/core/paths/standard.js", () => ({
+  getCanonicalSkillsDir: vi.fn(),
+  resolveProviderSkillsDirs: vi.fn(),
+}));
+
+// Import after mocking
+const { readLockFile } = await import("../../src/core/lock-utils.js");
+const { getCanonicalSkillsDir, resolveProviderSkillsDirs } = await import("../../src/core/paths/standard.js");
+
+// Import the functions under test
+const { 
+  isCaampOwnedSkill, 
+  shouldOverrideSkill, 
+  checkSkillIntegrity, 
+  checkAllSkillIntegrity 
+} = await import("../../src/core/skills/integrity.js");
 
 let testDir: string;
 
 beforeEach(async () => {
   testDir = join(tmpdir(), `caamp-integrity-test-${Date.now()}`);
   await mkdir(testDir, { recursive: true });
+  vi.clearAllMocks();
 });
 
 afterEach(async () => {
@@ -83,45 +101,284 @@ describe("shouldOverrideSkill()", () => {
 
 describe("checkSkillIntegrity()", () => {
   it("returns 'not-tracked' for skills not in lock file", async () => {
-    // Mock readLockFile to return empty lock
-    vi.doMock("../../src/core/lock-utils.js", () => ({
-      readLockFile: vi.fn().mockResolvedValue({
-        version: 1,
-        skills: {},
-        mcpServers: {},
-      }),
-      updateLockFile: vi.fn(),
-    }));
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {},
+      mcpServers: {},
+    });
+    vi.mocked(getCanonicalSkillsDir).mockReturnValue(join(testDir, "canonical"));
 
-    // Re-import to pick up mock
-    const { checkSkillIntegrity: check } = await import("../../src/core/skills/integrity.js");
-
-    const result = await check("unknown-skill", []);
+    const result = await checkSkillIntegrity("unknown-skill", []);
     expect(result.status).toBe("not-tracked");
     expect(result.issue).toContain("not tracked");
-
-    vi.doUnmock("../../src/core/lock-utils.js");
   });
 
   it("identifies ct-* skills as CAAMP-owned", async () => {
-    vi.doMock("../../src/core/lock-utils.js", () => ({
-      readLockFile: vi.fn().mockResolvedValue({
-        version: 1,
-        skills: {},
-        mcpServers: {},
-      }),
-      updateLockFile: vi.fn(),
-    }));
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {},
+      mcpServers: {},
+    });
+    vi.mocked(getCanonicalSkillsDir).mockReturnValue(join(testDir, "canonical"));
 
-    const { checkSkillIntegrity: check } = await import("../../src/core/skills/integrity.js");
-
-    const result = await check("ct-orchestrator", []);
+    const result = await checkSkillIntegrity("ct-orchestrator", []);
     expect(result.isCaampOwned).toBe(true);
 
-    const result2 = await check("my-custom-skill", []);
+    const result2 = await checkSkillIntegrity("my-custom-skill", []);
     expect(result2.isCaampOwned).toBe(false);
+  });
 
-    vi.doUnmock("../../src/core/lock-utils.js");
+  it("returns 'missing-canonical' when canonical directory does not exist", async () => {
+    const canonicalDir = join(testDir, "canonical", "missing-skill");
+    
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        "missing-skill": {
+          name: "missing-skill",
+          scopedName: "missing-skill",
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: ["claude-code"],
+          canonicalPath: canonicalDir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    const result = await checkSkillIntegrity("missing-skill", []);
+    expect(result.status).toBe("missing-canonical");
+    expect(result.canonicalExists).toBe(false);
+    expect(result.issue).toContain("Canonical directory missing");
+  });
+
+  it("returns 'intact' when skill is properly installed with valid symlinks", async () => {
+    const skillName = "intact-skill";
+    const canonicalDir = join(testDir, "canonical", skillName);
+    const providerDir = join(testDir, "providers", "claude-code", "skills");
+    const linkPath = join(providerDir, skillName);
+
+    // Create canonical directory
+    await mkdir(canonicalDir, { recursive: true });
+    // Create provider skills directory
+    await mkdir(providerDir, { recursive: true });
+    // Create symlink
+    await symlink(canonicalDir, linkPath);
+
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        [skillName]: {
+          name: skillName,
+          scopedName: skillName,
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: ["claude-code"],
+          canonicalPath: canonicalDir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    vi.mocked(resolveProviderSkillsDirs).mockReturnValue([providerDir]);
+
+    const result = await checkSkillIntegrity(skillName, [{
+      id: "claude-code",
+      instructFile: "CLAUDE.md",
+      pathGlobal: testDir,
+    } as Provider]);
+
+    expect(result.status).toBe("intact");
+    expect(result.canonicalExists).toBe(true);
+    expect(result.linkStatuses).toHaveLength(1);
+    expect(result.linkStatuses[0]?.exists).toBe(true);
+    expect(result.linkStatuses[0]?.isSymlink).toBe(true);
+    expect(result.linkStatuses[0]?.pointsToCanonical).toBe(true);
+  });
+
+  it("returns 'broken-symlink' when symlink is missing", async () => {
+    const skillName = "broken-skill";
+    const canonicalDir = join(testDir, "canonical", skillName);
+    const providerDir = join(testDir, "providers", "claude-code", "skills");
+
+    // Create canonical directory but NOT the symlink
+    await mkdir(canonicalDir, { recursive: true });
+
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        [skillName]: {
+          name: skillName,
+          scopedName: skillName,
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: ["claude-code"],
+          canonicalPath: canonicalDir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    vi.mocked(resolveProviderSkillsDirs).mockReturnValue([providerDir]);
+
+    const result = await checkSkillIntegrity(skillName, [{
+      id: "claude-code",
+      instructFile: "CLAUDE.md",
+      pathGlobal: testDir,
+    } as Provider]);
+
+    expect(result.status).toBe("broken-symlink");
+    expect(result.issue).toContain("symlink(s) missing");
+  });
+
+  it("returns 'tampered' when symlink points to wrong location", async () => {
+    const skillName = "tampered-skill";
+    const canonicalDir = join(testDir, "canonical", skillName);
+    const wrongDir = join(testDir, "wrong-location");
+    const providerDir = join(testDir, "providers", "claude-code", "skills");
+    const linkPath = join(providerDir, skillName);
+
+    // Create directories
+    await mkdir(canonicalDir, { recursive: true });
+    await mkdir(wrongDir, { recursive: true });
+    await mkdir(providerDir, { recursive: true });
+    // Create symlink pointing to wrong location
+    await symlink(wrongDir, linkPath);
+
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        [skillName]: {
+          name: skillName,
+          scopedName: skillName,
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: ["claude-code"],
+          canonicalPath: canonicalDir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    vi.mocked(resolveProviderSkillsDirs).mockReturnValue([providerDir]);
+
+    const result = await checkSkillIntegrity(skillName, [{
+      id: "claude-code",
+      instructFile: "CLAUDE.md",
+      pathGlobal: testDir,
+    } as Provider]);
+
+    expect(result.status).toBe("tampered");
+    expect(result.issue).toContain("do not point to canonical path");
+  });
+
+  it("handles skills with multiple providers", async () => {
+    const skillName = "multi-provider-skill";
+    const canonicalDir = join(testDir, "canonical", skillName);
+    const provider1Dir = join(testDir, "providers", "claude-code", "skills");
+    const provider2Dir = join(testDir, "providers", "cursor", "skills");
+
+    await mkdir(canonicalDir, { recursive: true });
+    await mkdir(provider1Dir, { recursive: true });
+    await mkdir(provider2Dir, { recursive: true });
+    await symlink(canonicalDir, join(provider1Dir, skillName));
+    await symlink(canonicalDir, join(provider2Dir, skillName));
+
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        [skillName]: {
+          name: skillName,
+          scopedName: skillName,
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: ["claude-code", "cursor"],
+          canonicalPath: canonicalDir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    vi.mocked(resolveProviderSkillsDirs)
+      .mockReturnValueOnce([provider1Dir])
+      .mockReturnValueOnce([provider2Dir]);
+
+    const result = await checkSkillIntegrity(skillName, [
+      { id: "claude-code", instructFile: "CLAUDE.md", pathGlobal: testDir } as Provider,
+      { id: "cursor", instructFile: "AGENTS.md", pathGlobal: testDir } as Provider,
+    ]);
+
+    expect(result.status).toBe("intact");
+    expect(result.linkStatuses).toHaveLength(2);
+  });
+});
+
+// ── checkAllSkillIntegrity ───────────────────────────────────────────
+
+describe("checkAllSkillIntegrity()", () => {
+  it("checks all skills in the lock file", async () => {
+    const skill1Dir = join(testDir, "canonical", "skill1");
+    const skill2Dir = join(testDir, "canonical", "skill2");
+    
+    await mkdir(skill1Dir, { recursive: true });
+    await mkdir(skill2Dir, { recursive: true });
+
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {
+        skill1: {
+          name: "skill1",
+          scopedName: "skill1",
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: [],
+          canonicalPath: skill1Dir,
+          isGlobal: true,
+        },
+        skill2: {
+          name: "skill2",
+          scopedName: "skill2",
+          source: "test-source",
+          sourceType: "github",
+          installedAt: new Date().toISOString(),
+          agents: [],
+          canonicalPath: skill2Dir,
+          isGlobal: true,
+        },
+      },
+      mcpServers: {},
+    });
+
+    const results = await checkAllSkillIntegrity([]);
+    
+    expect(results.size).toBe(2);
+    expect(results.has("skill1")).toBe(true);
+    expect(results.has("skill2")).toBe(true);
+    expect(results.get("skill1")?.status).toBe("intact");
+    expect(results.get("skill2")?.status).toBe("intact");
+  });
+
+  it("returns empty map when no skills in lock file", async () => {
+    vi.mocked(readLockFile).mockResolvedValue({
+      version: 1,
+      skills: {},
+      mcpServers: {},
+    });
+
+    const results = await checkAllSkillIntegrity([]);
+    
+    expect(results.size).toBe(0);
   });
 });
 
