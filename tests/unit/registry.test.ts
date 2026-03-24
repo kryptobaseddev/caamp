@@ -165,13 +165,13 @@ describe("Provider Registry", () => {
   });
 
   describe("hooks query functions", () => {
-    it("getProvidersByHookEvent includes claude-code for onToolComplete", () => {
-      const providers = getProvidersByHookEvent("onToolComplete");
+    it("getProvidersByHookEvent includes claude-code for PreToolUse", () => {
+      const providers = getProvidersByHookEvent("PreToolUse");
       expect(providers.some((p) => p.id === "claude-code")).toBe(true);
     });
 
     it("getProvidersByHookEvent does NOT include windsurf (no hooks)", () => {
-      const providers = getProvidersByHookEvent("onToolComplete");
+      const providers = getProvidersByHookEvent("PreToolUse");
       expect(providers.some((p) => p.id === "windsurf")).toBe(false);
     });
 
@@ -180,15 +180,15 @@ describe("Provider Registry", () => {
       expect(common).toEqual([]);
     });
 
-    it("getCommonHookEvents for claude-code returns its 6 events", () => {
+    it("getCommonHookEvents for claude-code returns its 22 native events", () => {
       const common = getCommonHookEvents(["claude-code"]);
-      expect(common).toHaveLength(6);
-      expect(common).toContain("onSessionStart");
-      expect(common).toContain("onSessionEnd");
-      expect(common).toContain("onToolStart");
-      expect(common).toContain("onToolComplete");
-      expect(common).toContain("onPromptSubmit");
-      expect(common).toContain("onResponseComplete");
+      expect(common).toHaveLength(22);
+      expect(common).toContain("SessionStart");
+      expect(common).toContain("SessionEnd");
+      expect(common).toContain("PreToolUse");
+      expect(common).toContain("PostToolUse");
+      expect(common).toContain("UserPromptSubmit");
+      expect(common).toContain("Stop");
     });
   });
 

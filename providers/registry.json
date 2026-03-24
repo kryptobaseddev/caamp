@@ -1,13 +1,15 @@
 {
   "version": "1.1.0",
-  "lastUpdated": "2026-03-02",
+  "lastUpdated": "2026-03-24",
   "providers": {
     "claude-code": {
       "id": "claude-code",
       "toolName": "Claude Code",
       "vendor": "Anthropic",
       "agentFlag": "claude-code",
-      "aliases": ["claude"],
+      "aliases": [
+        "claude"
+      ],
       "pathGlobal": "$HOME/.claude",
       "pathProject": ".claude",
       "instructFile": "CLAUDE.md",
@@ -18,19 +20,51 @@
       "pathSkills": "$HOME/.claude/skills",
       "pathProjectSkills": ".claude/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "claude",
-        "directories": ["$HOME/.claude"]
+        "directories": [
+          "$HOME/.claude"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "high",
       "status": "active",
       "agentSkillsCompatible": true,
       "capabilities": {
         "hooks": {
-          "supported": ["onSessionStart", "onSessionEnd", "onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
-          "hookConfigPath": null,
+          "supported": [
+            "SessionStart",
+            "SessionEnd",
+            "UserPromptSubmit",
+            "Stop",
+            "PreToolUse",
+            "PostToolUse",
+            "PostToolUseFailure",
+            "PermissionRequest",
+            "SubagentStart",
+            "SubagentStop",
+            "PreCompact",
+            "PostCompact",
+            "Notification",
+            "ConfigChange",
+            "StopFailure",
+            "TeammateIdle",
+            "TaskCompleted",
+            "InstructionsLoaded",
+            "WorktreeCreate",
+            "WorktreeRemove",
+            "Elicitation",
+            "ElicitationResult"
+          ],
+          "hookConfigPath": "$HOME/.claude/settings.json",
           "hookFormat": "json"
         },
         "spawn": {
@@ -58,11 +92,20 @@
       "pathSkills": "$HOME/.cursor/skills",
       "pathProjectSkills": ".cursor/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "cursor",
-        "directories": ["$HOME/.cursor"]
+        "directories": [
+          "$HOME/.cursor"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "high",
       "status": "active",
@@ -72,6 +115,32 @@
           "precedence": "vendor-global-agents-project",
           "agentsGlobalPath": null,
           "agentsProjectPath": ".agents/skills"
+        },
+        "hooks": {
+          "supported": [
+            "sessionStart",
+            "sessionEnd",
+            "beforeSubmitPrompt",
+            "stop",
+            "preToolUse",
+            "postToolUse",
+            "postToolUseFailure",
+            "subagentStart",
+            "subagentStop",
+            "preCompact",
+            "beforeShellExecution",
+            "afterShellExecution",
+            "beforeMCPExecution",
+            "afterMCPExecution",
+            "beforeReadFile",
+            "afterFileEdit",
+            "afterAgentResponse",
+            "afterAgentThought",
+            "beforeTabFileRead",
+            "afterTabFileEdit"
+          ],
+          "hookConfigPath": ".cursor/hooks.json",
+          "hookFormat": "json"
         }
       }
     },
@@ -80,7 +149,9 @@
       "toolName": "Windsurf",
       "vendor": "Codeium",
       "agentFlag": "windsurf",
-      "aliases": ["codeium"],
+      "aliases": [
+        "codeium"
+      ],
       "pathGlobal": "$HOME/.codeium/windsurf",
       "pathProject": ".windsurf",
       "instructFile": "AGENTS.md",
@@ -91,11 +162,20 @@
       "pathSkills": "$HOME/.codeium/windsurf/skills",
       "pathProjectSkills": ".windsurf/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "windsurf",
-        "directories": ["$HOME/.codeium/windsurf"]
+        "directories": [
+          "$HOME/.codeium/windsurf"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "high",
       "status": "active",
@@ -106,7 +186,9 @@
       "toolName": "Codex CLI",
       "vendor": "OpenAI",
       "agentFlag": "codex",
-      "aliases": ["openai-codex"],
+      "aliases": [
+        "openai-codex"
+      ],
       "pathGlobal": "$HOME/.codex",
       "pathProject": ".codex",
       "instructFile": "AGENTS.md",
@@ -117,11 +199,20 @@
       "pathSkills": "$HOME/.codex/skills",
       "pathProjectSkills": ".codex/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "codex",
-        "directories": ["$HOME/.codex"]
+        "directories": [
+          "$HOME/.codex"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -133,8 +224,12 @@
           "agentsProjectPath": ".agents/skills"
         },
         "hooks": {
-          "supported": ["onToolStart", "onToolComplete", "onSessionStart", "onSessionEnd"],
-          "hookConfigPath": null,
+          "supported": [
+            "SessionStart",
+            "Stop",
+            "UserPromptSubmit"
+          ],
+          "hookConfigPath": ".codex/hooks.json",
           "hookFormat": "json"
         },
         "spawn": {
@@ -151,7 +246,9 @@
       "toolName": "Gemini CLI",
       "vendor": "Google",
       "agentFlag": "gemini-cli",
-      "aliases": ["gemini"],
+      "aliases": [
+        "gemini"
+      ],
       "pathGlobal": "$HOME/.gemini",
       "pathProject": ".gemini",
       "instructFile": "GEMINI.md",
@@ -162,11 +259,20 @@
       "pathSkills": "$HOME/.gemini/skills",
       "pathProjectSkills": ".gemini/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "gemini",
-        "directories": ["$HOME/.gemini"]
+        "directories": [
+          "$HOME/.gemini"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -178,7 +284,19 @@
           "agentsProjectPath": ".agents/skills"
         },
         "hooks": {
-          "supported": ["onSessionStart", "onSessionEnd", "onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
+          "supported": [
+            "SessionStart",
+            "SessionEnd",
+            "BeforeAgent",
+            "AfterAgent",
+            "BeforeModel",
+            "AfterModel",
+            "BeforeToolSelection",
+            "BeforeTool",
+            "AfterTool",
+            "PreCompress",
+            "Notification"
+          ],
           "hookConfigPath": "$HOME/.gemini/settings.json",
           "hookFormat": "json"
         },
@@ -196,7 +314,9 @@
       "toolName": "GitHub Copilot",
       "vendor": "GitHub",
       "agentFlag": "github-copilot",
-      "aliases": ["copilot"],
+      "aliases": [
+        "copilot"
+      ],
       "pathGlobal": "$HOME/.github",
       "pathProject": ".github",
       "instructFile": "AGENTS.md",
@@ -207,10 +327,18 @@
       "pathSkills": "$HOME/.github/skills",
       "pathProjectSkills": ".github/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.github"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.github"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -239,10 +367,16 @@
       "pathSkills": "$CONFIG/opencode/skills",
       "pathProjectSkills": ".opencode/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "opencode"
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -254,9 +388,23 @@
           "agentsProjectPath": ".agents/skills"
         },
         "hooks": {
-          "supported": ["onToolStart", "onToolComplete", "onSessionStart", "onSessionEnd", "onPromptSubmit", "onResponseComplete"],
-          "hookConfigPath": null,
-          "hookFormat": "json"
+          "supported": [
+            "tool.execute.before",
+            "tool.execute.after",
+            "chat.message",
+            "chat.params",
+            "chat.headers",
+            "permission.ask",
+            "command.execute.before",
+            "shell.env",
+            "tool.definition",
+            "experimental.session.compacting",
+            "experimental.chat.messages.transform",
+            "experimental.chat.system.transform",
+            "experimental.text.complete"
+          ],
+          "hookConfigPath": ".opencode/plugins/",
+          "hookFormat": "javascript"
         },
         "spawn": {
           "supportsSubagents": true,
@@ -283,10 +431,18 @@
       "pathSkills": "$HOME/.cline/skills",
       "pathProjectSkills": ".cline/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.cline"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.cline"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -297,7 +453,9 @@
       "toolName": "Kimi Coding",
       "vendor": "Moonshot AI",
       "agentFlag": "kimi",
-      "aliases": ["kimi-coding"],
+      "aliases": [
+        "kimi-coding"
+      ],
       "pathGlobal": "$HOME/.kimi",
       "pathProject": ".kimi",
       "instructFile": "AGENTS.md",
@@ -308,11 +466,20 @@
       "pathSkills": "$HOME/.kimi/skills",
       "pathProjectSkills": ".kimi/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "kimi",
-        "directories": ["$HOME/.kimi"]
+        "directories": [
+          "$HOME/.kimi"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -322,11 +489,6 @@
           "precedence": "vendor-only",
           "agentsGlobalPath": null,
           "agentsProjectPath": null
-        },
-        "hooks": {
-          "supported": ["onToolStart", "onToolComplete", "onPromptSubmit", "onResponseComplete"],
-          "hookConfigPath": null,
-          "hookFormat": "json"
         },
         "spawn": {
           "supportsSubagents": false,
@@ -342,7 +504,9 @@
       "toolName": "VS Code",
       "vendor": "Microsoft",
       "agentFlag": "vscode",
-      "aliases": ["code"],
+      "aliases": [
+        "code"
+      ],
       "pathGlobal": "$VSCODE_CONFIG",
       "pathProject": ".vscode",
       "instructFile": "AGENTS.md",
@@ -353,11 +517,20 @@
       "pathSkills": "$VSCODE_CONFIG/skills",
       "pathProjectSkills": ".vscode/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "code",
-        "directories": ["$HOME/.vscode"]
+        "directories": [
+          "$HOME/.vscode"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -379,12 +552,22 @@
       "pathSkills": "$ZED_CONFIG/skills",
       "pathProjectSkills": ".zed/skills",
       "detection": {
-        "methods": ["binary", "directory", "appBundle"],
+        "methods": [
+          "binary",
+          "directory",
+          "appBundle"
+        ],
         "binary": "zed",
         "appBundle": "Zed.app",
-        "directories": ["$HOME/.config/zed"]
+        "directories": [
+          "$HOME/.config/zed"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -406,11 +589,18 @@
       "pathSkills": "",
       "pathProjectSkills": "",
       "detection": {
-        "methods": ["appBundle", "directory"],
+        "methods": [
+          "appBundle",
+          "directory"
+        ],
         "appBundle": "Claude.app",
-        "directories": ["$CLAUDE_DESKTOP_CONFIG"]
+        "directories": [
+          "$CLAUDE_DESKTOP_CONFIG"
+        ]
       },
-      "supportedTransports": ["stdio"],
+      "supportedTransports": [
+        "stdio"
+      ],
       "supportsHeaders": false,
       "priority": "medium",
       "status": "active",
@@ -421,7 +611,10 @@
       "toolName": "Roo Code",
       "vendor": "Roo Code",
       "agentFlag": "roo",
-      "aliases": ["roo-code", "roo-cline"],
+      "aliases": [
+        "roo-code",
+        "roo-cline"
+      ],
       "pathGlobal": "$HOME/.roo",
       "pathProject": ".roo",
       "instructFile": "AGENTS.md",
@@ -432,10 +625,18 @@
       "pathSkills": "$HOME/.roo/skills",
       "pathProjectSkills": ".roo/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.roo"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.roo"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -457,10 +658,17 @@
       "pathSkills": "$HOME/.continue/skills",
       "pathProjectSkills": ".continue/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.continue"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.continue"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -482,10 +690,16 @@
       "pathSkills": "$CONFIG/goose/skills",
       "pathProjectSkills": "",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "goose"
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": false,
       "priority": "low",
       "status": "active",
@@ -507,10 +721,17 @@
       "pathSkills": "$HOME/.antigravity/skills",
       "pathProjectSkills": ".agent/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.antigravity"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.antigravity"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -528,7 +749,9 @@
       "toolName": "Kiro",
       "vendor": "Amazon",
       "agentFlag": "kiro",
-      "aliases": ["kiro"],
+      "aliases": [
+        "kiro"
+      ],
       "pathGlobal": "$HOME/.kiro",
       "pathProject": ".kiro",
       "instructFile": "AGENTS.md",
@@ -539,11 +762,20 @@
       "pathSkills": "$HOME/.kiro/skills",
       "pathProjectSkills": ".kiro/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "kiro",
-        "directories": ["$HOME/.kiro"]
+        "directories": [
+          "$HOME/.kiro"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -565,10 +797,16 @@
       "pathSkills": "$CONFIG/amp/skills",
       "pathProjectSkills": ".amp/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "amp"
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -590,11 +828,20 @@
       "pathSkills": "$HOME/.trae/skills",
       "pathProjectSkills": ".trae/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "trae",
-        "directories": ["$HOME/.trae"]
+        "directories": [
+          "$HOME/.trae"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -616,11 +863,19 @@
       "pathSkills": "$HOME/.aide/skills",
       "pathProjectSkills": ".aide/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "aide",
-        "directories": ["$HOME/.aide"]
+        "directories": [
+          "$HOME/.aide"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -631,7 +886,9 @@
       "toolName": "Pear AI",
       "vendor": "Pear AI",
       "agentFlag": "pear-ai",
-      "aliases": ["pear"],
+      "aliases": [
+        "pear"
+      ],
       "pathGlobal": "$HOME/.pear",
       "pathProject": ".pear",
       "instructFile": "AGENTS.md",
@@ -642,11 +899,19 @@
       "pathSkills": "$HOME/.pear/skills",
       "pathProjectSkills": ".pear/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "pearai",
-        "directories": ["$HOME/.pear"]
+        "directories": [
+          "$HOME/.pear"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -657,7 +922,9 @@
       "toolName": "Void AI",
       "vendor": "Void",
       "agentFlag": "void",
-      "aliases": ["void"],
+      "aliases": [
+        "void"
+      ],
       "pathGlobal": "$HOME/.void",
       "pathProject": ".void",
       "instructFile": "AGENTS.md",
@@ -668,10 +935,17 @@
       "pathSkills": "$HOME/.void/skills",
       "pathProjectSkills": ".void/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.void"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.void"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -682,7 +956,9 @@
       "toolName": "Sourcegraph Cody",
       "vendor": "Sourcegraph",
       "agentFlag": "cody",
-      "aliases": ["sourcegraph-cody"],
+      "aliases": [
+        "sourcegraph-cody"
+      ],
       "pathGlobal": "$HOME/.cody",
       "pathProject": ".cody",
       "instructFile": "AGENTS.md",
@@ -693,10 +969,17 @@
       "pathSkills": "$HOME/.cody/skills",
       "pathProjectSkills": ".cody/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.cody"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.cody"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -707,7 +990,9 @@
       "toolName": "Kilo Code",
       "vendor": "Kilo Code",
       "agentFlag": "kilo-code",
-      "aliases": ["kilo"],
+      "aliases": [
+        "kilo"
+      ],
       "pathGlobal": "$HOME/.kilo-code",
       "pathProject": ".kilo-code",
       "instructFile": "AGENTS.md",
@@ -718,10 +1003,18 @@
       "pathSkills": "$HOME/.kilo-code/skills",
       "pathProjectSkills": ".kilo-code/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.kilo-code"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.kilo-code"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -732,7 +1025,9 @@
       "toolName": "Qwen Code",
       "vendor": "Alibaba",
       "agentFlag": "qwen-code",
-      "aliases": ["qwen"],
+      "aliases": [
+        "qwen"
+      ],
       "pathGlobal": "$HOME/.qwen-code",
       "pathProject": ".qwen-code",
       "instructFile": "AGENTS.md",
@@ -743,10 +1038,15 @@
       "pathSkills": "$HOME/.qwen-code/skills",
       "pathProjectSkills": ".qwen-code/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "qwen-code"
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -768,11 +1068,19 @@
       "pathSkills": "$HOME/.openhands/skills",
       "pathProjectSkills": ".openhands/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "openhands",
-        "directories": ["$HOME/.openhands"]
+        "directories": [
+          "$HOME/.openhands"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -794,10 +1102,17 @@
       "pathSkills": "$HOME/.codebuddy/skills",
       "pathProjectSkills": ".codebuddy/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.codebuddy"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.codebuddy"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -819,10 +1134,17 @@
       "pathSkills": "$HOME/.codestory/skills",
       "pathProjectSkills": ".codestory/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.codestory"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.codestory"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "beta",
@@ -844,10 +1166,15 @@
       "pathSkills": "$HOME/.aider/skills",
       "pathProjectSkills": ".aider/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "aider"
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": false,
       "priority": "low",
       "status": "active",
@@ -858,7 +1185,10 @@
       "toolName": "Amazon Q Developer",
       "vendor": "Amazon",
       "agentFlag": "amazon-q",
-      "aliases": ["q", "amazon-q-developer"],
+      "aliases": [
+        "q",
+        "amazon-q-developer"
+      ],
       "pathGlobal": "$HOME/.aws/amazonq",
       "pathProject": ".amazonq",
       "instructFile": "AGENTS.md",
@@ -869,11 +1199,20 @@
       "pathSkills": "$HOME/.aws/amazonq/skills",
       "pathProjectSkills": ".amazonq/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "q",
-        "directories": ["$HOME/.aws/amazonq"]
+        "directories": [
+          "$HOME/.aws/amazonq"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -895,10 +1234,17 @@
       "pathSkills": "$HOME/.tabnine/skills",
       "pathProjectSkills": ".tabnine/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.tabnine"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.tabnine"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -909,7 +1255,9 @@
       "toolName": "Augment Code",
       "vendor": "Augment",
       "agentFlag": "augment",
-      "aliases": ["augment-code"],
+      "aliases": [
+        "augment-code"
+      ],
       "pathGlobal": "$HOME/.augment",
       "pathProject": ".augment",
       "instructFile": "AGENTS.md",
@@ -920,10 +1268,18 @@
       "pathSkills": "$HOME/.augment/commands",
       "pathProjectSkills": ".augment/commands",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.augment"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.augment"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -947,7 +1303,11 @@
       "detection": {
         "methods": []
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -969,10 +1329,14 @@
       "pathSkills": "$HOME/.mentat/skills",
       "pathProjectSkills": ".mentat/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "mentat"
       },
-      "supportedTransports": ["stdio"],
+      "supportedTransports": [
+        "stdio"
+      ],
       "supportsHeaders": false,
       "priority": "low",
       "status": "planned",
@@ -983,7 +1347,9 @@
       "toolName": "Blackbox AI",
       "vendor": "Blackbox",
       "agentFlag": "blackbox-ai",
-      "aliases": ["blackbox"],
+      "aliases": [
+        "blackbox"
+      ],
       "pathGlobal": "$HOME/.blackbox",
       "pathProject": ".blackbox",
       "instructFile": "AGENTS.md",
@@ -994,11 +1360,19 @@
       "pathSkills": "$HOME/.blackbox/skills",
       "pathProjectSkills": ".blackbox/skills",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "blackbox",
-        "directories": ["$HOME/.blackbox"]
+        "directories": [
+          "$HOME/.blackbox"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "planned",
@@ -1020,10 +1394,14 @@
       "pathSkills": "$HOME/.config/sourcery/skills",
       "pathProjectSkills": ".sourcery/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "sourcery"
       },
-      "supportedTransports": ["stdio"],
+      "supportedTransports": [
+        "stdio"
+      ],
       "supportsHeaders": false,
       "priority": "low",
       "status": "planned",
@@ -1034,7 +1412,9 @@
       "toolName": "Replit Agent",
       "vendor": "Replit",
       "agentFlag": "replit-agent",
-      "aliases": ["replit"],
+      "aliases": [
+        "replit"
+      ],
       "pathGlobal": "",
       "pathProject": ".replit",
       "instructFile": "AGENTS.md",
@@ -1047,7 +1427,10 @@
       "detection": {
         "methods": []
       },
-      "supportedTransports": ["sse", "http"],
+      "supportedTransports": [
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -1058,7 +1441,9 @@
       "toolName": "JetBrains AI Assistant",
       "vendor": "JetBrains",
       "agentFlag": "jetbrains-ai",
-      "aliases": ["jetbrains"],
+      "aliases": [
+        "jetbrains"
+      ],
       "pathGlobal": "$HOME/.jetbrains",
       "pathProject": ".idea",
       "instructFile": "AGENTS.md",
@@ -1069,10 +1454,18 @@
       "pathSkills": "$HOME/.jetbrains/skills",
       "pathProjectSkills": ".idea/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.jetbrains"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.jetbrains"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -1094,10 +1487,18 @@
       "pathSkills": "$HOME/.codegen/skills",
       "pathProjectSkills": ".codegen/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.codegen"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.codegen"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "planned",
@@ -1119,10 +1520,17 @@
       "pathSkills": "$HOME/.double/skills",
       "pathProjectSkills": ".double/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.double"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.double"
+        ]
       },
-      "supportedTransports": ["stdio", "sse"],
+      "supportedTransports": [
+        "stdio",
+        "sse"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "planned",
@@ -1133,7 +1541,9 @@
       "toolName": "GitHub Copilot CLI",
       "vendor": "GitHub",
       "agentFlag": "copilot-cli",
-      "aliases": ["ghcopilot"],
+      "aliases": [
+        "ghcopilot"
+      ],
       "pathGlobal": "$HOME/.copilot",
       "pathProject": "",
       "instructFile": "AGENTS.md",
@@ -1144,11 +1554,20 @@
       "pathSkills": "$HOME/.copilot/skills",
       "pathProjectSkills": "",
       "detection": {
-        "methods": ["binary", "directory"],
+        "methods": [
+          "binary",
+          "directory"
+        ],
         "binary": "copilot",
-        "directories": ["$HOME/.copilot"]
+        "directories": [
+          "$HOME/.copilot"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "medium",
       "status": "active",
@@ -1159,7 +1578,9 @@
       "toolName": "SWE-Agent",
       "vendor": "Princeton NLP",
       "agentFlag": "swe-agent",
-      "aliases": ["sweagent"],
+      "aliases": [
+        "sweagent"
+      ],
       "pathGlobal": "$HOME/.swe-agent",
       "pathProject": "",
       "instructFile": "AGENTS.md",
@@ -1170,10 +1591,14 @@
       "pathSkills": "",
       "pathProjectSkills": "",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "sweagent"
       },
-      "supportedTransports": ["stdio"],
+      "supportedTransports": [
+        "stdio"
+      ],
       "supportsHeaders": false,
       "priority": "low",
       "status": "active",
@@ -1184,7 +1609,9 @@
       "toolName": "Forge",
       "vendor": "Antinomy",
       "agentFlag": "forge",
-      "aliases": ["forge-code"],
+      "aliases": [
+        "forge-code"
+      ],
       "pathGlobal": "$HOME/.forge",
       "pathProject": ".forge",
       "instructFile": "AGENTS.md",
@@ -1195,10 +1622,16 @@
       "pathSkills": "$HOME/.forge/skills",
       "pathProjectSkills": ".forge/skills",
       "detection": {
-        "methods": ["binary"],
+        "methods": [
+          "binary"
+        ],
         "binary": "forge"
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",
@@ -1209,7 +1642,9 @@
       "toolName": "Gemini Code Assist",
       "vendor": "Google",
       "agentFlag": "gemini-code-assist",
-      "aliases": ["gca"],
+      "aliases": [
+        "gca"
+      ],
       "pathGlobal": "$HOME/.gemini",
       "pathProject": ".gemini",
       "instructFile": "GEMINI.md",
@@ -1220,10 +1655,18 @@
       "pathSkills": "$HOME/.gemini/skills",
       "pathProjectSkills": ".gemini/skills",
       "detection": {
-        "methods": ["directory"],
-        "directories": ["$HOME/.gemini"]
+        "methods": [
+          "directory"
+        ],
+        "directories": [
+          "$HOME/.gemini"
+        ]
       },
-      "supportedTransports": ["stdio", "sse", "http"],
+      "supportedTransports": [
+        "stdio",
+        "sse",
+        "http"
+      ],
       "supportsHeaders": true,
       "priority": "low",
       "status": "active",

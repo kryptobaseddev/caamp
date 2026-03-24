@@ -61,15 +61,12 @@ export interface RegistrySkillsCapability {
   precedence: SkillsPrecedence;
 }
 
-export type HookEvent =
-  | "onSessionStart"
-  | "onSessionEnd"
-  | "onToolStart"
-  | "onToolComplete"
-  | "onFileChange"
-  | "onError"
-  | "onPromptSubmit"
-  | "onResponseComplete";
+/**
+ * @deprecated Use `CanonicalHookEvent` from `../hooks/types.js` for the
+ * normalized CAAMP taxonomy. This type remains for backward compatibility
+ * with registry.json's `capabilities.hooks.supported` string arrays.
+ */
+export type HookEvent = string;
 
 export interface RegistryHooksCapability {
   supported: string[];

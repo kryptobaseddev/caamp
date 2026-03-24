@@ -267,5 +267,46 @@ export {
 export { readConfig, writeConfig, removeConfig } from "./core/formats/index.js";
 export { getNestedValue, deepMerge, ensureDir } from "./core/formats/utils.js";
 
+// Hooks normalizer
+export type {
+  CanonicalHookEvent,
+  CanonicalEventDefinition,
+  HookCategory,
+  HookSystemType,
+  HookHandlerType,
+  HookMapping,
+  ProviderHookProfile,
+  NormalizedHookEvent,
+  HookSupportResult,
+  ProviderHookSummary,
+  CrossProviderMatrix,
+} from "./core/hooks/index.js";
+export {
+  CANONICAL_HOOK_EVENTS,
+  HOOK_CATEGORIES,
+  toNative,
+  toCanonical,
+  toNativeBatch,
+  supportsHook,
+  getHookSupport,
+  getSupportedEvents,
+  getUnsupportedEvents,
+  getProvidersForEvent,
+  getCommonEvents,
+  getProviderSummary,
+  buildHookMatrix,
+  getHookSystemType,
+  getHookConfigPath,
+  getProviderOnlyEvents,
+  translateToAll,
+  resolveNativeEvent,
+  getHookMappingsVersion,
+  getCanonicalEvent,
+  getAllCanonicalEvents,
+  getCanonicalEventsByCategory,
+  getProviderHookProfile,
+  getMappedProviderIds,
+} from "./core/hooks/index.js";
+
 // Logger
 export { setVerbose, setQuiet, isVerbose, isQuiet } from "./core/logger.js";

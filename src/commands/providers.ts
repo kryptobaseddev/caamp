@@ -8,6 +8,18 @@ import { resolveOutputFormat } from "@cleocode/lafs-protocol";
 import type { Command } from "commander";
 import pc from "picocolors";
 import { isHuman } from "../core/logger.js";
+import {
+  CANONICAL_HOOK_EVENTS,
+  buildHookMatrix,
+  getCommonEvents,
+  getHookMappingsVersion,
+  getHookSupport,
+  getProviderSummary,
+  getSupportedEvents,
+  toNative,
+  translateToAll,
+} from "../core/hooks/index.js";
+import type { CanonicalHookEvent } from "../core/hooks/types.js";
 import { detectAllProviders, detectProjectProviders } from "../core/registry/detection.js";
 import {
   buildSkillsMap,
@@ -325,15 +337,19 @@ export function registerProvidersCommand(program: Command): void {
       console.log();
     });
 
-  providers
+  // ── hooks subcommand group ─────────────────────────────────────────
+  const hooks = providers
     .command("hooks")
-    .description("Show provider hook event support")
+    .description("Show provider hook event support");
+
+  // hooks list (default)
+  hooks
+    .command("list", { isDefault: true })
+    .description("Show all providers with their hook support summary")
     .option("--json", "Output as JSON (default)")
     .option("--human", "Output in human-readable format")
-    .option("--event <event>", "Filter to providers supporting a specific hook event")
-    .option("--common", "Show hook events common to all providers")
-    .action(async (opts: { json?: boolean; human?: boolean; event?: string; common?: boolean }) => {
-      const operation = "providers.hooks";
+    .action(async (opts: { json?: boolean; human?: boolean }) => {
+      const operation = "providers.hooks.list";
       const mvi: import("../core/lafs.js").MVILevel = "standard";
 
       let format: "json" | "human";
@@ -349,86 +365,19 @@ export function registerProvidersCommand(program: Command): void {
         process.exit(1);
       }
 
-      if (opts.event) {
-        const event = opts.event as HookEvent;
-        const matching = getProvidersByHookEvent(event);
-
-        if (format === "json") {
-          const envelope = buildEnvelope(
-            operation,
-            mvi,
-            {
-              event,
-              providers: matching.map((p) => ({
-                id: p.id,
-                toolName: p.toolName,
-                supportedEvents: p.capabilities.hooks.supported,
-              })),
-              count: matching.length,
-            },
-            null,
-          );
-          console.log(JSON.stringify(envelope, null, 2));
-          return;
-        }
-
-        console.log(pc.bold(`\nProviders supporting ${pc.green(event)}:\n`));
-        if (matching.length === 0) {
-          console.log(pc.dim("  No providers support this event."));
-        } else {
-          for (const p of matching) {
-            console.log(`  ${pc.bold(p.toolName.padEnd(22))} ${pc.dim(p.id)}`);
-          }
-        }
-        console.log();
-        return;
-      }
-
-      if (opts.common) {
-        const common = getCommonHookEvents();
-
-        if (format === "json") {
-          const envelope = buildEnvelope(
-            operation,
-            mvi,
-            {
-              commonEvents: common,
-              count: common.length,
-            },
-            null,
-          );
-          console.log(JSON.stringify(envelope, null, 2));
-          return;
-        }
-
-        console.log(pc.bold("\nHook events common to all providers:\n"));
-        if (common.length === 0) {
-          console.log(pc.dim("  No events are common to all providers."));
-        } else {
-          for (const event of common) {
-            console.log(`  ${pc.green(event)}`);
-          }
-        }
-        console.log();
-        return;
-      }
-
-      // Default: show all providers with their hook events
       const all = getAllProviders();
-      const withHooks = all.filter((p) => p.capabilities.hooks.supported.length > 0);
+      const summaries = all
+        .map((p) => getProviderSummary(p.id))
+        .filter((s) => s !== undefined);
 
       if (format === "json") {
         const envelope = buildEnvelope(
           operation,
           mvi,
           {
-            providers: all.map((p) => ({
-              id: p.id,
-              toolName: p.toolName,
-              supportedEvents: p.capabilities.hooks.supported,
-            })),
-            withHooksCount: withHooks.length,
-            totalCount: all.length,
+            mappingsVersion: getHookMappingsVersion(),
+            canonicalEventCount: CANONICAL_HOOK_EVENTS.length,
+            providers: summaries,
           },
           null,
         );
@@ -436,21 +385,233 @@ export function registerProvidersCommand(program: Command): void {
         return;
       }
 
-      console.log(pc.bold(`\nProvider Hook Support\n`));
+      console.log(pc.bold(`\nCAMP Hook Support (mappings v${getHookMappingsVersion()})\n`));
+      console.log(pc.dim(`  ${CANONICAL_HOOK_EVENTS.length} canonical events defined\n`));
 
-      if (withHooks.length === 0) {
-        console.log(pc.dim("  No providers have hook support."));
-      } else {
-        for (const p of withHooks) {
-          console.log(`  ${pc.bold(p.toolName.padEnd(22))} ${pc.dim(p.capabilities.hooks.supported.join(", "))}`);
-        }
+      // Table header
+      console.log(
+        `  ${pc.bold("Provider".padEnd(22))} ${pc.bold("System".padEnd(10))} ${pc.bold("Coverage".padEnd(12))} ${pc.bold("Supported".padEnd(12))} ${pc.bold("Provider-Only")}`,
+      );
+      console.log(`  ${"─".repeat(22)} ${"─".repeat(10)} ${"─".repeat(12)} ${"─".repeat(12)} ${"─".repeat(20)}`);
+
+      for (const s of summaries) {
+        if (!s) continue;
+        const system = s.hookSystem === "none"
+          ? pc.dim("none")
+          : s.experimental
+            ? pc.yellow(s.hookSystem + "*")
+            : pc.green(s.hookSystem);
+        const coverage = s.coverage > 0
+          ? (s.coverage >= 75 ? pc.green : s.coverage >= 40 ? pc.yellow : pc.dim)(`${s.coverage}%`)
+          : pc.dim("0%");
+        const supported = s.supportedCount > 0
+          ? `${s.supportedCount}/${s.totalCanonical}`
+          : pc.dim("0");
+        const provOnly = s.providerOnly.length > 0 ? String(s.providerOnly.length) : pc.dim("-");
+
+        const provider = getProvider(s.providerId);
+        const name = provider?.toolName ?? s.providerId;
+
+        console.log(
+          `  ${name.padEnd(22)} ${system.padEnd(20)} ${coverage.padEnd(22)} ${supported.padEnd(22)} ${provOnly}`,
+        );
       }
 
-      const withoutHooks = all.length - withHooks.length;
-      if (withoutHooks > 0) {
-        console.log(pc.dim(`\n  ${withoutHooks} providers without hook support`));
+      const withHooks = summaries.filter((s) => s && s.supportedCount > 0);
+      console.log(pc.dim(`\n  ${withHooks.length} providers with hook support, ${summaries.length - withHooks.length} without`));
+      if (summaries.some((s) => s?.experimental)) {
+        console.log(pc.dim("  * = experimental hook system"));
       }
       console.log();
+    });
+
+  // hooks matrix
+  hooks
+    .command("matrix")
+    .description("Show cross-provider hook support matrix")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .option("--provider <ids>", "Comma-separated provider IDs to compare")
+    .action(async (opts: { json?: boolean; human?: boolean; provider?: string }) => {
+      const operation = "providers.hooks.matrix";
+      const mvi: import("../core/lafs.js").MVILevel = "standard";
+
+      let format: "json" | "human";
+      try {
+        format = resolveOutputFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        }).format;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, "E_FORMAT_CONFLICT", message, "VALIDATION");
+        process.exit(1);
+      }
+
+      const ids = opts.provider?.split(",").map((s) => s.trim());
+      const matrix = buildHookMatrix(ids);
+
+      if (format === "json") {
+        const envelope = buildEnvelope(operation, mvi, { matrix }, null);
+        console.log(JSON.stringify(envelope, null, 2));
+        return;
+      }
+
+      // Human-readable matrix
+      const providerNames = matrix.providers.map((id) => {
+        const p = getProvider(id);
+        return (p?.toolName ?? id).slice(0, 14);
+      });
+
+      console.log(pc.bold("\nHook Support Matrix\n"));
+
+      // Header
+      const eventCol = "CAAMP Event".padEnd(22);
+      const provCols = providerNames.map((n) => pc.bold(n.padEnd(16))).join("");
+      console.log(`  ${pc.bold(eventCol)} ${provCols}`);
+      console.log(`  ${"─".repeat(22)} ${providerNames.map(() => "─".repeat(16)).join("")}`);
+
+      for (const event of matrix.events) {
+        const cells = matrix.providers.map((id) => {
+          const m = matrix.matrix[event][id];
+          if (!m?.supported) return pc.dim("·".padEnd(16));
+          return pc.green((m.nativeName ?? "?").slice(0, 14).padEnd(16));
+        }).join("");
+
+        console.log(`  ${event.padEnd(22)} ${cells}`);
+      }
+
+      // Common events
+      const commonEvents = getCommonEvents(matrix.providers);
+      console.log(pc.dim(`\n  Common events: ${commonEvents.length > 0 ? commonEvents.join(", ") : "none"}`));
+      console.log();
+    });
+
+  // hooks translate
+  hooks
+    .command("translate")
+    .description("Translate a hook event name between CAAMP canonical and provider-native")
+    .argument("<event>", "Hook event name (canonical or native)")
+    .option("--to <provider>", "Target provider ID for canonical→native translation")
+    .option("--from <provider>", "Source provider ID for native→canonical translation")
+    .option("--json", "Output as JSON (default)")
+    .option("--human", "Output in human-readable format")
+    .action(async (event: string, opts: { to?: string; from?: string; json?: boolean; human?: boolean }) => {
+      const operation = "providers.hooks.translate";
+      const mvi: import("../core/lafs.js").MVILevel = "standard";
+
+      let format: "json" | "human";
+      try {
+        format = resolveOutputFormat({
+          jsonFlag: opts.json ?? false,
+          humanFlag: (opts.human ?? false) || isHuman(),
+          projectDefault: "json",
+        }).format;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        emitJsonError(operation, mvi, "E_FORMAT_CONFLICT", message, "VALIDATION");
+        process.exit(1);
+      }
+
+      if (opts.to) {
+        // Canonical → native
+        const canonical = event as CanonicalHookEvent;
+        if (!CANONICAL_HOOK_EVENTS.includes(canonical)) {
+          const msg = `Unknown canonical event: ${event}. Valid: ${CANONICAL_HOOK_EVENTS.join(", ")}`;
+          if (format === "json") {
+            emitJsonError(operation, mvi, "E_UNKNOWN_EVENT", msg, "VALIDATION");
+          } else {
+            console.error(pc.red(msg));
+          }
+          process.exit(1);
+        }
+
+        const result = getHookSupport(canonical, opts.to);
+
+        if (format === "json") {
+          const envelope = buildEnvelope(operation, mvi, {
+            direction: "canonical-to-native",
+            providerId: opts.to,
+            ...result,
+          }, null);
+          console.log(JSON.stringify(envelope, null, 2));
+        } else {
+          if (result.supported) {
+            console.log(`\n  ${pc.green(event)} → ${pc.bold(result.native!)} (${opts.to})`);
+            if (result.notes) console.log(pc.dim(`  Note: ${result.notes}`));
+          } else {
+            console.log(`\n  ${pc.red(event)} → ${pc.dim("not supported")} (${opts.to})`);
+          }
+          console.log();
+        }
+        return;
+      }
+
+      if (opts.from) {
+        // Native → canonical (import at top of file)
+        const { toCanonical } = await import("../core/hooks/index.js");
+        const canonical = toCanonical(event, opts.from);
+
+        if (format === "json") {
+          const envelope = buildEnvelope(operation, mvi, {
+            direction: "native-to-canonical",
+            native: event,
+            providerId: opts.from,
+            canonical,
+            supported: canonical !== null,
+          }, null);
+          console.log(JSON.stringify(envelope, null, 2));
+        } else {
+          if (canonical) {
+            console.log(`\n  ${pc.bold(event)} (${opts.from}) → ${pc.green(canonical)}`);
+          } else {
+            console.log(`\n  ${pc.bold(event)} (${opts.from}) → ${pc.dim("no canonical mapping (provider-only event)")}`);
+          }
+          console.log();
+        }
+        return;
+      }
+
+      // No --to or --from: translate canonical event to all providers
+      const canonical = event as CanonicalHookEvent;
+      if (!CANONICAL_HOOK_EVENTS.includes(canonical)) {
+        const msg = `Unknown canonical event: ${event}. Use --from <provider> for native names, or valid canonical: ${CANONICAL_HOOK_EVENTS.join(", ")}`;
+        if (format === "json") {
+          emitJsonError(operation, mvi, "E_UNKNOWN_EVENT", msg, "VALIDATION");
+        } else {
+          console.error(pc.red(msg));
+        }
+        process.exit(1);
+      }
+
+      const { getMappedProviderIds } = await import("../core/hooks/index.js");
+      const allIds = getMappedProviderIds();
+      const translations = translateToAll(canonical, allIds);
+
+      if (format === "json") {
+        const envelope = buildEnvelope(operation, mvi, {
+          direction: "canonical-to-all",
+          canonical: event,
+          translations,
+          supportedCount: Object.keys(translations).length,
+          totalProviders: allIds.length,
+        }, null);
+        console.log(JSON.stringify(envelope, null, 2));
+      } else {
+        console.log(pc.bold(`\n  ${event} across providers:\n`));
+        for (const id of allIds) {
+          const native = translations[id];
+          const provider = getProvider(id);
+          const name = (provider?.toolName ?? id).padEnd(22);
+          if (native) {
+            console.log(`  ${pc.green("✓")} ${name} ${pc.bold(native)}`);
+          } else {
+            console.log(`  ${pc.dim("·")} ${name} ${pc.dim("not supported")}`);
+          }
+        }
+        console.log();
+      }
     });
 
   providers
