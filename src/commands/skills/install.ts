@@ -54,6 +54,24 @@ interface InstallSummary {
   };
 }
 
+/**
+ * Registers the `skills install` subcommand for installing skills from various sources.
+ *
+ * @remarks
+ * Supports GitHub URLs, owner/repo shorthand, marketplace scoped names, and skill library profiles.
+ * Uses the canonical+symlink model to store skills once and symlink to each targeted agent.
+ *
+ * @param parent - The parent `skills` Command to attach the install subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills install owner/repo
+ * caamp skills install @author/skill-name --agent claude-code
+ * caamp skills install --profile recommended --all
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsInstall(parent: Command): void {
   parent
     .command("install")

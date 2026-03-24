@@ -269,6 +269,27 @@ async function runInteractiveInstall(
   }
 }
 
+/**
+ * Executes a CLEO MCP channel install or update operation across targeted providers.
+ *
+ * @remarks
+ * Builds a CLEO profile from the resolved options, writes configuration to all targeted providers,
+ * validates the result, and records the install in the lock file. Supports interactive mode and
+ * dry-run previews.
+ *
+ * @param mode - Whether to install a new profile or update an existing one
+ * @param opts - CLEO install options including channel, providers, and env configuration
+ * @param operation - The LAFS operation identifier for envelope metadata
+ * @returns Resolves when the install/update operation completes
+ *
+ * @example
+ * ```bash
+ * caamp cleo install --channel stable --all
+ * caamp mcp cleo update --channel dev --command ./my-cleo
+ * ```
+ *
+ * @public
+ */
 export async function executeCleoInstall(
   mode: "install" | "update",
   opts: CleoInstallOptions,
@@ -421,6 +442,24 @@ export async function executeCleoInstall(
   }
 }
 
+/**
+ * Executes a CLEO MCP channel uninstall operation across targeted providers.
+ *
+ * @remarks
+ * Removes the CLEO server entry matching the resolved channel from all targeted provider
+ * configurations and cleans up the corresponding lock file entry.
+ *
+ * @param opts - CLEO uninstall options including channel, providers, and scope
+ * @param operation - The LAFS operation identifier for envelope metadata
+ * @returns Resolves when the uninstall operation completes
+ *
+ * @example
+ * ```bash
+ * caamp cleo uninstall --channel beta --all
+ * ```
+ *
+ * @public
+ */
 export async function executeCleoUninstall(
   opts: CleoUninstallOptions,
   operation: string,
@@ -501,16 +540,56 @@ export async function executeCleoUninstall(
   }
 }
 
+/**
+ * Health status of a CLEO MCP entry: healthy, degraded (untracked), or broken (command unreachable).
+ *
+ * @remarks
+ * Used by the show and repair commands to classify the state of each CLEO profile entry.
+ *
+ * @public
+ */
 export type CleoHealthStatus = "healthy" | "degraded" | "broken";
 
+/**
+ * Health assessment result for a single CLEO MCP entry.
+ *
+ * @remarks
+ * Combines command reachability, config presence, and lock tracking status into an overall health classification.
+ *
+ * @public
+ */
 export interface CleoEntryHealth {
+  /** Whether the entry's command binary is reachable on the system PATH. */
   commandReachable: boolean;
+  /** Detail string describing the reachability check result. */
   commandDetail: string;
+  /** Whether the config file containing this entry exists. */
   configPresent: boolean;
+  /** Whether this entry is tracked in the CAAMP lock file. */
   lockTracked: boolean;
+  /** Overall health status derived from the individual checks. */
   status: CleoHealthStatus;
 }
 
+/**
+ * Checks the health of a CLEO MCP entry by verifying command reachability and lock tracking.
+ *
+ * @remarks
+ * Returns "healthy" when the command is reachable and the entry is tracked, "degraded" when
+ * untracked, and "broken" when the command is not reachable on the system PATH.
+ *
+ * @param command - The command binary string to check for reachability, or undefined if no command
+ * @param lockTracked - Whether this entry is tracked in the CAAMP lock file
+ * @returns A health assessment object with status and detail information
+ *
+ * @example
+ * ```typescript
+ * const health = checkCleoEntryHealth("npx", true);
+ * // health.status === "healthy"
+ * ```
+ *
+ * @public
+ */
 export function checkCleoEntryHealth(
   command: string | undefined,
   lockTracked: boolean,
@@ -545,6 +624,24 @@ export function checkCleoEntryHealth(
   };
 }
 
+/**
+ * Executes the CLEO show operation to display installed channel profiles across providers.
+ *
+ * @remarks
+ * Scans provider configurations for CLEO entries, enriches them with lock file metadata and
+ * health checks, and outputs a tabular or JSON view of all discovered profiles.
+ *
+ * @param opts - Show options including provider filter, scope, and channel filter
+ * @param operation - The LAFS operation identifier for envelope metadata
+ * @returns Resolves when the show output is complete
+ *
+ * @example
+ * ```bash
+ * caamp cleo show --channel stable --human
+ * ```
+ *
+ * @public
+ */
 export async function executeCleoShow(
   opts: CleoShowOptions,
   operation: string,
@@ -740,6 +837,24 @@ export async function executeCleoShow(
   }
 }
 
+/**
+ * Executes the CLEO repair operation to reconcile lock file entries with actual configurations.
+ *
+ * @remarks
+ * Backfills untracked CLEO entries found in provider configs into the lock file and optionally
+ * prunes orphaned lock entries that no longer exist in any config. Supports dry-run mode.
+ *
+ * @param opts - Repair options including provider filter, scope, prune flag, and dry-run
+ * @param operation - The LAFS operation identifier for envelope metadata
+ * @returns Resolves when the repair operation completes
+ *
+ * @example
+ * ```bash
+ * caamp cleo repair --prune --dry-run
+ * ```
+ *
+ * @public
+ */
 export async function executeCleoRepair(
   opts: CleoRepairOptions,
   operation: string,
@@ -837,6 +952,23 @@ function buildInstallOptions(command: Command): Command {
     .option("--human", "Output in human-readable format");
 }
 
+/**
+ * Registers the `mcp cleo` subcommand group with install, update, uninstall, show, and repair.
+ *
+ * @remarks
+ * Provides the nested `mcp cleo` command tree for managing CLEO channel profiles within
+ * the MCP command group.
+ *
+ * @param parent - The parent `mcp` Command to attach the cleo subcommand group to
+ *
+ * @example
+ * ```bash
+ * caamp mcp cleo install --channel stable --all
+ * caamp mcp cleo show --human
+ * ```
+ *
+ * @public
+ */
 export function registerMcpCleoCommands(parent: Command): void {
   const cleo = parent
     .command("cleo")
@@ -902,6 +1034,23 @@ export function registerMcpCleoCommands(parent: Command): void {
     });
 }
 
+/**
+ * Registers backward-compatible update, uninstall, and show commands directly on the `mcp` parent.
+ *
+ * @remarks
+ * Provides `mcp update cleo`, `mcp uninstall cleo`, and `mcp show cleo` as aliases for the
+ * nested `mcp cleo` subcommands. Only the "cleo" managed profile name is supported.
+ *
+ * @param parent - The parent `mcp` Command to attach the compatibility commands to
+ *
+ * @example
+ * ```bash
+ * caamp mcp update cleo --channel stable
+ * caamp mcp uninstall cleo --channel dev
+ * ```
+ *
+ * @public
+ */
 export function registerMcpCleoCompatibilityCommands(parent: Command): void {
   parent
     .command("update")
@@ -966,6 +1115,24 @@ export function registerMcpCleoCompatibilityCommands(parent: Command): void {
     });
 }
 
+/**
+ * Maps generic MCP install CLI options to CLEO-specific install options for compatibility routing.
+ *
+ * @remarks
+ * Merges the `--agent` and `--provider` flags into a single provider list and provides defaults
+ * for array fields. Used when `mcp install cleo --channel ...` is detected.
+ *
+ * @param opts - The raw CLI options from the mcp install command
+ * @returns A normalized CleoInstallOptions object ready for executeCleoInstall
+ *
+ * @example
+ * ```typescript
+ * const cleoOpts = mapCompatibilityInstallOptions(rawOpts);
+ * await executeCleoInstall("install", cleoOpts, "mcp.install");
+ * ```
+ *
+ * @public
+ */
 export function mapCompatibilityInstallOptions(
   opts: {
     channel?: string;
@@ -1003,11 +1170,47 @@ export function mapCompatibilityInstallOptions(
   };
 }
 
+/**
+ * Determines whether an MCP install command should be routed to the CLEO compatibility handler.
+ *
+ * @remarks
+ * Returns true when the source argument is "cleo" (case-insensitive) and a non-empty channel flag is provided.
+ *
+ * @param source - The source argument from the mcp install command
+ * @param channel - The optional channel flag value
+ * @returns True if the install should be handled by the CLEO compatibility path
+ *
+ * @example
+ * ```typescript
+ * shouldUseCleoCompatibilityInstall("cleo", "stable"); // true
+ * shouldUseCleoCompatibilityInstall("https://example.com", "stable"); // false
+ * ```
+ *
+ * @public
+ */
 export function shouldUseCleoCompatibilityInstall(source: string, channel?: string): boolean {
   if (source.trim().toLowerCase() !== "cleo") return false;
   return typeof channel === "string" && channel.trim() !== "";
 }
 
+/**
+ * Registers the top-level `cleo` command group with install, update, uninstall, show, and repair.
+ *
+ * @remarks
+ * Provides `caamp cleo ...` as a top-level alternative to `caamp mcp cleo ...` for convenience.
+ * Both command paths delegate to the same underlying execution functions.
+ *
+ * @param program - The root Commander program to attach the cleo command group to
+ *
+ * @example
+ * ```bash
+ * caamp cleo install --channel stable --all
+ * caamp cleo show --human
+ * caamp cleo repair --prune
+ * ```
+ *
+ * @public
+ */
 export function registerCleoCommands(program: Command): void {
   const cleo = program
     .command("cleo")

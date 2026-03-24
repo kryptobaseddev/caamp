@@ -24,6 +24,7 @@ const require = createRequire(import.meta.url);
 /**
  * Load a SkillLibrary from a module (index.js) at the given root directory.
  *
+ * @remarks
  * Uses `createRequire()` for CJS modules or dynamic `import()` for ESM.
  * Validates that the loaded module implements the SkillLibrary interface
  * by checking for required properties and methods.
@@ -31,6 +32,14 @@ const require = createRequire(import.meta.url);
  * @param root - Absolute path to the library root (must contain index.js or package.json with main)
  * @returns A validated SkillLibrary instance
  * @throws If the module cannot be loaded or does not implement SkillLibrary
+ *
+ * @example
+ * ```typescript
+ * const library = loadLibraryFromModule("/home/user/.agents/libraries/ct-skills");
+ * console.log(`Loaded v${library.version} with ${library.listSkills().length} skills`);
+ * ```
+ *
+ * @public
  */
 export function loadLibraryFromModule(root: string): SkillLibrary {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,6 +83,7 @@ export function loadLibraryFromModule(root: string): SkillLibrary {
 /**
  * Build a SkillLibrary from raw files in a directory.
  *
+ * @remarks
  * Constructs a full SkillLibrary implementation by reading:
  * - `skills.json` for catalog entries
  * - `skills/manifest.json` for dispatch matrix
@@ -85,6 +95,15 @@ export function loadLibraryFromModule(root: string): SkillLibrary {
  * @param root - Absolute path to the library root directory
  * @returns A SkillLibrary instance backed by filesystem reads
  * @throws If skills.json is not found at the root
+ *
+ * @example
+ * ```typescript
+ * const library = buildLibraryFromFiles("/home/user/.agents/libraries/ct-skills");
+ * const coreSkills = library.getCoreSkills();
+ * console.log(`Core skills: ${coreSkills.map(s => s.name).join(", ")}`);
+ * ```
+ *
+ * @public
  */
 export function buildLibraryFromFiles(root: string): SkillLibrary {
   const catalogPath = join(root, "skills.json");

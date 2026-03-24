@@ -10,6 +10,23 @@ import {
 import { parsePriority, readTextInput, resolveProviders } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";
 
+/**
+ * Registers the `advanced instructions` subcommand for single-operation instruction updates.
+ *
+ * @remarks
+ * Updates instruction file injections across multiple providers in a single LAFS-compliant
+ * operation. Supports inline content, content files, and minimum priority tier filtering.
+ *
+ * @param parent - The parent `advanced` Command to attach the instructions subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced instructions --content "Custom block" --all
+ * caamp advanced instructions --content-file block.md --min-tier high
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedInstructions(parent: Command): void {
   parent
     .command("instructions")

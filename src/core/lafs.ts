@@ -20,55 +20,86 @@ import type {
 import { resolveOutputFormat } from "@cleocode/lafs-protocol";
 import { isHuman, isQuiet } from "./logger.js";
 
-/** LAFS MVI disclosure level - defined locally to avoid CI module resolution issues with re-exported types */
+/**
+ * LAFS MVI disclosure level - defined locally to avoid CI module resolution issues with re-exported types.
+ *
+ * @public
+ */
 export type MVILevel = "minimal" | "standard" | "full" | "custom";
 
 // Re-export protocol types under CAAMP's naming conventions
 export type { LAFSMeta };
 
-/** LAFS Error structure - re-exported from protocol as LAFSErrorShape for CAAMP compatibility */
+/**
+ * LAFS Error structure - re-exported from protocol as LAFSErrorShape for CAAMP compatibility.
+ *
+ * @public
+ */
 export type LAFSErrorShape = LAFSError;
 
-/** LAFS Warning structure - re-exported from protocol */
+/**
+ * LAFS Warning structure - re-exported from protocol.
+ *
+ * @public
+ */
 export type LAFSWarning = Warning;
 
 /**
  * Generic LAFS Envelope structure for type-safe command results.
- * Extends the protocol's envelope with TypeScript generics.
+ *
+ * @remarks
+ * Extends the protocol's envelope with TypeScript generics for compile-time
+ * safety when constructing or consuming command results.
+ *
+ * @public
  */
 export interface LAFSEnvelope<T> {
+  /** JSON Schema URI for envelope validation. */
   $schema: "https://lafs.dev/schemas/v1/envelope.schema.json";
+  /** Envelope metadata (timestamps, request IDs, MVI level). */
   _meta: LAFSMeta;
+  /** Whether the operation succeeded. */
   success: boolean;
+  /** Operation result payload, or `null` on error. */
   result: T | null;
+  /** Error details, or `null` on success. */
   error: LAFSErrorShape | null;
+  /** Pagination metadata, or `null` when not applicable. */
   page: LAFSPage | null;
 }
 
 /**
- * Format resolution options
+ * Format resolution options.
+ *
+ * @public
  */
 export interface FormatOptions {
+  /** Whether `--json` was explicitly passed. @defaultValue `false` */
   jsonFlag?: boolean;
+  /** Whether `--human` was explicitly passed. @defaultValue `false` */
   humanFlag?: boolean;
+  /** Project-level default format when no flag is given. @defaultValue `"json"` */
   projectDefault?: "json" | "human";
 }
 
 /**
- * Resolves output format based on flags and defaults
- * 
+ * Resolves output format based on flags and defaults.
+ *
+ * @remarks
+ * Delegates to the LAFS protocol's `resolveOutputFormat` function, layering
+ * in the global `isHuman()` state so that `--human` set at the CLI root
+ * propagates to all subcommands.
+ *
  * @param options - Format resolution options
- * @returns "json" | "human"
+ * @returns `"json"` or `"human"`
  * @throws Error if format flags conflict
- * 
+ *
  * @example
  * ```typescript
- * const format = resolveFormat({
- *   jsonFlag: opts.json,
- *   humanFlag: opts.human,
- *   projectDefault: "json"
- * });
+ * const format = resolveFormat({ jsonFlag: true });
  * ```
+ *
+ * @public
  */
 export function resolveFormat(options: FormatOptions): "json" | "human" {
   return resolveOutputFormat({
@@ -79,24 +110,34 @@ export function resolveFormat(options: FormatOptions): "json" | "human" {
 }
 
 /**
- * Builds a standard LAFS envelope
- * 
- * @param operation - Operation identifier (e.g., "skills.list", "doctor.check")
- * @param mvi - Machine-Verified Instruction flag
- * @param result - Operation result data (null if error)
- * @param error - Error details (null if success)
- * @param page - Pagination info (null if not applicable)
+ * Builds a standard LAFS envelope.
+ *
+ * @remarks
+ * Populates `_meta` with a fresh UUID, ISO timestamp, and the provided
+ * operation/MVI values. The `success` flag is derived from whether `error`
+ * is `null`.
+ *
+ * @param operation - Operation identifier (e.g., `"skills.list"`, `"doctor.check"`)
+ * @param mvi - Machine-Verified Instruction disclosure level
+ * @param result - Operation result data (`null` if error)
+ * @param error - Error details (`null` if success)
+ * @param page - Pagination info (`null` if not applicable)
+ * @param sessionId - Optional session identifier
+ * @param warnings - Optional array of warnings to attach
+ * @typeParam T - The type of the result data payload
  * @returns LAFS-compliant envelope
- * 
+ *
  * @example
  * ```typescript
  * const envelope = buildEnvelope(
  *   "skills.list",
- *   true,
- *   { skills: [...], count: 5 },
- *   null
+ *   "full",
+ *   { skills: [], count: 0 },
+ *   null,
  * );
  * ```
+ *
+ * @public
  */
 export function buildEnvelope<T>(
   operation: string,
@@ -130,27 +171,35 @@ export function buildEnvelope<T>(
 }
 
 /**
- * Emits a JSON error envelope to stderr and exits
- * 
+ * Emits a JSON error envelope to stderr and exits the process.
+ *
+ * @remarks
+ * Wraps the error in a full LAFS envelope and writes it to stderr as
+ * pretty-printed JSON before calling `process.exit`. The `retryable` flag
+ * is automatically set for `TRANSIENT` and `RATE_LIMIT` categories.
+ *
  * @param operation - Operation identifier
- * @param mvi - Machine-Verified Instruction flag
+ * @param mvi - Machine-Verified Instruction disclosure level
  * @param code - Error code
  * @param message - Error message
  * @param category - Error category from LAFS protocol
  * @param details - Additional error details
  * @param exitCode - Process exit code (default: 1)
- * 
+ *
  * @example
  * ```typescript
  * emitError(
  *   "skills.install",
- *   true,
+ *   "full",
  *   "E_SKILL_NOT_FOUND",
  *   "Skill not found",
  *   "NOT_FOUND",
- *   { skillName: "my-skill" }
+ *   { skillName: "my-skill" },
+ *   1,
  * );
  * ```
+ *
+ * @public
  */
 export function emitError(
   operation: string,
@@ -174,24 +223,30 @@ export function emitError(
 }
 
 /**
- * Emits a JSON error envelope without exiting (for catch blocks)
- * 
+ * Emits a JSON error envelope without exiting (for catch blocks).
+ *
+ * @remarks
+ * Identical to {@link emitError} except it does not call `process.exit`,
+ * allowing callers to perform cleanup or additional logging before exiting.
+ *
  * @param operation - Operation identifier
- * @param mvi - Machine-Verified Instruction flag
+ * @param mvi - Machine-Verified Instruction disclosure level
  * @param code - Error code
  * @param message - Error message
  * @param category - Error category from LAFS protocol
  * @param details - Additional error details
- * 
+ *
  * @example
  * ```typescript
  * try {
  *   await riskyOperation();
- * } catch (error) {
- *   emitJsonError("operation", true, "E_FAILED", "Operation failed", "INTERNAL");
+ * } catch (err) {
+ *   emitJsonError("operation", "full", "E_FAILED", "Operation failed", "INTERNAL", {});
  *   process.exit(1);
  * }
  * ```
+ *
+ * @public
  */
 export function emitJsonError(
   operation: string,
@@ -213,17 +268,26 @@ export function emitJsonError(
 }
 
 /**
- * Outputs a successful LAFS envelope
- * 
+ * Outputs a successful LAFS envelope to stdout.
+ *
+ * @remarks
+ * In quiet mode the output is suppressed unless there is an error. The
+ * envelope is serialized as pretty-printed JSON.
+ *
  * @param operation - Operation identifier
- * @param mvi - Machine-Verified Instruction flag
+ * @param mvi - Machine-Verified Instruction disclosure level
  * @param result - Operation result data
  * @param page - Optional pagination info
- * 
+ * @param sessionId - Optional session identifier
+ * @param warnings - Optional warnings to attach
+ * @typeParam T - The type of the result data payload
+ *
  * @example
  * ```typescript
- * outputSuccess("skills.list", true, { skills: [...], count: 5 });
+ * outputSuccess("skills.list", "full", { skills: [], count: 0 });
  * ```
+ *
+ * @public
  */
 export function outputSuccess<T>(
   operation: string,
@@ -245,31 +309,42 @@ export function outputSuccess<T>(
 }
 
 /**
- * Standard command options interface for LAFS-compliant commands
+ * Standard command options interface for LAFS-compliant commands.
+ *
+ * @public
  */
 export interface LAFSCommandOptions {
+  /** Whether to force JSON output. @defaultValue `false` */
   json?: boolean;
+  /** Whether to force human-readable output. @defaultValue `false` */
   human?: boolean;
   [key: string]: unknown;
 }
 
 /**
- * Handles format resolution errors consistently
- * 
+ * Handles format resolution errors consistently.
+ *
+ * @remarks
+ * When `jsonFlag` is true the error is emitted as a LAFS JSON envelope to
+ * stderr; otherwise a plain text message is written. The process always
+ * exits with code 1.
+ *
  * @param error - The error that occurred during format resolution
  * @param operation - Operation identifier
- * @param mvi - Machine-Verified Instruction flag
- * @param jsonFlag - Whether --json flag was explicitly set
+ * @param mvi - Machine-Verified Instruction disclosure level
+ * @param jsonFlag - Whether `--json` flag was explicitly set
  * @returns never (exits process)
- * 
+ *
  * @example
  * ```typescript
  * try {
  *   format = resolveFormat({ jsonFlag: opts.json, humanFlag: opts.human });
  * } catch (error) {
- *   handleFormatError(error, "skills.list", true, opts.json);
+ *   handleFormatError(error, "skills.list", "full", opts.json);
  * }
  * ```
+ *
+ * @public
  */
 export function handleFormatError(
   error: unknown,
@@ -289,7 +364,9 @@ export function handleFormatError(
 }
 
 /**
- * Common error categories mapping for convenience
+ * Common error categories mapping for convenience.
+ *
+ * @public
  */
 export const ErrorCategories = {
   VALIDATION: "VALIDATION" as LAFSErrorCategory,
@@ -305,7 +382,9 @@ export const ErrorCategories = {
 } as const;
 
 /**
- * Common error codes for consistency
+ * Common error codes for consistency.
+ *
+ * @public
  */
 export const ErrorCodes = {
   // Format errors

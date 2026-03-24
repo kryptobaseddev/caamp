@@ -1,7 +1,9 @@
 /**
- * CAAMP - Central AI Agent Managed Packages
- *
- * Library exports for programmatic usage.
+ * @packageDocumentation
+ * Provides the public API surface for the CAAMP library, re-exporting types,
+ * registry functions, detection utilities, skill management, MCP server
+ * installation, instruction file injection, marketplace search, and
+ * format-agnostic config read/write operations.
  */
 
 // Types

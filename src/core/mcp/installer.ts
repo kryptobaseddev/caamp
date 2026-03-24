@@ -16,11 +16,17 @@ import { getTransform } from "./transforms.js";
  *
  * @example
  * ```typescript
- * const result = await installMcpServer(provider, "my-server", config);
+ * const provider = getProvider("claude-code")!;
+ * const result = await installMcpServer(provider, "my-server", {
+ *   command: "npx",
+ *   args: ["-y", "@modelcontextprotocol/server-filesystem"],
+ * });
  * if (result.success) {
  *   console.log(`Written to ${result.configPath}`);
  * }
  * ```
+ *
+ * @public
  */
 export interface InstallResult {
   /** The provider the config was written to. */
@@ -31,7 +37,7 @@ export interface InstallResult {
   configPath: string;
   /** Whether the write succeeded. */
   success: boolean;
-  /** Error message if the write failed. */
+  /** Error message if the write failed. @defaultValue undefined */
   error?: string;
 }
 
@@ -50,6 +56,12 @@ function buildConfig(provider: Provider, serverName: string, config: McpServerCo
  * Applies provider-specific transforms (e.g. Goose, Zed, Codex) and writes
  * the config to the provider's config file in the specified scope.
  *
+ * @remarks
+ * The installation flow is: resolve config path, apply any provider-specific
+ * transform via {@link getTransform}, then write the result using the
+ * provider's config format (JSON, YAML, or TOML). If the provider does not
+ * support the requested scope, a failed result is returned without throwing.
+ *
  * @param provider - Target provider to write config for
  * @param serverName - Name/key for the MCP server entry
  * @param config - Canonical MCP server configuration
@@ -63,8 +75,10 @@ function buildConfig(provider: Provider, serverName: string, config: McpServerCo
  * const result = await installMcpServer(provider, "filesystem", {
  *   command: "npx",
  *   args: ["-y", "@modelcontextprotocol/server-filesystem"],
- * });
+ * }, "project", "/home/user/my-project");
  * ```
+ *
+ * @public
  */
 export async function installMcpServer(
   provider: Provider,
@@ -123,6 +137,11 @@ export async function installMcpServer(
  *
  * Calls {@link installMcpServer} for each provider sequentially and collects results.
  *
+ * @remarks
+ * Providers are processed sequentially (not in parallel) to avoid concurrent
+ * writes to shared config files. Each provider's result is independent --
+ * a failure for one provider does not prevent installation to others.
+ *
  * @param providers - Array of target providers
  * @param serverName - Name/key for the MCP server entry
  * @param config - Canonical MCP server configuration
@@ -133,9 +152,14 @@ export async function installMcpServer(
  * @example
  * ```typescript
  * const providers = getInstalledProviders();
- * const results = await installMcpServerToAll(providers, "my-server", config);
+ * const config = { command: "npx", args: ["-y", "@mcp/server"] };
+ * const results = await installMcpServerToAll(providers, "my-server", config, "project", "/home/user/project");
  * const successes = results.filter(r => r.success);
  * ```
+ *
+ * @see {@link installMcpServer}
+ *
+ * @public
  */
 export async function installMcpServerToAll(
   providers: Provider[],
@@ -162,6 +186,13 @@ export async function installMcpServerToAll(
  * - `"package"` sources become `npx -y <package>` stdio configs
  * - All others are treated as shell commands split into `command` + `args`
  *
+ * @remarks
+ * This function normalizes diverse source inputs into the canonical config
+ * format that CAAMP uses internally. Provider-specific transforms are applied
+ * later during installation via {@link getTransform}. Command-type sources
+ * are split on whitespace, with the first token becoming `command` and the
+ * remainder becoming `args`.
+ *
  * @param source - Parsed source with `type` and `value`
  * @param transport - Override transport type for remote sources (default: `"http"`)
  * @param headers - Optional HTTP headers for remote servers
@@ -169,12 +200,16 @@ export async function installMcpServerToAll(
  *
  * @example
  * ```typescript
- * buildServerConfig({ type: "package", value: "@mcp/server-fs" });
+ * buildServerConfig({ type: "package", value: "@mcp/server-fs" }, undefined, undefined);
  * // { command: "npx", args: ["-y", "@mcp/server-fs"] }
  *
- * buildServerConfig({ type: "remote", value: "https://mcp.example.com" });
- * // { type: "http", url: "https://mcp.example.com" }
+ * buildServerConfig({ type: "remote", value: "https://mcp.example.com" }, "http", { "Authorization": "Bearer token" });
+ * // { type: "http", url: "https://mcp.example.com", headers: { "Authorization": "Bearer token" } }
  * ```
+ *
+ * @see {@link installMcpServer}
+ *
+ * @public
  */
 export function buildServerConfig(
   source: { type: string; value: string },

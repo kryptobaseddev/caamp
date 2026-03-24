@@ -18,6 +18,23 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
 import type { McpServerEntry } from "../../types.js";
 
+/**
+ * Registers the `mcp list` subcommand for listing configured MCP servers across providers.
+ *
+ * @remarks
+ * Queries installed provider configurations and lists all MCP server entries with scope indicators.
+ * Supports filtering by specific agent and global/project scope.
+ *
+ * @param parent - The parent `mcp` Command to attach the list subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp mcp list --agent claude-code
+ * caamp mcp list --global --human
+ * ```
+ *
+ * @public
+ */
 export function registerMcpList(parent: Command): void {
   parent
     .command("list")

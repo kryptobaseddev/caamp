@@ -38,9 +38,27 @@ function toResult(skill: SkillsShResult): MarketplaceResult {
   };
 }
 
+/**
+ * Marketplace adapter for the skills.sh API.
+ *
+ * @remarks
+ * Implements the {@link MarketplaceAdapter} interface to search and retrieve
+ * skills from the skills.sh marketplace. Uses the Vercel Skills model where
+ * GitHub is the actual source for installation.
+ *
+ * @public
+ */
 export class SkillsShAdapter implements MarketplaceAdapter {
+  /** The marketplace identifier used in search results. */
   name = "skills.sh";
 
+  /**
+   * Search for skills by query string.
+   *
+   * @param query - Search query to match against skill names.
+   * @param limit - Maximum number of results to return.
+   * @returns Array of marketplace results.
+   */
   async search(query: string, limit = 20): Promise<MarketplaceResult[]> {
     const params = new URLSearchParams({
       q: query,
@@ -53,6 +71,12 @@ export class SkillsShAdapter implements MarketplaceAdapter {
     return data.results.map(toResult);
   }
 
+  /**
+   * Look up a specific skill by its scoped name.
+   *
+   * @param scopedName - The scoped skill name (e.g. `"@author/skill-name"`).
+   * @returns The matching marketplace result, or `null` if not found.
+   */
   async getSkill(scopedName: string): Promise<MarketplaceResult | null> {
     const results = await this.search(scopedName, 5);
     return results.find((r) => r.scopedName === scopedName) ?? null;

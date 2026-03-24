@@ -7,6 +7,23 @@ import { installBatchWithRollback, selectProvidersByMinimumPriority } from "../.
 import { parsePriority, readMcpOperations, readSkillOperations, resolveProviders } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";
 
+/**
+ * Registers the `advanced batch` subcommand for rollback-capable batch install of MCP and skills.
+ *
+ * @remarks
+ * Installs MCP servers and skills from JSON files in a single atomic operation with automatic
+ * rollback on failure. Supports minimum priority tier filtering and project directory resolution.
+ *
+ * @param parent - The parent `advanced` Command to attach the batch subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced batch --mcp-file mcp.json --skills-file skills.json
+ * caamp advanced batch --mcp-file mcp.json --min-tier medium
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedBatch(parent: Command): void {
   parent
     .command("batch")

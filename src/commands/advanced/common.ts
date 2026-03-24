@@ -14,11 +14,37 @@ import { LAFSCommandError } from "./lafs.js";
 
 const VALID_PRIORITIES = new Set<ProviderPriority>(["high", "medium", "low"]);
 
+/**
+ * Options for resolving which providers to target in advanced commands.
+ *
+ * @remarks
+ * Used by resolveProviders to determine the set of providers from CLI flags.
+ *
+ * @public
+ */
 export interface ProviderTargetOptions {
+  /** When true, target all registry providers including undetected ones. */
   all?: boolean;
+  /** Specific provider IDs or aliases to target. */
   agent?: string[];
 }
 
+/**
+ * Parses and validates a provider priority tier string.
+ *
+ * @remarks
+ * Throws a LAFSCommandError if the value is not one of the valid priorities (high, medium, low).
+ *
+ * @param value - The priority string to parse
+ * @returns The validated ProviderPriority value
+ *
+ * @example
+ * ```typescript
+ * const tier = parsePriority("high"); // "high"
+ * ```
+ *
+ * @public
+ */
 export function parsePriority(value: string): ProviderPriority {
   if (!VALID_PRIORITIES.has(value as ProviderPriority)) {
     throw new LAFSCommandError(
@@ -30,6 +56,23 @@ export function parsePriority(value: string): ProviderPriority {
   return value as ProviderPriority;
 }
 
+/**
+ * Resolves the set of target providers from CLI targeting options.
+ *
+ * @remarks
+ * When `all` is true, returns all registry providers. When agent IDs are specified, resolves
+ * and validates them. Otherwise falls back to auto-detected installed providers.
+ *
+ * @param options - The provider targeting options from the CLI
+ * @returns An array of resolved Provider objects
+ *
+ * @example
+ * ```typescript
+ * const providers = resolveProviders({ all: true });
+ * ```
+ *
+ * @public
+ */
 export function resolveProviders(options: ProviderTargetOptions): Provider[] {
   if (options.all) {
     return getAllProviders();
@@ -57,6 +100,22 @@ export function resolveProviders(options: ProviderTargetOptions): Provider[] {
   return providers;
 }
 
+/**
+ * Reads and parses a JSON file from disk.
+ *
+ * @remarks
+ * Throws a LAFSCommandError with a recovery suggestion if the file cannot be read or parsed.
+ *
+ * @param path - Absolute or relative path to the JSON file
+ * @returns The parsed JSON value
+ *
+ * @example
+ * ```typescript
+ * const data = await readJsonFile("./operations.json");
+ * ```
+ *
+ * @public
+ */
 export async function readJsonFile(path: string): Promise<unknown> {
   try {
     const raw = await readFile(path, "utf-8");
@@ -72,6 +131,23 @@ export async function readJsonFile(path: string): Promise<unknown> {
   }
 }
 
+/**
+ * Reads and validates a JSON file containing MCP batch operations.
+ *
+ * @remarks
+ * Parses the file and validates each entry has required fields (serverName, config) with proper types.
+ * Throws LAFSCommandError on any validation failure with specific error codes.
+ *
+ * @param path - Path to the JSON file containing an array of MCP operations
+ * @returns An array of validated McpBatchOperation objects
+ *
+ * @example
+ * ```typescript
+ * const ops = await readMcpOperations("./mcp-ops.json");
+ * ```
+ *
+ * @public
+ */
 export async function readMcpOperations(path: string): Promise<McpBatchOperation[]> {
   const value = await readJsonFile(path);
   if (!Array.isArray(value)) {
@@ -131,6 +207,23 @@ export async function readMcpOperations(path: string): Promise<McpBatchOperation
   return operations;
 }
 
+/**
+ * Reads and validates a JSON file containing skill batch operations.
+ *
+ * @remarks
+ * Parses the file and validates each entry has required fields (sourcePath, skillName) with proper types.
+ * Throws LAFSCommandError on any validation failure with specific error codes.
+ *
+ * @param path - Path to the JSON file containing an array of skill operations
+ * @returns An array of validated SkillBatchOperation objects
+ *
+ * @example
+ * ```typescript
+ * const ops = await readSkillOperations("./skill-ops.json");
+ * ```
+ *
+ * @public
+ */
 export async function readSkillOperations(path: string): Promise<SkillBatchOperation[]> {
   const value = await readJsonFile(path);
   if (!Array.isArray(value)) {
@@ -190,6 +283,24 @@ export async function readSkillOperations(path: string): Promise<SkillBatchOpera
   return operations;
 }
 
+/**
+ * Reads text input from either inline content or a file path, enforcing mutual exclusivity.
+ *
+ * @remarks
+ * Throws LAFSCommandError if both inline content and a file path are provided simultaneously.
+ * Returns undefined if neither is provided.
+ *
+ * @param inlineContent - Inline text content from the --content flag, or undefined
+ * @param filePath - Path to a content file from the --content-file flag, or undefined
+ * @returns The text content string, or undefined if no input was provided
+ *
+ * @example
+ * ```typescript
+ * const content = await readTextInput(undefined, "./content.txt");
+ * ```
+ *
+ * @public
+ */
 export async function readTextInput(
   inlineContent: string | undefined,
   filePath: string | undefined,

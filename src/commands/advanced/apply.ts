@@ -24,6 +24,23 @@ function parsePolicy(value: string): ConflictPolicy {
   return value as ConflictPolicy;
 }
 
+/**
+ * Registers the `advanced apply` subcommand for applying MCP operations with configurable conflict policy.
+ *
+ * @remarks
+ * Applies MCP batch operations from a JSON file to targeted providers with fail, skip, or overwrite
+ * conflict resolution policies. Supports minimum priority tier filtering.
+ *
+ * @param parent - The parent `advanced` Command to attach the apply subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced apply --mcp-file ops.json --policy overwrite
+ * caamp advanced apply --mcp-file ops.json --min-tier high
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedApply(parent: Command): void {
   parent
     .command("apply")

@@ -18,6 +18,16 @@ function rule(
   return { id, name, description, severity, category, pattern };
 }
 
+/**
+ * Complete set of security audit rules for SKILL.md scanning.
+ *
+ * @remarks
+ * Contains 46+ rules covering prompt injection, command injection, data exfiltration,
+ * privilege escalation, filesystem abuse, network abuse, obfuscation, supply chain,
+ * and information disclosure categories.
+ *
+ * @public
+ */
 export const AUDIT_RULES: AuditRule[] = [
   // ── Prompt Injection ────────────────────────────────────────
   rule("PI001", "System prompt override", "Attempts to override system instructions", "critical", "prompt-injection",
@@ -126,17 +136,66 @@ export const AUDIT_RULES: AuditRule[] = [
     /(?:ifconfig|ip\s+addr|ipconfig|netstat\s+-[at])/i),
 ];
 
-/** Get rules by category */
+/**
+ * Get audit rules filtered by category.
+ *
+ * @remarks
+ * Filters the built-in rule set by a specific category string such as
+ * `"prompt-injection"`, `"command-injection"`, or `"data-exfiltration"`.
+ *
+ * @param category - Category name to filter by
+ * @returns Array of rules matching the given category
+ *
+ * @example
+ * ```typescript
+ * const piRules = getRulesByCategory("prompt-injection");
+ * console.log(`${piRules.length} prompt injection rules`);
+ * ```
+ *
+ * @public
+ */
 export function getRulesByCategory(category: string): AuditRule[] {
   return AUDIT_RULES.filter((r) => r.category === category);
 }
 
-/** Get rules by severity */
+/**
+ * Get audit rules filtered by severity level.
+ *
+ * @remarks
+ * Filters the built-in rule set by severity: `"critical"`, `"high"`,
+ * `"medium"`, `"low"`, or `"info"`.
+ *
+ * @param severity - Severity level to filter by
+ * @returns Array of rules matching the given severity
+ *
+ * @example
+ * ```typescript
+ * const criticalRules = getRulesBySeverity("critical");
+ * console.log(`${criticalRules.length} critical rules`);
+ * ```
+ *
+ * @public
+ */
 export function getRulesBySeverity(severity: AuditSeverity): AuditRule[] {
   return AUDIT_RULES.filter((r) => r.severity === severity);
 }
 
-/** Get all unique categories */
+/**
+ * Get all unique rule categories.
+ *
+ * @remarks
+ * Extracts and deduplicates the category field from all built-in audit rules.
+ *
+ * @returns Array of unique category name strings
+ *
+ * @example
+ * ```typescript
+ * const categories = getCategories();
+ * // ["prompt-injection", "command-injection", "data-exfiltration", ...]
+ * ```
+ *
+ * @public
+ */
 export function getCategories(): string[] {
   return [...new Set(AUDIT_RULES.map((r) => r.category))];
 }

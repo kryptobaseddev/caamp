@@ -29,19 +29,54 @@ import type {
   SkillLibraryManifestSkill,
 } from "./core/skills/skill-library.js";
 
-/** @deprecated Use `SkillLibraryEntry` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryEntry}.
+ *
+ * @deprecated Use `SkillLibraryEntry` instead.
+ * @public
+ */
 export type CtSkillEntry = SkillLibraryEntry;
-/** @deprecated Use `SkillLibraryValidationResult` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryValidationResult}.
+ *
+ * @deprecated Use `SkillLibraryValidationResult` instead.
+ * @public
+ */
 export type CtValidationResult = SkillLibraryValidationResult;
-/** @deprecated Use `SkillLibraryValidationIssue` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryValidationIssue}.
+ *
+ * @deprecated Use `SkillLibraryValidationIssue` instead.
+ * @public
+ */
 export type CtValidationIssue = SkillLibraryValidationIssue;
-/** @deprecated Use `SkillLibraryProfile` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryProfile}.
+ *
+ * @deprecated Use `SkillLibraryProfile` instead.
+ * @public
+ */
 export type CtProfileDefinition = SkillLibraryProfile;
-/** @deprecated Use `SkillLibraryDispatchMatrix` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryDispatchMatrix}.
+ *
+ * @deprecated Use `SkillLibraryDispatchMatrix` instead.
+ * @public
+ */
 export type CtDispatchMatrix = SkillLibraryDispatchMatrix;
-/** @deprecated Use `SkillLibraryManifest` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryManifest}.
+ *
+ * @deprecated Use `SkillLibraryManifest` instead.
+ * @public
+ */
 export type CtManifest = SkillLibraryManifest;
-/** @deprecated Use `SkillLibraryManifestSkill` instead. */
+/**
+ * Backward-compatible alias for {@link SkillLibraryManifestSkill}.
+ *
+ * @deprecated Use `SkillLibraryManifestSkill` instead.
+ * @public
+ */
 export type CtManifestSkill = SkillLibraryManifestSkill;
 
 // ── Config Formats ──────────────────────────────────────────────────
@@ -52,12 +87,14 @@ export type CtManifestSkill = SkillLibraryManifestSkill;
  * - `"json"` - Standard JSON
  * - `"jsonc"` - JSON with comments (comment-preserving via jsonc-parser)
  * - `"yaml"` - YAML (via js-yaml)
- * - `"toml"` - TOML (via @iarna/toml)
+ * - `"toml"` - TOML (via \@iarna/toml)
  *
  * @example
  * ```typescript
  * const format: ConfigFormat = "jsonc";
  * ```
+ *
+ * @public
  */
 export type ConfigFormat = "json" | "jsonc" | "yaml" | "toml";
 
@@ -74,6 +111,8 @@ export type ConfigFormat = "json" | "jsonc" | "yaml" | "toml";
  * ```typescript
  * const transport: TransportType = "stdio";
  * ```
+ *
+ * @public
  */
 export type TransportType = "stdio" | "sse" | "http";
 
@@ -86,11 +125,19 @@ export type TransportType = "stdio" | "sse" | "http";
  * - `"directory"` - Check if known config/data directories exist
  * - `"appBundle"` - Check for macOS .app bundle in standard app directories
  * - `"flatpak"` - Check for Flatpak installation on Linux
+ *
+ * @public
  */
 export type DetectionMethod = "binary" | "directory" | "appBundle" | "flatpak";
 
 /**
  * Configuration for detecting whether a provider is installed.
+ *
+ * @remarks
+ * Each detection config specifies one or more methods to try in order.
+ * The first method that succeeds determines the provider as installed.
+ * Method-specific fields (binary, directories, appBundle, flatpakId) are
+ * only used when their corresponding method is listed in `methods`.
  *
  * @example
  * ```typescript
@@ -100,17 +147,31 @@ export type DetectionMethod = "binary" | "directory" | "appBundle" | "flatpak";
  *   directories: ["~/.config/claude"],
  * };
  * ```
+ *
+ * @public
  */
 export interface DetectionConfig {
   /** Detection methods to try, in order. */
   methods: DetectionMethod[];
-  /** Binary name to look up on PATH (for `"binary"` method). */
+  /**
+   * Binary name to look up on PATH (for `"binary"` method).
+   * @defaultValue undefined
+   */
   binary?: string;
-  /** Directories to check for existence (for `"directory"` method). */
+  /**
+   * Directories to check for existence (for `"directory"` method).
+   * @defaultValue undefined
+   */
   directories?: string[];
-  /** macOS .app bundle name (for `"appBundle"` method). */
+  /**
+   * macOS .app bundle name (for `"appBundle"` method).
+   * @defaultValue undefined
+   */
   appBundle?: string;
-  /** Flatpak application ID (for `"flatpak"` method). */
+  /**
+   * Flatpak application ID (for `"flatpak"` method).
+   * @defaultValue undefined
+   */
   flatpakId?: string;
 }
 
@@ -119,6 +180,16 @@ export interface DetectionConfig {
 // Re-export capability enums from registry types for convenience
 export type { SkillsPrecedence, HookEvent, SpawnMechanism } from "./core/registry/types.js";
 
+/**
+ * Resolved skills capability for a provider at runtime.
+ *
+ * @remarks
+ * Describes how a provider resolves skill file paths, including whether
+ * it supports the shared `.agents/skills` directory at global and project
+ * scopes, and the precedence order for skill file lookup.
+ *
+ * @public
+ */
 export interface ProviderSkillsCapability {
   /** Resolved global `.agents/skills` path, or `null` if unsupported. */
   agentsGlobalPath: string | null;
@@ -128,6 +199,16 @@ export interface ProviderSkillsCapability {
   precedence: import("./core/registry/types.js").SkillsPrecedence;
 }
 
+/**
+ * Resolved hooks capability for a provider at runtime.
+ *
+ * @remarks
+ * Describes which hook lifecycle events a provider supports and where
+ * the hook configuration file is located. The hook format indicates how
+ * the configuration should be read and written.
+ *
+ * @public
+ */
 export interface ProviderHooksCapability {
   /** Hook lifecycle events this provider supports. */
   supported: import("./core/registry/types.js").HookEvent[];
@@ -137,6 +218,16 @@ export interface ProviderHooksCapability {
   hookFormat: "json" | "yaml" | "toml" | "javascript" | null;
 }
 
+/**
+ * Resolved spawn capability for a provider at runtime.
+ *
+ * @remarks
+ * Describes whether a provider can spawn subagents and the features
+ * available for multi-agent coordination. This includes programmatic
+ * spawning, inter-agent communication, and parallel execution support.
+ *
+ * @public
+ */
 export interface ProviderSpawnCapability {
   /** Whether the provider supports spawning subagents. */
   supportsSubagents: boolean;
@@ -150,6 +241,16 @@ export interface ProviderSpawnCapability {
   spawnMechanism: import("./core/registry/types.js").SpawnMechanism | null;
 }
 
+/**
+ * Aggregate provider capabilities for skills, hooks, and spawn.
+ *
+ * @remarks
+ * Groups the three capability dimensions into a single object that is
+ * always populated on the resolved {@link Provider} interface at runtime.
+ * Unlike the raw registry type, all three fields are required here.
+ *
+ * @public
+ */
 export interface ProviderCapabilities {
   /** Skills path resolution and precedence. */
   skills: ProviderSkillsCapability;
@@ -167,6 +268,8 @@ export interface ProviderCapabilities {
  * - `"high"` - Major, widely-used agents
  * - `"medium"` - Established but less common agents
  * - `"low"` - Niche or experimental agents
+ *
+ * @public
  */
 export type ProviderPriority = "high" | "medium" | "low";
 
@@ -177,14 +280,19 @@ export type ProviderPriority = "high" | "medium" | "low";
  * - `"beta"` - Supported but may have rough edges
  * - `"deprecated"` - Still present but no longer recommended
  * - `"planned"` - Not yet implemented
+ *
+ * @public
  */
 export type ProviderStatus = "active" | "beta" | "deprecated" | "planned";
 
 /**
  * A resolved AI agent provider definition with platform-specific paths.
  *
+ * @remarks
  * Providers are loaded from `providers/registry.json` and resolved at runtime
  * to expand platform-specific path variables (`$HOME`, `$CONFIG`, etc.).
+ * This is the primary type used throughout the CAAMP codebase for working
+ * with provider configurations.
  *
  * @example
  * ```typescript
@@ -193,6 +301,8 @@ export type ProviderStatus = "active" | "beta" | "deprecated" | "planned";
  *   console.log(provider.configPathGlobal);
  * }
  * ```
+ *
+ * @public
  */
 export interface Provider {
   /** Unique provider identifier (e.g. `"claude-code"`). */
@@ -252,9 +362,12 @@ export interface Provider {
 /**
  * Canonical MCP server configuration.
  *
+ * @remarks
  * Represents either a remote server (via `url`) or a local stdio process
  * (via `command` + `args`). This canonical format is transformed to
- * provider-specific shapes before writing to config files.
+ * provider-specific shapes before writing to config files. The transform
+ * layer handles differences in key naming, nesting, and transport defaults
+ * across the 28+ supported providers.
  *
  * @example
  * ```typescript
@@ -270,19 +383,39 @@ export interface Provider {
  *   args: ["-y", "@modelcontextprotocol/server-filesystem"],
  * };
  * ```
+ *
+ * @public
  */
 export interface McpServerConfig {
-  /** Transport type (`"stdio"`, `"sse"`, or `"http"`). */
+  /**
+   * Transport type (`"stdio"`, `"sse"`, or `"http"`).
+   * @defaultValue undefined
+   */
   type?: TransportType;
-  /** URL for remote MCP servers. */
+  /**
+   * URL for remote MCP servers.
+   * @defaultValue undefined
+   */
   url?: string;
-  /** HTTP headers for remote MCP servers. */
+  /**
+   * HTTP headers for remote MCP servers.
+   * @defaultValue undefined
+   */
   headers?: Record<string, string>;
-  /** Command to run for stdio MCP servers. */
+  /**
+   * Command to run for stdio MCP servers.
+   * @defaultValue undefined
+   */
   command?: string;
-  /** Arguments for the stdio command. */
+  /**
+   * Arguments for the stdio command.
+   * @defaultValue undefined
+   */
   args?: string[];
-  /** Environment variables for the stdio process. */
+  /**
+   * Environment variables for the stdio process.
+   * @defaultValue undefined
+   */
   env?: Record<string, string>;
 }
 
@@ -297,11 +430,20 @@ export interface McpServerConfig {
  * - `"github"` - GitHub repository (URL or shorthand)
  * - `"gitlab"` - GitLab repository URL
  * - `"local"` - Local filesystem path
+ * - `"library"` - Built-in skill library reference
+ *
+ * @public
  */
 export type SourceType = "remote" | "package" | "command" | "github" | "gitlab" | "local" | "library";
 
 /**
  * Result of parsing a source string into its typed components.
+ *
+ * @remarks
+ * Produced by the source parser, which classifies raw source strings
+ * (URLs, paths, package names, GitHub shorthands) into structured objects.
+ * Optional fields like `owner`, `repo`, `path`, and `ref` are only
+ * populated for GitHub and GitLab source types.
  *
  * @example
  * ```typescript
@@ -313,6 +455,8 @@ export type SourceType = "remote" | "package" | "command" | "github" | "gitlab" 
  *   repo: "repo",
  * };
  * ```
+ *
+ * @public
  */
 export interface ParsedSource {
   /** Classified source type. */
@@ -321,13 +465,25 @@ export interface ParsedSource {
   value: string;
   /** Display name inferred from the source. */
   inferredName: string;
-  /** Repository owner (for GitHub/GitLab sources). */
+  /**
+   * Repository owner (for GitHub/GitLab sources).
+   * @defaultValue undefined
+   */
   owner?: string;
-  /** Repository name (for GitHub/GitLab sources). */
+  /**
+   * Repository name (for GitHub/GitLab sources).
+   * @defaultValue undefined
+   */
   repo?: string;
-  /** Path within the repository (for GitHub/GitLab sources). */
+  /**
+   * Path within the repository (for GitHub/GitLab sources).
+   * @defaultValue undefined
+   */
   path?: string;
-  /** Git ref / branch / tag (for GitHub/GitLab sources). */
+  /**
+   * Git ref / branch / tag (for GitHub/GitLab sources).
+   * @defaultValue undefined
+   */
   ref?: string;
 }
 
@@ -335,6 +491,11 @@ export interface ParsedSource {
 
 /**
  * Metadata extracted from a SKILL.md frontmatter.
+ *
+ * @remarks
+ * Parsed from the YAML frontmatter block at the top of a SKILL.md file.
+ * Only `name` and `description` are required; all other fields are optional
+ * and provide additional context for skill discovery and compatibility checks.
  *
  * @example
  * ```typescript
@@ -344,26 +505,49 @@ export interface ParsedSource {
  *   version: "1.0.0",
  * };
  * ```
+ *
+ * @public
  */
 export interface SkillMetadata {
   /** Skill name (lowercase, hyphens only). */
   name: string;
   /** Human-readable description. */
   description: string;
-  /** SPDX license identifier. */
+  /**
+   * SPDX license identifier.
+   * @defaultValue undefined
+   */
   license?: string;
-  /** Compatibility notes (e.g. agent versions). */
+  /**
+   * Compatibility notes (e.g. agent versions).
+   * @defaultValue undefined
+   */
   compatibility?: string;
-  /** Arbitrary key-value metadata. */
+  /**
+   * Arbitrary key-value metadata.
+   * @defaultValue undefined
+   */
   metadata?: Record<string, string>;
-  /** List of tools the skill is allowed to use. */
+  /**
+   * List of tools the skill is allowed to use.
+   * @defaultValue undefined
+   */
   allowedTools?: string[];
-  /** Semantic version string. */
+  /**
+   * Semantic version string.
+   * @defaultValue undefined
+   */
   version?: string;
 }
 
 /**
  * A discovered skill entry with its location and metadata.
+ *
+ * @remarks
+ * Represents a skill that has been found on disk, either through the
+ * canonical skills directory or via project-local discovery. Contains
+ * the parsed metadata from SKILL.md along with path information needed
+ * for installation and symlinking.
  *
  * @example
  * ```typescript
@@ -377,6 +561,8 @@ export interface SkillMetadata {
  *   metadata: { name: "my-skill", description: "A skill" },
  * };
  * ```
+ *
+ * @public
  */
 export interface SkillEntry {
   /** Skill name. */
@@ -387,7 +573,10 @@ export interface SkillEntry {
   path: string;
   /** Parsed SKILL.md frontmatter metadata. */
   metadata: SkillMetadata;
-  /** Original source from which the skill was installed. */
+  /**
+   * Original source from which the skill was installed.
+   * @defaultValue undefined
+   */
   source?: string;
 }
 
@@ -395,6 +584,12 @@ export interface SkillEntry {
 
 /**
  * A single entry in the CAAMP lock file tracking an installed skill or MCP server.
+ *
+ * @remarks
+ * Lock entries record the provenance and installation state of each skill
+ * or MCP server. They are used to detect version drift, resolve update
+ * operations, and maintain the mapping between canonical installations
+ * and per-agent symlinks.
  *
  * @example
  * ```typescript
@@ -412,6 +607,8 @@ export interface SkillEntry {
  *   isGlobal: true,
  * };
  * ```
+ *
+ * @public
  */
 export interface LockEntry {
   /** Skill or server name. */
@@ -422,11 +619,17 @@ export interface LockEntry {
   source: string;
   /** Classified source type. */
   sourceType: SourceType;
-  /** Version string or commit SHA. */
+  /**
+   * Version string or commit SHA.
+   * @defaultValue undefined
+   */
   version?: string;
   /** ISO 8601 timestamp of first installation. */
   installedAt: string;
-  /** ISO 8601 timestamp of last update. */
+  /**
+   * ISO 8601 timestamp of last update.
+   * @defaultValue undefined
+   */
   updatedAt?: string;
   /** Provider IDs this entry is linked to. */
   agents: string[];
@@ -434,15 +637,21 @@ export interface LockEntry {
   canonicalPath: string;
   /** Whether this was installed globally. */
   isGlobal: boolean;
-  /** Project directory (for project-scoped installs). */
+  /**
+   * Project directory (for project-scoped installs).
+   * @defaultValue undefined
+   */
   projectDir?: string;
 }
 
 /**
  * The CAAMP lock file structure, stored at the resolved canonical lock path.
  *
+ * @remarks
  * Tracks all installed skills and MCP servers along with their sources,
- * versions, and linked agents.
+ * versions, and linked agents. The lock file is the persistent state that
+ * enables CAAMP to detect drift, perform updates, and maintain installation
+ * integrity across sessions.
  *
  * @example
  * ```typescript
@@ -453,6 +662,8 @@ export interface LockEntry {
  *   lastSelectedAgents: ["claude-code"],
  * };
  * ```
+ *
+ * @public
  */
 export interface CaampLockFile {
   /** Lock file schema version. */
@@ -461,7 +672,10 @@ export interface CaampLockFile {
   skills: Record<string, LockEntry>;
   /** Installed MCP servers keyed by name. */
   mcpServers: Record<string, LockEntry>;
-  /** Last selected agent IDs for UX persistence. */
+  /**
+   * Last selected agent IDs for UX persistence.
+   * @defaultValue undefined
+   */
   lastSelectedAgents?: string[];
 }
 
@@ -469,6 +683,11 @@ export interface CaampLockFile {
 
 /**
  * A skill listing from a marketplace search result.
+ *
+ * @remarks
+ * Represents a skill as returned from marketplace APIs (agentskills.in
+ * or skills.sh). Contains display information and repository metadata
+ * for presenting search results and initiating installation.
  *
  * @example
  * ```typescript
@@ -486,6 +705,8 @@ export interface CaampLockFile {
  *   hasContent: true,
  * };
  * ```
+ *
+ * @public
  */
 export interface MarketplaceSkill {
   /** Unique marketplace identifier. */
@@ -508,7 +729,10 @@ export interface MarketplaceSkill {
   repoFullName: string;
   /** Path within the repository. */
   path: string;
-  /** Optional category tag. */
+  /**
+   * Optional category tag.
+   * @defaultValue undefined
+   */
   category?: string;
   /** Whether SKILL.md content was fetched. */
   hasContent: boolean;
@@ -516,6 +740,11 @@ export interface MarketplaceSkill {
 
 /**
  * Paginated search results from a marketplace API.
+ *
+ * @remarks
+ * Wraps an array of marketplace skill listings with pagination metadata.
+ * Both marketplace adapters (agentskills.in and skills.sh) normalize their
+ * responses into this common structure.
  *
  * @example
  * ```typescript
@@ -526,6 +755,8 @@ export interface MarketplaceSkill {
  *   offset: 0,
  * };
  * ```
+ *
+ * @public
  */
 export interface MarketplaceSearchResult {
   /** Array of matching skills. */
@@ -543,12 +774,20 @@ export interface MarketplaceSearchResult {
 /**
  * Severity level for a security audit finding.
  *
- * Ordered from most to least severe: `"critical"` > `"high"` > `"medium"` > `"low"` > `"info"`.
+ * Ordered from most to least severe: `"critical"` \> `"high"` \> `"medium"` \> `"low"` \> `"info"`.
+ *
+ * @public
  */
 export type AuditSeverity = "critical" | "high" | "medium" | "low" | "info";
 
 /**
  * A security audit rule definition with a regex pattern to match against skill content.
+ *
+ * @remarks
+ * Each rule defines a single pattern to detect a specific security concern
+ * in SKILL.md files. Rules are organized by category (injection, exfiltration,
+ * etc.) and assigned a severity level that determines whether findings cause
+ * audit failure.
  *
  * @example
  * ```typescript
@@ -561,6 +800,8 @@ export type AuditSeverity = "critical" | "high" | "medium" | "low" | "info";
  *   pattern: /rm\s+-rf\s+\//,
  * };
  * ```
+ *
+ * @public
  */
 export interface AuditRule {
   /** Unique rule identifier (e.g. `"SEC001"`). */
@@ -580,6 +821,11 @@ export interface AuditRule {
 /**
  * A single finding from a security audit scan, with line-level location.
  *
+ * @remarks
+ * Produced by running an audit rule's pattern against each line of a
+ * SKILL.md file. Contains enough location information (line, column,
+ * context) to display actionable diagnostic messages to the user.
+ *
  * @example
  * ```typescript
  * const finding: AuditFinding = {
@@ -590,6 +836,8 @@ export interface AuditRule {
  *   context: "Execute: rm -rf / to clean up",
  * };
  * ```
+ *
+ * @public
  */
 export interface AuditFinding {
   /** The rule that triggered this finding. */
@@ -607,8 +855,10 @@ export interface AuditFinding {
 /**
  * Aggregate audit result for a single file.
  *
+ * @remarks
  * Includes a security score (100 = clean, 0 = very dangerous) and a pass/fail
- * status based on the presence of critical or high severity findings.
+ * status based on the presence of critical or high severity findings. The score
+ * is computed by deducting points for each finding based on its severity level.
  *
  * @example
  * ```typescript
@@ -619,6 +869,8 @@ export interface AuditFinding {
  *   passed: true,
  * };
  * ```
+ *
+ * @public
  */
 export interface AuditResult {
   /** Path to the scanned file. */
@@ -640,11 +892,18 @@ export interface AuditResult {
  * - `"outdated"` - Injection block exists but content differs
  * - `"missing"` - Instruction file does not exist
  * - `"none"` - File exists but has no CAAMP injection block
+ *
+ * @public
  */
 export type InjectionStatus = "current" | "outdated" | "missing" | "none";
 
 /**
  * Result of checking a single instruction file for CAAMP injection status.
+ *
+ * @remarks
+ * Produced by the instruction injector's check operation. Indicates whether
+ * the CAAMP marker block is present, up-to-date, or needs updating for a
+ * specific provider's instruction file.
  *
  * @example
  * ```typescript
@@ -655,6 +914,8 @@ export type InjectionStatus = "current" | "outdated" | "missing" | "none";
  *   fileExists: true,
  * };
  * ```
+ *
+ * @public
  */
 export interface InjectionCheckResult {
   /** Absolute path to the instruction file. */
@@ -672,7 +933,12 @@ export interface InjectionCheckResult {
 /**
  * An MCP server entry read from a provider's config file.
  *
- * Returned by {@link listMcpServers} and {@link listAllMcpServers}.
+ * @remarks
+ * Returned by the MCP list operations when enumerating servers across
+ * provider config files. Contains both the raw server configuration and
+ * metadata about which provider and scope (global/project) it belongs to.
+ *
+ * @see {@link McpServerConfig} for the canonical server configuration format.
  *
  * @example
  * ```typescript
@@ -681,10 +947,12 @@ export interface InjectionCheckResult {
  *   providerId: "claude-code",
  *   providerName: "Claude Code",
  *   scope: "project",
- *   configPath: "/project/<provider-project-config>",
+ *   configPath: "/project/.claude.json",
  *   config: { command: "npx", args: ["-y", "@mcp/server-filesystem"] },
  * };
  * ```
+ *
+ * @public
  */
 export interface McpServerEntry {
   /** Server name (the key in the config file). */
@@ -706,6 +974,11 @@ export interface McpServerEntry {
 /**
  * Global CLI options shared across all CAAMP commands.
  *
+ * @remarks
+ * These options are defined on the root Commander program and inherited
+ * by all subcommands. They control agent targeting, scope selection,
+ * output formatting, and execution behavior (dry-run, verbose, quiet).
+ *
  * @example
  * ```typescript
  * const opts: GlobalOptions = {
@@ -714,22 +987,48 @@ export interface McpServerEntry {
  *   json: true,
  * };
  * ```
+ *
+ * @public
  */
 export interface GlobalOptions {
-  /** Target agent IDs (repeatable). */
+  /**
+   * Target agent IDs (repeatable).
+   * @defaultValue undefined
+   */
   agent?: string[];
-  /** Operate on global config instead of project. */
+  /**
+   * Operate on global config instead of project.
+   * @defaultValue false
+   */
   global?: boolean;
-  /** Skip confirmation prompts. */
+  /**
+   * Skip confirmation prompts.
+   * @defaultValue false
+   */
   yes?: boolean;
-  /** Target all detected agents. */
+  /**
+   * Target all detected agents.
+   * @defaultValue false
+   */
   all?: boolean;
-  /** Output as JSON. */
+  /**
+   * Output as JSON.
+   * @defaultValue false
+   */
   json?: boolean;
-  /** Preview changes without writing. */
+  /**
+   * Preview changes without writing.
+   * @defaultValue false
+   */
   dryRun?: boolean;
-  /** Enable debug logging. */
+  /**
+   * Enable debug logging.
+   * @defaultValue false
+   */
   verbose?: boolean;
-  /** Suppress non-error output. */
+  /**
+   * Suppress non-error output.
+   * @defaultValue false
+   */
   quiet?: boolean;
 }

@@ -10,7 +10,23 @@ import { existsSync } from "node:fs";
 import * as jsonc from "jsonc-parser";
 import { ensureDir } from "./utils.js";
 
-/** Read a JSON/JSONC config file */
+/**
+ * Read and parse a JSON or JSONC config file.
+ *
+ * @remarks
+ * Uses `jsonc-parser` to handle JSONC features (comments, trailing commas).
+ * Returns an empty object when the file does not exist or is empty.
+ *
+ * @param filePath - Absolute path to the JSON/JSONC file
+ * @returns Parsed config object
+ *
+ * @example
+ * ```typescript
+ * const config = await readJsonConfig("/home/user/.config/claude/settings.json");
+ * ```
+ *
+ * @public
+ */
 export async function readJsonConfig(filePath: string): Promise<Record<string, unknown>> {
   if (!existsSync(filePath)) return {};
 
@@ -44,7 +60,25 @@ function detectIndent(content: string): { indent: string; insertSpaces: boolean;
   return { indent: "  ", insertSpaces: true, tabSize: 2 };
 }
 
-/** Write a server config to a JSON/JSONC file, preserving comments */
+/**
+ * Write a server config entry to a JSON/JSONC file, preserving comments.
+ *
+ * @remarks
+ * Uses `jsonc-parser.modify` for surgical edits that preserve comments,
+ * formatting, and trailing commas. Creates the file if it does not exist.
+ *
+ * @param filePath - Absolute path to the JSON/JSONC file
+ * @param configKey - Dot-notation key path to the servers section (e.g. `"mcpServers"`)
+ * @param serverName - Name/key for the server entry
+ * @param serverConfig - Server configuration object to write
+ *
+ * @example
+ * ```typescript
+ * await writeJsonConfig("/path/to/config.json", "mcpServers", "my-server", { command: "node" });
+ * ```
+ *
+ * @public
+ */
 export async function writeJsonConfig(
   filePath: string,
   configKey: string,
@@ -91,7 +125,25 @@ export async function writeJsonConfig(
   await writeFile(filePath, content, "utf-8");
 }
 
-/** Remove a server entry from a JSON/JSONC config */
+/**
+ * Remove a server entry from a JSON/JSONC config file.
+ *
+ * @remarks
+ * Uses `jsonc-parser.modify` with `undefined` value to remove the key while
+ * preserving surrounding comments and formatting.
+ *
+ * @param filePath - Absolute path to the JSON/JSONC file
+ * @param configKey - Dot-notation key path to the servers section
+ * @param serverName - Name/key of the server entry to remove
+ * @returns `true` if the entry was removed, `false` if the file or entry was not found
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeJsonConfig("/path/to/config.json", "mcpServers", "old-server");
+ * ```
+ *
+ * @public
+ */
 export async function removeJsonConfig(
   filePath: string,
   configKey: string,

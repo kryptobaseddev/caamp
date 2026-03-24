@@ -30,6 +30,9 @@ const MARKER_PATTERN_SINGLE = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/;
  * @param expectedContent - Optional expected content to compare against
  * @returns The injection status
  *
+ * @remarks
+ * Does not modify the file. Safe to call repeatedly for status checks.
+ *
  * @example
  * ```typescript
  * const status = await checkInjection("/project/CLAUDE.md", expectedContent);
@@ -37,6 +40,8 @@ const MARKER_PATTERN_SINGLE = /<!-- CAAMP:START -->[\s\S]*?<!-- CAAMP:END -->/;
  *   console.log("CAAMP injection needs updating");
  * }
  * ```
+ *
+ * @public
  */
 export async function checkInjection(
   filePath: string,
@@ -92,11 +97,17 @@ function buildBlock(content: string): string {
  * @param content - Content to inject between CAAMP markers
  * @returns Action taken: `"created"`, `"added"`, `"consolidated"`, `"updated"`, or `"intact"`
  *
+ * @remarks
+ * Handles duplicate marker consolidation automatically. When multiple CAAMP
+ * blocks are detected (from manual edits or bugs), they are merged into one.
+ *
  * @example
  * ```typescript
  * const action = await inject("/project/CLAUDE.md", "## My Config\nSome content");
  * console.log(`File ${action}`); // "created" on first call, "intact" on subsequent
  * ```
+ *
+ * @public
  */
 export async function inject(
   filePath: string,
@@ -161,10 +172,16 @@ export async function inject(
  * @param filePath - Absolute path to the instruction file
  * @returns `true` if a CAAMP block was found and removed, `false` otherwise
  *
+ * @remarks
+ * Cleans up any leftover blank lines after removing the block. If the file
+ * would be entirely empty after removal, the file itself is deleted.
+ *
  * @example
  * ```typescript
  * const removed = await removeInjection("/project/CLAUDE.md");
  * ```
+ *
+ * @public
  */
 export async function removeInjection(filePath: string): Promise<boolean> {
   if (!existsSync(filePath)) return false;
@@ -200,11 +217,17 @@ export async function removeInjection(filePath: string): Promise<boolean> {
  * @param expectedContent - Optional expected content to compare against
  * @returns Array of injection check results, one per unique instruction file
  *
+ * @remarks
+ * Multiple providers may share the same instruction file (e.g. many use
+ * `AGENTS.md`). This function deduplicates to avoid redundant file reads.
+ *
  * @example
  * ```typescript
- * const results = await checkAllInjections(providers, "/project", "project");
+ * const results = await checkAllInjections(providers, "/project", "project", expected);
  * const outdated = results.filter(r => r.status === "outdated");
  * ```
+ *
+ * @public
  */
 export async function checkAllInjections(
   providers: Provider[],
@@ -248,6 +271,10 @@ export async function checkAllInjections(
  * @param content - Content to inject between CAAMP markers
  * @returns Map of file path to action taken (`"created"`, `"added"`, `"consolidated"`, `"updated"`, or `"intact"`)
  *
+ * @remarks
+ * Providers sharing the same instruction file are only written once to avoid
+ * conflicting concurrent writes.
+ *
  * @example
  * ```typescript
  * const results = await injectAll(providers, "/project", "project", content);
@@ -255,6 +282,8 @@ export async function checkAllInjections(
  *   console.log(`${file}: ${action}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function injectAll(
   providers: Provider[],
@@ -285,18 +314,22 @@ export async function injectAll(
 
 /**
  * Options for ensuring a provider instruction file.
+ *
+ * @public
  */
 export interface EnsureProviderInstructionFileOptions {
-  /** `@` references to inject (e.g. `["@AGENTS.md"]`). */
+  /** `\@` references to inject (e.g. `["\@AGENTS.md"]`). */
   references: string[];
-  /** Optional inline content blocks. */
+  /** Optional inline content blocks. @defaultValue `undefined` */
   content?: string[];
-  /** Whether this is a global or project-level file. Defaults to `"project"`. */
+  /** Whether this is a global or project-level file. @defaultValue `"project"` */
   scope?: "project" | "global";
 }
 
 /**
  * Result of ensuring a provider instruction file.
+ *
+ * @public
  */
 export interface EnsureProviderInstructionFileResult {
   /** Absolute path to the instruction file. */
@@ -320,27 +353,24 @@ export interface EnsureProviderInstructionFileResult {
  * The instruction file name is resolved from CAAMP's provider registry
  * (single source of truth), not hardcoded by the caller.
  *
+ * @remarks
+ * The instruction file name is resolved from CAAMP's provider registry
+ * (single source of truth), not hardcoded by the caller.
+ *
  * @param providerId - Provider ID from the registry (e.g. `"claude-code"`, `"gemini-cli"`)
  * @param projectDir - Absolute path to the project directory
  * @param options - References, content, and scope configuration
  * @returns Result with file path, action taken, and provider metadata
- * @throws {Error} If the provider ID is not found in the registry
+ * @throws Error if the provider ID is not found in the registry
  *
  * @example
  * ```typescript
- * // Adapter delegates instruction file creation to CAAMP:
  * const result = await ensureProviderInstructionFile("claude-code", "/project", {
- *   references: ["@AGENTS.md"],
- * });
- * // result.filePath → "/project/CLAUDE.md"
-   * // result.action → "created" | "added" | "consolidated" | "updated" | "intact"
- *
- * // Global scope:
- * const globalResult = await ensureProviderInstructionFile("claude-code", homedir(), {
- *   references: ["@~/.agents/AGENTS.md"],
- *   scope: "global",
+ *   references: ["\@AGENTS.md"],
  * });
  * ```
+ *
+ * @public
  */
 export async function ensureProviderInstructionFile(
   providerId: string,
@@ -379,20 +409,26 @@ export async function ensureProviderInstructionFile(
  * Deduplicates by file path — providers sharing the same instruction file
  * (e.g. many providers use AGENTS.md) are only written once.
  *
+ * @remarks
+ * Providers sharing the same instruction file (e.g. many use `AGENTS.md`)
+ * are only written once, avoiding duplicate blocks.
+ *
  * @param providerIds - Array of provider IDs from the registry
  * @param projectDir - Absolute path to the project directory
  * @param options - References, content, and scope configuration
  * @returns Array of results, one per unique instruction file
- * @throws {Error} If any provider ID is not found in the registry
+ * @throws Error if any provider ID is not found in the registry
  *
  * @example
  * ```typescript
  * const results = await ensureAllProviderInstructionFiles(
  *   ["claude-code", "cursor", "gemini-cli"],
  *   "/project",
- *   { references: ["@AGENTS.md"] },
+ *   { references: ["\@AGENTS.md"] },
  * );
  * ```
+ *
+ * @public
  */
 export async function ensureAllProviderInstructionFiles(
   providerIds: string[],

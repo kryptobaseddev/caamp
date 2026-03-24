@@ -487,6 +487,24 @@ function formatSection(section: SectionResult): string {
   return lines.join("\n");
 }
 
+/**
+ * Registers the `doctor` command for diagnosing configuration issues and overall system health.
+ *
+ * @remarks
+ * Runs checks across environment, registry, installed providers, skill symlinks, lock file
+ * integrity, MCP lock entries, and config file parseability. Returns a structured result
+ * with pass/warn/fail status for each check.
+ *
+ * @param program - The root Commander program to attach the doctor command to
+ *
+ * @example
+ * ```bash
+ * caamp doctor --human
+ * caamp doctor --json
+ * ```
+ *
+ * @public
+ */
 export function registerDoctorCommand(program: Command): void {
   program
     .command("doctor")

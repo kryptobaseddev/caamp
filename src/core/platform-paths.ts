@@ -37,6 +37,11 @@ function resolveAgentsHomeOverride(value: string | undefined): string | undefine
   return resolve(homedir(), trimmed);
 }
 
+/**
+ * OS-appropriate directory paths for CAAMP's global storage.
+ *
+ * @public
+ */
 export interface PlatformPaths {
   /** User data dir. Override with AGENTS_HOME env var. */
   data: string;
@@ -50,12 +55,23 @@ export interface PlatformPaths {
   temp: string;
 }
 
+/**
+ * Snapshot of the current system environment and resolved platform paths.
+ *
+ * @public
+ */
 export interface SystemInfo {
+  /** Operating system platform identifier. */
   platform: NodeJS.Platform;
+  /** CPU architecture (e.g. `"x64"`, `"arm64"`). */
   arch: string;
+  /** OS kernel release version string. */
   release: string;
+  /** Machine hostname. */
   hostname: string;
+  /** Node.js version string (e.g. `"v20.11.0"`). */
   nodeVersion: string;
+  /** Resolved platform directory paths. */
   paths: PlatformPaths;
 }
 
@@ -65,8 +81,21 @@ let _lastAgentsHome: string | undefined = undefined;
 
 /**
  * Get OS-appropriate paths for CAAMP's global directories.
- * Cached after first call. AGENTS_HOME env var overrides the data path.
- * Cache auto-invalidates when AGENTS_HOME changes (supports test isolation).
+ *
+ * @remarks
+ * Cached after first call. The `AGENTS_HOME` env var overrides the data path
+ * for backward compatibility with existing `~/.agents` installations. The
+ * cache auto-invalidates when `AGENTS_HOME` changes (supports test isolation).
+ *
+ * @returns Resolved platform paths
+ *
+ * @example
+ * ```typescript
+ * const paths = getPlatformPaths();
+ * console.log(paths.data); // e.g. "/home/user/.local/share/agents"
+ * ```
+ *
+ * @public
  */
 export function getPlatformPaths(): PlatformPaths {
   const currentAgentsHome = process.env['AGENTS_HOME'];
@@ -95,7 +124,20 @@ export function getPlatformPaths(): PlatformPaths {
 
 /**
  * Get a cached system information snapshot.
- * Captured once and reused for the process lifetime.
+ *
+ * @remarks
+ * Captured once and reused for the process lifetime. Includes platform,
+ * architecture, hostname, Node version, and resolved paths.
+ *
+ * @returns Cached system info object
+ *
+ * @example
+ * ```typescript
+ * const info = getSystemInfo();
+ * console.log(`Running on ${info.platform}/${info.arch}`);
+ * ```
+ *
+ * @public
  */
 export function getSystemInfo(): SystemInfo {
   if (_sysInfo) return _sysInfo;

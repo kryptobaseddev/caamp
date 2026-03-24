@@ -7,7 +7,23 @@ import { readFile, writeFile } from "node:fs/promises";
 import yaml from "js-yaml";
 import { deepMerge, ensureDir } from "./utils.js";
 
-/** Read a YAML config file */
+/**
+ * Read and parse a YAML config file.
+ *
+ * @remarks
+ * Uses `js-yaml` for parsing. Returns an empty object when the file does not
+ * exist or is empty.
+ *
+ * @param filePath - Absolute path to the YAML file
+ * @returns Parsed config object
+ *
+ * @example
+ * ```typescript
+ * const config = await readYamlConfig("/path/to/config.yaml");
+ * ```
+ *
+ * @public
+ */
 export async function readYamlConfig(filePath: string): Promise<Record<string, unknown>> {
   if (!existsSync(filePath)) return {};
 
@@ -18,7 +34,25 @@ export async function readYamlConfig(filePath: string): Promise<Record<string, u
   return (result ?? {}) as Record<string, unknown>;
 }
 
-/** Write a server config to a YAML file */
+/**
+ * Write a server config entry to a YAML file.
+ *
+ * @remarks
+ * Reads the existing file, deep-merges the new entry, and writes the entire
+ * result back. Creates the file and parent directories if they do not exist.
+ *
+ * @param filePath - Absolute path to the YAML file
+ * @param configKey - Dot-notation key path to the servers section
+ * @param serverName - Name/key for the server entry
+ * @param serverConfig - Server configuration object to write
+ *
+ * @example
+ * ```typescript
+ * await writeYamlConfig("/path/to/config.yaml", "mcpServers", "my-server", { command: "node" });
+ * ```
+ *
+ * @public
+ */
 export async function writeYamlConfig(
   filePath: string,
   configKey: string,
@@ -49,7 +83,25 @@ export async function writeYamlConfig(
   await writeFile(filePath, content, "utf-8");
 }
 
-/** Remove a server entry from a YAML config */
+/**
+ * Remove a server entry from a YAML config file.
+ *
+ * @remarks
+ * Navigates the parsed YAML object to the config key, deletes the server
+ * entry, and re-serializes the entire config.
+ *
+ * @param filePath - Absolute path to the YAML file
+ * @param configKey - Dot-notation key path to the servers section
+ * @param serverName - Name/key of the server entry to remove
+ * @returns `true` if the entry was removed, `false` if the file or entry was not found
+ *
+ * @example
+ * ```typescript
+ * const removed = await removeYamlConfig("/path/to/config.yaml", "mcpServers", "old-server");
+ * ```
+ *
+ * @public
+ */
 export async function removeYamlConfig(
   filePath: string,
   configKey: string,

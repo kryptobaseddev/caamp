@@ -19,6 +19,8 @@ import matter from "gray-matter";
  *   message: "Missing required field: name",
  * };
  * ```
+ *
+ * @public
  */
 export interface ValidationIssue {
   /** Severity: `"error"` causes validation failure, `"warning"` does not. */
@@ -41,6 +43,8 @@ export interface ValidationIssue {
  *   }
  * }
  * ```
+ *
+ * @public
  */
 export interface ValidationResult {
   /** Whether the skill passed validation (no error-level issues). */
@@ -65,6 +69,7 @@ const WARN_DESCRIPTION_LENGTH = 50;
 /**
  * Validate a SKILL.md file against the Agent Skills standard.
  *
+ * @remarks
  * Checks for required frontmatter fields (`name`, `description`), validates
  * naming conventions, enforces length limits, checks for reserved names,
  * and warns about long skill bodies.
@@ -77,6 +82,8 @@ const WARN_DESCRIPTION_LENGTH = 50;
  * const result = await validateSkill("/path/to/SKILL.md");
  * console.log(result.valid ? "Valid" : `${result.issues.length} issues found`);
  * ```
+ *
+ * @public
  */
 export async function validateSkill(filePath: string): Promise<ValidationResult> {
   const issues: ValidationIssue[] = [];

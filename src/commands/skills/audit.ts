@@ -43,6 +43,23 @@ interface AuditSummary {
   files: AuditFileResult[];
 }
 
+/**
+ * Registers the `skills audit` subcommand for security scanning skill files.
+ *
+ * @remarks
+ * Scans SKILL.md files against 46+ security rules and outputs findings in LAFS JSON envelope,
+ * human-readable, or raw SARIF format. Supports scanning individual files or entire directories.
+ *
+ * @param parent - The parent `skills` Command to attach the audit subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills audit ./my-skill/SKILL.md
+ * caamp skills audit ./skills-dir --sarif
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsAudit(parent: Command): void {
   parent
     .command("audit")

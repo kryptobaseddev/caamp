@@ -17,6 +17,23 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getAllProviders, getProvider } from "../../core/registry/providers.js";
 import type { Provider } from "../../types.js";
 
+/**
+ * Registers the `instructions inject` subcommand for injecting instruction blocks into provider files.
+ *
+ * @remarks
+ * Writes CAAMP-managed instruction blocks into provider instruction files using marker-based
+ * injection. Supports custom content, dry-run preview, and targeting specific or all providers.
+ *
+ * @param parent - The parent `instructions` Command to attach the inject subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp instructions inject --all --global
+ * caamp instructions inject --agent claude-code --dry-run
+ * ```
+ *
+ * @public
+ */
 export function registerInstructionsInject(parent: Command): void {
   parent
     .command("inject")

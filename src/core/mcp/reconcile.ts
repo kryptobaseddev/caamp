@@ -16,9 +16,17 @@ import {
 import { getTrackedMcpServers, recordMcpInstall, removeMcpFromLock } from "./lock.js";
 import { listMcpServers } from "./reader.js";
 
+/**
+ * Lock metadata inferred from a live MCP config entry.
+ *
+ * @public
+ */
 export interface InferredLockData {
+  /** The source string (package name, command, or path). */
   source: string;
+  /** Classified source type. */
   sourceType: SourceType;
+  /** Inferred version string, if extractable from the config. @defaultValue undefined */
   version: string | undefined;
 }
 
@@ -27,6 +35,29 @@ export interface InferredLockData {
  *
  * Determines source, sourceType, and version by inspecting the command and args
  * of an existing CLEO MCP server config entry.
+ *
+ * @remarks
+ * The inference logic checks three patterns in order: (1) if any argument
+ * contains the CLEO npm package name, it is classified as a `"package"` source
+ * with the version extracted from the package specifier; (2) if the channel is
+ * `"dev"` or the command contains path separators, it is classified as a
+ * `"command"` source; (3) otherwise, the full command + args string is used as
+ * a `"command"` source.
+ *
+ * @param config - The raw config object from the provider's config file
+ * @param channel - The resolved CLEO channel (`"stable"`, `"next"`, or `"dev"`)
+ * @returns Inferred lock metadata with source, sourceType, and optional version
+ *
+ * @example
+ * ```typescript
+ * const data = inferCleoLockData(
+ *   { command: "npx", args: ["-y", "@cleocode/cleo-mcp@1.2.0"] },
+ *   "stable",
+ * );
+ * // { source: "@cleocode/cleo-mcp@1.2.0", sourceType: "package", version: "1.2.0" }
+ * ```
+ *
+ * @public
  */
 export function inferCleoLockData(
   config: Record<string, unknown>,
@@ -69,16 +100,33 @@ export function inferCleoLockData(
   };
 }
 
+/**
+ * Options for the CLEO lock reconciliation process.
+ *
+ * @public
+ */
 export interface ReconcileOptions {
+  /** Specific provider IDs to scan (if omitted, scans all installed). @defaultValue undefined */
   providerIds?: string[];
+  /** Whether to scan all providers. @defaultValue undefined */
   all?: boolean;
+  /** Whether to scan global-scope configs. @defaultValue undefined */
   global?: boolean;
+  /** Whether to scan project-scope configs. @defaultValue undefined */
   project?: boolean;
+  /** Whether to remove orphaned lock entries not found in any live config. @defaultValue undefined */
   prune?: boolean;
+  /** If true, report changes without writing to the lock file. @defaultValue undefined */
   dryRun?: boolean;
 }
 
+/**
+ * Result of a CLEO lock reconciliation operation.
+ *
+ * @public
+ */
 export interface ReconcileResult {
+  /** Entries that were backfilled into the lock file. @defaultValue [] */
   backfilled: Array<{
     serverName: string;
     channel: CleoChannel;
@@ -88,18 +136,40 @@ export interface ReconcileResult {
     sourceType: SourceType;
     version: string | undefined;
   }>;
+  /** Server names that were pruned from the lock file. */
   pruned: string[];
+  /** Count of entries that were already tracked in the lock file. */
   alreadyTracked: number;
+  /** Errors encountered during reconciliation. */
   errors: Array<{ message: string }>;
 }
 
 /**
  * Reconcile CLEO lock entries against live config.
  *
- * 1. Scans all providers × scopes for CLEO server entries
+ * 1. Scans all providers x scopes for CLEO server entries
  * 2. Identifies entries not tracked in the lock file
  * 3. Backfills missing entries via recordMcpInstall
  * 4. Optionally prunes orphaned lock entries (in lock but not in any config)
+ *
+ * @remarks
+ * This function bridges the gap between CLEO servers installed before lock
+ * tracking was introduced and the current lock file state. It scans live
+ * config files across all installed providers and requested scopes, infers
+ * lock metadata from the config entries, and writes missing entries to the
+ * lock file. When `prune` is enabled, it also removes lock entries for
+ * CLEO servers that no longer appear in any live config.
+ *
+ * @param options - Reconciliation options controlling scope, providers, and behavior
+ * @returns Reconciliation result with backfilled entries, pruned entries, and errors
+ *
+ * @example
+ * ```typescript
+ * const result = await reconcileCleoLock({ global: true, prune: true });
+ * console.log(`Backfilled: ${result.backfilled.length}, Pruned: ${result.pruned.length}`);
+ * ```
+ *
+ * @public
  */
 export async function reconcileCleoLock(
   options: ReconcileOptions = {},

@@ -8,6 +8,22 @@ import { getProvider } from "../../core/registry/providers.js";
 import { readMcpOperations, readTextInput } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";
 
+/**
+ * Registers the `advanced configure` subcommand for configuring global and project scope in one operation.
+ *
+ * @remarks
+ * Combines MCP operations and instruction content for both global and project scopes into a single
+ * command targeting one provider. Reduces multiple CLI invocations to a single atomic operation.
+ *
+ * @param parent - The parent `advanced` Command to attach the configure subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced configure --agent claude-code --global-mcp-file global.json
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedConfigure(parent: Command): void {
   parent
     .command("configure")

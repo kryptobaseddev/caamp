@@ -79,6 +79,7 @@ function inferName(source: string, type: SourceType): string {
 /**
  * Parse and classify a source string into a typed {@link ParsedSource}.
  *
+ * @remarks
  * Supports GitHub URLs, GitLab URLs, GitHub shorthand (`owner/repo`),
  * HTTP URLs (remote MCP servers), npm package names, local paths, and
  * shell commands as a fallback.
@@ -97,6 +98,8 @@ function inferName(source: string, type: SourceType): string {
  * parseSource("@modelcontextprotocol/server-filesystem");
  * // { type: "package", value: "@modelcontextprotocol/server-filesystem", inferredName: "filesystem" }
  * ```
+ *
+ * @public
  */
 export function parseSource(input: string): ParsedSource {
   // GitHub URL
@@ -223,6 +226,10 @@ export function parseSource(input: string): ParsedSource {
 /**
  * Check if a source string looks like a marketplace scoped name (`@author/name`).
  *
+ * @remarks
+ * Matches strings in the `@scope/name` format commonly used by npm packages
+ * and marketplace skill identifiers.
+ *
  * @param input - Source string to check
  * @returns `true` if the input matches the `@scope/name` pattern
  *
@@ -232,6 +239,8 @@ export function parseSource(input: string): ParsedSource {
  * isMarketplaceScoped("my-skill");             // false
  * isMarketplaceScoped("owner/repo");           // false
  * ```
+ *
+ * @public
  */
 export function isMarketplaceScoped(input: string): boolean {
   return /^@[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(input);

@@ -7,6 +7,23 @@ import { detectMcpConfigConflicts, selectProvidersByMinimumPriority } from "../.
 import { parsePriority, readMcpOperations, resolveProviders } from "./common.js";
 import { LAFSCommandError, runLafsCommand } from "./lafs.js";
 
+/**
+ * Registers the `advanced conflicts` subcommand for preflight MCP conflict detection.
+ *
+ * @remarks
+ * Scans existing provider configurations for naming conflicts with proposed MCP operations
+ * before applying them. Reports conflicts without making any changes.
+ *
+ * @param parent - The parent `advanced` Command to attach the conflicts subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced conflicts --mcp-file ops.json --all
+ * caamp advanced conflicts --mcp-file ops.json --min-tier high
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedConflicts(parent: Command): void {
   parent
     .command("conflicts")

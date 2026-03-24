@@ -12,11 +12,17 @@
  * @param source - Object with values that take precedence
  * @returns A new merged object (does not mutate inputs)
  *
+ * @remarks
+ * Only plain objects are recursively merged. Arrays and primitive values from
+ * `source` replace `target` values outright. Neither input is mutated.
+ *
  * @example
  * ```typescript
- * deepMerge({ a: 1, b: { c: 2 } }, { b: { d: 3 } });
+ * const merged = deepMerge({ a: 1, b: { c: 2 } }, { b: { d: 3 } });
  * // { a: 1, b: { c: 2, d: 3 } }
  * ```
+ *
+ * @public
  */
 export function deepMerge(
   target: Record<string, unknown>,
@@ -48,7 +54,27 @@ export function deepMerge(
   return result;
 }
 
-/** Set a nested value using dot-notation key path */
+/**
+ * Set a nested value using a dot-notation key path.
+ *
+ * @remarks
+ * Creates intermediate objects as needed. Returns a shallow copy of the
+ * root object (does not mutate the input).
+ *
+ * @param obj - Root object to modify
+ * @param keyPath - Dot-separated path to the parent key (e.g. `"mcpServers"`)
+ * @param key - Final key name for the value
+ * @param value - Value to set at the nested location
+ * @returns A new object with the value set at the specified path
+ *
+ * @example
+ * ```typescript
+ * const result = setNestedValue({}, "a.b", "c", 42);
+ * // { a: { b: { c: 42 } } }
+ * ```
+ *
+ * @public
+ */
 export function setNestedValue(
   obj: Record<string, unknown>,
   keyPath: string,
@@ -86,11 +112,17 @@ export function setNestedValue(
  * @param keyPath - Dot-separated key path (e.g. `"mcpServers"` or `"a.b.c"`)
  * @returns The value at the key path, or `undefined` if not found
  *
+ * @remarks
+ * Splits the key path on `.` and walks the object tree. Returns `undefined`
+ * at the first missing or non-object segment.
+ *
  * @example
  * ```typescript
  * getNestedValue({ a: { b: { c: 42 } } }, "a.b.c"); // 42
  * getNestedValue({ a: 1 }, "a.b"); // undefined
  * ```
+ *
+ * @public
  */
 export function getNestedValue(
   obj: Record<string, unknown>,
@@ -114,11 +146,16 @@ export function getNestedValue(
  *
  * @param filePath - Absolute path to a file (parent directories will be created)
  *
+ * @remarks
+ * Uses `mkdir` with `recursive: true` so existing directories are not an error.
+ *
  * @example
  * ```typescript
  * await ensureDir("/path/to/new/dir/file.json");
  * // /path/to/new/dir/ now exists
  * ```
+ *
+ * @public
  */
 export async function ensureDir(filePath: string): Promise<void> {
   const { mkdir } = await import("node:fs/promises");

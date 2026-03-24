@@ -21,6 +21,7 @@ const SEVERITY_WEIGHTS: Record<AuditSeverity, number> = {
 /**
  * Scan a single file against security audit rules.
  *
+ * @remarks
  * Checks each line of the file against all active rules and produces findings
  * with line-level precision. Calculates a security score (100 = clean, 0 = dangerous)
  * based on severity-weighted penalties.
@@ -34,6 +35,8 @@ const SEVERITY_WEIGHTS: Record<AuditSeverity, number> = {
  * const result = await scanFile("/path/to/SKILL.md");
  * console.log(`Score: ${result.score}/100, Passed: ${result.passed}`);
  * ```
+ *
+ * @public
  */
 export async function scanFile(
   filePath: string,
@@ -78,6 +81,7 @@ export async function scanFile(
 /**
  * Scan a directory of skills for security issues.
  *
+ * @remarks
  * Iterates over skill subdirectories and scans each `SKILL.md` file found.
  *
  * @param dirPath - Absolute path to the skills directory to scan
@@ -90,6 +94,8 @@ export async function scanFile(
  * const results = await scanDirectory(getCanonicalSkillsDir());
  * const failing = results.filter(r => !r.passed);
  * ```
+ *
+ * @public
  */
 export async function scanDirectory(dirPath: string): Promise<AuditResult[]> {
   const { readdir } = await import("node:fs/promises");
@@ -115,6 +121,7 @@ export async function scanDirectory(dirPath: string): Promise<AuditResult[]> {
 /**
  * Convert audit results to SARIF 2.1.0 format (Static Analysis Results Interchange Format).
  *
+ * @remarks
  * Produces a standards-compliant SARIF document suitable for CI/CD integration
  * and code scanning tools (e.g. GitHub Code Scanning).
  *
@@ -127,6 +134,8 @@ export async function scanDirectory(dirPath: string): Promise<AuditResult[]> {
  * const sarif = toSarif(results);
  * writeFileSync("audit.sarif", JSON.stringify(sarif, null, 2));
  * ```
+ *
+ * @public
  */
 export function toSarif(results: AuditResult[]): object {
   return {

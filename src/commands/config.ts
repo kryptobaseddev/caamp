@@ -17,6 +17,23 @@ import {
 import { resolveProviderConfigPath } from "../core/paths/standard.js";
 import { getProvider } from "../core/registry/providers.js";
 
+/**
+ * Registers the `config` command group with show and path subcommands for viewing provider configurations.
+ *
+ * @remarks
+ * The show subcommand outputs LAFS-compliant JSON envelopes by default. The path subcommand
+ * intentionally outputs raw paths for shell scripting and does not use LAFS envelopes.
+ *
+ * @param program - The root Commander program to attach the config command group to
+ *
+ * @example
+ * ```bash
+ * caamp config show claude-code --global
+ * caamp config path cursor project
+ * ```
+ *
+ * @public
+ */
 export function registerConfigCommand(program: Command): void {
   const config = program
     .command("config")

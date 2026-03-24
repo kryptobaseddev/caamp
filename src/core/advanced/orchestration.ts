@@ -41,9 +41,24 @@ const PRIORITY_ORDER: Record<ProviderPriority, number> = {
 };
 
 /**
- * Filter providers by minimum priority and return them in deterministic tier order.
+ * Filters providers by minimum priority and returns them in deterministic tier order.
  *
- * `minimumPriority = "medium"` returns `high` + `medium`.
+ * @remarks
+ * Providers are filtered to include only those at or above the specified priority
+ * level, then sorted from highest to lowest priority. For example,
+ * `minimumPriority = "medium"` returns providers with `high` and `medium` priority.
+ *
+ * @param providers - The full list of providers to filter
+ * @param minimumPriority - The minimum priority threshold, defaults to `"low"` (include all)
+ * @returns A filtered and sorted array of providers meeting the priority threshold
+ *
+ * @example
+ * ```typescript
+ * const highPriority = selectProvidersByMinimumPriority(allProviders, "high");
+ * // returns only providers with priority "high"
+ * ```
+ *
+ * @public
  */
 export function selectProvidersByMinimumPriority(
   providers: Provider[],
@@ -58,43 +73,86 @@ export function selectProvidersByMinimumPriority(
 
 /**
  * Single MCP operation entry used by batch orchestration.
+ *
+ * @remarks
+ * Represents one MCP server installation that will be applied across
+ * all targeted providers during a batch operation.
+ *
+ * @public
  */
 export interface McpBatchOperation {
+  /** The name of the MCP server to install. */
   serverName: string;
+  /** The MCP server configuration to write. */
   config: McpServerConfig;
+  /** The scope for installation, defaults to `"project"`. */
   scope?: Scope;
 }
 
 /**
  * Single skill operation entry used by batch orchestration.
+ *
+ * @remarks
+ * Represents one skill installation that will be applied across
+ * all targeted providers during a batch operation.
+ *
+ * @public
  */
 export interface SkillBatchOperation {
+  /** The filesystem path to the skill source files. */
   sourcePath: string;
+  /** The unique name for the skill being installed. */
   skillName: string;
+  /** Whether to install globally or project-scoped, defaults to true. */
   isGlobal?: boolean;
 }
 
 /**
  * Options for rollback-capable batch installation.
+ *
+ * @remarks
+ * All fields are optional. When providers are not specified, installed
+ * providers are auto-detected. When minimumPriority is not specified,
+ * all priority levels are included.
+ *
+ * @public
  */
 export interface BatchInstallOptions {
+  /** Explicit list of providers to target, auto-detected if omitted. */
   providers?: Provider[];
+  /** Minimum provider priority threshold for filtering. */
   minimumPriority?: ProviderPriority;
+  /** MCP server operations to apply in the batch. */
   mcp?: McpBatchOperation[];
+  /** Skill operations to apply in the batch. */
   skills?: SkillBatchOperation[];
+  /** Project root directory, defaults to `process.cwd()`. */
   projectDir?: string;
 }
 
 /**
  * Result of rollback-capable batch installation.
+ *
+ * @remarks
+ * When `success` is false, `rollbackPerformed` indicates whether rollback
+ * was attempted. Any errors during rollback are captured in `rollbackErrors`.
+ *
+ * @public
  */
 export interface BatchInstallResult {
+  /** Whether all operations completed successfully. */
   success: boolean;
+  /** IDs of providers that were targeted. */
   providerIds: string[];
+  /** Number of MCP server installations that were applied. */
   mcpApplied: number;
+  /** Number of skill installations that were applied. */
   skillsApplied: number;
+  /** Whether rollback was performed due to a failure. */
   rollbackPerformed: boolean;
+  /** Error messages from any failures during rollback. */
   rollbackErrors: string[];
+  /** Error message from the operation that triggered rollback. */
   error?: string;
 }
 
@@ -253,11 +311,30 @@ async function restoreSkillSnapshot(snapshot: SkillSnapshot): Promise<void> {
 }
 
 /**
- * Install multiple MCP servers and skills across filtered providers with rollback.
+ * Installs multiple MCP servers and skills across filtered providers with rollback.
  *
- * Rollback behavior:
- * - MCP config files are restored exactly from snapshots.
- * - Skill state is restored for canonical skill dirs and targeted provider link paths.
+ * @remarks
+ * Snapshots all affected config files and skill directories before applying
+ * operations. If any operation fails, all changes are rolled back by restoring
+ * config file snapshots and reverting skill symlinks and canonical directories
+ * to their pre-operation state.
+ *
+ * @param options - The batch installation options including providers, operations, and scope
+ * @returns A result object indicating success, applied counts, and any rollback information
+ *
+ * @example
+ * ```typescript
+ * const result = await installBatchWithRollback({
+ *   minimumPriority: "high",
+ *   mcp: [{ serverName: "my-server", config: { command: "npx", args: ["my-server"] } }],
+ *   skills: [{ sourcePath: "/path/to/skill", skillName: "my-skill" }],
+ * });
+ * if (!result.success) {
+ *   console.error("Failed:", result.error);
+ * }
+ * ```
+ *
+ * @public
  */
 export async function installBatchWithRollback(
   options: BatchInstallOptions,
@@ -388,11 +465,24 @@ export async function installBatchWithRollback(
 
 /**
  * Conflict policy when applying MCP install plans.
+ *
+ * @remarks
+ * Controls behavior when an existing MCP server configuration conflicts
+ * with the desired configuration: `"fail"` aborts the entire operation,
+ * `"skip"` leaves conflicting entries unchanged, and `"overwrite"` replaces them.
+ *
+ * @public
  */
 export type ConflictPolicy = "fail" | "skip" | "overwrite";
 
 /**
- * MCP conflict code.
+ * Conflict code identifying the type of MCP configuration conflict.
+ *
+ * @remarks
+ * Used in {@link McpConflict} to categorize detected conflicts during
+ * preflight checks before applying MCP installations.
+ *
+ * @public
  */
 export type McpConflictCode =
   | "unsupported-transport"
@@ -400,22 +490,42 @@ export type McpConflictCode =
   | "existing-mismatch";
 
 /**
- * Conflict detected during preflight.
+ * Describes a conflict detected during MCP installation preflight.
+ *
+ * @remarks
+ * Contains the provider, server, scope, and nature of the conflict
+ * so that callers can decide how to proceed based on their conflict policy.
+ *
+ * @public
  */
 export interface McpConflict {
+  /** The provider where the conflict was detected. */
   providerId: string;
+  /** The MCP server name involved in the conflict. */
   serverName: string;
+  /** The scope (global or project) of the conflicting config. */
   scope: Scope;
+  /** The type of conflict detected. */
   code: McpConflictCode;
+  /** Human-readable description of the conflict. */
   message: string;
 }
 
 /**
- * Result from applying install plan with conflict policy.
+ * Result from applying an MCP install plan with a conflict policy.
+ *
+ * @remarks
+ * Contains all detected conflicts, successfully applied installations,
+ * and any operations that were skipped due to the conflict policy.
+ *
+ * @public
  */
 export interface McpPlanApplyResult {
+  /** All conflicts detected during preflight, regardless of policy. */
   conflicts: McpConflict[];
+  /** Successfully applied MCP server installations. */
   applied: InstallResult[];
+  /** Operations skipped due to the conflict policy. */
   skipped: Array<{
     providerId: string;
     serverName: string;
@@ -439,7 +549,28 @@ function stableStringify(value: unknown): string {
 }
 
 /**
- * Preflight conflict detection for MCP install plans across providers.
+ * Performs preflight conflict detection for MCP install plans across providers.
+ *
+ * @remarks
+ * Checks each provider-operation pair for transport support, header support,
+ * and existing configuration mismatches. Returns all detected conflicts without
+ * modifying any files. Callers can then decide whether to proceed based on
+ * their conflict policy.
+ *
+ * @param providers - The providers to check for conflicts
+ * @param operations - The MCP operations to validate against existing configs
+ * @param projectDir - The project root directory, defaults to `process.cwd()`
+ * @returns An array of detected conflicts, empty if no conflicts found
+ *
+ * @example
+ * ```typescript
+ * const conflicts = await detectMcpConfigConflicts(providers, operations);
+ * if (conflicts.length > 0) {
+ *   console.warn("Conflicts detected:", conflicts);
+ * }
+ * ```
+ *
+ * @public
  */
 export async function detectMcpConfigConflicts(
   providers: Provider[],
@@ -497,7 +628,27 @@ export async function detectMcpConfigConflicts(
 }
 
 /**
- * Apply MCP install plan with a conflict policy.
+ * Applies an MCP install plan with a conflict policy controlling behavior on conflicts.
+ *
+ * @remarks
+ * First runs {@link detectMcpConfigConflicts} to find all conflicts, then applies
+ * the specified policy: `"fail"` returns immediately with no changes, `"skip"`
+ * leaves conflicting entries unchanged and applies the rest, and `"overwrite"`
+ * applies all operations regardless of conflicts.
+ *
+ * @param providers - The providers to install MCP servers for
+ * @param operations - The MCP server operations to apply
+ * @param policy - The conflict resolution policy, defaults to `"fail"`
+ * @param projectDir - The project root directory, defaults to `process.cwd()`
+ * @returns A result containing conflicts, applied installations, and skipped operations
+ *
+ * @example
+ * ```typescript
+ * const result = await applyMcpInstallWithPolicy(providers, operations, "skip");
+ * console.log(`Applied: ${result.applied.length}, Skipped: ${result.skipped.length}`);
+ * ```
+ *
+ * @public
  */
 export async function applyMcpInstallWithPolicy(
   providers: Provider[],
@@ -551,10 +702,19 @@ export async function applyMcpInstallWithPolicy(
 
 /**
  * Result of a single-operation instruction update across providers.
+ *
+ * @remarks
+ * Summarizes the instruction files that were created, updated, or left
+ * intact during an instruction injection operation.
+ *
+ * @public
  */
 export interface InstructionUpdateSummary {
+  /** The scope at which instructions were updated. */
   scope: Scope;
+  /** The total number of instruction files that were modified. */
   updatedFiles: number;
+  /** Detailed action log per instruction file. */
   actions: Array<{
     file: string;
     action: "created" | "added" | "consolidated" | "updated" | "intact";
@@ -564,10 +724,31 @@ export interface InstructionUpdateSummary {
 }
 
 /**
- * Update instruction files across providers as a single operation.
+ * Updates instruction files across providers as a single operation.
  *
+ * @remarks
  * Works the same regardless of provider config format (JSON/YAML/TOML/JSONC)
- * because instruction files are handled through CAAMP markers.
+ * because instruction files are handled through CAAMP markers. Groups
+ * providers by their instruction file targets and injects content using
+ * marker-based sections.
+ *
+ * @param providers - The providers whose instruction files to update
+ * @param content - The instruction content to inject
+ * @param scope - The scope for instruction updates, defaults to `"project"`
+ * @param projectDir - The project root directory, defaults to `process.cwd()`
+ * @returns A summary of updated files and actions taken per file
+ *
+ * @example
+ * ```typescript
+ * const summary = await updateInstructionsSingleOperation(
+ *   providers,
+ *   "## CAAMP Config\nUse these MCP servers...",
+ *   "project",
+ * );
+ * console.log(`Updated ${summary.updatedFiles} files`);
+ * ```
+ *
+ * @public
  */
 export async function updateInstructionsSingleOperation(
   providers: Provider[],
@@ -608,27 +789,48 @@ export async function updateInstructionsSingleOperation(
 
 /**
  * Request payload for dual-scope provider configuration.
+ *
+ * @remarks
+ * Allows configuring both global and project-level MCP servers and
+ * instructions in a single call. Instruction content can be a single
+ * string applied to both scopes or scope-specific strings.
+ *
+ * @public
  */
 export interface DualScopeConfigureOptions {
+  /** MCP servers to install at global scope. */
   globalMcp?: Array<{ serverName: string; config: McpServerConfig }>;
+  /** MCP servers to install at project scope. */
   projectMcp?: Array<{ serverName: string; config: McpServerConfig }>;
+  /** Instruction content for injection, either shared or per-scope. */
   instructionContent?: string | { global?: string; project?: string };
+  /** Project root directory, defaults to `process.cwd()`. */
   projectDir?: string;
 }
 
 /**
  * Result of dual-scope provider configuration.
+ *
+ * @remarks
+ * Contains the resolved config paths, MCP installation results for both
+ * scopes, and instruction injection results for each scope that was configured.
+ *
+ * @public
  */
 export interface DualScopeConfigureResult {
+  /** The ID of the configured provider. */
   providerId: string;
+  /** Resolved configuration file paths for both scopes. */
   configPaths: {
     global: string | null;
     project: string | null;
   };
+  /** MCP installation results for each scope. */
   mcp: {
     global: InstallResult[];
     project: InstallResult[];
   };
+  /** Instruction injection results for each scope, if applicable. */
   instructions: {
     global?: Map<string, "created" | "added" | "consolidated" | "updated" | "intact">;
     project?: Map<string, "created" | "added" | "consolidated" | "updated" | "intact">;
@@ -636,7 +838,27 @@ export interface DualScopeConfigureResult {
 }
 
 /**
- * Configure both global and project-level settings for one provider in one call.
+ * Configures both global and project-level settings for one provider in one call.
+ *
+ * @remarks
+ * Applies MCP server installations and instruction injections at both global
+ * and project scope in a single coordinated operation. This avoids the need
+ * to make separate calls for each scope.
+ *
+ * @param provider - The provider to configure
+ * @param options - The dual-scope configuration options
+ * @returns A result containing config paths, MCP results, and instruction results for both scopes
+ *
+ * @example
+ * ```typescript
+ * const result = await configureProviderGlobalAndProject(provider, {
+ *   globalMcp: [{ serverName: "my-server", config: { command: "npx", args: ["my-server"] } }],
+ *   instructionContent: "## Agent Setup\nUse these tools...",
+ * });
+ * console.log(result.configPaths);
+ * ```
+ *
+ * @public
  */
 export async function configureProviderGlobalAndProject(
   provider: Provider,

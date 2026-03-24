@@ -3,6 +3,8 @@
  *
  * Unified hook normalization layer that translates between
  * CAAMP canonical hook events and provider-native names.
+ *
+ * @packageDocumentation
  */
 
 export type {

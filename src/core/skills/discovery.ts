@@ -13,6 +13,7 @@ import type { SkillEntry, SkillMetadata } from "../../types.js";
 /**
  * Parse a SKILL.md file and extract its frontmatter metadata.
  *
+ * @remarks
  * Reads the file, parses YAML frontmatter via `gray-matter`, and maps the
  * fields to a {@link SkillMetadata} object. Returns `null` if the file cannot
  * be read or lacks required `name` and `description` fields.
@@ -27,6 +28,8 @@ import type { SkillEntry, SkillMetadata } from "../../types.js";
  *   console.log(`${meta.name}: ${meta.description}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function parseSkillFile(filePath: string): Promise<SkillMetadata | null> {
   try {
@@ -60,6 +63,7 @@ export async function parseSkillFile(filePath: string): Promise<SkillMetadata | 
 /**
  * Discover a single skill at a given directory path.
  *
+ * @remarks
  * Checks for a `SKILL.md` file in the directory and parses its metadata.
  *
  * @param skillDir - Absolute path to a skill directory (containing SKILL.md)
@@ -75,6 +79,8 @@ export async function parseSkillFile(filePath: string): Promise<SkillMetadata | 
  *   console.log(`Found: ${skill.name}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function discoverSkill(skillDir: string): Promise<SkillEntry | null> {
   const skillFile = join(skillDir, "SKILL.md");
@@ -94,6 +100,7 @@ export async function discoverSkill(skillDir: string): Promise<SkillEntry | null
 /**
  * Scan a directory for skill subdirectories, each containing a SKILL.md file.
  *
+ * @remarks
  * Iterates over directories and symlinks in `rootDir` and calls
  * {@link discoverSkill} on each.
  *
@@ -107,6 +114,8 @@ export async function discoverSkill(skillDir: string): Promise<SkillEntry | null
  * const skills = await discoverSkills(getCanonicalSkillsDir());
  * console.log(`Found ${skills.length} skills`);
  * ```
+ *
+ * @public
  */
 export async function discoverSkills(rootDir: string): Promise<SkillEntry[]> {
   if (!existsSync(rootDir)) return [];
@@ -127,7 +136,24 @@ export async function discoverSkills(rootDir: string): Promise<SkillEntry[]> {
   return skills;
 }
 
-/** Discover skills across multiple directories */
+/**
+ * Discover skills across multiple directories.
+ *
+ * @remarks
+ * Scans each directory with {@link discoverSkills} and deduplicates results by
+ * skill name, keeping the first occurrence found.
+ *
+ * @param dirs - Array of absolute paths to skills directories to scan
+ * @returns Deduplicated array of discovered skill entries
+ *
+ * @example
+ * ```typescript
+ * const skills = await discoverSkillsMulti(["/home/user/.agents/skills", "./project-skills"]);
+ * console.log(`Found ${skills.length} unique skills`);
+ * ```
+ *
+ * @public
+ */
 export async function discoverSkillsMulti(dirs: string[]): Promise<SkillEntry[]> {
   const all: SkillEntry[] = [];
   const seen = new Set<string>();

@@ -18,11 +18,14 @@ import { getAllProviders } from "./providers.js";
  *
  * @example
  * ```typescript
+ * const provider = getProvider("claude-code")!;
  * const result = detectProvider(provider);
  * if (result.installed) {
  *   console.log(`Found via: ${result.methods.join(", ")}`);
  * }
  * ```
+ *
+ * @public
  */
 export interface DetectionResult {
   /** The provider that was checked. */
@@ -35,8 +38,15 @@ export interface DetectionResult {
   projectDetected: boolean;
 }
 
+/**
+ * Options for controlling the detection result cache.
+ *
+ * @public
+ */
 export interface DetectionCacheOptions {
+  /** Whether to bypass the cache and force a fresh detection scan. @defaultValue false */
   forceRefresh?: boolean;
+  /** Time-to-live for cached results in milliseconds. @defaultValue 30000 */
   ttlMs?: number;
 }
 
@@ -85,6 +95,14 @@ function checkFlatpak(flatpakId: string): boolean {
  * Checks each detection method configured for the provider (binary, directory,
  * appBundle, flatpak) and returns which methods matched.
  *
+ * @remarks
+ * Detection methods are defined per-provider in `providers/registry.json`.
+ * Each method is checked in order: `binary` uses `which`/`where` to find
+ * executables, `directory` checks for config directories, `appBundle` looks
+ * in macOS Applications folders, and `flatpak` queries flatpak on Linux.
+ * The `projectDetected` field is always `false` here; use
+ * {@link detectProjectProviders} for project-level detection.
+ *
  * @param provider - The provider to detect
  * @returns Detection result with installation status and matched methods
  *
@@ -96,6 +114,8 @@ function checkFlatpak(flatpakId: string): boolean {
  *   console.log(`Claude Code found via: ${result.methods.join(", ")}`);
  * }
  * ```
+ *
+ * @public
  */
 export function detectProvider(provider: Provider): DetectionResult {
   const matchedMethods: string[] = [];
@@ -189,7 +209,26 @@ function setCachedResults(signature: string, results: DetectionResult[]): void {
   };
 }
 
-/** Detect if a provider has project-level config in the given directory */
+/**
+ * Detect if a provider has project-level config in the given directory.
+ *
+ * @remarks
+ * Checks whether the provider's `pathProject` config file exists within the
+ * given project directory. Returns `false` if the provider has no project-level
+ * path defined.
+ *
+ * @param provider - Provider to check for project-level config
+ * @param projectDir - Absolute path to the project directory
+ * @returns `true` if the provider has a config file in the project directory
+ *
+ * @example
+ * ```typescript
+ * const provider = getProvider("claude-code")!;
+ * const hasProjectConfig = detectProjectProvider(provider, "/home/user/my-project");
+ * ```
+ *
+ * @public
+ */
 export function detectProjectProvider(provider: Provider, projectDir: string): boolean {
   if (!provider.pathProject) return false;
   return existsSync(resolveProviderProjectPath(provider, projectDir));
@@ -200,14 +239,23 @@ export function detectProjectProvider(provider: Provider, projectDir: string): b
  *
  * Runs detection for every provider in the registry.
  *
+ * @remarks
+ * Results are cached in memory with a configurable TTL (default 30 seconds).
+ * The cache key is a signature of all provider detection configurations, so
+ * it auto-invalidates if the registry changes. Pass `{ forceRefresh: true }`
+ * to bypass the cache.
+ *
+ * @param options - Cache control options
  * @returns Array of detection results for all providers
  *
  * @example
  * ```typescript
- * const results = detectAllProviders();
+ * const results = detectAllProviders({ forceRefresh: true });
  * const installed = results.filter(r => r.installed);
  * console.log(`${installed.length} agents detected`);
  * ```
+ *
+ * @public
  */
 export function detectAllProviders(options: DetectionCacheOptions = {}): DetectionResult[] {
   const providers = getAllProviders() ?? [];
@@ -229,13 +277,23 @@ export function detectAllProviders(options: DetectionCacheOptions = {}): Detecti
  * Convenience wrapper that filters {@link detectAllProviders} results to only
  * those with `installed === true`.
  *
+ * @remarks
+ * Delegates to {@link detectAllProviders} and extracts the `provider` object
+ * from each result where `installed` is true. Cache behavior is inherited
+ * from the underlying detection call.
+ *
+ * @param options - Cache control options passed through to detection
  * @returns Array of installed provider definitions
  *
  * @example
  * ```typescript
- * const installed = getInstalledProviders();
+ * const installed = getInstalledProviders({ forceRefresh: true });
  * console.log(installed.map(p => p.toolName).join(", "));
  * ```
+ *
+ * @see {@link detectAllProviders}
+ *
+ * @public
  */
 export function getInstalledProviders(options: DetectionCacheOptions = {}): Provider[] {
   return detectAllProviders(options)
@@ -249,18 +307,29 @@ export function getInstalledProviders(options: DetectionCacheOptions = {}): Prov
  * Extends {@link detectAllProviders} by also checking whether each provider
  * has a project-level config file in the given directory.
  *
+ * @remarks
+ * Calls {@link detectAllProviders} for system-level detection, then overlays
+ * project-level checks via {@link detectProjectProvider} for each result.
+ * The `projectDetected` field in the returned results will be `true` when the
+ * provider has a config file (e.g. `.claude/settings.json`) in the given directory.
+ *
  * @param projectDir - Absolute path to the project directory to check
+ * @param options - Cache control options passed through to detection
  * @returns Array of detection results with `projectDetected` populated
  *
  * @example
  * ```typescript
- * const results = detectProjectProviders("/home/user/my-project");
+ * const results = detectProjectProviders("/home/user/my-project", { forceRefresh: true });
  * for (const r of results) {
  *   if (r.projectDetected) {
  *     console.log(`${r.provider.toolName} has project config`);
  *   }
  * }
  * ```
+ *
+ * @see {@link detectAllProviders}
+ *
+ * @public
  */
 export function detectProjectProviders(projectDir: string, options: DetectionCacheOptions = {}): DetectionResult[] {
   const results = detectAllProviders(options);
@@ -270,6 +339,24 @@ export function detectProjectProviders(projectDir: string, options: DetectionCac
   }));
 }
 
+/**
+ * Reset the detection result cache, forcing fresh detection on next call.
+ *
+ * @remarks
+ * Clears the in-memory detection cache. Primarily used in test suites to
+ * ensure deterministic results between test cases. After calling this,
+ * the next invocation of {@link detectAllProviders} will perform a full
+ * system scan regardless of TTL.
+ *
+ * @example
+ * ```typescript
+ * resetDetectionCache();
+ * // Next detectAllProviders() call will bypass cache
+ * const fresh = detectAllProviders();
+ * ```
+ *
+ * @public
+ */
 export function resetDetectionCache(): void {
   detectionCache = null;
 }

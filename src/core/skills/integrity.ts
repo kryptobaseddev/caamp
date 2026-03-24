@@ -16,6 +16,8 @@ const CAAMP_SKILL_PREFIX = "ct-";
 
 /**
  * Status of a single skill's integrity check.
+ *
+ * @public
  */
 export type SkillIntegrityStatus =
   | "intact"
@@ -27,6 +29,8 @@ export type SkillIntegrityStatus =
 
 /**
  * Result of checking a single skill's integrity.
+ *
+ * @public
  */
 export interface SkillIntegrityResult {
   /** Skill name. */
@@ -54,8 +58,20 @@ export interface SkillIntegrityResult {
 /**
  * Check whether a skill name is reserved by CAAMP (ct-* prefix).
  *
+ * @remarks
+ * Skills with the `ct-` prefix are considered CAAMP-owned and receive
+ * special treatment during installation conflict resolution.
+ *
  * @param skillName - Skill name to check
  * @returns `true` if the skill name starts with `ct-`
+ *
+ * @example
+ * ```typescript
+ * isCaampOwnedSkill("ct-research-agent"); // true
+ * isCaampOwnedSkill("my-custom-skill");   // false
+ * ```
+ *
+ * @public
  */
 export function isCaampOwnedSkill(skillName: string): boolean {
   return skillName.startsWith(CAAMP_SKILL_PREFIX);
@@ -64,16 +80,26 @@ export function isCaampOwnedSkill(skillName: string): boolean {
 /**
  * Check the integrity of a single installed skill.
  *
- * Validates:
- * - Canonical directory exists on disk
- * - Lock file entry matches actual state
- * - Symlinks from provider skill directories point to the canonical path
+ * @remarks
+ * Validates that the canonical directory exists on disk, the lock file entry
+ * matches the actual state, and symlinks from provider skill directories
+ * point to the canonical path.
  *
  * @param skillName - Name of the skill to check
  * @param providers - Providers to check symlinks for
  * @param scope - Whether to check global or project links
  * @param projectDir - Project directory (for project scope)
  * @returns Integrity check result
+ *
+ * @example
+ * ```typescript
+ * const result = await checkSkillIntegrity("ct-research-agent", providers, "global");
+ * if (result.status !== "intact") {
+ *   console.log(`Issue: ${result.issue}`);
+ * }
+ * ```
+ *
+ * @public
  */
 export async function checkSkillIntegrity(
   skillName: string,
@@ -191,10 +217,24 @@ export async function checkSkillIntegrity(
 /**
  * Check integrity of all tracked skills.
  *
+ * @remarks
+ * Iterates over every skill in the lock file and runs
+ * {@link checkSkillIntegrity} on each.
+ *
  * @param providers - Providers to check symlinks for
  * @param scope - Whether to check global or project links
  * @param projectDir - Project directory (for project scope)
  * @returns Map of skill name to integrity result
+ *
+ * @example
+ * ```typescript
+ * const results = await checkAllSkillIntegrity(providers);
+ * for (const [name, result] of results) {
+ *   console.log(`${name}: ${result.status}`);
+ * }
+ * ```
+ *
+ * @public
  */
 export async function checkAllSkillIntegrity(
   providers: Provider[],
@@ -216,6 +256,7 @@ export async function checkAllSkillIntegrity(
  * Resolve a skill name conflict where a user-installed skill collides
  * with a CAAMP-owned (ct-*) skill.
  *
+ * @remarks
  * CAAMP-owned skills always win. Returns `true` if the incoming skill
  * should take precedence over the existing installation.
  *
@@ -223,6 +264,16 @@ export async function checkAllSkillIntegrity(
  * @param incomingSource - Source of the incoming skill installation
  * @param existingEntry - Existing lock entry, if any
  * @returns `true` if the incoming installation should proceed
+ *
+ * @example
+ * ```typescript
+ * const proceed = shouldOverrideSkill("ct-research-agent", "library", existingEntry);
+ * if (proceed) {
+ *   // Safe to install/override
+ * }
+ * ```
+ *
+ * @public
  */
 export function shouldOverrideSkill(
   skillName: string,
@@ -247,14 +298,25 @@ export function shouldOverrideSkill(
 /**
  * Validate instruction file injection status across all providers.
  *
+ * @remarks
  * Checks that CAAMP blocks exist and are current in all relevant
- * instruction files.
+ * instruction files (CLAUDE.md, AGENTS.md, GEMINI.md).
  *
  * @param providers - Providers to check
  * @param projectDir - Project directory
  * @param scope - Whether to check global or project files
  * @param expectedContent - Expected CAAMP block content
  * @returns Array of file paths with issues
+ *
+ * @example
+ * ```typescript
+ * const issues = await validateInstructionIntegrity(providers, process.cwd(), "project");
+ * for (const issue of issues) {
+ *   console.log(`${issue.providerId}: ${issue.issue} (${issue.file})`);
+ * }
+ * ```
+ *
+ * @public
  */
 export async function validateInstructionIntegrity(
   providers: Provider[],

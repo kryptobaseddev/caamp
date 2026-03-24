@@ -14,6 +14,23 @@ import {
 import { isHuman } from "../../core/logger.js";
 import { checkSkillUpdate, getTrackedSkills } from "../../core/skills/lock.js";
 
+/**
+ * Registers the `skills check` subcommand for checking available skill updates.
+ *
+ * @remarks
+ * Compares tracked skill versions against their remote sources and reports which skills
+ * have updates available.
+ *
+ * @param parent - The parent `skills` Command to attach the check subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills check --human
+ * caamp skills check --json
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsCheck(parent: Command): void {
   parent
     .command("check")

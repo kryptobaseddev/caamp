@@ -14,6 +14,11 @@ import { readLockFile, updateLockFile } from "../lock-utils.js";
  * Returns the full {@link CaampLockFile} structure. Creates a default lock file
  * if one does not exist.
  *
+ * @remarks
+ * The lock file is stored at the canonical CAAMP lock path and is shared
+ * between MCP and skills tracking. If the file does not exist or cannot be
+ * parsed, a default empty lock structure is returned.
+ *
  * @returns The parsed lock file contents
  *
  * @example
@@ -21,6 +26,8 @@ import { readLockFile, updateLockFile } from "../lock-utils.js";
  * const lock = await readLockFile();
  * console.log(Object.keys(lock.mcpServers));
  * ```
+ *
+ * @public
  */
 export { readLockFile } from "../lock-utils.js";
 
@@ -30,16 +37,25 @@ export { readLockFile } from "../lock-utils.js";
  * Creates or updates an entry in `lock.mcpServers`. If the server already exists,
  * the agent list is merged and `updatedAt` is refreshed while `installedAt` is preserved.
  *
+ * @remarks
+ * Uses an atomic read-modify-write pattern via `updateLockFile`. When updating
+ * an existing entry, the agent list is deduplicated using a `Set` to prevent
+ * duplicate provider IDs. The `installedAt` timestamp is preserved from the
+ * original entry while `updatedAt` is always refreshed.
+ *
  * @param serverName - Name/key of the MCP server
  * @param source - Original source string
  * @param sourceType - Classified source type
  * @param agents - Provider IDs the server was installed to
  * @param isGlobal - Whether this is a global installation
+ * @param version - Optional version string for the installed package
  *
  * @example
  * ```typescript
- * await recordMcpInstall("filesystem", "@mcp/server-fs", "package", ["claude-code"], true);
+ * await recordMcpInstall("filesystem", "@mcp/server-fs", "package", ["claude-code"], true, "1.0.0");
  * ```
+ *
+ * @public
  */
 export async function recordMcpInstall(
   serverName: string,
@@ -71,13 +87,22 @@ export async function recordMcpInstall(
 /**
  * Remove an MCP server entry from the lock file.
  *
+ * @remarks
+ * Uses an atomic read-modify-write pattern. If the server name is not present
+ * in the lock file, the file is not modified and `false` is returned.
+ *
  * @param serverName - Name/key of the MCP server to remove
  * @returns `true` if the entry was found and removed, `false` if not found
  *
  * @example
  * ```typescript
  * const removed = await removeMcpFromLock("filesystem");
+ * if (removed) {
+ *   console.log("Server removed from lock file");
+ * }
  * ```
+ *
+ * @public
  */
 export async function removeMcpFromLock(serverName: string): Promise<boolean> {
   let removed = false;
@@ -92,6 +117,11 @@ export async function removeMcpFromLock(serverName: string): Promise<boolean> {
 /**
  * Get all MCP servers tracked in the lock file.
  *
+ * @remarks
+ * Returns the `mcpServers` section of the lock file as a record. Each key
+ * is a server name and each value contains installation metadata including
+ * source, agents, timestamps, and scope.
+ *
  * @returns Record of server name to lock entry
  *
  * @example
@@ -101,6 +131,8 @@ export async function removeMcpFromLock(serverName: string): Promise<boolean> {
  *   console.log(`${name}: installed ${entry.installedAt}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function getTrackedMcpServers(): Promise<Record<string, LockEntry>> {
   const lock = await readLockFile();
@@ -112,12 +144,19 @@ export async function getTrackedMcpServers(): Promise<Record<string, LockEntry>>
  *
  * Used to remember the user's agent selection between CLI invocations.
  *
+ * @remarks
+ * Persists the `lastSelectedAgents` field in the lock file so subsequent
+ * CLI invocations can default to the same agent selection. This avoids
+ * requiring the user to re-select agents each time.
+ *
  * @param agents - Array of provider IDs to remember
  *
  * @example
  * ```typescript
  * await saveLastSelectedAgents(["claude-code", "cursor"]);
  * ```
+ *
+ * @public
  */
 export async function saveLastSelectedAgents(agents: string[]): Promise<void> {
   await updateLockFile((lock) => {
@@ -128,6 +167,11 @@ export async function saveLastSelectedAgents(agents: string[]): Promise<void> {
 /**
  * Retrieve the last selected agent IDs from the lock file.
  *
+ * @remarks
+ * Returns the `lastSelectedAgents` field from the lock file, which is
+ * set by {@link saveLastSelectedAgents}. Returns `undefined` if no
+ * selection has been persisted yet.
+ *
  * @returns Array of provider IDs, or `undefined` if none were saved
  *
  * @example
@@ -135,6 +179,8 @@ export async function saveLastSelectedAgents(agents: string[]): Promise<void> {
  * const agents = await getLastSelectedAgents();
  * // ["claude-code", "cursor"] or undefined
  * ```
+ *
+ * @public
  */
 export async function getLastSelectedAgents(): Promise<string[] | undefined> {
   const lock = await readLockFile();

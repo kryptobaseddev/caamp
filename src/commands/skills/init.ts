@@ -16,6 +16,23 @@ import {
 } from "../../core/lafs.js";
 import { isHuman } from "../../core/logger.js";
 
+/**
+ * Registers the `skills init` subcommand for scaffolding new SKILL.md templates.
+ *
+ * @remarks
+ * Creates a SKILL.md file with the standard template structure in the specified directory.
+ * Optionally takes a skill name to pre-fill the template heading.
+ *
+ * @param parent - The parent `skills` Command to attach the init subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills init my-skill
+ * caamp skills init --dir ./skills/new-skill
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsInit(parent: Command): void {
   parent
     .command("init")

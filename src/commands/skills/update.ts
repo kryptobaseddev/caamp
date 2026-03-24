@@ -20,6 +20,23 @@ import { cloneGitLabRepo } from "../../core/sources/gitlab.js";
 import { parseSource } from "../../core/sources/parser.js";
 import type { Provider } from "../../types.js";
 
+/**
+ * Registers the `skills update` subcommand for updating all outdated skills.
+ *
+ * @remarks
+ * Checks each tracked skill for available updates and re-installs those with newer versions.
+ * Updates the lock file with new version information after successful re-installation.
+ *
+ * @param parent - The parent `skills` Command to attach the update subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills update --yes
+ * caamp skills update --json
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsUpdate(parent: Command): void {
   parent
     .command("update")

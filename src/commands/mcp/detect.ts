@@ -16,6 +16,23 @@ import { isHuman } from "../../core/logger.js";
 import { listMcpServers, resolveConfigPath } from "../../core/mcp/reader.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 
+/**
+ * Registers the `mcp detect` subcommand for auto-detecting installed MCP tools and their configurations.
+ *
+ * @remarks
+ * Scans all installed providers for existing MCP configuration files at both global and project
+ * scopes, reporting which servers are configured for each provider.
+ *
+ * @param parent - The parent `mcp` Command to attach the detect subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp mcp detect --human
+ * caamp mcp detect --json
+ * ```
+ *
+ * @public
+ */
 export function registerMcpDetect(parent: Command): void {
   parent
     .command("detect")

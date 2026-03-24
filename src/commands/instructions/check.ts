@@ -16,6 +16,23 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getAllProviders, getProvider } from "../../core/registry/providers.js";
 import type { Provider } from "../../types.js";
 
+/**
+ * Registers the `instructions check` subcommand for verifying injection status across providers.
+ *
+ * @remarks
+ * Checks whether CAAMP injection markers are present and up-to-date in provider instruction files.
+ * Reports missing, outdated, or current injection status for each provider.
+ *
+ * @param parent - The parent `instructions` Command to attach the check subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp instructions check --human
+ * caamp instructions check --agent claude-code
+ * ```
+ *
+ * @public
+ */
 export function registerInstructionsCheck(parent: Command): void {
   parent
     .command("check")

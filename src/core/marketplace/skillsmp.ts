@@ -60,9 +60,27 @@ function toResult(skill: ApiSkill): MarketplaceResult {
   };
 }
 
+/**
+ * Marketplace adapter for the agentskills.in API.
+ *
+ * @remarks
+ * Implements the {@link MarketplaceAdapter} interface to search and retrieve
+ * skills from the agentskills.in marketplace. GitHub remains the actual
+ * source for skill installation — this adapter provides discovery only.
+ *
+ * @public
+ */
 export class SkillsMPAdapter implements MarketplaceAdapter {
+  /** The marketplace identifier used in search results. */
   name = "agentskills.in";
 
+  /**
+   * Search for skills by query string.
+   *
+   * @param query - Search query to match against skill names and descriptions.
+   * @param limit - Maximum number of results to return.
+   * @returns Array of marketplace results sorted by stars.
+   */
   async search(query: string, limit = 20): Promise<MarketplaceResult[]> {
     const params = new URLSearchParams({
       search: query,
@@ -76,6 +94,12 @@ export class SkillsMPAdapter implements MarketplaceAdapter {
     return data.skills.map(toResult);
   }
 
+  /**
+   * Look up a specific skill by its scoped name.
+   *
+   * @param scopedName - The scoped skill name (e.g. `"@author/skill-name"`).
+   * @returns The matching marketplace result, or `null` if not found.
+   */
   async getSkill(scopedName: string): Promise<MarketplaceResult | null> {
     const parts = parseScopedName(scopedName);
     const searchTerms = parts

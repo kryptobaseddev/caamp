@@ -29,6 +29,23 @@ interface LAFSErrorShape {
   details: Record<string, unknown>;
 }
 
+/**
+ * Registers the `skills list` subcommand for listing installed skills.
+ *
+ * @remarks
+ * Discovers skills installed across provider skill directories and outputs a summary
+ * grouped by provider. Supports filtering by agent and scope.
+ *
+ * @param parent - The parent `skills` Command to attach the list subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills list --human
+ * caamp skills list --agent claude-code --global
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsList(parent: Command): void {
   parent
     .command("list")

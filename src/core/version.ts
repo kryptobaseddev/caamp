@@ -4,6 +4,24 @@ import { fileURLToPath } from "node:url";
 
 let cachedVersion: string | null = null;
 
+/**
+ * Retrieve the current CAAMP package version from the nearest `package.json`.
+ *
+ * @remarks
+ * The version string is read once from `package.json` relative to this module
+ * and cached for the lifetime of the process. Returns `"0.0.0"` when the file
+ * cannot be found or parsed.
+ *
+ * @returns The semver version string (e.g. `"1.8.1"`)
+ *
+ * @example
+ * ```typescript
+ * const version = getCaampVersion();
+ * console.log(`CAAMP v${version}`);
+ * ```
+ *
+ * @public
+ */
 export function getCaampVersion(): string {
   if (cachedVersion) return cachedVersion;
 

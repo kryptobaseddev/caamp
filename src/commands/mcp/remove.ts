@@ -18,6 +18,23 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { getProvider } from "../../core/registry/providers.js";
 import type { Provider } from "../../types.js";
 
+/**
+ * Registers the `mcp remove` subcommand for removing MCP servers from agent configurations.
+ *
+ * @remarks
+ * Removes the named MCP server from targeted provider configs and cleans up the lock file entry.
+ * Supports targeting specific agents or all detected providers.
+ *
+ * @param parent - The parent `mcp` Command to attach the remove subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp mcp remove my-server --agent claude-code
+ * caamp mcp remove my-server --all --global
+ * ```
+ *
+ * @public
+ */
 export function registerMcpRemove(parent: Command): void {
   parent
     .command("remove")

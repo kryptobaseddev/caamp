@@ -24,6 +24,23 @@ interface LAFSErrorShape {
   details: Record<string, unknown>;
 }
 
+/**
+ * Registers the `skills validate` subcommand for validating SKILL.md file format.
+ *
+ * @remarks
+ * Parses a SKILL.md file and checks it against the required schema, reporting any missing
+ * sections, invalid metadata, or structural issues.
+ *
+ * @param parent - The parent `skills` Command to attach the validate subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills validate ./my-skill/SKILL.md
+ * caamp skills validate --json
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsValidate(parent: Command): void {
   parent
     .command("validate")

@@ -16,6 +16,23 @@ import { getInstalledProviders } from "../../core/registry/detection.js";
 import { listCanonicalSkills, removeSkill } from "../../core/skills/installer.js";
 import { removeSkillFromLock } from "../../core/skills/lock.js";
 
+/**
+ * Registers the `skills remove` subcommand for removing installed skills.
+ *
+ * @remarks
+ * Removes the canonical skill directory and all provider symlinks, then cleans up the lock file entry.
+ * Supports interactive selection when no skill name is provided.
+ *
+ * @param parent - The parent `skills` Command to attach the remove subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills remove my-skill
+ * caamp skills remove --yes
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsRemove(parent: Command): void {
   parent
     .command("remove")

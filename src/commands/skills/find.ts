@@ -62,6 +62,23 @@ interface RecommendationOption {
   };
 }
 
+/**
+ * Registers the `skills find` subcommand for searching marketplaces and recommending skills.
+ *
+ * @remarks
+ * Supports free-text marketplace search and constraint-based skill recommendation mode with
+ * must-have, prefer, and exclude criteria. Results can be output in JSON or human-readable format.
+ *
+ * @param parent - The parent `skills` Command to attach the find subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp skills find "testing framework"
+ * caamp skills find --recommend --must-have typescript --prefer vitest
+ * ```
+ *
+ * @public
+ */
 export function registerSkillsFind(parent: Command): void {
   parent
     .command("find")

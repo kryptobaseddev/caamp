@@ -9,7 +9,17 @@ import type { MarketplaceAdapter, MarketplaceResult } from "./types.js";
 import { SkillsMPAdapter } from "./skillsmp.js";
 import { SkillsShAdapter } from "./skillssh.js";
 
+/**
+ * Error thrown when all marketplace sources fail to respond.
+ *
+ * @remarks
+ * Contains an array of per-adapter failure details so callers can report
+ * which sources were unreachable and why.
+ *
+ * @public
+ */
 export class MarketplaceUnavailableError extends Error {
+  /** Per-adapter failure messages. */
   details: string[];
 
   constructor(message: string, details: string[]) {
@@ -25,6 +35,10 @@ export class MarketplaceUnavailableError extends Error {
  * Queries all configured marketplaces in parallel, deduplicates results by scoped name,
  * and sorts by star count.
  *
+ * @remarks
+ * Default adapters query agentskills.in and skills.sh. Custom adapters can
+ * be injected via the constructor for testing or additional sources.
+ *
  * @example
  * ```typescript
  * const client = new MarketplaceClient();
@@ -33,8 +47,11 @@ export class MarketplaceUnavailableError extends Error {
  *   console.log(`${r.scopedName} (${r.stars} stars)`);
  * }
  * ```
+ *
+ * @public
  */
 export class MarketplaceClient {
+  /** Configured marketplace adapters. */
   private adapters: MarketplaceAdapter[];
 
   /**

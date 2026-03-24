@@ -7,6 +7,23 @@ import { selectProvidersByMinimumPriority } from "../../core/advanced/orchestrat
 import { parsePriority, resolveProviders } from "./common.js";
 import { runLafsCommand } from "./lafs.js";
 
+/**
+ * Registers the `advanced providers` subcommand for selecting providers by priority tier.
+ *
+ * @remarks
+ * Resolves and filters providers using the advanced wrapper logic, outputting the selected
+ * provider set as a LAFS-compliant JSON envelope. Useful for scripted orchestration pipelines.
+ *
+ * @param parent - The parent `advanced` Command to attach the providers subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp advanced providers --min-tier high
+ * caamp advanced providers --all --details
+ * ```
+ *
+ * @public
+ */
 export function registerAdvancedProviders(parent: Command): void {
   parent
     .command("providers")

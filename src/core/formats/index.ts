@@ -1,5 +1,9 @@
 /**
- * Format router - dispatches config reads/writes to format-specific handlers
+ * Provides format-agnostic config read, write, and remove operations that
+ * dispatch to JSON/JSONC, YAML, or TOML handlers based on the specified
+ * format.
+ *
+ * @packageDocumentation
  */
 
 import type { ConfigFormat } from "../../types.js";
@@ -20,10 +24,16 @@ export { deepMerge, getNestedValue, ensureDir } from "./utils.js";
  * @returns Parsed config object
  * @throws If the file cannot be read or the format is unsupported
  *
+ * @remarks
+ * Supported formats: `"json"`, `"jsonc"`, `"yaml"`, `"toml"`. Throws for
+ * any unrecognized format string.
+ *
  * @example
  * ```typescript
  * const config = await readConfig("/path/to/config.json", "jsonc");
  * ```
+ *
+ * @public
  */
 export async function readConfig(filePath: string, format: ConfigFormat): Promise<Record<string, unknown>> {
   debug(`reading config: ${filePath} (format: ${format})`);
@@ -53,10 +63,16 @@ export async function readConfig(filePath: string, format: ConfigFormat): Promis
  * @param serverConfig - Server configuration object to write
  * @throws If the format is unsupported
  *
+ * @remarks
+ * For JSONC files, comments and formatting are preserved using `jsonc-parser`.
+ * For YAML and TOML, the file is fully re-serialized after deep-merging.
+ *
  * @example
  * ```typescript
  * await writeConfig("/path/to/config.json", "jsonc", "mcpServers", "my-server", config);
  * ```
+ *
+ * @public
  */
 export async function writeConfig(
   filePath: string,
@@ -89,10 +105,16 @@ export async function writeConfig(
  * @returns `true` if the entry was removed, `false` otherwise
  * @throws If the format is unsupported
  *
+ * @remarks
+ * Delegates to the format-specific removal function. Returns `false` when the
+ * file does not exist or the entry is not found.
+ *
  * @example
  * ```typescript
  * const removed = await removeConfig("/path/to/config.json", "jsonc", "mcpServers", "my-server");
  * ```
+ *
+ * @public
  */
 export async function removeConfig(
   filePath: string,

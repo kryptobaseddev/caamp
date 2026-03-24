@@ -43,6 +43,24 @@ interface LAFSErrorShape {
   details: Record<string, unknown>;
 }
 
+/**
+ * Registers the `providers` command group with list, detect, show, skills-map, hooks, and capabilities subcommands.
+ *
+ * @remarks
+ * All subcommands support both JSON (default) and human-readable output formats via LAFS-compliant envelopes.
+ * The providers command group is the primary interface for querying the provider registry.
+ *
+ * @param program - The root Commander program to attach the providers command group to
+ *
+ * @example
+ * ```bash
+ * caamp providers list --tier high
+ * caamp providers detect --project
+ * caamp providers show claude-code
+ * ```
+ *
+ * @public
+ */
 export function registerProvidersCommand(program: Command): void {
   const providers = program
     .command("providers")

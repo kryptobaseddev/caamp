@@ -15,6 +15,23 @@ import {
 } from "../../core/lafs.js";
 import { getInstalledProviders } from "../../core/registry/detection.js";
 
+/**
+ * Registers the `instructions update` subcommand for refreshing all instruction file injections.
+ *
+ * @remarks
+ * Re-generates and updates CAAMP injection blocks in all detected provider instruction files.
+ * Checks for stale injections first and only updates those that have changed.
+ *
+ * @param parent - The parent `instructions` Command to attach the update subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp instructions update --yes
+ * caamp instructions update --global --json
+ * ```
+ *
+ * @public
+ */
 export function registerInstructionsUpdate(parent: Command): void {
   parent
     .command("update")

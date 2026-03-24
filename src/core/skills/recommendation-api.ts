@@ -7,14 +7,46 @@ import {
   type RecommendSkillsResult,
 } from "./recommendation.js";
 
+/**
+ * Options for searching skills via marketplace APIs.
+ *
+ * @public
+ */
 export interface SearchSkillsOptions {
+  /** Maximum number of results to return. */
   limit?: number;
 }
 
+/**
+ * Options for the recommendation query combining ranking options with a result limit.
+ *
+ * @public
+ */
 export interface RecommendSkillsQueryOptions extends RecommendationOptions {
+  /** Maximum number of results to return. */
   limit?: number;
 }
 
+/**
+ * Format skill recommendation results for display or serialization.
+ *
+ * @remarks
+ * In `"human"` mode, produces a numbered list with reasons and tradeoffs.
+ * In `"json"` mode, returns a structured object suitable for machine consumption.
+ *
+ * @param result - The recommendation result to format
+ * @param opts - Formatting options including output mode and detail level
+ * @returns Formatted string for human mode, or a structured object for JSON mode
+ *
+ * @example
+ * ```typescript
+ * const result = await recommendSkills("testing", { taskType: "test-writing" });
+ * const output = formatSkillRecommendations(result, { mode: "human" });
+ * console.log(output);
+ * ```
+ *
+ * @public
+ */
 export function formatSkillRecommendations(
   result: RecommendSkillsResult,
   opts: { mode: "human" | "json"; details?: boolean },
@@ -57,6 +89,25 @@ export function formatSkillRecommendations(
   };
 }
 
+/**
+ * Search for skills via marketplace APIs.
+ *
+ * @remarks
+ * Queries the unified marketplace client and returns matching skill entries.
+ * Throws with a coded error if the query is empty or the marketplace is unavailable.
+ *
+ * @param query - Search query string (must be non-empty)
+ * @param options - Search options including result limit
+ * @returns Array of marketplace skill entries matching the query
+ *
+ * @example
+ * ```typescript
+ * const results = await searchSkills("test runner", { limit: 10 });
+ * console.log(`Found ${results.length} skills`);
+ * ```
+ *
+ * @public
+ */
 export async function searchSkills(query: string, options: SearchSkillsOptions = {}) {
   const trimmed = query.trim();
   if (!trimmed) {
@@ -75,6 +126,27 @@ export async function searchSkills(query: string, options: SearchSkillsOptions =
   }
 }
 
+/**
+ * Search and rank skills based on query and recommendation criteria.
+ *
+ * @remarks
+ * Combines marketplace search with the recommendation engine to produce
+ * scored, ranked skill suggestions. Throws if no matches are found.
+ *
+ * @param query - Search query string
+ * @param criteria - Recommendation criteria (task type, context, preferences)
+ * @param options - Options for limiting and tuning results
+ * @returns Ranked recommendation results with scores and reasons
+ *
+ * @example
+ * ```typescript
+ * const result = await recommendSkills("testing", { taskType: "test-writing" });
+ * const best = result.ranking[0];
+ * console.log(`Top pick: ${best.skill.scopedName} (score: ${best.score})`);
+ * ```
+ *
+ * @public
+ */
 export async function recommendSkills(
   query: string,
   criteria: Omit<RecommendationCriteriaInput, "query">,

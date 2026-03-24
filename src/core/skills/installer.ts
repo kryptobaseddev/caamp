@@ -23,6 +23,8 @@ import { discoverSkill } from "./discovery.js";
  *   console.log(`Linked to: ${result.linkedAgents.join(", ")}`);
  * }
  * ```
+ *
+ * @public
  */
 export interface SkillInstallResult {
   /** Skill name. */
@@ -42,7 +44,26 @@ async function ensureCanonicalDir(): Promise<void> {
   await mkdir(getCanonicalSkillsDir(), { recursive: true });
 }
 
-/** Copy skill files to the canonical location */
+/**
+ * Copy skill files to the canonical location.
+ *
+ * @remarks
+ * Removes any existing installation at the target directory before copying.
+ * Handles race conditions where another concurrent install may create the
+ * directory between removal and copy by retrying the operation.
+ *
+ * @param sourcePath - Absolute path to the source skill directory to copy
+ * @param skillName - Name for the skill (used as the subdirectory name)
+ * @returns Absolute path to the canonical installation directory
+ *
+ * @example
+ * ```typescript
+ * const canonicalPath = await installToCanonical("/tmp/my-skill", "my-skill");
+ * console.log(`Installed to: ${canonicalPath}`);
+ * ```
+ *
+ * @public
+ */
 export async function installToCanonical(
   sourcePath: string,
   skillName: string,
@@ -132,6 +153,7 @@ async function linkToAgent(
 /**
  * Install a skill from a local path to the canonical location and link to agents.
  *
+ * @remarks
  * Copies the skill directory to the canonical skills directory and creates symlinks
  * (or copies on Windows) from each provider's skills directory to the canonical path.
  *
@@ -144,8 +166,13 @@ async function linkToAgent(
  *
  * @example
  * ```typescript
- * const result = await installSkill("/tmp/my-skill", "my-skill", providers, true);
+ * const result = await installSkill("/tmp/my-skill", "my-skill", providers, true, "/my/project");
+ * if (result.success) {
+ *   console.log(`Linked to: ${result.linkedAgents.join(", ")}`);
+ * }
  * ```
+ *
+ * @public
  */
 export async function installSkill(
   sourcePath: string,
@@ -182,6 +209,7 @@ export async function installSkill(
 /**
  * Remove a skill from the canonical location and all agent symlinks.
  *
+ * @remarks
  * Removes symlinks from each provider's skills directory and then removes the
  * canonical copy from the centralized canonical skills directory.
  *
@@ -193,8 +221,11 @@ export async function installSkill(
  *
  * @example
  * ```typescript
- * const { removed, errors } = await removeSkill("my-skill", providers, true);
+ * const { removed, errors } = await removeSkill("my-skill", providers, true, "/my/project");
+ * console.log(`Removed from: ${removed.join(", ")}`);
  * ```
+ *
+ * @public
  */
 export async function removeSkill(
   skillName: string,
@@ -246,7 +277,9 @@ export async function removeSkill(
 /**
  * List all skills installed in the canonical skills directory.
  *
+ * @remarks
  * Returns the directory names of all skills, which correspond to skill names.
+ * Includes both regular directories and symlinks in the canonical location.
  *
  * @returns Array of skill names
  *
@@ -255,6 +288,8 @@ export async function removeSkill(
  * const skills = await listCanonicalSkills();
  * // ["my-skill", "another-skill"]
  * ```
+ *
+ * @public
  */
 export async function listCanonicalSkills(): Promise<string[]> {
   if (!existsSync(getCanonicalSkillsDir())) return [];

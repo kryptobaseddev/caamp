@@ -12,13 +12,16 @@ import type { Provider } from "../../types.js";
 /**
  * Structured template for injection content.
  *
+ * @remarks
  * Projects use this to define what goes between CAAMP markers in
  * instruction files, rather than passing ad-hoc strings.
+ *
+ * @public
  */
 export interface InjectionTemplate {
-  /** @ references to include (e.g. `"@AGENTS.md"`, `"@.cleo/project-context.json"`). */
+  /** References to include (e.g. `"\@AGENTS.md"`, `"\@.cleo/project-context.json"`). */
   references: string[];
-  /** Inline content blocks (raw markdown/text). */
+  /** Inline content blocks (raw markdown/text). @defaultValue `undefined` */
   content?: string[];
 }
 
@@ -31,18 +34,18 @@ export interface InjectionTemplate {
  * @param template - Template defining references and content
  * @returns Formatted injection content string
  *
+ * @remarks
+ * References are output one per line. Content blocks are appended after a
+ * blank separator line when references are present.
+ *
  * @example
  * ```typescript
  * const content = buildInjectionContent({
- *   references: ["@AGENTS.md"],
- * });
- * // Returns: "@AGENTS.md"
- *
- * const content2 = buildInjectionContent({
- *   references: ["@AGENTS.md", "@.cleo/project-context.json"],
- *   content: ["# Custom Section", "Some extra info"],
+ *   references: ["\@AGENTS.md"],
  * });
  * ```
+ *
+ * @public
  */
 export function buildInjectionContent(template: InjectionTemplate): string {
   const lines: string[] = [];
@@ -70,11 +73,15 @@ export function buildInjectionContent(template: InjectionTemplate): string {
  * @param content - Raw injection content string
  * @returns Parsed InjectionTemplate
  *
+ * @remarks
+ * Inverse of {@link buildInjectionContent}. Empty lines are ignored.
+ *
  * @example
  * ```typescript
- * const template = parseInjectionContent("@AGENTS.md\n@.cleo/config.json");
- * // { references: ["@AGENTS.md", "@.cleo/config.json"], content: [] }
+ * const template = parseInjectionContent("\@AGENTS.md\n\@.cleo/config.json");
  * ```
+ *
+ * @public
  */
 export function parseInjectionContent(content: string): InjectionTemplate {
   const references: string[] = [];
@@ -105,15 +112,19 @@ export function parseInjectionContent(content: string): InjectionTemplate {
  * Produces markdown content suitable for injection between CAAMP markers.
  * Optionally includes MCP server and custom content sections.
  *
+ * @remarks
+ * This is the legacy API preserved for backward compatibility. New code
+ * should prefer {@link buildInjectionContent} with an `InjectionTemplate`.
+ *
  * @param options - Optional configuration for the generated content
- * @param options.mcpServerName - MCP server name to include a server section
- * @param options.customContent - Additional custom markdown content to append
  * @returns Generated markdown string
  *
  * @example
  * ```typescript
  * const content = generateInjectionContent({ mcpServerName: "filesystem" });
  * ```
+ *
+ * @public
  */
 export function generateInjectionContent(options?: {
   mcpServerName?: string;
@@ -140,7 +151,23 @@ export function generateInjectionContent(options?: {
   return lines.join("\n");
 }
 
-/** Generate a skills discovery section for instruction files */
+/**
+ * Generate a skills discovery section for instruction files.
+ *
+ * @remarks
+ * Produces a markdown list of installed skill names. Returns an empty string
+ * when no skills are provided.
+ *
+ * @param skillNames - Array of skill names to list
+ * @returns Markdown string listing installed skills
+ *
+ * @example
+ * ```typescript
+ * const section = generateSkillsSection(["code-review", "testing"]);
+ * ```
+ *
+ * @public
+ */
 export function generateSkillsSection(skillNames: string[]): string {
   if (skillNames.length === 0) return "";
 
@@ -155,7 +182,24 @@ export function generateSkillsSection(skillNames: string[]): string {
   return lines.join("\n");
 }
 
-/** Get the correct instruction file name for a provider */
+/**
+ * Get the correct instruction file name for a provider.
+ *
+ * @remarks
+ * Simple accessor that returns the `instructFile` property from the provider
+ * registry entry (e.g. `"CLAUDE.md"`, `"AGENTS.md"`, `"GEMINI.md"`).
+ *
+ * @param provider - Provider registry entry
+ * @returns Instruction file name
+ *
+ * @example
+ * ```typescript
+ * const fileName = getInstructFile(provider);
+ * // "CLAUDE.md"
+ * ```
+ *
+ * @public
+ */
 export function getInstructFile(provider: Provider): string {
   return provider.instructFile;
 }
@@ -169,6 +213,10 @@ export function getInstructFile(provider: Provider): string {
  * @param providers - Array of providers to group
  * @returns Map from instruction file name to array of providers using that file
  *
+ * @remarks
+ * Useful for determining which providers share the same instruction file
+ * to avoid duplicate file operations.
+ *
  * @example
  * ```typescript
  * const groups = groupByInstructFile(getAllProviders());
@@ -176,6 +224,8 @@ export function getInstructFile(provider: Provider): string {
  *   console.log(`${file}: ${providers.map(p => p.id).join(", ")}`);
  * }
  * ```
+ *
+ * @public
  */
 export function groupByInstructFile(providers: Provider[]): Map<string, Provider[]> {
   const groups = new Map<string, Provider[]>();

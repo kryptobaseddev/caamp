@@ -24,6 +24,24 @@ import {
   shouldUseCleoCompatibilityInstall,
 } from "./cleo.js";
 
+/**
+ * Registers the `mcp install` subcommand for installing MCP servers to agent configurations.
+ *
+ * @remarks
+ * Supports URL, npm package, and command sources with per-agent transforms. Automatically
+ * delegates to CLEO compatibility install when the source is "cleo" with a channel flag.
+ * Records installations in the lock file for tracking.
+ *
+ * @param parent - The parent `mcp` Command to attach the install subcommand to
+ *
+ * @example
+ * ```bash
+ * caamp mcp install https://example.com/server --agent claude-code
+ * caamp mcp install my-server --all --global
+ * ```
+ *
+ * @public
+ */
 export function registerMcpInstall(parent: Command): void {
   parent
     .command("install")

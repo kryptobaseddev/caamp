@@ -64,7 +64,23 @@ async function writeLockFileUnsafe(lock: CaampLockFile): Promise<void> {
   await rename(tmpPath, LOCK_FILE_PATH);
 }
 
-/** Read the lock file */
+/**
+ * Read and parse the CAAMP lock file from disk.
+ *
+ * @remarks
+ * Returns a default empty lock structure when the file does not exist or
+ * cannot be parsed, ensuring callers always receive a valid object.
+ *
+ * @returns Parsed lock file contents
+ *
+ * @example
+ * ```typescript
+ * const lock = await readLockFile();
+ * console.log(Object.keys(lock.mcpServers));
+ * ```
+ *
+ * @public
+ */
 export async function readLockFile(): Promise<CaampLockFile> {
   try {
     if (!existsSync(LOCK_FILE_PATH)) {
@@ -77,7 +93,24 @@ export async function readLockFile(): Promise<CaampLockFile> {
   }
 }
 
-/** Write the lock file */
+/**
+ * Write the lock file atomically under a process lock guard.
+ *
+ * @remarks
+ * Uses a file-system lock guard to prevent concurrent writes from multiple
+ * CAAMP processes. The write itself is atomic (write-to-tmp then rename).
+ *
+ * @param lock - Lock file data to persist
+ *
+ * @example
+ * ```typescript
+ * const lock = await readLockFile();
+ * lock.mcpServers["my-server"] = entry;
+ * await writeLockFile(lock);
+ * ```
+ *
+ * @public
+ */
 export async function writeLockFile(lock: CaampLockFile): Promise<void> {
   await acquireLockGuard();
   try {
@@ -87,7 +120,26 @@ export async function writeLockFile(lock: CaampLockFile): Promise<void> {
   }
 }
 
-/** Safely read-modify-write the lock file under a process lock guard. */
+/**
+ * Safely read-modify-write the lock file under a process lock guard.
+ *
+ * @remarks
+ * Acquires an exclusive file-system lock, reads the current lock file, applies
+ * the updater callback, writes the result atomically, and releases the lock.
+ * The updater may mutate the lock object in place.
+ *
+ * @param updater - Callback that modifies the lock object (may be async)
+ * @returns The updated lock file contents after the write
+ *
+ * @example
+ * ```typescript
+ * const updated = await updateLockFile((lock) => {
+ *   lock.mcpServers["new-server"] = entry;
+ * });
+ * ```
+ *
+ * @public
+ */
 export async function updateLockFile(
   updater: (lock: CaampLockFile) => void | Promise<void>,
 ): Promise<CaampLockFile> {

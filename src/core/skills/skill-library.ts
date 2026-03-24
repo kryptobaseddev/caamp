@@ -8,7 +8,11 @@
 
 // ── Types ───────────────────────────────────────────────────────────
 
-/** A single skill entry in a library catalog. */
+/**
+ * A single skill entry in a library catalog.
+ *
+ * @public
+ */
 export interface SkillLibraryEntry {
   /** Skill name (e.g. `"ct-research-agent"`). */
   name: string;
@@ -40,7 +44,11 @@ export interface SkillLibraryEntry {
   metadata: Record<string, unknown>;
 }
 
-/** Validation result from skill frontmatter validation. */
+/**
+ * Validation result from skill frontmatter validation.
+ *
+ * @public
+ */
 export interface SkillLibraryValidationResult {
   /** Whether the skill passed validation (no error-level issues). */
   valid: boolean;
@@ -48,7 +56,11 @@ export interface SkillLibraryValidationResult {
   issues: SkillLibraryValidationIssue[];
 }
 
-/** A single validation issue. */
+/**
+ * A single validation issue.
+ *
+ * @public
+ */
 export interface SkillLibraryValidationIssue {
   /** Severity level. */
   level: "error" | "warn";
@@ -58,7 +70,11 @@ export interface SkillLibraryValidationIssue {
   message: string;
 }
 
-/** Profile definition for grouped skill installation. */
+/**
+ * Profile definition for grouped skill installation.
+ *
+ * @public
+ */
 export interface SkillLibraryProfile {
   /** Profile name (e.g. `"minimal"`, `"core"`, `"recommended"`, `"full"`). */
   name: string;
@@ -74,7 +90,11 @@ export interface SkillLibraryProfile {
   includeProtocols: string[];
 }
 
-/** Dispatch matrix for task routing to skills. */
+/**
+ * Dispatch matrix for task routing to skills.
+ *
+ * @public
+ */
 export interface SkillLibraryDispatchMatrix {
   /** Task type to skill mapping. */
   by_task_type: Record<string, string>;
@@ -84,7 +104,11 @@ export interface SkillLibraryDispatchMatrix {
   by_protocol: Record<string, string>;
 }
 
-/** Skill entry within the library manifest. */
+/**
+ * Skill entry within the library manifest.
+ *
+ * @public
+ */
 export interface SkillLibraryManifestSkill {
   /** Skill name. */
   name: string;
@@ -125,7 +149,11 @@ export interface SkillLibraryManifestSkill {
   };
 }
 
-/** Full manifest structure for a skill library. */
+/**
+ * Full manifest structure for a skill library.
+ *
+ * @public
+ */
 export interface SkillLibraryManifest {
   /** JSON schema reference. */
   $schema: string;
@@ -144,6 +172,8 @@ export interface SkillLibraryManifest {
  *
  * Any directory or module providing skills must implement this contract.
  * CAAMP uses it to discover, resolve, and install skills from any source.
+ *
+ * @public
  */
 export interface SkillLibrary {
   /** Library version string. */

@@ -16,6 +16,7 @@ const execFileAsync = promisify(execFile);
 /**
  * Record a skill installation in the lock file.
  *
+ * @remarks
  * Creates or updates an entry in `lock.skills`. If the skill already exists,
  * the agent list is merged and `updatedAt` is refreshed while `installedAt` is preserved.
  *
@@ -39,6 +40,8 @@ const execFileAsync = promisify(execFile);
  *   ["claude-code"], join(getCanonicalSkillsDir(), "my-skill"), true,
  * );
  * ```
+ *
+ * @public
  */
 export async function recordSkillInstall(
   skillName: string,
@@ -74,13 +77,20 @@ export async function recordSkillInstall(
 /**
  * Remove a skill entry from the lock file.
  *
+ * @remarks
+ * Deletes the skill's entry from `lock.skills` if it exists. Does not remove
+ * any files from disk.
+ *
  * @param skillName - Name of the skill to remove
  * @returns `true` if the entry was found and removed, `false` if not found
  *
  * @example
  * ```typescript
  * const removed = await removeSkillFromLock("my-skill");
+ * console.log(removed ? "Removed" : "Not found");
  * ```
+ *
+ * @public
  */
 export async function removeSkillFromLock(skillName: string): Promise<boolean> {
   let removed = false;
@@ -95,6 +105,9 @@ export async function removeSkillFromLock(skillName: string): Promise<boolean> {
 /**
  * Get all skills tracked in the lock file.
  *
+ * @remarks
+ * Reads the lock file and returns the skills section as a record.
+ *
  * @returns Record of skill name to lock entry
  *
  * @example
@@ -104,6 +117,8 @@ export async function removeSkillFromLock(skillName: string): Promise<boolean> {
  *   console.log(`${name}: ${entry.source}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function getTrackedSkills(): Promise<Record<string, LockEntry>> {
   const lock = await readLockFile();
@@ -146,6 +161,7 @@ async function fetchLatestPackageVersion(packageName: string): Promise<string | 
  * Check if a skill has updates available by comparing the installed version
  * against the latest remote commit SHA.
  *
+ * @remarks
  * Only supports GitHub, GitLab, and library (package-based) sources. Returns `"unknown"` for local,
  * package, or other source types.
  *
@@ -159,6 +175,8 @@ async function fetchLatestPackageVersion(packageName: string): Promise<string | 
  *   console.log(`Update available: ${update.currentVersion} -> ${update.latestVersion}`);
  * }
  * ```
+ *
+ * @public
  */
 export async function checkSkillUpdate(skillName: string): Promise<{
   hasUpdate: boolean;
@@ -244,7 +262,23 @@ export async function checkSkillUpdate(skillName: string): Promise<{
 /**
  * Check for updates across all tracked skills.
  *
+ * @remarks
+ * Iterates over all skills in the lock file and checks each one concurrently
+ * via {@link checkSkillUpdate}.
+ *
  * @returns Object mapping skill names to their update status
+ *
+ * @example
+ * ```typescript
+ * const updates = await checkAllSkillUpdates();
+ * for (const [name, status] of Object.entries(updates)) {
+ *   if (status.hasUpdate) {
+ *     console.log(`${name}: ${status.currentVersion} -> ${status.latestVersion}`);
+ *   }
+ * }
+ * ```
+ *
+ * @public
  */
 export async function checkAllSkillUpdates(): Promise<Record<string, {
   hasUpdate: boolean;
